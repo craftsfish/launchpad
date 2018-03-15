@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from .models import *
 from django.views.generic import ListView
 from django.views.generic import DetailView
+from django.views.generic import UpdateView
 
 # Create your views here.
 def index(request):
@@ -37,3 +38,8 @@ class AccountDetailView(DetailView):
 		context['ancestors'] = ancestors
 
 		return context
+
+class AccountUpdateView(UpdateView):
+	model = Account
+	fields = ['name']
+	template_name_suffix = '_update_form'
