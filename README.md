@@ -1,0 +1,2 @@
+# launchpad
+django project
