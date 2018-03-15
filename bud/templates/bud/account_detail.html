@@ -1,2 +1,19 @@
-<h1>{{ object.name }}</h1>
-<p>Date: {{ now|date }}</p>
+<h2>路径</h2>
+<table border="1" cellpadding="32">
+	<tr>
+		{% for account in ancestors %}
+			<td><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></td>
+		{% endfor %}
+	</tr>
+</table>
+
+<h2>子账户</h2>
+<ul>
+	{% for account in children %}
+		<li><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></li>
+	{% empty %}
+		<li>没有子账户</li>
+	{% endfor %}
+</ul>
+
+<h2>流水</h2>

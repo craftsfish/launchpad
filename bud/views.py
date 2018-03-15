@@ -24,3 +24,20 @@ class AccountListView(ListView):
 
 class AccountDetailView(DetailView):
 	model = Account
+
+	def get_context_data(self, **kwargs):
+		context = super(AccountDetailView, self).get_context_data(**kwargs)
+
+		#children
+		children = []
+		for p in self.object.paths2descendant.order_by("height").filter(height=1):
+			children.append(p.descendant)
+		context['children'] = children
+
+		#ancestors
+		ancestors = []
+		for p in self.object.paths2ancestor.order_by("-height"):
+			ancestors.append(p.ancestor)
+		context['ancestors'] = ancestors
+
+		return context
