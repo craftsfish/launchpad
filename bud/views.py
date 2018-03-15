@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
 from django.views.generic import ListView
+from django.views.generic import DetailView
 
 # Create your views here.
 def index(request):
@@ -15,4 +16,7 @@ def index(request):
 	return HttpResponse(children)
 
 class AccountListView(ListView):
+	model = Account
+
+class AccountDetailView(DetailView):
 	model = Account

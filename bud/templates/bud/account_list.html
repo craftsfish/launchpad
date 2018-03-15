@@ -2,7 +2,7 @@
     <h2>Accounts</h2>
     <ul>
         {% for account in object_list %}
-            <li>{{ account.name }}</li>
+            <li><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
