@@ -18,10 +18,6 @@ def index(request):
 class AccountListView(ListView):
 	model = Account
 
-	def get_queryset(self):
-		root = Account.objects.get(name="/")
-		return root.descendants.all()
-
 class AccountDetailView(DetailView):
 	model = Account
 
