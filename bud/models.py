@@ -43,7 +43,7 @@ class Path(models.Model):
 	height = models.IntegerField(default=0)
 
 	def __str__(self):
-		return "{} -> {}".format(self.ancestor.name , self.descendant.name)
+		return "{} -> {} | Height: {}".format(self.ancestor.name , self.descendant.name, self.height)
 
 class Task(models.Model):
 	desc = models.CharField(max_length=120)

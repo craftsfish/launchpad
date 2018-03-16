@@ -9,15 +9,12 @@ from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
 # Create your views here.
-def index(request):
-	root = Account.objects.get(name="/")
-	children = []
-	for p in root.paths2descendant.order_by("height").filter(height=1):
-		children.append(p.descendant)
-	return HttpResponse(children)
-
 class AccountListView(ListView):
 	model = Account
+
+	def get_queryset(self):
+		root = Account.objects.get(name="/")
+		return Account.objects.raw("select a.descendant_id as id from bud_path as a where a.ancestor_id = {} order by a.height, a.descendant_id".format(root.id))
 
 class AccountDetailView(DetailView):
 	model = Account
