@@ -7,6 +7,7 @@ from .models import *
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
+from django.forms import ModelForm
 
 # Create your views here.
 class AccountListView(ListView):
@@ -36,7 +37,21 @@ class AccountDetailView(DetailView):
 
 		return context
 
+class PathForm(ModelForm):
+	class Meta:
+		model = Path
+		fields = ["ancestor"]
+		labels = {
+			"ancestor": "父账户",
+		}
+
 class AccountUpdateView(UpdateView):
 	model = Account
 	fields = ['name']
 	template_name_suffix = '_update_form'
+
+	def get_context_data(self, **kwargs):
+		context = super(AccountUpdateView, self).get_context_data(**kwargs)
+		path = Path.objects.all().filter(descendant=self.object).filter(height=1)[0]
+		context['path'] = PathForm(instance=path)
+		return context
