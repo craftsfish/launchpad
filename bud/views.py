@@ -7,7 +7,10 @@ from .models import *
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
+from django.views.generic.edit import CreateView
 from django.forms import ModelForm
+from django.forms import Form
+from django import forms
 
 # Create your views here.
 class AccountListView(ListView):
@@ -37,13 +40,8 @@ class AccountDetailView(DetailView):
 
 		return context
 
-class PathForm(ModelForm):
-	class Meta:
-		model = Path
-		fields = ["ancestor"]
-		labels = {
-			"ancestor": "父账户",
-		}
+class ParentAccountForm(forms.Form):
+	parent = forms.ModelChoiceField(Account.objects, label="父账户")
 
 class AccountUpdateView(UpdateView):
 	model = Account
@@ -52,18 +50,32 @@ class AccountUpdateView(UpdateView):
 
 	def get_context_data(self, **kwargs):
 		context = super(AccountUpdateView, self).get_context_data(**kwargs)
-		path = Path.objects.all().filter(descendant=self.object).filter(height=1)
-		if len(path) == 1:
-			context['parent'] = PathForm(instance=path[0])
+		parent = self.object.parent()
+		if parent:
+			context['parent'] = ParentAccountForm({"parent": parent.id})
 		else:
-			context['parent'] = PathForm()
+			context['parent'] = ParentAccountForm()
 		return context
 
 	def post(self, request, *args, **kwargs):
-		parent = Account.objects.all().get(id=request.POST["ancestor"])
+		parent = Account.objects.all().get(id=request.POST["parent"])
 		account = self.get_object()
 		if parent in account.descendants.all():
 			return HttpResponse("XXX 是当前账户的子账户，不能设定为当前账户的父亲!!!")
 		else:
 			account.set_parent(parent)
 			return super(AccountUpdateView, self).post(request, *args, **kwargs)
+
+class AccountCreateView(CreateView):
+	model = Account
+	fields = ['name']
+	template_name_suffix = '_create_form'
+
+	def get_context_data(self, **kwargs):
+		context = super(AccountCreateView, self).get_context_data(**kwargs)
+		parent = self.get_object()
+		if parent:
+			context['parent'] = ParentAccountForm({"parent": parent.id})
+		else:
+			context['parent'] = ParentAccountForm()
+		return context
