@@ -29,13 +29,33 @@ class Commodity(models.Model):
 class Account(models.Model):
 	name = models.CharField("名称", max_length=30, unique=True)
 	balance = models.BigIntegerField(default=0)
-	#ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
+	ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
 	def __str__(self):
 		return self.name
 
 	def get_absolute_url(self):
 		return reverse('account_detail', kwargs={'pk': self.pk})
+
+	def parent(self):
+		p = Path.objects.all().filter(descendant=self.id).filter(height=1)
+		if len(p) != 1:
+			return None
+		return p[0].ancestor
+
+	def set_parent(self, parent):
+		d = self.descendants.all().values_list('id', flat=True)
+		if self.parent(): #remove obsolete paths
+			a = self.ancestors.all().exclude(id=self.id).values_list('id', flat=True)
+			Path.objects.all().filter(ancestor__in=a).filter(descendant__in=d).delete()
+
+		cur = self
+		while parent:
+			for _d in d:
+				h = Path.objects.all().filter(ancestor=cur.id).filter(descendant=_d).values_list("height", flat=True)[0]
+				Path(ancestor=parent, descendant=Account.objects.get(id=_d), height=h+1).save()
+			cur = parent
+			parent = cur.parent()
 
 class Path(models.Model): 
 	ancestor = models.ForeignKey(Account, related_name='paths2descendant')

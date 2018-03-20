@@ -62,5 +62,5 @@ class AccountUpdateView(UpdateView):
 		if len(Path.objects.all().filter(ancestor=account).filter(descendant=parent).filter(height__gt=0)) != 0:
 			return HttpResponse("XXX 是当前账户的子账户，不能设定为当前账户的父亲!!!")
 		else:
-			#TODO: update path here
+			account.set_parent(parent)
 			return super(AccountUpdateView, self).post(request, *args, **kwargs)
