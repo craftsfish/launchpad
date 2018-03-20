@@ -16,10 +16,6 @@ from django import forms
 class AccountListView(ListView):
 	model = Account
 
-	def get_queryset(self):
-		root = Account.objects.get(name="/")
-		return Account.objects.raw("select a.descendant_id as id from bud_path as a where a.ancestor_id = {} order by a.height, a.descendant_id".format(root.id))
-
 class AccountDetailView(DetailView):
 	model = Account
 

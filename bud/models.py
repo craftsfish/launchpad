@@ -27,6 +27,9 @@ class Commodity(models.Model):
 		return self.name
 
 class Account(models.Model):
+	class Meta:
+		ordering = ['id']
+
 	name = models.CharField("名称", max_length=30, unique=True)
 	balance = models.BigIntegerField(default=0)
 	ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
