@@ -52,14 +52,17 @@ class AccountUpdateView(UpdateView):
 
 	def get_context_data(self, **kwargs):
 		context = super(AccountUpdateView, self).get_context_data(**kwargs)
-		parent = Path.objects.all().filter(descendant=self.object).filter(height=1)[0]
-		context['parent'] = PathForm(instance=parent)
+		path = Path.objects.all().filter(descendant=self.object).filter(height=1)
+		if len(path) == 1:
+			context['parent'] = PathForm(instance=path[0])
+		else:
+			context['parent'] = PathForm()
 		return context
 
 	def post(self, request, *args, **kwargs):
 		parent = Account.objects.all().get(id=request.POST["ancestor"])
 		account = self.get_object()
-		if len(Path.objects.all().filter(ancestor=account).filter(descendant=parent).filter(height__gt=0)) != 0:
+		if parent in account.descendants.all():
 			return HttpResponse("XXX 是当前账户的子账户，不能设定为当前账户的父亲!!!")
 		else:
 			account.set_parent(parent)
