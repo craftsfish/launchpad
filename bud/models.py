@@ -29,7 +29,7 @@ class Commodity(models.Model):
 class Account(models.Model):
 	name = models.CharField("名称", max_length=30, unique=True)
 	balance = models.BigIntegerField(default=0)
-	ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
+	#ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
 	def __str__(self):
 		return self.name
