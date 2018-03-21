@@ -12,6 +12,8 @@ from django.views.generic.edit import CreateView
 from django.forms import ModelForm
 from django.forms import Form
 from django import forms
+from django.views.generic.edit import DeleteView
+from django.core.urlresolvers import reverse_lazy
 
 # Create your views here.
 class AccountListView(ListView):
@@ -37,6 +39,9 @@ class AccountDetailView(DetailView):
 
 		if self.object != Account.root(): #root account is forbidden for edit
 			context['editable'] = True
+		if self.object.is_leaf():
+			context['deletable'] = True
+
 		return context
 
 class ParentAccountForm(forms.Form):
@@ -84,3 +89,11 @@ class AccountCreateView(CreateView):
 			return HttpResponseRedirect(reverse('account_detail', args=[a.id]))
 		else:
 			return HttpResponse("子账户已经存在!!!")
+
+class AccountDeleteView(DeleteView):
+	model = Account
+	success_url = reverse_lazy('index')
+
+	def post(self, request, *args, **kwargs):
+		self.get_object().delete_paths2ancestor()
+		return super(AccountDeleteView, self).post(request, *args, **kwargs)

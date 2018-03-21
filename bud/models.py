@@ -63,6 +63,12 @@ class Account(models.Model):
 	def children(self):
 		return Path.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
 
+	def is_leaf(self):
+		return len(self.children()) == 0
+
+	def delete_paths2ancestor(self):
+		self.paths2ancestor.all().delete()
+
 	@staticmethod
 	def root():
 		return Account.objects.get(name="帐")
