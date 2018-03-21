@@ -35,6 +35,8 @@ class AccountDetailView(DetailView):
 			ancestors.append(p.ancestor)
 		context['ancestors'] = ancestors
 
+		if self.object != Account.root(): #root account is forbidden for edit
+			context['editable'] = True
 		return context
 
 class ParentAccountForm(forms.Form):
@@ -66,7 +68,7 @@ class AccountUpdateView(UpdateView):
 			account.set_parent(parent)
 			return super(AccountUpdateView, self).post(request, *args, **kwargs)
 
-class ChildAccountCreateView(CreateView):
+class AccountCreateView(CreateView):
 	model = Account
 	fields = ['name']
 	template_name_suffix = '_create_form'
