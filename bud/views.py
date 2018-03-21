@@ -17,9 +17,6 @@ from django import forms
 class AccountListView(ListView):
 	model = Account
 
-	def get_queryset(self):
-		return Account.roots()
-
 class AccountDetailView(DetailView):
 	model = Account
 
@@ -41,7 +38,7 @@ class AccountDetailView(DetailView):
 		return context
 
 class ParentAccountForm(forms.Form):
-	parent = forms.ModelChoiceField(Account.objects, label="父账户", required=False)
+	parent = forms.ModelChoiceField(Account.objects, label="父账户")
 
 class AccountUpdateView(UpdateView):
 	model = Account

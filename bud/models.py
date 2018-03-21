@@ -64,10 +64,8 @@ class Account(models.Model):
 		return Path.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
 
 	@staticmethod
-	def roots():
-		descendants = Path.objects.filter(height=1).values_list("descendant", flat=True)
-		print descendants #TODO: remove me
-		return Account.objects.all().exclude(id__in=descendants)
+	def root():
+		return Account.objects.get(name="帐")
 
 class Path(models.Model): 
 	class Meta:
