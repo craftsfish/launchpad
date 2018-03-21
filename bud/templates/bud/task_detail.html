@@ -10,11 +10,14 @@
 			<td><a>{{ transaction.time }}</a></td>
 			<td><a>{{ transaction.desc }}</a></td>
 			<td>
-				<ul>
+				<table cellpadding="10">
 					{% for s in transaction.splits %}
-						<li> {{s.account}} {{s.change}} </li>
+						<tr>
+							<td>{{s.account}} :</td>
+							<td>{{s.change}}</td>
+						</tr>
 					{% endfor %}
-				</ul>
+				</table>
 			</td>
 		</tr>
 	{% endfor %}
