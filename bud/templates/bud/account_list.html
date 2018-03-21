@@ -1,6 +1,6 @@
 {% block content %}
-    <a href="{% url 'account_create' %}">创建账户</a>
-    <h2>Accounts</h2>
+    <a href="{% url 'account_create' %}">创建根账户</a>
+    <h2>根账户列表</h2>
     <ul>
         {% for account in object_list %}
             <li><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></li>

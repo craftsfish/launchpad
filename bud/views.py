@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from .models import *
 from django.views.generic import ListView
 from django.views.generic import DetailView
@@ -15,6 +16,9 @@ from django import forms
 # Create your views here.
 class AccountListView(ListView):
 	model = Account
+
+	def get_queryset(self):
+		return Account.roots()
 
 class AccountDetailView(DetailView):
 	model = Account
@@ -67,7 +71,12 @@ class AccountCreateView(CreateView):
 	fields = ['name']
 	template_name_suffix = '_create_form'
 
-	def get_context_data(self, **kwargs):
-		context = super(AccountCreateView, self).get_context_data(**kwargs)
-		context['parent'] = ParentAccountForm()
-		return context
+	def post(self, request, *args, **kwargs):
+		n = request.POST["name"]
+		if n not in Account.roots().values_list("name", flat=True):
+			a = Account(name=n)
+			a.save()
+			Path(ancestor=a, descendant=a, height=0).save()
+			return HttpResponseRedirect(reverse('account_detail', args=[a.id]))
+		else:
+			return HttpResponse("根账户已经存在!!!")

@@ -60,6 +60,12 @@ class Account(models.Model):
 			cur = parent
 			parent = cur.parent()
 
+	@staticmethod
+	def roots():
+		descendants = Path.objects.filter(height=1).values_list("descendant", flat=True)
+		print descendants #TODO: remove me
+		return Account.objects.all().exclude(id__in=descendants)
+
 class Path(models.Model): 
 	class Meta:
 		unique_together = ("ancestor", "descendant")
