@@ -80,3 +80,20 @@ class AccountCreateView(CreateView):
 			return HttpResponseRedirect(reverse('account_detail', args=[a.id]))
 		else:
 			return HttpResponse("根账户已经存在!!!")
+
+class ChildAccountCreateView(CreateView):
+	model = Account
+	fields = ['name']
+	template_name_suffix = '_create_form'
+
+	def post(self, request, *args, **kwargs):
+		parent = self.get_object()
+		n = request.POST["name"]
+		if n not in Account.objects.filter(id__in=parent.children()).values_list("name", flat=True):
+			a = Account(name=n)
+			a.save()
+			Path(ancestor=a, descendant=a, height=0).save()
+			a.set_parent(parent)
+			return HttpResponseRedirect(reverse('account_detail', args=[a.id]))
+		else:
+			return HttpResponse("子账户已经存在!!!")

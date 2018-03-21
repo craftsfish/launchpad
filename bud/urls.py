@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
     url(r'^account/(?P<pk>[\d]+)/change/$', AccountUpdateView.as_view(), name='account_update'),
     url(r'^account/create/$', AccountCreateView.as_view(), name='account_create'),
+    url(r'^account/(?P<pk>[\d]+)/create/$', ChildAccountCreateView.as_view(), name='child_account_create'),
 ]

@@ -60,6 +60,9 @@ class Account(models.Model):
 			cur = parent
 			parent = cur.parent()
 
+	def children(self):
+		return Path.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
+
 	@staticmethod
 	def roots():
 		descendants = Path.objects.filter(height=1).values_list("descendant", flat=True)
