@@ -19,8 +19,8 @@ class TaskDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
-		print self.object
-		for t in self.object.transaction_set.all():
-			print t.desc
-		context['transactions'] = self.object.transaction_set.all()
+		transactions = self.object.transaction_set.all()
+		for t in transactions:
+			t.splits = t.split_set.all()
+		context['transactions'] = transactions
 		return context

@@ -2,12 +2,20 @@
 <table border="1">
 	<tr>
 		<th>时间</th>
-		<th>描述</th>
+		<th>概述</th>
+		<th>详情</th>
 	</tr>
 	{% for transaction in transactions %}
 		<tr>
 			<td><a>{{ transaction.time }}</a></td>
 			<td><a>{{ transaction.desc }}</a></td>
+			<td>
+				<ul>
+					{% for s in transaction.splits %}
+						<li> {{s.account}} {{s.change}} </li>
+					{% endfor %}
+				</ul>
+			</td>
 		</tr>
 	{% endfor %}
 </table>
