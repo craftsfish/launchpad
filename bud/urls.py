@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from views import *
+from account_views import *
 
 urlpatterns = [
     url(r'^account/$', AccountListView.as_view(), name='index'),

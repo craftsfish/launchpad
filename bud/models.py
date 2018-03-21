@@ -61,7 +61,8 @@ class Account(models.Model):
 			parent = cur.parent()
 
 	def children(self):
-		return Path.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
+		ids = Path.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
+		return Account.objects.filter(id__in=ids)
 
 	def is_leaf(self):
 		return len(self.children()) == 0

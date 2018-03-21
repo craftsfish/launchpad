@@ -19,6 +19,9 @@ from django.core.urlresolvers import reverse_lazy
 class AccountListView(ListView):
 	model = Account
 
+	def get_queryset(self):
+		return Account.root().children()
+
 class AccountDetailView(DetailView):
 	model = Account
 
