@@ -1,9 +1,9 @@
 {% block content %}
-    <a>创建事务</a>
+    <a href="{% url 'task_create' %}">创建事务</a>
     <h2>事务列表</h2>
     <ul>
         {% for task in object_list %}
-            <li><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></li>
+            <li><a href="{% url 'task_detail' task.id %}">{{ task.desc }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

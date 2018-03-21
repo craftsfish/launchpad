@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^account/(?P<pk>[\d]+)/create/$', AccountCreateView.as_view(), name='account_create'),
     url(r'^account/(?P<pk>[\d]+)/delete/$', AccountDeleteView.as_view(), name='account_delete'),
     url(r'^task/$', TaskListView.as_view(), name='task_index'),
+    url(r'^task/create/$', TaskCreateView.as_view(), name='task_create'),
+    url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 ]

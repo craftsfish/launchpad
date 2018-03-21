@@ -91,6 +91,9 @@ class Task(models.Model):
 	def __str__(self):
 		return self.desc
 
+	def get_absolute_url(self):
+		return reverse('task_detail', kwargs={'pk': self.pk})
+
 class Transaction(models.Model):
 	desc = models.CharField(max_length=120)
 	task = models.ForeignKey(Task)
