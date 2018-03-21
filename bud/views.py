@@ -41,7 +41,7 @@ class AccountDetailView(DetailView):
 		return context
 
 class ParentAccountForm(forms.Form):
-	parent = forms.ModelChoiceField(Account.objects, label="父账户")
+	parent = forms.ModelChoiceField(Account.objects, label="父账户", required=False)
 
 class AccountUpdateView(UpdateView):
 	model = Account
@@ -58,7 +58,10 @@ class AccountUpdateView(UpdateView):
 		return context
 
 	def post(self, request, *args, **kwargs):
-		parent = Account.objects.all().get(id=request.POST["parent"])
+		parent_id = request.POST["parent"]
+		parent = None
+		if parent_id != "":
+			parent = Account.objects.all().get(id=parent_id)
 		account = self.get_object()
 		if parent in account.descendants.all():
 			return HttpResponse("XXX 是当前账户的子账户，不能设定为当前账户的父亲!!!")
