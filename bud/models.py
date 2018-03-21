@@ -35,7 +35,12 @@ class Account(models.Model):
 	ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
 	def __str__(self):
-		return self.name
+		result = "/"
+		for p in Path.objects.all().filter(descendant=self.id).order_by('-height')[1:]:
+			result += Account.objects.get(pk=p.ancestor.id).name
+			if p.height != 0:
+				result += "/"
+		return result
 
 	def get_absolute_url(self):
 		return reverse('account_detail', kwargs={'pk': self.pk})
