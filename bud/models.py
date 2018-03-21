@@ -61,6 +61,9 @@ class Account(models.Model):
 			parent = cur.parent()
 
 class Path(models.Model): 
+	class Meta:
+		unique_together = ("ancestor", "descendant")
+
 	ancestor = models.ForeignKey(Account, related_name='paths2descendant')
 	descendant = models.ForeignKey(Account, related_name='paths2ancestor')
 	height = models.IntegerField(default=0)
