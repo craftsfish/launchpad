@@ -69,9 +69,5 @@ class AccountCreateView(CreateView):
 
 	def get_context_data(self, **kwargs):
 		context = super(AccountCreateView, self).get_context_data(**kwargs)
-		parent = self.get_object()
-		if parent:
-			context['parent'] = ParentAccountForm({"parent": parent.id})
-		else:
-			context['parent'] = ParentAccountForm()
+		context['parent'] = ParentAccountForm()
 		return context

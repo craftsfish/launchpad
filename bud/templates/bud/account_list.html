@@ -1,4 +1,5 @@
 {% block content %}
+    <a href="{% url 'account_create' %}">创建账户</a>
     <h2>Accounts</h2>
     <ul>
         {% for account in object_list %}
