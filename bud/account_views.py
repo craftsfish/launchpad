@@ -95,7 +95,7 @@ class AccountCreateView(CreateView):
 
 class AccountDeleteView(DeleteView):
 	model = Account
-	success_url = reverse_lazy('index')
+	success_url = reverse_lazy('account_index')
 
 	def post(self, request, *args, **kwargs):
 		self.get_object().delete_paths2ancestor()
