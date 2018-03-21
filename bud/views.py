@@ -62,7 +62,16 @@ class AccountUpdateView(UpdateView):
 			account.set_parent(parent)
 			return super(AccountUpdateView, self).post(request, *args, **kwargs)
 
-class AccountCreateChildView(CreateView):
+class AccountCreateView(CreateView):
 	model = Account
 	fields = ['name']
-	template_name_suffix = '_create_child_form'
+	template_name_suffix = '_create_form'
+
+	def get_context_data(self, **kwargs):
+		context = super(AccountCreateView, self).get_context_data(**kwargs)
+		parent = self.get_object()
+		if parent:
+			context['parent'] = ParentAccountForm({"parent": parent.id})
+		else:
+			context['parent'] = ParentAccountForm()
+		return context
