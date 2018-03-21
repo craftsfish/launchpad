@@ -1,1 +1,13 @@
 {{ object }}
+<table border="1">
+	<tr>
+		<th>时间</th>
+		<th>描述</th>
+	</tr>
+	{% for transaction in transactions %}
+		<tr>
+			<td><a>{{ transaction.time }}</a></td>
+			<td><a>{{ transaction.desc }}</a></td>
+		</tr>
+	{% endfor %}
+</table>

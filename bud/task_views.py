@@ -16,3 +16,11 @@ class TaskCreateView(CreateView):
 
 class TaskDetailView(DetailView):
 	model = Task
+
+	def get_context_data(self, **kwargs):
+		context = super(TaskDetailView, self).get_context_data(**kwargs)
+		print self.object
+		for t in self.object.transaction_set.all():
+			print t.desc
+		context['transactions'] = self.object.transaction_set.all()
+		return context
