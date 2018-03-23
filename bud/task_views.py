@@ -5,6 +5,7 @@ from .models import *
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
+from django.views.generic import UpdateView
 
 class TaskListView(ListView):
 	model = Task 
@@ -24,3 +25,8 @@ class TaskDetailView(DetailView):
 			t.splits = t.split_set.all()
 		context['transactions'] = transactions
 		return context
+
+class TaskUpdateView(UpdateView):
+	model = Task
+	fields = ['desc']
+	template_name_suffix = '_update_form'

@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^task/$', TaskListView.as_view(), name='task_index'),
     url(r'^task/create/$', TaskCreateView.as_view(), name='task_create'),
     url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
+    url(r'^task/(?P<pk>[\d]+)/change/$', TaskUpdateView.as_view(), name='task_update'),
     url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
     url(r'^transaction/(?P<pk>[\d]+)/change$', TransactionUpdateView.as_view(), name='transaction_update'),
     url(r'^split/(?P<pk>[\d]+)/$', SplitDetailView.as_view(), name='split_detail'),
