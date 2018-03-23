@@ -8,7 +8,7 @@
 	</tr>
 	{% for transaction in transactions %}
 		<tr>
-			<td><a>{{ transaction.id }}</a></td>
+			<td><a href="{% url 'transaction_detail' transaction.id %}">{{ transaction.id }}</a></td>
 			<td><a>{{ transaction.time }}</a></td>
 			<td><a>{{ transaction.desc }}</a></td>
 			<td>

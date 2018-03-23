@@ -1,0 +1,17 @@
+<h2>交易明细</h2>
+<h3><a  href="{% url 'task_detail' object.task.id %}">所属任务</a><h3>
+<table border="1">
+	<caption>交易编号: {{object.id}} </caption>
+	<tr>
+		<th>调整编号</th>
+		<th>账户</th>
+		<th>调整</th>
+	</tr>
+	{% for s in object.splits %}
+		<tr>
+			<td>{{s.id}}</td>
+			<td>{{s.account}} :</td>
+			<td>{{s.change}}</td>
+		</tr>
+	{% endfor %}
+</table>
