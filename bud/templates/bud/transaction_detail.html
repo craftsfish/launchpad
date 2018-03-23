@@ -1,5 +1,5 @@
 <h2>交易明细</h2>
-<h3><a  href="{% url 'task_detail' object.task.id %}">所属任务</a><h3>
+<h3><a href="{% url 'task_detail' object.task.id %}">所属任务</a><h3>
 <table border="1">
 	<caption>交易编号: {{object.id}} </caption>
 	<tr>
@@ -9,7 +9,7 @@
 	</tr>
 	{% for s in object.splits %}
 		<tr>
-			<td>{{s.id}}</td>
+			<td><a href="{% url 'split_detail' s.id %}">{{s.id}}</a></td>
 			<td>{{s.account}} :</td>
 			<td>{{s.change}}</td>
 		</tr>
