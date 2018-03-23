@@ -1,10 +1,10 @@
-<h2>交易明细</h2>
 <h3>
 	<a href="{% url 'task_detail' object.task.id %}">所属任务</a>
 	<a href="{% url 'transaction_update' object.id %}">编辑</a>
 <h3>
+<h2>交易明细</h2>
 <table border="1">
-	<caption>交易编号: {{object.id}} </caption>
+	<caption>交易描述: {{object.desc}} | 交易编号: {{object.id}}</caption>
 	<tr>
 		<th>调整编号</th>
 		<th>账户</th>

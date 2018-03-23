@@ -1,7 +1,7 @@
-<h2>调整明细</h2>
 <h3><a  href="{% url 'transaction_detail' object.transaction.id %}">所属交易</a><h3>
+<h2>调整明细</h2>
 <table border="1">
-	<caption>调整编号: {{object.id}} </caption>
+	<caption>交易描述: {{object.transaction.desc}} | 调整编号: {{object.id}} </caption>
 	<tr>
 		<th>账户</th>
 		<th>调整</th>
