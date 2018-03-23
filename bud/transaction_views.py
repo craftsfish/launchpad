@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from .models import *
 from django.views.generic import DetailView
+from django.views.generic import UpdateView
 
 class TransactionDetailView(DetailView):
 	model = Transaction
@@ -11,3 +12,8 @@ class TransactionDetailView(DetailView):
 		context = super(TransactionDetailView, self).get_context_data(**kwargs)
 		self.object.splits = self.object.split_set.all()
 		return context
+
+class TransactionUpdateView(UpdateView):
+	model = Transaction
+	fields = ['desc']
+	template_name_suffix = '_update_form'

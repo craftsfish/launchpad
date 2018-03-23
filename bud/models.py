@@ -107,6 +107,9 @@ class Transaction(models.Model):
 	def __str__(self):
 		return self.desc
 
+	def get_absolute_url(self):
+		return reverse('transaction_detail', kwargs={'pk': self.pk})
+
 class Split(models.Model):
 	account = models.ForeignKey(Account)
 	change = models.IntegerField()
