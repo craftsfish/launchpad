@@ -12,7 +12,8 @@ from django import forms
 class TransactionForm(forms.ModelForm):
 	class Meta:
 		model = Transaction
-		fields = ['desc', 'time']
+		fields = ['desc', 'time', 'task']
+		widgets = {'task': forms.HiddenInput()}
 	time = forms.SplitDateTimeField(widget=widgets.AdminSplitDateTime())
 
 class TransactionMixin(object):
@@ -29,7 +30,7 @@ class TransactionUpdateView(TransactionMixin, UpdateView):
 	pass
 
 class TransactionCreateView(TransactionMixin, CreateView):
-	def get_form_kwargs(self):
-		print self.kwargs
-		kwargs = super(TransactionCreateView, self).get_form_kwargs()
-		return kwargs
+	def get_initial(self):
+		initial = super(TransactionCreateView, self).get_initial()
+		initial['task'] = Task.objects.get(pk=self.kwargs['pk']).id
+		return initial
