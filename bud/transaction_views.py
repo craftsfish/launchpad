@@ -13,7 +13,7 @@ class TransactionForm(forms.ModelForm):
 	class Meta:
 		model = Transaction
 		fields = ['desc', 'time']
-	time = forms.DateTimeField(widget=widgets.AdminSplitDateTime())
+	time = forms.SplitDateTimeField(widget=widgets.AdminSplitDateTime())
 
 class TransactionMixin(object):
 	model = Transaction
@@ -29,9 +29,7 @@ class TransactionUpdateView(TransactionMixin, UpdateView):
 	pass
 
 class TransactionCreateView(TransactionMixin, CreateView):
-	def post(self, request, *args, **kwargs):
-		desc = request.POST["desc"]
-		time = request.POST["time"]
-		t = Transaction(desc = request.POST["desc"], task = Task.objects.get(pk=kwargs['pk']), time = request.POST["time"])
-		t.save()
-		return HttpResponseRedirect(reverse('transaction_detail', args=[t.id]))
+	def get_form_kwargs(self):
+		print self.kwargs
+		kwargs = super(TransactionCreateView, self).get_form_kwargs()
+		return kwargs
