@@ -117,3 +117,6 @@ class Split(models.Model):
 
 	def __str__(self):
 		return "{} {:+}".format(self.account.name, self.change)
+
+	def get_absolute_url(self):
+		return reverse('split_detail', kwargs={'pk': self.pk})

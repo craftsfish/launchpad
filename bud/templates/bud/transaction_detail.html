@@ -1,6 +1,7 @@
 <h3>
 	<a href="{% url 'task_detail' object.task.id %}">所属任务</a>
 	<a href="{% url 'transaction_update' object.id %}">编辑</a>
+	<a href="{% url 'split_create' object.id %}">添加变动</a>
 <h3>
 <h2>交易明细</h2>
 <table border="1">
