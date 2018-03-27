@@ -120,3 +120,11 @@ class Split(models.Model):
 
 	def get_absolute_url(self):
 		return reverse('split_detail', kwargs={'pk': self.pk})
+
+	def save(self, *args, **kwargs):
+		if self.id:
+			pass
+		else:
+			self.account.balance += self.change
+			self.account.save()
+		super(Split, self).save(*args, **kwargs)
