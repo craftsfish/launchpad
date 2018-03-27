@@ -5,6 +5,7 @@ from .models import *
 from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic.edit import DeleteView
+from django.views.generic import UpdateView
 from django.core.urlresolvers import reverse
 from django import forms
 
@@ -31,3 +32,7 @@ class SplitDeleteView(DeleteView):
 
 	def get_success_url(self):
 		return reverse('transaction_detail', kwargs={'pk': self.object.transaction.id})
+
+class SplitUpdateView(UpdateView):
+	model = Split
+	form_class = SplitForm

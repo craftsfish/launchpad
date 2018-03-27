@@ -1,6 +1,7 @@
 <h3>
 	<a href="{% url 'transaction_detail' object.transaction.id %}">所属交易</a>
-	<a href="{% url 'split_delete' object.id %}">删除调整</a>
+	<a href="{% url 'split_update' object.id %}">编辑</a>
+	<a href="{% url 'split_delete' object.id %}">删除</a>
 <h3>
 <h2>调整明细</h2>
 <table border="1">
