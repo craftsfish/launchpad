@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^transaction/(?P<pk>[\d]+)/create$', TransactionCreateView.as_view(), name='transaction_create'),
     url(r'^split/(?P<pk>[\d]+)/$', SplitDetailView.as_view(), name='split_detail'),
     url(r'^split/(?P<pk>[\d]+)/create$', SplitCreateView.as_view(), name='split_create'),
+    url(r'^split/(?P<pk>[\d]+)/delete/$', SplitDeleteView.as_view(), name='split_delete'),
 ]
