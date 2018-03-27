@@ -123,10 +123,13 @@ class Split(models.Model):
 
 	def save(self, *args, **kwargs):
 		if self.id:
-			pass
-		else:
-			self.account.balance += self.change
-			self.account.save()
+			orig = Split.objects.get(pk=self.id)
+			orig.account.balance -= orig.change
+			orig.account.save()
+		#reload account to reflect changes made in previous instructions
+		account = Account.objects.get(pk=self.account.id)
+		account.balance += self.change
+		account.save()
 		super(Split, self).save(*args, **kwargs)
 
 	def delete(self, *args, **kwargs):
