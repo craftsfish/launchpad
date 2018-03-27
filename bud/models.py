@@ -128,3 +128,8 @@ class Split(models.Model):
 			self.account.balance += self.change
 			self.account.save()
 		super(Split, self).save(*args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		self.account.balance -= self.change
+		self.account.save()
+		super(Split, self).delete(*args, **kwargs)
