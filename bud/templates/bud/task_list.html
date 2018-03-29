@@ -1,4 +1,6 @@
-<a href="{% url 'task_create' %}">创建任务</a>
+<h3>
+	<a href="{% url 'task_create' %}">+任务</a>
+</h3>
 <h2>任务列表</h2>
 <ul>
 	{% for task in object_list %}

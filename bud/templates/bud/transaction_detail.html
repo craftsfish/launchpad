@@ -3,7 +3,7 @@
 	<a href="{% url 'transaction_update' object.id %}">编辑</a>
 	<a href="{% url 'transaction_delete' object.id %}">删除</a>
 	<a href="{% url 'split_create' object.id %}">+变动</a>
-<h3>
+</h3>
 <h2>交易明细</h2>
 <table border="1">
 	<caption>交易描述: {{object.desc}} | 交易编号: {{object.id}}</caption>
