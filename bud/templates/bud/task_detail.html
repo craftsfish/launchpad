@@ -1,6 +1,7 @@
 <h3>
 	<a href="{% url 'task_list' %}">任务列表</a>
 	<a href="{% url 'task_update' object.id %}">编辑</a>
+	<a href="{% url 'task_delete' object.id %}">删除</a>
 	<a href="{% url 'transaction_create' object.id %}">+交易</a>
 </h3>
 <h2>任务明细</h2>

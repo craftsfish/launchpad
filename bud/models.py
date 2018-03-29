@@ -99,6 +99,11 @@ class Task(models.Model):
 	def get_absolute_url(self):
 		return reverse('task_detail', kwargs={'pk': self.pk})
 
+	def delete(self, *args, **kwargs):
+		for t in self.transaction_set.all():
+			t.delete()
+		super(Task, self).delete(*args, **kwargs)
+
 class Transaction(models.Model):
 	desc = models.CharField(max_length=120)
 	task = models.ForeignKey(Task)

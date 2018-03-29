@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic import UpdateView
+from django.views.generic import DeleteView
 
 class TaskListView(ListView):
 	model = Task 
@@ -30,3 +31,9 @@ class TaskUpdateView(UpdateView):
 	model = Task
 	fields = ['desc']
 	template_name_suffix = '_update_form'
+
+class TaskDeleteView(DeleteView):
+	model = Task
+
+	def get_success_url(self):
+		return reverse('task_list')
