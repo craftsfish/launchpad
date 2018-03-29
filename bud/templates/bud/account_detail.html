@@ -16,10 +16,10 @@
 	</tr>
 </table>
 
-<h2>子账户</h2>
+<h2>名下账户</h2>
 <ul>
-	{% for account in children %}
-		<li><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></li>
+	{% for account in descendants %}
+		<li><a href="{% url 'account_detail' account.id %}">{{ account }}</a></li>
 	{% empty %}
 		<li>没有子账户</li>
 	{% endfor %}
