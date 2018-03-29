@@ -5,6 +5,7 @@ from .models import *
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import CreateView
+from django.views.generic import DeleteView
 from django.http import HttpResponseRedirect
 from django.contrib.admin import widgets
 from django import forms
@@ -34,3 +35,9 @@ class TransactionCreateView(TransactionMixin, CreateView):
 		initial = super(TransactionCreateView, self).get_initial()
 		initial['task'] = Task.objects.get(pk=self.kwargs['pk']).id
 		return initial
+
+class TransactionDeleteView(DeleteView):
+	model = Transaction
+
+	def get_success_url(self):
+		return self.object.task.get_absolute_url()

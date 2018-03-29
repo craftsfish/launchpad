@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
     url(r'^transaction/(?P<pk>[\d]+)/change$', TransactionUpdateView.as_view(), name='transaction_update'),
     url(r'^transaction/(?P<pk>[\d]+)/create$', TransactionCreateView.as_view(), name='transaction_create'),
+    url(r'^transaction/(?P<pk>[\d]+)/delete$', TransactionDeleteView.as_view(), name='transaction_delete'),
     url(r'^split/(?P<pk>[\d]+)/$', SplitDetailView.as_view(), name='split_detail'),
     url(r'^split/(?P<pk>[\d]+)/change/$', SplitUpdateView.as_view(), name='split_update'),
     url(r'^split/(?P<pk>[\d]+)/create$', SplitCreateView.as_view(), name='split_create'),

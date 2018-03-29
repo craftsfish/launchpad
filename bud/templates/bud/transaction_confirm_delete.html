@@ -1,0 +1,5 @@
+<form action="" method="post">
+	{% csrf_token %}
+	<p>确认删除交易: "{{ object }}"?</p>
+	<input type="submit" value="确认" />
+</form>

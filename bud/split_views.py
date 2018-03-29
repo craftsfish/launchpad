@@ -31,7 +31,7 @@ class SplitDeleteView(DeleteView):
 	model = Split
 
 	def get_success_url(self):
-		return reverse('transaction_detail', kwargs={'pk': self.object.transaction.id})
+		return self.object.transaction.get_absolute_url()
 
 class SplitUpdateView(UpdateView):
 	model = Split

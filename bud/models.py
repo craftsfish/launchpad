@@ -110,6 +110,11 @@ class Transaction(models.Model):
 	def get_absolute_url(self):
 		return reverse('transaction_detail', kwargs={'pk': self.pk})
 
+	def delete(self, *args, **kwargs):
+		for s in self.split_set.all():
+			s.delete()
+		super(Transaction, self).delete(*args, **kwargs)
+
 class Split(models.Model):
 	account = models.ForeignKey(Account)
 	change = models.IntegerField()
