@@ -44,6 +44,7 @@
 		<th>时间</th>
 		<th>账户</th>
 		<th>调整幅度</th>
+		<th>余额</th>
 	</tr>
 	{% for split in object_list %}
 		<tr>
@@ -51,6 +52,7 @@
 			<td>{{ split.transaction.time }}</td>
 			<td>{{ split.account}}</td>
 			<td>{{ split.change}}</td>
+			<td>{{ split.balance}}</td>
 		<tr>
 	{% endfor %}
 </table>

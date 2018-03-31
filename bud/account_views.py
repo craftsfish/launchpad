@@ -31,7 +31,6 @@ class AccountDetailView(ListView):
 
 	def get_queryset(self):
 		a = Account.objects.get(pk=self.kwargs['pk'])
-		print a
 		return Split.objects.filter(account=a)
 
 	def get_context_data(self, **kwargs):
@@ -53,10 +52,18 @@ class AccountDetailView(ListView):
 			ancestors.append(p.ancestor)
 		context['ancestors'] = ancestors
 
+		#edit
 		if self.object != Account.root(): #root account is forbidden for edit
 			context['editable'] = True
 		if self.object.is_leaf():
 			context['deletable'] = True
+
+		#balance
+		if len(self.object_list) > 0:
+			balance = self.object.balance + self.object_list[0].change
+			for s in self.object_list:
+				balance -= s.change
+				s.balance = balance
 
 		return context
 
