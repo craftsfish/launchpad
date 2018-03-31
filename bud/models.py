@@ -12,8 +12,12 @@ class Supplier(models.Model):
 		return self.name
 
 class Commodity(models.Model):
-	name = models.CharField(max_length=30, unique=True)
-	supplier = models.ForeignKey(Supplier, blank=True, null=True)
+	class Meta:
+		unique_together = ("supplier", "name")
+		ordering = ['supplier__id', 'name']
+
+	name = models.CharField(max_length=30)
+	supplier = models.ForeignKey(Supplier, default=Supplier.objects.get(name="未知").id)
 	package = models.IntegerField(default=0) #how many items is included in a package when purchasing
 	express_in = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 	express_out = models.DecimalField(default=0, max_digits=8, decimal_places=2)
