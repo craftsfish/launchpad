@@ -14,6 +14,7 @@ from django.forms import Form
 from django import forms
 from django.views.generic.edit import DeleteView
 from django.core.urlresolvers import reverse_lazy
+from django.db.models import Sum
 
 # Create your views here.
 class AccountListView(ListView):
@@ -25,7 +26,7 @@ class AccountListView(ListView):
 # Split list that build upon this account is displayed
 class AccountDetailView(ListView):
 	model = Split
-	paginate_by = 1
+	paginate_by = 2
 
 	def get_template_names(self):
 		return ["%s/account_detail.html" % (Account._meta.app_label)]
@@ -61,6 +62,11 @@ class AccountDetailView(ListView):
 
 		#balance
 		balance = self.object.balance
+		page = context['page_obj']
+		total = self.get_queryset()[:self.paginate_by * (page.number - 1)].aggregate(Sum("change"))['change__sum']
+		if not total:
+			total = 0
+		balance -= total
 		for s in context["object_list"]:
 			s.balance = balance
 			balance -= s.change
