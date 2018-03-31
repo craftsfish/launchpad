@@ -31,7 +31,7 @@ class AccountDetailView(ListView):
 
 	def get_queryset(self):
 		a = Account.objects.get(pk=self.kwargs['pk'])
-		return Split.objects.filter(account=a)
+		return Split.objects.filter(account=a).order_by("-transaction__time", "-transaction__id", "-id")
 
 	def get_context_data(self, **kwargs):
 		context = super(AccountDetailView, self).get_context_data(**kwargs)
