@@ -6,12 +6,14 @@
 				<th>编号</th>
 				<th>供应商</th>
 				<th>品名</th>
-				<th>进货.批发.价</th>
-				<th>进货.采购.价</th>
+				<th>进价.批发</th>
+				<th>进价.采购</th>
 				<th>运费.进货</th>
 				<th>运费.出货</th>
+				<th>包装费</th>
 				<th>售价.天猫</th>
 				<th>售价.京东</th>
+				<th>备注</th>
 			</tr>
 			{% for object in object_list %}
 				<tr>
@@ -22,8 +24,10 @@
 					<td>{{ object.bvalue }}</td>
 					<td>{{ object.express_in }}</td>
 					<td>{{ object.express_out }}</td>
+					<td>{{ object.wrap_fee }}</td>
 					<td>{{ object.price_tm }}</td>
 					<td>{{ object.price_jd }}</td>
+					<td>{{ object.note }}</td>
 				</tr>
 			{% endfor %}
 		</table>

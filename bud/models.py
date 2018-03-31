@@ -17,6 +17,8 @@ class Commodity(models.Model):
 	package = models.IntegerField(default=0) #how many items is included in a package when purchasing
 	express_in = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 	express_out = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	wrap_fee = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	note = models.CharField(max_length=300, blank=True)
 
 	#for buy
 	bvalue = models.DecimalField(default=0, max_digits=8, decimal_places=2)
