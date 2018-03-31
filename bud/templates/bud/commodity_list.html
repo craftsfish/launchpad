@@ -1,0 +1,31 @@
+{% block content %}
+	<div>
+		<table border="1" cellpadding="4">
+			<caption>商品列表</caption>
+			<tr>
+				<th>编号</th>
+				<th>供应商</th>
+				<th>品名</th>
+				<th>进货.批发.价</th>
+				<th>进货.采购.价</th>
+				<th>运费.进货</th>
+				<th>运费.出货</th>
+				<th>售价.天猫</th>
+				<th>售价.京东</th>
+			</tr>
+			{% for object in object_list %}
+				<tr>
+					<td>{{ object.id }}</td>
+					<td>{{ object.supplier }}</td>
+					<td>{{ object.name }}</td>
+					<td>{{ object.pvalue }}</td>
+					<td>{{ object.bvalue }}</td>
+					<td>{{ object.express_in }}</td>
+					<td>{{ object.express_out }}</td>
+					<td>{{ object.price_tm }}</td>
+					<td>{{ object.price_jd }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

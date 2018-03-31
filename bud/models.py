@@ -13,15 +13,18 @@ class Supplier(models.Model):
 
 class Commodity(models.Model):
 	name = models.CharField(max_length=30, unique=True)
-	supplier = models.ForeignKey(Supplier)
+	supplier = models.ForeignKey(Supplier, blank=True, null=True)
+	package = models.IntegerField(default=0) #how many items is included in a package when purchasing
+	express_in = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	express_out = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 
 	#for buy
-	bvalue = models.IntegerField(default=0)
-	bvat = models.IntegerField(default=0)
+	bvalue = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	bvat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 
 	#for purchase
-	pvalue = models.IntegerField(default=0)
-	pvat = models.IntegerField(default=0)
+	pvalue = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	pvat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 
 	def __str__(self):
 		return self.name
