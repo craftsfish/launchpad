@@ -7,8 +7,11 @@
 		<a href="{% url 'account_delete' object.id %}">删除账户</a>
 	{% endif %}
 </div>
-<h2>路径</h2>
+
+<p></p>
+
 <table border="1" cellpadding="32">
+	<caption>路径</caption>
 	<tr>
 		{% for account in ancestors %}
 			<td><a href="{% url 'account_detail' account.id %}">{{ account.name }}</a></td>
@@ -16,14 +19,38 @@
 	</tr>
 </table>
 
-<h2>名下账户</h2>
-<ul>
-	{% for account in descendants %}
-		<li><a href="{% url 'account_detail' account.id %}">{{ account }}</a></li>
-	{% empty %}
-		<li>没有子账户</li>
-	{% endfor %}
-</ul>
-<h2>余额: {{ object.balance }}</h2>
+<p></p>
 
-<h2>流水</h2>
+<table border="1" cellpadding="4">
+	<caption>名下账户</caption>
+	<tr>
+		<th>账户编号</th>
+		<th>账户名称</th>
+	</tr>
+	{% for account in descendants %}
+		<tr>
+			<td><a href="{% url 'account_detail' account.id %}">{{ account.id }}</a></td>
+			<td>{{ account }}</a></td>
+		</tr>
+	{% endfor %}
+</table>
+
+<p></p>
+
+<table border="1" cellpadding="4">
+	<caption>流水 | 余额: {{object.balance}}</caption>
+	<tr>
+		<th>调整编号</th>
+		<th>时间</th>
+		<th>账户</th>
+		<th>调整幅度</th>
+	</tr>
+	{% for split in object_list %}
+		<tr>
+			<td><a href="{% url 'split_detail' split.id %}">{{ split.id }}</a></td>
+			<td>{{ split.transaction.time }}</td>
+			<td>{{ split.account}}</td>
+			<td>{{ split.change}}</td>
+		<tr>
+	{% endfor %}
+</table>

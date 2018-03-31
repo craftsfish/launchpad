@@ -22,11 +22,24 @@ class AccountListView(ListView):
 	def get_queryset(self):
 		return Account.root().children()
 
-class AccountDetailView(DetailView):
-	model = Account
+# Split list that build upon this account is displayed
+class AccountDetailView(ListView):
+	model = Split
+
+	def get_template_names(self):
+		return ["%s/account_detail.html" % (Account._meta.app_label)]
+
+	def get_queryset(self):
+		a = Account.objects.get(pk=self.kwargs['pk'])
+		print a
+		return Split.objects.filter(account=a)
 
 	def get_context_data(self, **kwargs):
 		context = super(AccountDetailView, self).get_context_data(**kwargs)
+
+		#object
+		self.object = Account.objects.get(pk=self.kwargs['pk'])
+		context['object'] = self.object
 
 		#descendants
 		descendants = []
