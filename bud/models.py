@@ -42,6 +42,11 @@ class Account(models.Model):
 				result += "/"
 		return result
 
+	def format(self, value=None, sign="-"):
+		if not value:
+			value = self.balance
+		return ("{:" + sign + ".2f}").format(value/100.0)
+
 	def get_absolute_url(self):
 		return reverse('account_detail', kwargs={'pk': self.pk})
 

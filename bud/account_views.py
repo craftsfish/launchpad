@@ -39,37 +39,41 @@ class AccountDetailView(ListView):
 		context = super(AccountDetailView, self).get_context_data(**kwargs)
 
 		#object
-		self.object = Account.objects.get(pk=self.kwargs['pk'])
-		context['object'] = self.object
+		account = Account.objects.get(pk=self.kwargs['pk'])
+		context['object'] = account
 
 		#descendants
 		descendants = []
-		for p in self.object.paths2descendant.filter(height__gte=1).order_by("height"):
+		for p in account.paths2descendant.filter(height__gte=1).order_by("height"):
 			descendants.append(p.descendant)
 		context['descendants'] = descendants
 
 		#ancestors
 		ancestors = []
-		for p in self.object.paths2ancestor.order_by("-height"):
+		for p in account.paths2ancestor.order_by("-height"):
 			ancestors.append(p.ancestor)
 		context['ancestors'] = ancestors
 
 		#edit
-		if self.object != Account.root(): #root account is forbidden for edit
+		if account != Account.root(): #root account is forbidden for edit
 			context['editable'] = True
-		if self.object.is_leaf():
+		if account.is_leaf():
 			context['deletable'] = True
 
 		#balance
-		balance = self.object.balance
+		balance = account.balance
 		page = context['page_obj']
 		total = self.get_queryset()[:self.paginate_by * (page.number - 1)].aggregate(Sum("change"))['change__sum']
 		if not total:
 			total = 0
 		balance -= total
 		for s in context["object_list"]:
-			s.balance = balance
+			s.balance = s.account.format(balance)
 			balance -= s.change
+			s.change = s.account.format(s.change, sign="+")
+
+		#update balance for display
+		account.balance = account.format()
 
 		return context
 
