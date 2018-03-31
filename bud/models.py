@@ -31,7 +31,7 @@ class Account(models.Model):
 		ordering = ['id']
 
 	name = models.CharField("名称", max_length=30, unique=True)
-	balance = models.BigIntegerField(default=0)
+	balance = models.DecimalField(default=0, max_digits=20, decimal_places=2)
 	ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
 	def __str__(self):
@@ -41,11 +41,6 @@ class Account(models.Model):
 			if p.height != 0:
 				result += "/"
 		return result
-
-	def format(self, value=None, sign="-"):
-		if not value:
-			value = self.balance
-		return ("{:" + sign + ".2f}").format(value/100.0)
 
 	def get_absolute_url(self):
 		return reverse('account_detail', kwargs={'pk': self.pk})
@@ -127,7 +122,7 @@ class Transaction(models.Model):
 
 class Split(models.Model):
 	account = models.ForeignKey(Account)
-	change = models.IntegerField()
+	change = models.DecimalField(max_digits=20, decimal_places=2)
 	transaction = models.ForeignKey(Transaction)
 
 	def __str__(self):

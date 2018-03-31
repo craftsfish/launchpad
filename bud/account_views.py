@@ -68,12 +68,8 @@ class AccountDetailView(ListView):
 			total = 0
 		balance -= total
 		for s in context["object_list"]:
-			s.balance = s.account.format(balance)
+			s.balance = balance
 			balance -= s.change
-			s.change = s.account.format(s.change, sign="+")
-
-		#update balance for display
-		account.balance = account.format()
 
 		return context
 
