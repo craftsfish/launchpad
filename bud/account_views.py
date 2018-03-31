@@ -60,10 +60,10 @@ class AccountDetailView(ListView):
 
 		#balance
 		if len(self.object_list) > 0:
-			balance = self.object.balance + self.object_list[0].change
+			balance = self.object.balance
 			for s in self.object_list:
-				balance -= s.change
 				s.balance = balance
+				balance -= s.change
 
 		return context
 
