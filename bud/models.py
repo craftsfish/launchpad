@@ -16,21 +16,21 @@ class Commodity(models.Model):
 		unique_together = ("supplier", "name")
 		ordering = ['supplier__id', 'name']
 
-	name = models.CharField(max_length=30)
-	supplier = models.ForeignKey(Supplier)
-	package = models.IntegerField(default=0) #how many items is included in a package when purchasing
-	express_in = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-	express_out = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-	wrap_fee = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-	note = models.CharField(max_length=300, blank=True)
+	name = models.CharField("品名", max_length=30)
+	supplier = models.ForeignKey(Supplier, verbose_name="供应商")
+	package = models.IntegerField("箱规", default=0) #how many items is included in a package when purchasing
+	express_in = models.DecimalField("运费.进货", default=0, max_digits=8, decimal_places=2)
+	express_out = models.DecimalField("运费.出货",default=0, max_digits=8, decimal_places=2)
+	wrap_fee = models.DecimalField("包装费", default=0, max_digits=8, decimal_places=2)
+	note = models.CharField("备注", max_length=300, blank=True)
 
 	#for buy
-	bvalue = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-	bvat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	bvalue = models.DecimalField("进价.购买", default=0, max_digits=8, decimal_places=2)
+	bvat = models.DecimalField("进项税.购买", default=0, max_digits=8, decimal_places=2)
 
 	#for purchase
-	pvalue = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-	pvat = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+	pvalue = models.DecimalField("进价.批发", default=0, max_digits=8, decimal_places=2)
+	pvat = models.DecimalField("进项税.批发", default=0, max_digits=8, decimal_places=2)
 
 	def __str__(self):
 		return self.name

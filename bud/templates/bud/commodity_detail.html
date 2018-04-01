@@ -2,6 +2,9 @@
 
 {% block content %}
 	<h2>商品详情</h2>
+	<h3>
+		<a href="{% url 'commodity_update' object.id %}">编辑</a>
+	</h3>
 	<div>
 		{{ object }}
 	</div>

@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.views.generic import ListView
 from django.views.generic import CreateView
 from django.views.generic import DetailView
+from django.views.generic import UpdateView
 
 class CommodityListView(ListView):
 	model = Commodity
@@ -25,3 +26,8 @@ class CommodityCreateView(CreateView):
 
 class CommodityDetailView(DetailView):
 	model = Commodity
+
+class CommodityUpdateView(UpdateView):
+	model = Commodity
+	fields = ['name', 'supplier', 'package', 'express_in', 'express_out', 'wrap_fee', 'note', 'bvalue', 'bvat', 'pvalue', 'pvat']
+	template_name_suffix = '_update_form'

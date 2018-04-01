@@ -13,6 +13,7 @@
 				<th>编号</th>
 				<th>供应商</th>
 				<th>品名</th>
+				<th>箱规</th>
 				<th>进价.批发</th>
 				<th>进价.采购</th>
 				<th>运费.进货</th>
@@ -27,6 +28,7 @@
 					<td><a href="{% url 'commodity_detail' object.id %}">{{ object.id }}</a></td>
 					<td>{{ object.supplier }}</td>
 					<td>{{ object.name }}</td>
+					<td>{{ object.package }}</td>
 					<td>{{ object.pvalue }}</td>
 					<td>{{ object.bvalue }}</td>
 					<td>{{ object.express_in }}</td>
