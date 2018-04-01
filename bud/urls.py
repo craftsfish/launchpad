@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^commodity/create/$', CommodityCreateView.as_view(), name='commodity_create'),
     url(r'^commodity/(?P<pk>[\d]+)/$', CommodityDetailView.as_view(), name='commodity_detail'),
     url(r'^commodity/(?P<pk>[\d]+)/change$', CommodityUpdateView.as_view(), name='commodity_update'),
+    url(r'^commodity/import/$', CommodityImportView.as_view(), name='commodity_import'),
 
 	#supplier
     url(r'^supplier/$', SupplierListView.as_view(), name='supplier_list'),

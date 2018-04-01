@@ -3,10 +3,13 @@ from __future__ import unicode_literals
 
 from .models import *
 from decimal import Decimal
+from django import forms
 from django.views.generic import ListView
 from django.views.generic import CreateView
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
+from django.views.generic import FormView
+from django.core.urlresolvers import reverse_lazy
 
 class CommodityListView(ListView):
 	model = Commodity
@@ -31,3 +34,14 @@ class CommodityUpdateView(UpdateView):
 	model = Commodity
 	fields = ['name', 'supplier', 'package', 'express_in', 'express_out', 'wrap_fee', 'note', 'bvalue', 'bvat', 'pvalue', 'pvat']
 	template_name_suffix = '_update_form'
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+class CommodityImportView(FormView):
+	template_name = "commodity_upload_file.html"
+	form_class = UploadFileForm
+	success_url = reverse_lazy('commodity_list')
+
+	def form_valid(self, form):
+		return super(CommodityImportView, self).form_valid(form)
