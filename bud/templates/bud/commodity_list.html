@@ -22,7 +22,7 @@
 			</tr>
 			{% for object in object_list %}
 				<tr>
-					<td>{{ object.id }}</td>
+					<td><a href="{% url 'commodity_detail' object.id %}">{{ object.id }}</a></td>
 					<td>{{ object.supplier }}</td>
 					<td>{{ object.name }}</td>
 					<td>{{ object.pvalue }}</td>

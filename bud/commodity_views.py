@@ -5,6 +5,7 @@ from .models import *
 from decimal import Decimal
 from django.views.generic import ListView
 from django.views.generic import CreateView
+from django.views.generic import DetailView
 
 class CommodityListView(ListView):
 	model = Commodity
@@ -21,3 +22,6 @@ class CommodityCreateView(CreateView):
 	model = Commodity
 	fields = ['name', 'supplier', 'package', 'express_in', 'express_out', 'wrap_fee', 'note', 'bvalue', 'bvat', 'pvalue', 'pvat']
 	template_name_suffix = '_create_form'
+
+class CommodityDetailView(DetailView):
+	model = Commodity
