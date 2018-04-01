@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}eHub{% endblock %}</title>
+</head>
+
+<body>
+    <div id="menubar">
+        <a href="{% url 'account_list' %}">账户</a>
+        <a href="{% url 'task_list' %}">任务</a>
+        <a href="{% url 'commodity_list' %}">商品</a>
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

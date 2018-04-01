@@ -1,9 +1,13 @@
-<h3>
-	<a href="{% url 'task_create' %}">+任务</a>
-</h3>
-<h2>任务列表</h2>
-<ul>
-	{% for task in object_list %}
-		<li><a href="{% url 'task_detail' task.id %}">{{ task.desc }}</a></li>
-	{% endfor %}
-</ul>
+{% extends "base.html" %}
+
+{% block content %}
+	<h3>
+		<a href="{% url 'task_create' %}">+任务</a>
+	</h3>
+	<h2>任务列表</h2>
+	<ul>
+		{% for task in object_list %}
+			<li><a href="{% url 'task_detail' task.id %}">{{ task.desc }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}

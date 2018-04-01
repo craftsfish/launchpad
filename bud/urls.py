@@ -8,7 +8,7 @@ from commodity_views import *
 
 urlpatterns = [
 	#account
-    url(r'^account/$', AccountListView.as_view(), name='account_index'),
+    url(r'^account/$', AccountListView.as_view(), name='account_list'),
     url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
     url(r'^account/(?P<pk>[\d]+)/change/$', AccountUpdateView.as_view(), name='account_update'),
     url(r'^account/(?P<pk>[\d]+)/create/$', AccountCreateView.as_view(), name='account_create'),
