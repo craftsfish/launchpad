@@ -2,8 +2,9 @@
 from __future__ import unicode_literals
 
 from .models import *
-from django.views.generic import ListView
 from decimal import Decimal
+from django.views.generic import ListView
+from django.views.generic import CreateView
 
 class CommodityListView(ListView):
 	model = Commodity
@@ -15,3 +16,8 @@ class CommodityListView(ListView):
 			c.price_tm = "{:.2f}".format(cost / Decimal(1 - 0.05))
 			c.price_jd = "{:.2f}".format(cost / Decimal(1 - 0.08))
 		return context
+
+class CommodityCreateView(CreateView):
+	model = Commodity
+	fields = ['name', 'supplier', 'package', 'express_in', 'express_out', 'wrap_fee', 'note', 'bvalue', 'bvat', 'pvalue', 'pvat']
+	template_name_suffix = '_create_form'

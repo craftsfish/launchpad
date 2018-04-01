@@ -17,7 +17,7 @@ class Commodity(models.Model):
 		ordering = ['supplier__id', 'name']
 
 	name = models.CharField(max_length=30)
-	supplier = models.ForeignKey(Supplier, default=Supplier.objects.get(name="未知").id)
+	supplier = models.ForeignKey(Supplier)
 	package = models.IntegerField(default=0) #how many items is included in a package when purchasing
 	express_in = models.DecimalField(default=0, max_digits=8, decimal_places=2)
 	express_out = models.DecimalField(default=0, max_digits=8, decimal_places=2)
@@ -34,6 +34,9 @@ class Commodity(models.Model):
 
 	def __str__(self):
 		return self.name
+
+	def get_absolute_url(self):
+		return reverse('commodity_list')
 
 class Account(models.Model):
 	class Meta:
