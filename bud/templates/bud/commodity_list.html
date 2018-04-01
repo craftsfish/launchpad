@@ -1,4 +1,7 @@
+{% extends "base.html" %}
+
 {% block content %}
+	<h2>商品列表</h2>
 	<div>
 		<h3>
 			<a href="{% url 'commodity_create' %}">+商品</a>
@@ -6,7 +9,6 @@
 	</div>
 	<div>
 		<table border="1" cellpadding="4">
-			<caption>商品列表</caption>
 			<tr>
 				<th>编号</th>
 				<th>供应商</th>
