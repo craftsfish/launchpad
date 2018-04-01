@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h2>供应商列表</h2>
+	<div>
+		<table border="1" cellpadding="4">
+			<tr>
+				<th>编号</th>
+				<th>名称</th>
+			</tr>
+			{% for object in object_list %}
+				<tr>
+					<td>{{ object.id }}</a></td>
+					<td>{{ object.name }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

@@ -5,6 +5,7 @@ from task_views import *
 from transaction_views import *
 from split_views import *
 from commodity_views import *
+from supplier_views import *
 
 urlpatterns = [
 	#account
@@ -38,4 +39,7 @@ urlpatterns = [
     url(r'^commodity/create/$', CommodityCreateView.as_view(), name='commodity_create'),
     url(r'^commodity/(?P<pk>[\d]+)/$', CommodityDetailView.as_view(), name='commodity_detail'),
     url(r'^commodity/(?P<pk>[\d]+)/change$', CommodityUpdateView.as_view(), name='commodity_update'),
+
+	#supplier
+    url(r'^supplier/$', SupplierListView.as_view(), name='supplier_list'),
 ]
