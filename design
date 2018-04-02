@@ -1,0 +1,44 @@
+Each account has attributes that can be used to distinguish which organization it belongs, which accounting category it belongs, goods/money it represents and etc.
+
+Supplier {
+	name
+	abbrev
+}
+(中国人民银行, PBC)
+(美联储, FRS)
+
+Item {
+	name
+	value
+	supplier
+}
+
+(RMB, 1, PBC)
+(USD, 6.5, FRS)
+(T2005, 88, TFG)
+
+Organization {
+	name
+	parent -> Organization
+}
+(为绿, 为绿)
+(为绿厨具专营店, 为绿)
+(为绿母婴专营店, 为绿)
+(为绿素蔓旗舰店, 为绿)
+
+Account {
+	name
+	organization
+	category
+	item
+	parent -> Account
+}
+(应收账款, 为绿厨具专营店, 资产, RMB, NULL)
+(保证金, 为绿厨具专营店, 资产, RMB, 应收账款)
+(技术服务费, 为绿厨具专营店, 资产, RMB, 应收账款)
+(应收, 为绿厨具专营店, 资产, T2005, NULL)
+(存货, 为绿厨具专营店, 资产, T2005, NULL)
+(应发, 为绿厨具专营店, 负债, T2005, NULL)
+(进货, 为绿厨具专营店, 收入, T2005, NULL)
+(出货, 为绿厨具专营店, 支出, T2005, NULL)
+(现金, 为绿厨具专营店, 资产, RMB, 现金)
