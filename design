@@ -20,25 +20,49 @@ Item {
 Organization {
 	name
 	parent -> Organization
+	independent #independent accounting or not
 }
-(为绿, 为绿)
-(为绿厨具专营店, 为绿)
-(为绿母婴专营店, 为绿)
-(为绿素蔓旗舰店, 为绿)
+(钱包, NULL, True)
+(仓库, NULL, True)
+(集团, NULL, True)
+(为绿, 集团, True)
+(腾复, 集团, True)
+(为绿厨具专营店, 为绿, False)
+(为绿母婴专营店, 为绿, False)
+(为绿素蔓旗舰店, 为绿, False)
+
+Profile {
+	organization
+	accounting_type
+}
+(p1, 为绿厨具专营店, 资产)
+(p2, 为绿厨具专营店, 负债)
+(p3, 为绿厨具专营店, 收入)
+(p4, 为绿厨具专营店, 支出)
+(p5, 为绿厨具专营店, 净值)
+
+Category {
+	profile
+	item
+}
+(c1, p1, RMB)
+(c2, p1, T2005)
+(c3, p2, T2005)
+(c3, p3, T2005)
+(c4, p4, T2005)
 
 Account {
 	name
-	organization
-	category
-	item
+	categoty
 	parent -> Account
 }
-(应收账款, 为绿厨具专营店, 资产, RMB, NULL)
-(保证金, 为绿厨具专营店, 资产, RMB, 应收账款)
+
+(应收账款, c1, NULL)
+(保证金, c1, 应收账款)
 (技术服务费, 为绿厨具专营店, 资产, RMB, 应收账款)
 (应收, 为绿厨具专营店, 资产, T2005, NULL)
 (存货, 为绿厨具专营店, 资产, T2005, NULL)
 (应发, 为绿厨具专营店, 负债, T2005, NULL)
 (进货, 为绿厨具专营店, 收入, T2005, NULL)
 (出货, 为绿厨具专营店, 支出, T2005, NULL)
-(现金, 为绿厨具专营店, 资产, RMB, 现金)
+(现金, 为绿厨具专营店, 资产, RMB, NULL)
