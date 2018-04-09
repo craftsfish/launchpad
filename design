@@ -66,3 +66,11 @@ Account {
 (进货, 为绿厨具专营店, 收入, T2005, NULL)
 (出货, 为绿厨具专营店, 支出, T2005, NULL)
 (现金, 为绿厨具专营店, 资产, RMB, NULL)
+
+Commodity(
+name,
+supplier,
+activity, #销售活跃度
+replenishable, #可补货/停产
+onsale #在/停售
+)
