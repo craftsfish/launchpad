@@ -100,6 +100,14 @@ class Account(models.Model):
 	ancestors = models.ManyToManyField('self', through='Apath', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 	organization = models.ForeignKey(Organization, verbose_name="隶属于")
 	commodity = models.ForeignKey(Commodity, verbose_name="物品")
+	ACCOUNT_CATEGORY_CHOICES = (
+		(0, "资产"),
+		(1, "负债"),
+		(2, "收入"),
+		(3, "支出"),
+		(4, "净资产"),
+	)
+	category = models.IntegerField(choices=ACCOUNT_CATEGORY_CHOICES, default=0)
 
 	def save(self, *args, **kwargs):
 		super(Account, self).save(*args, **kwargs)
