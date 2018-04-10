@@ -7,11 +7,13 @@
 			<tr>
 				<th>编号</th>
 				<th>名称</th>
+				<th>缩写</th>
 			</tr>
 			{% for object in object_list %}
 				<tr>
 					<td>{{ object.id }}</a></td>
 					<td>{{ object.name }}</td>
+					<td>{{ object.abbrev }}</td>
 				</tr>
 			{% endfor %}
 		</table>
