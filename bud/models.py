@@ -161,6 +161,9 @@ class Split(models.Model):
 		super(Split, self).delete(*args, **kwargs)
 
 class Organization(models.Model):
+	class Meta:
+		ordering = ['id']
+
 	name = models.CharField(max_length=30)
 	ancestors = models.ManyToManyField('self', through='Opath', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
