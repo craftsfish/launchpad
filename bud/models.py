@@ -162,6 +162,7 @@ class Split(models.Model):
 
 class Organization(models.Model):
 	name = models.CharField(max_length=30)
+	ancestors = models.ManyToManyField('self', through='Opath', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
 	def save(self, *args, **kwargs):
 		super(Organization, self).save(*args, **kwargs)
@@ -170,6 +171,29 @@ class Organization(models.Model):
 		path2self = Opath.objects.filter(ancestor=self.id).filter(descendant=self.id)
 		if len(path2self) == 0:
 			Opath(ancestor=self, descendant=self).save()
+
+	def parent(self):
+		p = Opath.objects.all().filter(descendant=self.id).filter(height=1)
+		if len(p) != 1:
+			return None
+		return p[0].ancestor
+
+	def set_parent(self, parent):
+		d = self.descendants.all().values_list('id', flat=True)
+		if self.parent(): #remove obsolete paths
+			a = self.ancestors.all().exclude(id=self.id).values_list('id', flat=True)
+			Opath.objects.all().filter(ancestor__in=a).filter(descendant__in=d).delete()
+
+		cur = self
+		while parent:
+			for _d in d:
+				h = Opath.objects.filter(ancestor=cur.id).filter(descendant=_d).values_list("height", flat=True)[0]
+				Opath(ancestor=parent, descendant=Organization.objects.get(id=_d), height=h+1).save()
+			cur = parent
+			parent = cur.parent()
+
+	def get_absolute_url(self):
+		return reverse('organization_detail', kwargs={'pk': self.pk})
 
 	def __str__(self):
 		return self.name

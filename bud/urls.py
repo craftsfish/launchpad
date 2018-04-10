@@ -48,4 +48,5 @@ urlpatterns = [
 	#organization
 	url(r'^organization/$', OrganizationListView.as_view(), name='organization_list'),
     url(r'^organization/(?P<pk>[\d]+)/$', OrganizationDetailView.as_view(), name='organization_detail'),
+    url(r'^organization/(?P<pk>[\d]+)/change$', OrganizationUpdateView.as_view(), name='organization_update'),
 ]
