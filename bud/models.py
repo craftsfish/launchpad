@@ -78,7 +78,10 @@ class Organization(models.Model):
 		return reverse('organization_detail', kwargs={'pk': self.pk})
 
 	def __str__(self):
-		return self.name
+		result = "/"
+		for p in Opath.objects.filter(descendant=self.id).exclude(ancestor=self.id).order_by("-height"):
+			result += p.ancestor.name + "/"
+		return result + self.name
 
 class Opath(models.Model):
 	class Meta:
@@ -118,7 +121,10 @@ class Account(models.Model):
 			Apath(ancestor=self, descendant=self).save()
 
 	def __str__(self):
-		return self.name
+		result = str(self.organization) + "/" + str(self.commodity) + "/" + self.get_category_display() + "/"
+		for p in Apath.objects.filter(descendant=self.id).exclude(ancestor=self.id).order_by("-height"):
+			result += p.ancestor.name + "/"
+		return result + self.name
 
 	def get_absolute_url(self):
 		return reverse('account_detail', kwargs={'pk': self.pk})

@@ -20,9 +20,6 @@ from django.db.models import Sum
 class AccountListView(ListView):
 	model = Account
 
-	def get_queryset(self):
-		return Account.root().children()
-
 # Split list that build upon this account is displayed
 class AccountDetailView(ListView):
 	model = Split
