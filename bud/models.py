@@ -39,27 +39,23 @@ class Commodity(models.Model):
 	def get_absolute_url(self):
 		return reverse('commodity_list')
 
-class Account(models.Model):
+class Organization(models.Model):
 	class Meta:
 		ordering = ['id']
 
-	name = models.CharField("名称", max_length=30, unique=True)
-	balance = models.DecimalField(default=0, max_digits=20, decimal_places=2)
-	ancestors = models.ManyToManyField('self', through='Path', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
+	name = models.CharField(max_length=30)
+	ancestors = models.ManyToManyField('self', through='Opath', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
 
-	def __str__(self):
-		result = "/"
-		for p in Path.objects.all().filter(descendant=self.id).order_by('-height')[1:]:
-			result += Account.objects.get(pk=p.ancestor.id).name
-			if p.height != 0:
-				result += "/"
-		return result
+	def save(self, *args, **kwargs):
+		super(Organization, self).save(*args, **kwargs)
 
-	def get_absolute_url(self):
-		return reverse('account_detail', kwargs={'pk': self.pk})
+		#add path (self -> self)
+		path2self = Opath.objects.filter(ancestor=self.id).filter(descendant=self.id)
+		if len(path2self) == 0:
+			Opath(ancestor=self, descendant=self).save()
 
 	def parent(self):
-		p = Path.objects.all().filter(descendant=self.id).filter(height=1)
+		p = Opath.objects.all().filter(descendant=self.id).filter(height=1)
 		if len(p) != 1:
 			return None
 		return p[0].ancestor
@@ -68,18 +64,79 @@ class Account(models.Model):
 		d = self.descendants.all().values_list('id', flat=True)
 		if self.parent(): #remove obsolete paths
 			a = self.ancestors.all().exclude(id=self.id).values_list('id', flat=True)
-			Path.objects.all().filter(ancestor__in=a).filter(descendant__in=d).delete()
+			Opath.objects.all().filter(ancestor__in=a).filter(descendant__in=d).delete()
 
 		cur = self
 		while parent:
 			for _d in d:
-				h = Path.objects.all().filter(ancestor=cur.id).filter(descendant=_d).values_list("height", flat=True)[0]
-				Path(ancestor=parent, descendant=Account.objects.get(id=_d), height=h+1).save()
+				h = Opath.objects.filter(ancestor=cur.id).filter(descendant=_d).values_list("height", flat=True)[0]
+				Opath(ancestor=parent, descendant=Organization.objects.get(id=_d), height=h+1).save()
+			cur = parent
+			parent = cur.parent()
+
+	def get_absolute_url(self):
+		return reverse('organization_detail', kwargs={'pk': self.pk})
+
+	def __str__(self):
+		return self.name
+
+class Opath(models.Model):
+	class Meta:
+		unique_together = ("ancestor", "descendant")
+
+	ancestor = models.ForeignKey(Organization, related_name='paths2descendant')
+	descendant = models.ForeignKey(Organization, related_name='paths2ancestor')
+	height = models.IntegerField(default=0)
+
+	def __str__(self):
+		return "{} -> {} | Height: {}".format(self.ancestor.name , self.descendant.name, self.height)
+
+class Account(models.Model):
+	class Meta:
+		ordering = ['id']
+
+	name = models.CharField("名称", max_length=30)
+	balance = models.DecimalField("余额", default=0, max_digits=20, decimal_places=2)
+	ancestors = models.ManyToManyField('self', through='Apath', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
+	organization = models.ForeignKey(Organization, verbose_name="隶属于")
+	commodity = models.ForeignKey(Commodity, verbose_name="物品")
+
+	def save(self, *args, **kwargs):
+		super(Account, self).save(*args, **kwargs)
+
+		#add path (self -> self)
+		path2self = Apath.objects.filter(ancestor=self.id).filter(descendant=self.id)
+		if len(path2self) == 0:
+			Apath(ancestor=self, descendant=self).save()
+
+	def __str__(self):
+		return self.name
+
+	def get_absolute_url(self):
+		return reverse('account_detail', kwargs={'pk': self.pk})
+
+	def parent(self):
+		p = Apath.objects.all().filter(descendant=self.id).filter(height=1)
+		if len(p) != 1:
+			return None
+		return p[0].ancestor
+
+	def set_parent(self, parent):
+		d = self.descendants.all().values_list('id', flat=True)
+		if self.parent(): #remove obsolete paths
+			a = self.ancestors.all().exclude(id=self.id).values_list('id', flat=True)
+			Apath.objects.all().filter(ancestor__in=a).filter(descendant__in=d).delete()
+
+		cur = self
+		while parent:
+			for _d in d:
+				h = Apath.objects.all().filter(ancestor=cur.id).filter(descendant=_d).values_list("height", flat=True)[0]
+				Apath(ancestor=parent, descendant=Account.objects.get(id=_d), height=h+1).save()
 			cur = parent
 			parent = cur.parent()
 
 	def children(self):
-		ids = Path.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
+		ids = Apath.objects.all().filter(ancestor=self.id).filter(height=1).values_list("descendant", flat=True)
 		return Account.objects.filter(id__in=ids)
 
 	def is_leaf(self):
@@ -88,11 +145,7 @@ class Account(models.Model):
 	def delete_paths2ancestor(self):
 		self.paths2ancestor.all().delete()
 
-	@staticmethod
-	def root():
-		return Account.objects.get(name="帐")
-
-class Path(models.Model): 
+class Apath(models.Model):
 	class Meta:
 		unique_together = ("ancestor", "descendant")
 
@@ -160,51 +213,3 @@ class Split(models.Model):
 		self.account.save()
 		super(Split, self).delete(*args, **kwargs)
 
-class Organization(models.Model):
-	class Meta:
-		ordering = ['id']
-
-	name = models.CharField(max_length=30)
-	ancestors = models.ManyToManyField('self', through='Opath', through_fields=('descendant', 'ancestor'), symmetrical=False, related_name="descendants")
-
-	def save(self, *args, **kwargs):
-		super(Organization, self).save(*args, **kwargs)
-
-		#add path (self -> self)
-		path2self = Opath.objects.filter(ancestor=self.id).filter(descendant=self.id)
-		if len(path2self) == 0:
-			Opath(ancestor=self, descendant=self).save()
-
-	def parent(self):
-		p = Opath.objects.all().filter(descendant=self.id).filter(height=1)
-		if len(p) != 1:
-			return None
-		return p[0].ancestor
-
-	def set_parent(self, parent):
-		d = self.descendants.all().values_list('id', flat=True)
-		if self.parent(): #remove obsolete paths
-			a = self.ancestors.all().exclude(id=self.id).values_list('id', flat=True)
-			Opath.objects.all().filter(ancestor__in=a).filter(descendant__in=d).delete()
-
-		cur = self
-		while parent:
-			for _d in d:
-				h = Opath.objects.filter(ancestor=cur.id).filter(descendant=_d).values_list("height", flat=True)[0]
-				Opath(ancestor=parent, descendant=Organization.objects.get(id=_d), height=h+1).save()
-			cur = parent
-			parent = cur.parent()
-
-	def get_absolute_url(self):
-		return reverse('organization_detail', kwargs={'pk': self.pk})
-
-	def __str__(self):
-		return self.name
-
-class Opath(models.Model):
-	ancestor = models.ForeignKey(Organization, related_name='paths2descendant')
-	descendant = models.ForeignKey(Organization, related_name='paths2ancestor')
-	height = models.IntegerField(default=0)
-
-	def __str__(self):
-		return "{} -> {} | Height: {}".format(self.ancestor.name , self.descendant.name, self.height)

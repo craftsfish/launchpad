@@ -9,7 +9,7 @@ from .models import *
 admin.site.register(Supplier)
 admin.site.register(Commodity)
 admin.site.register(Account)
-admin.site.register(Path)
+admin.site.register(Apath)
 admin.site.register(Task)
 admin.site.register(Transaction)
 admin.site.register(Split)
