@@ -6,6 +6,7 @@ from transaction_views import *
 from split_views import *
 from commodity_views import *
 from supplier_views import *
+from organization_views import *
 
 urlpatterns = [
 	#account
@@ -43,4 +44,7 @@ urlpatterns = [
 
 	#supplier
     url(r'^supplier/$', SupplierListView.as_view(), name='supplier_list'),
+
+	#organization
+	url(r'^organization/$', OrganizationListView.as_view(), name='organization_list'),
 ]
