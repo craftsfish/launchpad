@@ -159,3 +159,25 @@ class Split(models.Model):
 		self.account.balance -= self.change
 		self.account.save()
 		super(Split, self).delete(*args, **kwargs)
+
+class Organization(models.Model):
+	name = models.CharField(max_length=30)
+
+	def save(self, *args, **kwargs):
+		super(Organization, self).save(*args, **kwargs)
+
+		#add path (self -> self)
+		path2self = Opath.objects.filter(ancestor=self.id).filter(descendant=self.id)
+		if len(path2self) == 0:
+			Opath(ancestor=self, descendant=self).save()
+
+	def __str__(self):
+		return self.name
+
+class Opath(models.Model):
+	ancestor = models.ForeignKey(Organization, related_name='paths2descendant')
+	descendant = models.ForeignKey(Organization, related_name='paths2ancestor')
+	height = models.IntegerField(default=0)
+
+	def __str__(self):
+		return "{} -> {} | Height: {}".format(self.ancestor.name , self.descendant.name, self.height)
