@@ -6,6 +6,7 @@ from item_views import *
 urlpatterns = [
 	#organization
 	url(r'^organization/$', OrganizationListView.as_view(), name='organization_list'),
+	url(r'^organization/(?P<pk>[\d]+)/$', OrganizationDetailView.as_view(), name='organization_detail'),
 
 	#supplier
 	url(r'^supplier/$', SupplierListView.as_view(), name='supplier_list'),
