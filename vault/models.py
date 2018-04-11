@@ -37,7 +37,7 @@ class Item(models.Model):
 class Account(models.Model):
 	name = models.CharField("名称", max_length=30, null=True, blank=True)
 	balance = models.DecimalField("余额", default=0, max_digits=20, decimal_places=2)
-	organization = models.ForeignKey(Organization, verbose_name="组织")
+	organization = models.ForeignKey(Organization, verbose_name="组织", related_name="accounts")
 	item = models.ForeignKey(Item, verbose_name="物资")
 	ACCOUNT_CATEGORY_CHOICES = (
 		(0, "资产"),
