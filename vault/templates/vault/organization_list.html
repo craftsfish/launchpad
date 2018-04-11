@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block header %}组织列表{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for object in object_list %}
+            <li>{{ object }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
