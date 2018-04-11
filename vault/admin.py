@@ -8,3 +8,4 @@ from .models import *
 admin.site.register(Organization)
 admin.site.register(Supplier)
 admin.site.register(Item)
+admin.site.register(Account)
