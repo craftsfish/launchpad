@@ -11,7 +11,7 @@
 				<th>负债</th>
 				<th>收入</th>
 				<th>支出</th>
-				<th>净资产</th>
+				<th>所有者权益</th>
 			</tr>
 			{% for k,r in matrix.items %}
 				<tr>
@@ -20,10 +20,14 @@
 							{% if forloop.counter0 %}
 								{# cell #}
 								<table cellpadding="4">
-								{% for i in c %}
+								<tr>
+									<th align="left">总额</th>
+									<th align="right">{{c.0}}</th>
+								</tr>
+								{% for o in c.2 %} {# sub-organizations #}
 									<tr>
-										<td align="left">{{i.0}}</td>
-										<td align="right">{{i.1}}</td>
+										<td align="left">{{o.name}}</td>
+										<td align="right">{{o.balance}}</td>
 									</tr>
 								{% endfor %}
 								</table>
