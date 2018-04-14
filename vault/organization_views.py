@@ -13,6 +13,7 @@ class OrganizationDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(OrganizationDetailView, self).get_context_data(**kwargs)
+		self.object.display_name = str(self.object)
 
 		def __get_cell(matrix, item, category):
 			r = matrix.get(item)

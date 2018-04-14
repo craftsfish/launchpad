@@ -5,6 +5,7 @@
 {% block content %}
 	<div>
 		<table border="1" cellpadding="4">
+			<caption>{{object.display_name}}</caption>
 			<tr>
 				<th></th>
 				<th>资产</th>
@@ -26,13 +27,13 @@
 								</tr>
 								{% for o,v in c.1.items %} {# sub-organizations #}
 									<tr>
-										<td align="left"><a href="{% url 'organization_detail' v.0.id %}">{{v.0.name}}</a></td>
+										<td align="left"><a href="{% url 'organization_detail' v.0.id %}">[组织]{{v.0.name}}</a></td>
 										<td align="right">{{v.1}}</td>
 									</tr>
 								{% endfor %}
 								{% for a in c.2 %} {# accounts #}
 									<tr>
-										<td align="left">{{a.name}}</td>
+										<td align="left">[账户]{{a.name}}</td>
 										<td align="right">{{a.balance}}</td>
 									</tr>
 								{% endfor %}
