@@ -13,10 +13,24 @@
 				<th>支出</th>
 				<th>净资产</th>
 			</tr>
-			{% for l in matrix %}
+			{% for k,r in matrix.items %}
 				<tr>
-					{% for i in l %}
-						<td>{{i}}</td>
+					{% for c in r %}
+						<td>
+							{% if forloop.counter0 %}
+								{# cell #}
+								<table cellpadding="4">
+								{% for i in c %}
+									<tr>
+										<td align="left">{{i.0}}</td>
+										<td align="right">{{i.1}}</td>
+									</tr>
+								{% endfor %}
+								</table>
+							{% else %}
+								{{c}} {# item name is placed in first column #}
+							{% endif %}
+						</td>
 					{% endfor %}
 				</tr>
 			{% endfor %}

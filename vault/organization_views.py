@@ -15,15 +15,23 @@ class OrganizationDetailView(DetailView):
 		context = super(OrganizationDetailView, self).get_context_data(**kwargs)
 
 		self.object.descendants()
+		def __get_cell(matrix, item, category):
+			r = matrix.get(item)
+			if r == None:
+				item_name = Item.objects.get(pk=item).name
+				matrix[item] = [item_name, [["汇总", 0]], [["汇总", 0]], [["汇总", 0]], [["汇总", 0]], [["汇总", 0]]]
+			return matrix[item][category+1]
+
 		#2-dimension (item, category) array to store account info which include each sub-organization and direct account
-		matrix = []
-		i=-1
-		prev_item=None
+		matrix = {}
+
+		#direct monitored account
 		for a in self.object.accounts.all().order_by("item", "category"):
-			if a.item != prev_item:
-				prev_item = a.item
-				i += 1
-				matrix.append([a.item.name, 0, 0, 0, 0, 0])
-			matrix[i][a.category+1] += a.balance
+			c = __get_cell(matrix, a.item.id, a.category)
+			c[0][1] += a.balance #accumulation of total
+			c.append([a.name, a.balance])
+
+		#TODO: sub organizations
+
 		context['matrix'] = matrix
 		return context
