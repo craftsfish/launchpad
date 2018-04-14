@@ -14,7 +14,8 @@ class OrganizationDetailView(DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(OrganizationDetailView, self).get_context_data(**kwargs)
 
-		#2-dimension array to store account info for each [item, category] type
+		self.object.descendants()
+		#2-dimension (item, category) array to store account info which include each sub-organization and direct account
 		matrix = []
 		i=-1
 		prev_item=None

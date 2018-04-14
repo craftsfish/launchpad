@@ -16,6 +16,16 @@ class Organization(models.Model):
 			parent = parent.parent
 		return result
 
+	def descendants(self):
+		result = [self]
+		i = 0
+		while i < len(result):
+			for c in result[i].children.all():
+				result.append(c)
+			i += 1
+		result.pop(0)
+		return result
+
 class Supplier(models.Model):
 	name = models.CharField(max_length=30, unique=True)
 
