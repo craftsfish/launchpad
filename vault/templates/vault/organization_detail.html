@@ -24,10 +24,16 @@
 									<th align="left">总额</th>
 									<th align="right">{{c.0}}</th>
 								</tr>
-								{% for o in c.2 %} {# sub-organizations #}
+								{% for o,v in c.1.items %} {# sub-organizations #}
 									<tr>
-										<td align="left">{{o.name}}</td>
-										<td align="right">{{o.balance}}</td>
+										<td align="left">{{v.0.name}}</td>
+										<td align="right">{{v.1}}</td>
+									</tr>
+								{% endfor %}
+								{% for a in c.2 %} {# accounts #}
+									<tr>
+										<td align="left">{{a.name}}</td>
+										<td align="right">{{a.balance}}</td>
 									</tr>
 								{% endfor %}
 								</table>
