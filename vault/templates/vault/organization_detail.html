@@ -26,7 +26,7 @@
 								</tr>
 								{% for o,v in c.1.items %} {# sub-organizations #}
 									<tr>
-										<td align="left">{{v.0.name}}</td>
+										<td align="left"><a href="{% url 'organization_detail' v.0.id %}">{{v.0.name}}</a></td>
 										<td align="right">{{v.1}}</td>
 									</tr>
 								{% endfor %}
