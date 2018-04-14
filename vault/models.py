@@ -44,7 +44,7 @@ class Account(models.Model):
 		(1, "负债"),
 		(2, "收入"),
 		(3, "支出"),
-		(4, "净资产"),
+		(4, "所有者权益"),
 	)
 	category = models.IntegerField(choices=ACCOUNT_CATEGORY_CHOICES, default=0)
 
