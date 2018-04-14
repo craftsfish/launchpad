@@ -8,6 +8,9 @@ from django.views.generic import DetailView
 class OrganizationListView(ListView):
 	model = Organization
 
+	def get_queryset(self):
+		return Organization.objects.filter(parent__isnull=True)
+
 class OrganizationDetailView(DetailView):
 	model = Organization
 
