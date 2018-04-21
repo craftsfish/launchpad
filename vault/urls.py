@@ -3,6 +3,7 @@ from organization_views import *
 from supplier_views import *
 from item_views import *
 from account_views import *
+from transaction_views import *
 
 urlpatterns = [
 	#organization
@@ -17,4 +18,7 @@ urlpatterns = [
 
 	#account
 	url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
+
+	#transaction
+	url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
 ]
