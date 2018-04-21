@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block header %}账户列表{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for object in object_list %}
+            <li><a href="{% url 'organization_detail' object.id %}">{{ object }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -17,6 +17,7 @@ urlpatterns = [
 	url(r'^item/$', ItemListView.as_view(), name='item_list'),
 
 	#account
+	url(r'^account/$', AccountListView.as_view(), name='account_list'),
 	url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
 
 	#transaction

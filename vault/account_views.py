@@ -5,6 +5,9 @@ from .models import *
 from django.views.generic import ListView
 from django.db.models import Sum
 
+class AccountListView(ListView):
+	model = Account
+
 # Split list that build upon this account is displayed
 class AccountDetailView(ListView):
 	model = Split
