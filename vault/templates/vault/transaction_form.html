@@ -25,13 +25,19 @@
 
 	<br/><br/>
 
-	{# formset for splits #}
 	<fieldset>
 		<legend>交易明细</legend>
-		{{ formset.management_form }}
-		{% for form in formset %}
+		{% for split in splits %}
 			<div>
-				{{ form }}
+				<tr>
+					<th><label>{{split.account}}:</label></th>
+					<td><input type="number" value={{split.change}} step="0.01" id={{split.id_change}}/></td>
+					<th><label>删除:</label></th>
+					<td><input type="checkbox" id={{split.id_delete}} />
+						<input type="hidden" value={{split.account.id}} id={{split.id_account}} />
+						<input type="hidden" value={{split.id}} id={{split.id_id}} />
+					</td>
+				</tr>
 			</div>
 		{% endfor %}
 	</fieldset>
