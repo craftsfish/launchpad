@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block header %}账户详情{% endblock %}
+
+{% block content %}
+	<table border="1" cellpadding="4">
+		<caption>流水 | 余额: {{object.balance}}</caption>
+		<tr>
+			<th>时间</th>
+			<th>账户</th>
+			<th>调整幅度</th>
+			<th>余额</th>
+		</tr>
+		{% for split in object_list %}
+			<tr>
+				<td>{{ split.transaction.time }}</td>
+				<td>{{ split.account }}</td>
+				<td>{{ split.change }}</td>
+				<td>{{ split.balance }}</td>
+			<tr>
+		{% endfor %}
+	</table>
+	
+	{% if is_paginated %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page={{ page_obj.previous_page_number }}">前一页</a>
+				{% endif %}
+	
+				<span class="current">
+					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+				</span>
+	
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">后一页</a>
+				{% endif %}
+			</span>
+		</div>
+	{%endif %}
+{% endblock %}

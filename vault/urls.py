@@ -2,6 +2,7 @@ from django.conf.urls import url
 from organization_views import *
 from supplier_views import *
 from item_views import *
+from account_views import *
 
 urlpatterns = [
 	#organization
@@ -13,4 +14,7 @@ urlpatterns = [
 
 	#item
 	url(r'^item/$', ItemListView.as_view(), name='item_list'),
+
+	#account
+	url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
 ]

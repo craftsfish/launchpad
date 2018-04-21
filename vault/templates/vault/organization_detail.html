@@ -33,7 +33,7 @@
 								{% endfor %}
 								{% for a in c.2 %} {# accounts #}
 									<tr>
-										<td align="left">[账户]{{a.name}}</td>
+										<td align="left"><a href="{% url 'account_detail' a.id %}">[账户]{{a.name}}</a></td>
 										<td align="right">{{a.balance}}</td>
 									</tr>
 								{% endfor %}
