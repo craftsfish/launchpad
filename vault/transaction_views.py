@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from .models import *
 from django import forms
 from django.contrib.admin import widgets
+from django.forms import inlineformset_factory
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 
@@ -24,5 +25,15 @@ class TransactionDetailView(TransactionMixin, DetailView):
 		context['splits'] = self.object.splits.all()
 		return context
 
+SplitFormSet = inlineformset_factory(Transaction, Split, fields=('account', 'change'), extra=0)
 class TransactionUpdateView(TransactionMixin, UpdateView):
-	pass
+	def get_context_data(self, **kwargs):
+		context = super(TransactionUpdateView, self).get_context_data(**kwargs)
+		context['formset'] = SplitFormSet(instance=self.object)
+		return context
+
+	def form_valid(self, form):
+		formset = SplitFormSet(self.request.POST, self.request.FILES, instance=self.object)
+		if formset.is_valid():
+			formset.save()
+		return super(TransactionUpdateView, self).form_valid(form)
