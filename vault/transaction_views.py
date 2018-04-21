@@ -12,7 +12,7 @@ class TransactionForm(forms.ModelForm):
 	class Meta:
 		model = Transaction
 		fields = ['desc', 'time', 'task']
-		widgets = {'task': forms.HiddenInput()}
+		#widgets = {'task': forms.HiddenInput()}
 	time = forms.SplitDateTimeField(widget=widgets.AdminSplitDateTime())
 
 class TransactionMixin(object):

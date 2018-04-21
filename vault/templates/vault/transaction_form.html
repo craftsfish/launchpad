@@ -18,15 +18,23 @@
 
 <form action="" method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
+	<fieldset>
+		<legend>交易概要</legend>
+		{{ form.as_p }}
+	</fieldset>
+
+	<br/><br/>
 
 	{# formset for splits #}
-	{{ formset.management_form }}
-	{% for form in formset %}
-		<div>
-			{{ form }}
-		</div>
-	{% endfor %}
+	<fieldset>
+		<legend>交易明细</legend>
+		{{ formset.management_form }}
+		{% for form in formset %}
+			<div>
+				{{ form }}
+			</div>
+		{% endfor %}
+	</fieldset>
 
 	<input type="submit" value="提交" />
 </form>
