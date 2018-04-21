@@ -5,6 +5,7 @@ from .models import *
 from django import forms
 from django.contrib.admin import widgets
 from django.views.generic import DetailView
+from django.views.generic import UpdateView
 
 class TransactionForm(forms.ModelForm):
 	class Meta:
@@ -22,3 +23,6 @@ class TransactionDetailView(TransactionMixin, DetailView):
 		context = super(TransactionDetailView, self).get_context_data(**kwargs)
 		context['splits'] = self.object.splits.all()
 		return context
+
+class TransactionUpdateView(TransactionMixin, UpdateView):
+	pass

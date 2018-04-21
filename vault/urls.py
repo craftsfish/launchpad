@@ -21,4 +21,5 @@ urlpatterns = [
 
 	#transaction
 	url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
+	url(r'^transaction/(?P<pk>[\d]+)/change$', TransactionUpdateView.as_view(), name='transaction_update'),
 ]

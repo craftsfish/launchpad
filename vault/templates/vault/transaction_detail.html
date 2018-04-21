@@ -3,6 +3,9 @@
 {% block header %}交易详情{% endblock %}
 
 {% block content %}
+	<div>
+		<a href="{% url 'transaction_update' object.id %}">编辑</a>
+	</div>
 	<table border="1">
 		<caption>{{object.desc}} | 交易编号: {{object.id}}</caption>
 		<tr>

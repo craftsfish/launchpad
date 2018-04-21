@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 class Organization(models.Model):
@@ -83,8 +84,8 @@ class Transaction(models.Model):
 	def __str__(self):
 		return self.desc
 
-	#def get_absolute_url(self):
-		#return reverse('transaction_detail', kwargs={'pk': self.pk})
+	def get_absolute_url(self):
+		return reverse('transaction_detail', kwargs={'pk': self.pk})
 
 	def delete(self, *args, **kwargs):
 		for s in self.splits.all():
