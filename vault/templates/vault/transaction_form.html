@@ -15,6 +15,15 @@
 	<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
 	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
 	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+	<script>
+		jQuery(document).ready(function(){
+			jQuery("button").click(function(){
+				jQuery.get("/vault/account/",function(data,status){
+					alert("数据: " + data + "\n状态: " + status);
+				});
+			});
+		});
+	</script>
 {% endblock %}
 
 {% block content %}
@@ -40,4 +49,8 @@
 
 		<input type="submit" value="提交" />
 	</form>
+
+	<div>
+		<button>添加交易账户</button>
+	</div>
 {% endblock %}
