@@ -24,8 +24,9 @@
 						csrfmiddlewaretoken: '{{ csrf_token  }}'
 					},
 					function(data,status){
-					alert("数据: " + data + "\n状态: " + status);
-				});
+						accounts = eval("("+data+")");
+						alert(accounts[0].str);
+					});
 			});
 		});
 	</script>
@@ -61,5 +62,7 @@
 	<div>
 		{{account.as_p}}
 		<button>查询账户</button>
+		<div id="id_filtered_accounts">
+		</div>
 	</div>
 {% endblock %}

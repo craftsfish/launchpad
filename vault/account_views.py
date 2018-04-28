@@ -6,7 +6,7 @@ from django.views.generic import ListView
 from django.views import View
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.core import serializers
+import json
 
 class AccountListView(View):
 	def post(self, request, *args, **kwargs):
@@ -17,7 +17,12 @@ class AccountListView(View):
 		org = p.get('organization')
 		if org:
 			r = r.filter(organization=org)
-		return HttpResponse(serializers.serialize("json", r))
+
+		#result
+		j = []
+		for i in r:
+			j.append({"id": i.id, "str": str(i)})
+		return HttpResponse(json.dumps(j))
 
 # Split list that build upon this account is displayed
 class AccountDetailView(ListView):
