@@ -25,7 +25,12 @@
 					},
 					function(data,status){
 						accounts = eval("("+data+")");
-						alert(accounts[0].str);
+						p = jQuery("#id_filtered_accounts");
+						p.empty();
+						for (i in accounts)
+						{
+							p.append(jQuery("<p></p>").text(accounts[i].str));
+						}
 					});
 			});
 		});
