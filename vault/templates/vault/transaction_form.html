@@ -1,40 +1,43 @@
-<head>
-<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
-<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+{% extends "base.html" %}
 
+{% block header %}编辑交易{% endblock %}
 
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript" src="/static/admin/js/core.js"></script>
-<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
-<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
-<script type="text/javascript" src="/static/admin/js/actions.js"></script>
-<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
-<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
-<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
-<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
-<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
-</head>
+{% block script %}
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+	<script type="text/javascript" src="/admin/jsi18n/"></script>
+	<script type="text/javascript" src="/static/admin/js/core.js"></script>
+	<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+	<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+	<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+	<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+	<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+	<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+	<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+{% endblock %}
 
-<form action="" method="post">
-	{% csrf_token %}
-	<fieldset>
-		<legend>交易概要</legend>
-		{{ form.as_p }}
-	</fieldset>
+{% block content %}
+	<form action="" method="post">
+		{% csrf_token %}
+		<fieldset>
+			<legend>交易概要</legend>
+			{{ form.as_p }}
+		</fieldset>
 
-	<br/><br/>
+		<br/><br/>
 
-	{# formset for splits #}
-	<fieldset>
-		<legend>交易明细</legend>
-		{{ formset.management_form }}
-		{% for form in formset %}
-			<div>
-				<label>{{form.account_display_name}} : </label>{{ form }}
-			</div>
-		{% endfor %}
-	</fieldset>
+		{# formset for splits #}
+		<fieldset>
+			<legend>交易明细</legend>
+			{{ formset.management_form }}
+			{% for form in formset %}
+				<div>
+					<label>{{form.account_display_name}} : </label>{{ form }}
+				</div>
+			{% endfor %}
+		</fieldset>
 
-	<input type="submit" value="提交" />
-</form>
+		<input type="submit" value="提交" />
+	</form>
+{% endblock %}
