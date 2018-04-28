@@ -29,7 +29,9 @@
 						p.empty();
 						for (i in accounts)
 						{
-							p.append(jQuery("<p></p>").text(accounts[i].str));
+							p.append(jQuery("<input></input>").attr({"type": "checkbox", "name": "account", "value": accounts[i].id}));
+							p.append(jQuery("<label></label>").text(accounts[i].str));
+							p.append("<br/>");
 						}
 					});
 			});
