@@ -3,10 +3,15 @@ from __future__ import unicode_literals
 
 from .models import *
 from django.views.generic import ListView
+from django.views import View
 from django.db.models import Sum
+from django.http import HttpResponse
+from django.core import serializers
 
-class AccountListView(ListView):
-	model = Account
+class AccountListView(View):
+	def get(self, request, *args, **kwargs):
+		r = Account.objects.all()[:2]
+		return HttpResponse(serializers.serialize("json", r))
 
 # Split list that build upon this account is displayed
 class AccountDetailView(ListView):
