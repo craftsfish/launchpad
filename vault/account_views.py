@@ -9,8 +9,14 @@ from django.http import HttpResponse
 from django.core import serializers
 
 class AccountListView(View):
-	def get(self, request, *args, **kwargs):
-		r = Account.objects.all()[:2]
+	def post(self, request, *args, **kwargs):
+		r = Account.objects.all()
+
+		#filter
+		p = request.POST
+		org = p.get('organization')
+		if org:
+			r = r.filter(organization=org)
 		return HttpResponse(serializers.serialize("json", r))
 
 # Split list that build upon this account is displayed

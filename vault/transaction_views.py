@@ -25,6 +25,9 @@ class TransactionDetailView(TransactionMixin, DetailView):
 		context['splits'] = self.object.splits.all()
 		return context
 
+class AccountForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects.all(), required=False)
+
 SplitFormSet = inlineformset_factory(Transaction, Split, fields=('change', 'account'), widgets = {'account': forms.HiddenInput()}, labels = {'change': ''}, extra=0)
 class TransactionUpdateView(TransactionMixin, UpdateView):
 	def get_context_data(self, **kwargs):
@@ -32,6 +35,7 @@ class TransactionUpdateView(TransactionMixin, UpdateView):
 		context['formset'] = SplitFormSet(instance=self.object)
 		for f in context['formset']:
 			f.account_display_name = str(f.instance.account)
+		context['account'] = AccountForm()
 		return context
 
 	def form_valid(self, form):

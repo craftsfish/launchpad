@@ -18,7 +18,12 @@
 	<script>
 		jQuery(document).ready(function(){
 			jQuery("button").click(function(){
-				jQuery.get("/vault/account/",function(data,status){
+				jQuery.post("/vault/account/",
+					{
+						organization: jQuery("#id_organization").val(),
+						csrfmiddlewaretoken: '{{ csrf_token  }}'
+					},
+					function(data,status){
 					alert("数据: " + data + "\n状态: " + status);
 				});
 			});
@@ -50,7 +55,11 @@
 		<input type="submit" value="提交" />
 	</form>
 
+	<br></br>
+	<hr></hr>
+
 	<div>
-		<button>添加交易账户</button>
+		{{account.as_p}}
+		<button>查询账户</button>
 	</div>
 {% endblock %}
