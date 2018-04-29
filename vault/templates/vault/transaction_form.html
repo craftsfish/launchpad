@@ -16,6 +16,10 @@
 	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
 	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
 	<script>
+		function __f_add_account(account_id){
+			alert(account_id);
+		}
+
 		jQuery(document).ready(function(){
 			jQuery("button").click(function(){
 				jQuery.post("/vault/account/",
@@ -29,7 +33,8 @@
 						p.empty();
 						for (i in accounts)
 						{
-							p.append(jQuery("<input></input>").attr({"type": "checkbox", "name": "account", "value": accounts[i].id}));
+							b = jQuery("<button></button>").text("添加");
+							p.append(b.attr({"onclick": "__f_add_account("+accounts[i].id+")"}));
 							p.append(jQuery("<label></label>").text(accounts[i].str));
 							p.append("<br/>");
 						}
