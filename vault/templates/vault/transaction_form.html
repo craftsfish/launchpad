@@ -16,13 +16,17 @@
 	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
 	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
 	<script>
-		function __f_add_account(account_id, account_display_name){
+		function __f_add_account(aid, aname){
 			p = jQuery("<div></div>");
 			jQuery("#id_fieldset_for_splits").append(p);
 			var i = 3
-			var a_name = `splits-${i}-change`
-			var a_id = `id_splits-${i}-change`
-			p.append(`<label>${account_display_name} : </label><tr><th></th><td><input type="number" name=${a_name} step="0.01" id=${a_id} /></td></tr>`);
+			var change_name = `splits-${i}-change`
+			var change_id = `id_splits-${i}-change`
+			var del_id = `id_splits-${i}-DELETE`
+			var del_name = `splits-${i}-DELETE`
+			var account_name = `splits-${i}-account`
+			var account_id = `id_splits-${i}-account`
+			p.append(`<label>${aname} : </label><tr><th></th><td><input type="number" name=${change_name} step="0.01" id=${change_id} /></td></tr><tr><th><label for=${del_id}>Delete:</label></th><td><input type="checkbox" name=${del_name} id=${del_id} /><input type="hidden" name=${account_name} value=${aid} id=${account_id} /></td></tr>`);
 		}
 
 		jQuery(document).ready(function(){
