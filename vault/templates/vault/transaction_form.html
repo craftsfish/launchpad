@@ -16,8 +16,8 @@
 	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
 	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
 	<script>
-		function __f_add_account(account_id){
-			alert(account_id);
+		function __f_add_account(account_id, account_display_name){
+			alert(account_id.toString()+account_display_name);
 		}
 
 		jQuery(document).ready(function(){
@@ -34,7 +34,7 @@
 						for (i in accounts)
 						{
 							b = jQuery("<button></button>").text("添加");
-							p.append(b.attr({"onclick": "__f_add_account("+accounts[i].id+")"}));
+							p.append(b.attr({"onclick": "__f_add_account("+accounts[i].id+",'"+accounts[i].str+"')"}));
 							p.append(jQuery("<label></label>").text(accounts[i].str));
 							p.append("<br/>");
 						}
