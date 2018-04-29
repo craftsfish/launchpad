@@ -19,7 +19,9 @@
 		function __f_add_account(aid, aname){
 			p = jQuery("<div></div>");
 			jQuery("#id_fieldset_for_splits").append(p);
-			var i = 3
+			total = jQuery("#id_splits-TOTAL_FORMS");
+			var i = parseInt(total.attr("value")) + 1
+			total.attr({"value": i});
 			var change_name = `splits-${i}-change`
 			var change_id = `id_splits-${i}-change`
 			var del_id = `id_splits-${i}-DELETE`
