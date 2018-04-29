@@ -17,7 +17,12 @@
 	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
 	<script>
 		function __f_add_account(account_id, account_display_name){
-			alert(account_id.toString()+account_display_name);
+			p = jQuery("<div></div>");
+			jQuery("#id_fieldset_for_splits").append(p);
+			var i = 3
+			var a_name = `splits-${i}-change`
+			var a_id = `id_splits-${i}-change`
+			p.append(`<label>${account_display_name} : </label><tr><th></th><td><input type="number" name=${a_name} step="0.01" id=${a_id} /></td></tr>`);
 		}
 
 		jQuery(document).ready(function(){
@@ -55,7 +60,7 @@
 		<br/><br/>
 
 		{# formset for splits #}
-		<fieldset>
+		<fieldset id="id_fieldset_for_splits">
 			<legend>交易明细</legend>
 			{{ formset.management_form }}
 			{% for form in formset %}
