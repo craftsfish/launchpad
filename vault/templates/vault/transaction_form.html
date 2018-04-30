@@ -20,8 +20,8 @@
 			p = jQuery("<div></div>");
 			jQuery("#id_fieldset_for_splits").append(p);
 			total = jQuery("#id_splits-TOTAL_FORMS");
-			var i = parseInt(total.attr("value")) + 1
-			total.attr({"value": i});
+			var i = parseInt(total.attr("value"))
+			total.attr({"value": i+1});
 			var change_name = `splits-${i}-change`
 			var change_id = `id_splits-${i}-change`
 			var del_id = `id_splits-${i}-DELETE`
@@ -32,7 +32,7 @@
 			var split_id = `id_splits-${i}-id`
 			var transaction_name = `splits-${i}-transaction`
 			var transaction_id = `id_splits-${i}-transaction`
-			var transaction_value = 1
+			var transaction_value = jQuery("#id_transaction").text()
 			p.append(`<label>${aname} : </label><tr><th></th><td><input type="number" name=${change_name} step="0.01" id=${change_id} /></td></tr><tr><th><label for=${del_id}>Delete:</label></th><td><input type="checkbox" name=${del_name} id=${del_id} /><input type="hidden" name=${account_name} value=${aid} id=${account_id} /><input type="hidden" name=${split_name} id=${split_id} /><input type="hidden" name=${transaction_name} value=${transaction_value} id=${transaction_id} /></td></tr>`);
 		}
 
@@ -61,14 +61,13 @@
 {% endblock %}
 
 {% block content %}
+	<label>交易编号: </label><label id="id_transaction">{{object.id}}</label>
 	<form action="" method="post">
 		{% csrf_token %}
 		<fieldset>
 			<legend>交易概要</legend>
 			{{ form.as_p }}
 		</fieldset>
-
-		<br/><br/>
 
 		{# formset for splits #}
 		<fieldset id="id_fieldset_for_splits">
