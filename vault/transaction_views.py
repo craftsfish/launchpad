@@ -5,9 +5,11 @@ from .models import *
 from django import forms
 from django.contrib.admin import widgets
 from django.forms import inlineformset_factory
+from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
 from django.views.generic import ListView
+from django.views.generic import RedirectView
 
 class TransactionForm(forms.ModelForm):
 	class Meta:
@@ -48,3 +50,12 @@ class TransactionUpdateView(TransactionMixin, UpdateView):
 		if formset.is_valid():
 			formset.save()
 		return super(TransactionUpdateView, self).form_valid(form)
+
+class TransactionDuplicateView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		f = Transaction.objects.get(pk=kwargs['pk'])
+		t = Transaction(desc=f.desc, task=f.task, time=timezone.now())
+		t.save()
+		for s in f.splits.all():
+			Split(account=s.account, change=s.change, transaction=t).save()
+		return reverse('transaction_update', kwargs={'pk': t.id})

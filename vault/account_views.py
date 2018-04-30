@@ -27,7 +27,7 @@ class AccountListView(View):
 # Split list that build upon this account is displayed
 class AccountDetailView(ListView):
 	model = Split
-	paginate_by = 2
+	paginate_by = 20
 
 	def __get_object(self):
 		self.object = Account.objects.get(pk=self.kwargs['pk'])
