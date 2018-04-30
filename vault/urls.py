@@ -21,6 +21,7 @@ urlpatterns = [
 	url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
 
 	#transaction
+	url(r'^transaction/$', TransactionListView.as_view(), name='transaction_list'),
 	url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
 	url(r'^transaction/(?P<pk>[\d]+)/change$', TransactionUpdateView.as_view(), name='transaction_update'),
 ]

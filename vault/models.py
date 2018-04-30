@@ -77,6 +77,9 @@ class Task(models.Model):
 		super(Task, self).delete(*args, **kwargs)
 
 class Transaction(models.Model):
+	class Meta:
+		ordering = ['-time', '-id']
+
 	desc = models.CharField(max_length=120)
 	task = models.ForeignKey(Task, null=True, blank=True, related_name="transactions")
 	time = models.DateTimeField()

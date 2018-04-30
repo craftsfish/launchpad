@@ -7,6 +7,7 @@ from django.contrib.admin import widgets
 from django.forms import inlineformset_factory
 from django.views.generic import DetailView
 from django.views.generic import UpdateView
+from django.views.generic import ListView
 
 class TransactionForm(forms.ModelForm):
 	class Meta:
@@ -18,6 +19,10 @@ class TransactionForm(forms.ModelForm):
 class TransactionMixin(object):
 	model = Transaction
 	form_class = TransactionForm
+
+class TransactionListView(ListView):
+	model = Transaction
+	paginate_by = 20
 
 class TransactionDetailView(TransactionMixin, DetailView):
 	def get_context_data(self, **kwargs):

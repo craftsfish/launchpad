@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block header %}交易列表{% endblock %}
+
+{% block content %}
+	<table border="1" cellpadding="4">
+		<caption>交易流水</caption>
+		<tr>
+			<th>编号</th>
+			<th>时间</th>
+			<th>描述</th>
+		</tr>
+		{% for transaction in object_list %}
+			<tr>
+				<td><a href="{% url 'transaction_detail' transaction.id %}">{{ transaction.id }}</a></td>
+				<td>{{ transaction.time }}</td>
+				<td>{{ transaction.desc }}</td>
+			<tr>
+		{% endfor %}
+	</table>
+	
+	{% if is_paginated %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page={{ page_obj.previous_page_number }}">前一页</a>
+				{% endif %}
+	
+				<span class="current">
+					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+				</span>
+	
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">后一页</a>
+				{% endif %}
+			</span>
+		</div>
+	{%endif %}
+{% endblock %}
