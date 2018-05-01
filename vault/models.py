@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from organization import *
 from supplier import *
 from item import *
+from jd_commodity import *
 
 # Create your models here.
 class Account(models.Model):
