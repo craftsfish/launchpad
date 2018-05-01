@@ -8,6 +8,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "launchpad.settings")
 django.setup()
 
 #add your codes here
-from console.main import *
-
-Console.run()
+from vault.item import *
+Item.Import()
