@@ -19,7 +19,7 @@ class Item(models.Model):
 
 	@staticmethod
 	def Import():
-		with open('/tmp/commodity.csv', 'rb') as csvfile:
+		with open('/tmp/item.csv', 'rb') as csvfile:
 			reader = csv.reader((csvfile))
 			title = reader.next()
 			columns = ["品名", "供应商"]
