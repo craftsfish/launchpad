@@ -3,9 +3,49 @@
 {% block header %}物资列表{% endblock %}
 
 {% block content %}
-    <ul>
-        {% for object in object_list %}
-            <li>{{ object }}</li>
-        {% endfor %}
-    </ul>
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>供应商</th>
+			<th>品名</th>
+			<th>价值</th>
+			<th>在售</th>
+			<th>在产</th>
+		</tr>
+		{% for item in object_list %}
+			<tr>
+				<td>{{item.supplier}}</td>
+				<td>{{item.name}}</td>
+				<td>{{item.value }}</td>
+				{% if item.onsale %}
+					<td>在售</td>
+				{% else %}
+					<td>下架</td>
+				{% endif %}
+				{% if item.inproduction %}
+					<td>在产</td>
+				{% else %}
+					<td>停产</td>
+				{% endif %}
+			<tr>
+			<tr>
+		{% endfor %}
+	</table>
+
+	{% if is_paginated %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page={{ page_obj.previous_page_number }}">前一页</a>
+				{% endif %}
+
+				<span class="current">
+					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+				</span>
+
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">后一页</a>
+				{% endif %}
+			</span>
+		</div>
+	{%endif %}
 {% endblock %}

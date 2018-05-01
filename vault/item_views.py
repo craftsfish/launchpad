@@ -6,3 +6,4 @@ from django.views.generic import ListView
 
 class ItemListView(ListView):
 	model = Item
+	paginate_by = 100

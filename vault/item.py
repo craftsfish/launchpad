@@ -13,6 +13,8 @@ class Item(models.Model):
 	name = models.CharField("品名", max_length=30, unique=True)
 	supplier = models.ForeignKey(Supplier, verbose_name="供应商")
 	value = models.DecimalField("价值", default=0, max_digits=8, decimal_places=2)
+	onsale = models.BooleanField("在售", default=True) #在售/下架
+	inproduction = models.BooleanField("在产", default=True) #在产/停产
 
 	def __str__(self):
 		return self.name
