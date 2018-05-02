@@ -29,7 +29,7 @@ class OrganizationDetailView(DetailView):
 		matrix = {}
 
 		#direct monitored account
-		for a in self.object.accounts.all().order_by("item", "category"):
+		for a in self.object.accounts.all().order_by("item", "category", "name"):
 			c = __get_cell(matrix, a.item.id, a.category)
 			c[0] += a.balance #accumulation of total
 			c[2].append(a)
