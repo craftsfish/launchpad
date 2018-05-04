@@ -15,12 +15,20 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-auto">
-          <div id="menubar">
-            <a href="{% url 'organization_list' %}">组织</a>
-            <a href="{% url 'transaction_list' %}">交易</a>
-            <a href="{% url 'item_list' %}">物资</a>
-            <a href="{% url 'supplier_list' %}">供应商</a>
-          </div>
+          <ul class="nav">
+            <li class="nav-item">
+              <a href="{% url 'organization_list' %}">组织</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'transaction_list' %}">交易</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'item_list' %}">物资</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'supplier_list' %}">供应商</a>
+            </li>
+          </ul>
 
           <div id="header">
             <h2>{% block header %}header{% endblock %}</h2>
