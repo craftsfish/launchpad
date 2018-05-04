@@ -3,6 +3,7 @@
 {% block header %}账户详情{% endblock %}
 
 {% block content %}
+<div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<caption>流水 | 余额: {{object.balance}}</caption>
 		<tr>
@@ -40,4 +41,5 @@
 			</span>
 		</div>
 	{%endif %}
+</div>
 {% endblock %}
