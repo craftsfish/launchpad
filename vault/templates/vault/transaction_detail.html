@@ -3,6 +3,7 @@
 {% block header %}交易详情{% endblock %}
 
 {% block content %}
+<div class="col-sm-auto">
 	<div>
 		<a href="{% url 'transaction_update' object.id %}">编辑</a>
 		<a href="{% url 'transaction_duplicate' object.id %}">复制</a>
@@ -22,4 +23,5 @@
 			</tr>
 		{% endfor %}
 	</table>
+</div>
 {% endblock %}
