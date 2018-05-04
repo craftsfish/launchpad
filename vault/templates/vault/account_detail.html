@@ -1,23 +1,21 @@
 {% extends "base.html" %}
 
-{% block header %}账户详情{% endblock %}
+{% block header %}账户: {{object}}{% endblock %}
 
 {% block content %}
 <div class="col-sm-auto">
+	<h3>余额:        ({{object.balance}})</h3>
 	<table border="1" cellpadding="4">
-		<caption>流水 | 余额: {{object.balance}}</caption>
 		<tr>
-			<th>交易</th>
 			<th>时间</th>
-			<th>账户</th>
+			<th>交易</th>
 			<th>调整幅度</th>
 			<th>余额</th>
 		</tr>
 		{% for split in object_list %}
 			<tr>
-				<td><a href="{% url 'transaction_detail' split.transaction.id %}">{{ split.transaction.desc }}</a></td>
 				<td>{{ split.transaction.time }}</td>
-				<td>{{ split.account }}</td>
+				<td><a href="{% url 'transaction_detail' split.transaction.id %}">{{ split.transaction.desc }}</a></td>
 				<td>{{ split.change }}</td>
 				<td>{{ split.balance }}</td>
 			<tr>
