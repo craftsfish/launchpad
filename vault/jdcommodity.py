@@ -12,15 +12,18 @@ class Jdcommodity(models.Model):
 class Jdcommoditymap(models.Model):
 	class Meta:
 		unique_together = ("jdcommodity", "since")
+		ordering = ['jdcommodity', '-since']
 
 	jdcommodity = models.ForeignKey(Jdcommodity, related_name="maps")
 	since = models.DateTimeField("生效时间")
 	items = models.ManyToManyField(Item, verbose_name="物品")
 
 	def __str__(self):
-		result = str(self.since) + ", " + str(self.jdcommodity)
-		for i in self.items.all():
-			result += ", " + i.name
+		result = self.since.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S") + " | "
+		for i, v in enumerate(self.items.all()):
+			if i:
+				result += ", "
+			result += v.name
 		return result
 
 	@staticmethod

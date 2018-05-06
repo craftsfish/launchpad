@@ -8,4 +8,6 @@ class JdcommodityListView(ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super(JdcommodityListView, self).get_context_data(**kwargs)
+		for c in context['object_list']:
+			c.ms = c.maps.all()
 		return context

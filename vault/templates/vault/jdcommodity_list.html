@@ -8,11 +8,19 @@
 		<tr>
 			<th>编号</th>
 			<th>名称</th>
+			<th>映射</th>
 		</tr>
 		{% for jdcommodity in object_list %}
 			<tr>
 				<td>{{ jdcommodity.id }}</td>
 				<td>{{ jdcommodity.name }}</td>
+				<td class="text-monospace">
+					<ul class="list-group list-group-flush">
+						{% for m in jdcommodity.ms %}
+							<li class="list-group-item">{{ m }}</li>
+						{% endfor %}
+					</ul>
+				</td>
 			<tr>
 		{% endfor %}
 	</table>
