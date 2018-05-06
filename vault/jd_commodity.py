@@ -35,17 +35,21 @@ class Jdcommoditymap(models.Model):
 
 	@staticmethod
 	def Import():
-		with open('/tmp/jdcommodity.csv', 'rb') as csvfile:
+		with open('/tmp/jdcommoditymap.csv', 'rb') as csvfile:
 			reader = csv.reader((csvfile))
 			for l in reader:
 				t = datetime.utcfromtimestamp(float(l[0])).replace(tzinfo=timezone.utc)
-				jid = l[1]
+				try:
+					jdc = Jdcommodity.objects.get(id=int(l[1]))
+				except Jdcommodity.DoesNotExist as e:
+					jdc = Jdcommodity(id=int(l[1]))
+					jdc.save()
 				cs = l[2:]
 
 				try:
-					Jdcommoditymap.objects.filter(since=t).get(jdcommodity=jid)
+					Jdcommoditymap.objects.filter(since=t).get(jdcommodity=jdc)
 				except Jdcommoditymap.DoesNotExist as e:
-					j = Jdcommoditymap(jdcommodity=jid, since=t)
+					j = Jdcommoditymap(jdcommodity=jdc, since=t)
 					j.save()
 					for c in cs:
 						j.items.add(Item.objects.get(name=c))

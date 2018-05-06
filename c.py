@@ -20,6 +20,7 @@ from vault.jd_order import *
 
 options = (
 	["ii", "导入物资", Item.Import],
+	["ijcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijdo", "导入京东订单", Jdorder.Import],
 )
 
