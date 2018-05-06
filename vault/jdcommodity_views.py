@@ -2,6 +2,7 @@
 
 from .models import *
 from django.views.generic import ListView
+from django.views.generic import CreateView
 
 class JdcommodityListView(ListView):
 	model = Jdcommodity
@@ -12,3 +13,8 @@ class JdcommodityListView(ListView):
 			c.ms = c.maps.all()
 			c.url = "https://item.jd.com/{}.html".format(c.id)
 		return context
+
+class JdcommoditymapCreateView(CreateView):
+	model = Jdcommoditymap
+	fields = ['since', 'items']
+	template_name_suffix = '_create_form'

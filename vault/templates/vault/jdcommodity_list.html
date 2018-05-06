@@ -14,7 +14,7 @@
 			<tr>
 				<td><a href="{{ jdcommodity.url }}">{{jdcommodity.id}}</a></td>
 				<td>{{ jdcommodity.name }}</td>
-				<td>+</td>
+				<td><a href="{% url 'jdcommoditymap_create' jdcommodity.id%}">+</a></td>
 				<td class="text-monospace">
 					<ul class="list-group list-group-flush">
 						{% for m in jdcommodity.ms %}

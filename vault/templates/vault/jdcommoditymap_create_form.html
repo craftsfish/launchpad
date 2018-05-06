@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block header %}增加京东商品映射{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+<form action="" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="提交" />
+</form>
+</div>
+{% endblock %}
