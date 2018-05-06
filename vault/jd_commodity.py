@@ -20,6 +20,16 @@ class Jdcommoditymap(models.Model):
 		return result
 
 	@staticmethod
+	def get(in_jdcommodity, in_timestamp):
+		since = 0
+		result = []
+		m = Jdcommoditymap.objects.filter(jdcommodity=in_jdcommodity).filter(since__lte=in_timestamp).order_by("-since")
+		if len(m):
+			return m[0].items.all()
+		else:
+			return None
+
+	@staticmethod
 	def Import():
 		with open('/tmp/jdcommodity.csv', 'rb') as csvfile:
 			reader = csv.reader((csvfile))
