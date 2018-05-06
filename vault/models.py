@@ -7,6 +7,8 @@ from organization import *
 from supplier import *
 from item import *
 from jd_commodity import *
+from task import *
+from jd_order import *
 
 # Create your models here.
 class Account(models.Model):
@@ -25,20 +27,6 @@ class Account(models.Model):
 
 	def __str__(self):
 		return "{}.{}.{}.{}".format(str(self.organization), self.item.name, self.get_category_display(), self.name)
-
-class Task(models.Model):
-	desc = models.CharField(max_length=120)
-
-	def __str__(self):
-		return self.desc
-
-	#def get_absolute_url(self):
-		#return reverse('task_detail', kwargs={'pk': self.pk})
-
-	def delete(self, *args, **kwargs):
-		for t in self.transactions.all():
-			t.delete()
-		super(Task, self).delete(*args, **kwargs)
 
 class Transaction(models.Model):
 	class Meta:
