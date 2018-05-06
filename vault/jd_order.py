@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import csv
 from django.db import models
 from task import *
+from ground import *
 
 class Jdorder(models.Model):
 	id = models.BigIntegerField("订单编号", primary_key=True)
@@ -15,3 +17,12 @@ class Jdorder(models.Model):
 	)
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS)
 	task = models.OneToOneField(Task)
+
+	@staticmethod
+	def Import():
+		with open('/tmp/jd.csv', 'rb') as csvfile:
+			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
+			title = reader.next()
+			for l in reader:
+				jd_commodity = int(get_column_value(title, l, "商品ID"))
+				print jd_commodity

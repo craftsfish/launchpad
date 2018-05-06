@@ -14,5 +14,6 @@ django.setup()
 #add your codes here
 from vault.item import *
 from vault.jd_commodity import *
+from vault.jd_order import *
 #Item.Import()
-Jdcommoditymap.Import()
+Jdorder.Import()
