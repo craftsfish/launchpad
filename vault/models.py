@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from organization import *
 from supplier import *
 from item import *
-from jd_commodity import *
+from jdcommodity import *
 from task import *
 from jd_order import *
 

@@ -4,7 +4,7 @@ import csv
 from django.db import models
 from task import *
 from ground import *
-from jd_commodity import *
+from jdcommodity import *
 
 class Jdorder(models.Model):
 	id = models.BigIntegerField("订单编号", primary_key=True)
@@ -26,11 +26,11 @@ class Jdorder(models.Model):
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
 			for l in reader:
-				jd_commodity = int(get_column_value(title, l, "商品ID"))
+				jdc = int(get_column_value(title, l, "商品ID"))
 				booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
-				items = Jdcommoditymap.get(jd_commodity, booktime)
+				items = Jdcommoditymap.get(jdc, booktime)
 				if items == None:
 					exit = True
-					print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jd_commodity, get_column_value(title, l, "商品名称"))
+					print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc, get_column_value(title, l, "商品名称"))
 		if exit:
 			return
