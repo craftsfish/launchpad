@@ -5,11 +5,15 @@ from item import *
 from datetime import datetime
 from django.utils import timezone
 
+class Jdcommodity(models.Model):
+	id = models.BigIntegerField("商品编码", primary_key=True)
+	name = models.CharField(max_length=120)
+
 class Jdcommoditymap(models.Model):
 	class Meta:
 		unique_together = ("jdcommodity", "since")
 
-	jdcommodity = models.BigIntegerField("京东商品编码")
+	jdcommodity = models.ForeignKey(Jdcommodity, related_name="maps")
 	since = models.DateTimeField("生效时间")
 	items = models.ManyToManyField(Item, verbose_name="物品")
 
