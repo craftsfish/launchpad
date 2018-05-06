@@ -4,6 +4,7 @@ from supplier_views import *
 from item_views import *
 from account_views import *
 from transaction_views import *
+from jdcommodity_views import *
 
 urlpatterns = [
 	#organization
@@ -25,4 +26,8 @@ urlpatterns = [
 	url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
 	url(r'^transaction/(?P<pk>[\d]+)/change/$', TransactionUpdateView.as_view(), name='transaction_update'),
 	url(r'^transaction/(?P<pk>[\d]+)/duplicate/$', TransactionDuplicateView.as_view(), name='transaction_duplicate'),
+
+	#jdcommodity
+	url(r'^jdcommodity/$', JdcommodityListView.as_view(), name='jdcommodity_list'),
+
 ]
