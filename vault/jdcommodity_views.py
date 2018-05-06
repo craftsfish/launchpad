@@ -10,4 +10,5 @@ class JdcommodityListView(ListView):
 		context = super(JdcommodityListView, self).get_context_data(**kwargs)
 		for c in context['object_list']:
 			c.ms = c.maps.all()
+			c.url = "https://item.jd.com/{}.html".format(c.id)
 		return context
