@@ -8,12 +8,13 @@
 		<tr>
 			<th>编号</th>
 			<th>名称</th>
-			<th>映射</th>
+			<th colspan="2">映射</th>
 		</tr>
 		{% for jdcommodity in object_list %}
 			<tr>
 				<td><a href="{{ jdcommodity.url }}">{{jdcommodity.id}}</a></td>
 				<td>{{ jdcommodity.name }}</td>
+				<td>+</td>
 				<td class="text-monospace">
 					<ul class="list-group list-group-flush">
 						{% for m in jdcommodity.ms %}
