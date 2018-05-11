@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .models import *
+from django import forms
 from django.views.generic import ListView
 from django.views.generic import CreateView
 
@@ -15,7 +16,13 @@ class JdcommodityListView(ListView):
 			c.url = "https://item.jd.com/{}.html".format(c.id)
 		return context
 
+class JdcommoditymapForm(forms.ModelForm):
+	class Meta:
+		model = Jdcommoditymap
+		fields = ['since', 'items']
+		widgets = {'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1"})}
+
 class JdcommoditymapCreateView(CreateView):
 	model = Jdcommoditymap
-	fields = ['since', 'items']
+	form_class = JdcommoditymapForm
 	template_name_suffix = '_create_form'

@@ -6,7 +6,22 @@
 <div class="col-sm-auto">
 <form action="" method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
+	{{ form.non_field_errors }}
+	<div class="fieldWrapper">
+		{{ form.since.errors }}
+		<div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+			{{ form.since.label_tag }}
+			{{ form.since }}
+			<div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+				<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+			</div>
+		</div>
+	</div>
+	<div class="fieldWrapper">
+		{{ form.items.errors }}
+		{{ form.items.label_tag }}
+		{{ form.items }}
+	</div>
 	<input type="submit" value="提交" />
 </form>
 </div>
@@ -16,6 +31,7 @@
 	<script>
 		jQuery(document).ready(function(){
 			jQuery("#id_items").attr({"size": 16});
+			$('#datetimepicker1').datetimepicker();
 		});
 	</script>
 {% endblock %}
