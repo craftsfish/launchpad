@@ -6,6 +6,9 @@ from datetime import datetime
 from django.utils import timezone
 
 class Jdcommodity(models.Model):
+	class Meta:
+		ordering = ['id']
+
 	id = models.BigIntegerField("商品编码", primary_key=True)
 	name = models.CharField(max_length=120)
 

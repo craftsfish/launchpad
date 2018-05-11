@@ -6,6 +6,7 @@ from django.views.generic import CreateView
 
 class JdcommodityListView(ListView):
 	model = Jdcommodity
+	paginate_by = 64
 
 	def get_context_data(self, **kwargs):
 		context = super(JdcommodityListView, self).get_context_data(**kwargs)
