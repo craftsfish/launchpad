@@ -69,7 +69,7 @@ class Jdorder(models.Model):
 						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc, get_column_value(title, l, "商品名称"))
 			return result
 
-		def __handle_transaction(info, org):
+		def __handle_transaction(info, org, repo):
 			try:
 				o = Jdorder.objects.get(id=info.id)
 				print "[更新订单...] {}: {}".format(info.id, info.status)
@@ -86,9 +86,18 @@ class Jdorder(models.Model):
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					return #no transaction should be added
 
-				t.add_transaction("出单.货款", info.booktime, org, Item.objects.get(name="人民币"),
-					("资产", "应收账款"), info.sale,
-					("收入", "营业收入"))
+				#出单
+				t.add_transaction("出单", info.booktime, org, Item.objects.get(name="人民币"),
+					("资产", "应收账款"), info.sale, ("收入", "营业收入"))
+
+				#出货
+				if f == 1: #fake order
+					t.add_transaction("出货", info.booktime, org, Item.objects.get(name="洗衣粉"),
+						("资产", "库存"), -1, ("支出", "出货"))
+				else:
+					for i in info.invoices:
+						for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
+							t.add_transaction("出货".format(i.id), info.booktime, org, item, ("资产", "库存"), -i.number, ("支出", "出货"))
 
 		def __import():
 			ts = []
@@ -122,8 +131,9 @@ class Jdorder(models.Model):
 					t.invoices.append(invc)
 
 				org = Organization.objects.get(name="为绿厨具专营店")
+				repo = Organization.objects.get(name="孤山仓")
 				for t in ts:
-					__handle_transaction(t, org)
+					__handle_transaction(t, org, repo)
 
 		if __preliminary_check():
 			__import()
