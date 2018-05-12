@@ -16,6 +16,7 @@ urlpatterns = [
 
 	#item
 	url(r'^item/$', ItemListView.as_view(), name='item_list'),
+	url(r'^item/(?P<pk>[\d]+)/$', ItemDetailView.as_view(), name='item_detail'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
