@@ -24,3 +24,8 @@ class Organization(models.Model):
 		result.pop(0)
 		return result
 
+	def root(self):
+		r = self
+		while r.parent:
+			r = r.parent
+		return r
