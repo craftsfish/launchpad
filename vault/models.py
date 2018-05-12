@@ -8,7 +8,7 @@ from supplier import *
 from item import *
 from jdcommodity import *
 from task import *
-from jd_order import *
+from jdorder import *
 
 # Create your models here.
 class Account(models.Model):

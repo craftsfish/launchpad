@@ -6,6 +6,12 @@ from task import *
 from ground import *
 from jdcommodity import *
 
+class Jdtransaction:
+    pass
+
+class Jdinvoice:
+    pass
+
 class Jdorder(models.Model):
 	id = models.BigIntegerField("订单编号", primary_key=True)
 	JD_ORDER_STATUS = (
@@ -21,12 +27,18 @@ class Jdorder(models.Model):
 
 	@staticmethod
 	def Import():
+		#Jdcommodity mapping information check
 		exit = False
 		with open('/tmp/jd.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
 			for l in reader:
-				jdc = int(get_column_value(title, l, "商品ID"))
+				jdcid = int(get_column_value(title, l, "商品ID"))
+				try:
+					jdc = Jdcommodity.objects.get(id=jdcid)
+				except Jdcommodity.DoesNotExist as e:
+					jdc = Jdcommodity(id=jdcid)
+					jdc.save()
 				booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
 				items = Jdcommoditymap.get(jdc, booktime)
 				if items == None:

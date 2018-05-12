@@ -15,8 +15,8 @@ django.setup()
 #add your codes here
 import traceback
 from vault.item import *
-from vault.jd_commodity import *
-from vault.jd_order import *
+from vault.jdcommodity import *
+from vault.jdorder import *
 
 options = (
 	["ii", "导入物资", Item.Import],
