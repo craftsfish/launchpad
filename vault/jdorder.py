@@ -97,7 +97,15 @@ class Jdorder(models.Model):
 				else:
 					for i in info.invoices:
 						for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
-							t.add_transaction("出货".format(i.id), info.booktime, org, item, ("资产", "库存"), -i.number, ("支出", "出货"))
+							t.add_transaction("出货", info.booktime, org, item, ("资产", "库存"), -i.number, ("支出", "出货"))
+
+				#发货
+				for transaction in t.transactions.filter(desc="出货"):
+					split = transaction.splits.get(account__category=3) #支出
+					counter = ("负债", "应发")
+					if info.status != "等待出库":
+						counter = ("资产", "库存")
+					t.add_transaction("发货", info.booktime, repo, split.account.item, ("支出", "发货"), split.change, counter)
 
 		def __import():
 			ts = []
