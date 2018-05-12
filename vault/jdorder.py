@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import csv
 import re
 from django.db import models
@@ -8,8 +7,6 @@ from ground import *
 from jdcommodity import *
 from organization import *
 from account import *
-from transaction import *
-from split import *
 from decimal import Decimal
 
 class Jdtransaction:
@@ -78,25 +75,20 @@ class Jdorder(models.Model):
 				print "[更新订单...] {}: {}".format(info.booktime, info.id)
 				#TODO
 			except Jdorder.DoesNotExist as e:
-				print "[添加订单...] {}: {}".format(info.booktime, info.id)
 				t = Task(desc="京东订单")
 				t.save()
 				f = 0
 				if re.compile("朱").match(info.remark): #fake order
 					f = 1
-				print "{} {} {} {}".format(info.id, info.status, t, f)
+				print "[添加订单...] {}: {} | 刷单标记: {}".format(info.booktime, info.id, info.status, f)
 				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f)
 				o.save()
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					return #no transaction should be added
 
-				m = Item.objects.get(name="人民币")
-				a = Account.get(org, m, "资产", "应收账款")
-				b = Account.get(org, m, "收入", "营业收入")
-				tr = Transaction(desc="出单.货款", task=t, time=info.booktime)
-				tr.save()
-				Split(account=a, change=info.sale, transaction=tr).save()
-				Split(account=b, change=info.sale, transaction=tr).save()
+				t.add_transaction("出单.货款", info.booktime, org, Item.objects.get(name="人民币"),
+					("资产", "应收账款"), info.sale,
+					("收入", "营业收入"))
 
 		def __import():
 			ts = []

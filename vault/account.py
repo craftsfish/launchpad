@@ -25,6 +25,10 @@ class Account(models.Model):
 	def __str__(self):
 		return "{}.{}.{}.{}".format(str(self.organization), self.item.name, self.get_category_display(), self.name)
 
+	def sign(self):
+		signs = [1, -1, -1, 1, -1]
+		return signs[self.category]
+
 	@staticmethod
 	def get(o, i, c, n):
 		hit = False
