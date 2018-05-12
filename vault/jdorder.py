@@ -72,7 +72,7 @@ class Jdorder(models.Model):
 		def __handle_transaction(info, org):
 			try:
 				o = Jdorder.objects.get(id=info.id)
-				print "[更新订单...] {}: {}".format(info.booktime, info.id)
+				print "[更新订单...] {}: {}".format(info.id, info.status)
 				#TODO
 			except Jdorder.DoesNotExist as e:
 				t = Task(desc="京东订单")
@@ -80,7 +80,7 @@ class Jdorder(models.Model):
 				f = 0
 				if re.compile("朱").match(info.remark): #fake order
 					f = 1
-				print "[添加订单...] {}: {} | 刷单标记: {}".format(info.booktime, info.id, info.status, f)
+				print "[添加订单...] {}: {} | 刷单标记: {}".format(info.id, info.status, f)
 				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f)
 				o.save()
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
