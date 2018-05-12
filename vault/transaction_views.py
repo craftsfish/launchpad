@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from .models import *
 from django import forms
-from django.contrib.admin import widgets
 from django.forms import inlineformset_factory
 from django.utils import timezone
 from django.views.generic import DetailView
@@ -15,8 +14,10 @@ class TransactionForm(forms.ModelForm):
 	class Meta:
 		model = Transaction
 		fields = ['desc', 'time', 'task']
-		widgets = {'task': forms.HiddenInput()}
-	time = forms.SplitDateTimeField(widget=widgets.AdminSplitDateTime())
+		widgets = {
+			'time': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1"}),
+			'task': forms.HiddenInput(),
+		}
 
 class TransactionMixin(object):
 	model = Transaction
@@ -26,7 +27,9 @@ class TransactionListView(ListView):
 	model = Transaction
 	paginate_by = 20
 
-class TransactionDetailView(TransactionMixin, DetailView):
+class TransactionDetailView(DetailView):
+	model = Transaction
+
 	def get_context_data(self, **kwargs):
 		context = super(TransactionDetailView, self).get_context_data(**kwargs)
 		context['splits'] = self.object.splits.all()

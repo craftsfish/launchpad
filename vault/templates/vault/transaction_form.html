@@ -2,22 +2,7 @@
 
 {% block header %}编辑交易{% endblock %}
 
-{% block extra_link %}
-	<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
-{% endblock %}
-
 {% block extra_script %}
-	<script type="text/javascript" src="/admin/jsi18n/"></script>
-	<script type="text/javascript" src="/static/admin/js/core.js"></script>
-	<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
-	<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-	<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
-	<script type="text/javascript" src="/static/admin/js/actions.js"></script>
-	<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
-	<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
-	<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
-	<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
-	<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
 	<script>
 		function __f_add_account(aid, aname){
 			p = jQuery("<div></div>");
@@ -59,18 +44,38 @@
 						}
 					});
 			});
+			jQuery('#datetimepicker1').datetimepicker({
+				format: 'YYYY-MM-DD HH:mm:ss',
+			});
 		});
 	</script>
 {% endblock %}
 
 {% block content %}
 <div class="col col-lg-6">
-	<label>交易编号: </label><label id="id_transaction">{{object.id}}</label>
 	<form action="" method="post">
 		{% csrf_token %}
 		<fieldset>
 			<legend>交易概要</legend>
-			{{ form.as_p }}
+			{{ form.non_field_errors }}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+			<div class="fieldWrapper">
+				{{ form.desc.errors }}
+				{{ form.desc.label_tag }}
+				{{ form.desc }}
+			</div>
+			<div class="fieldWrapper">
+				{{ form.time.errors }}
+				<div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+					{{ form.time.label_tag }}
+					{{ form.time }}
+					<div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+					</div>
+				</div>
+			</div>
 		</fieldset>
 
 		{# formset for splits #}
