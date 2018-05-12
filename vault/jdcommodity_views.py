@@ -4,6 +4,7 @@ from .models import *
 from django import forms
 from django.views.generic import ListView
 from django.views.generic import CreateView
+from django.views.generic import DetailView
 
 class JdcommodityListView(ListView):
 	model = Jdcommodity
@@ -14,6 +15,14 @@ class JdcommodityListView(ListView):
 		for c in context['object_list']:
 			c.map = Jdcommoditymap.objects.filter(jdcommodity=c).order_by("-since")[0]
 			c.url = "https://item.jd.com/{}.html".format(c.id)
+		return context
+
+class JdcommodityDetailView(DetailView):
+	model = Jdcommodity
+
+	def get_context_data(self, **kwargs):
+		context = super(JdcommodityDetailView, self).get_context_data(**kwargs)
+		context['maps'] = self.object.maps.all()
 		return context
 
 class JdcommoditymapForm(forms.ModelForm):

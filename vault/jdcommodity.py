@@ -2,6 +2,7 @@
 
 from django.db import models
 from item import *
+from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.utils import timezone
 
@@ -28,6 +29,9 @@ class Jdcommoditymap(models.Model):
 				result += ", "
 			result += v.name
 		return result
+
+	def get_absolute_url(self):
+		return reverse('jdcommodity_list')
 
 	@staticmethod
 	def get(in_jdcommodity, in_timestamp):

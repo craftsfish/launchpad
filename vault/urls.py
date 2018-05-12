@@ -29,6 +29,7 @@ urlpatterns = [
 
 	#jdcommodity
 	url(r'^jdcommodity/$', JdcommodityListView.as_view(), name='jdcommodity_list'),
+	url(r'^jdcommodity/(?P<pk>[\d]+)/$', JdcommodityDetailView.as_view(), name='jdcommodity_detail'),
 	url(r'^jdcommodity/(?P<pk>[\d]+)/map/create/$', JdcommoditymapCreateView.as_view(), name='jdcommoditymap_create'),
 
 ]
