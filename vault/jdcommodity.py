@@ -37,7 +37,7 @@ class Jdcommoditymap(models.Model):
 		return self.str_time() + " | " + self.str_items()
 
 	def get_absolute_url(self):
-		return reverse('jdcommodity_list')
+		return reverse('jdcommodity_detail', kwargs={'pk': self.jdcommodity.pk})
 
 	@staticmethod
 	def get(in_jdcommodity, in_timestamp):
