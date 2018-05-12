@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from .models import *
+from account import *
 from django.views.generic import ListView
 from django.views import View
 from django.db.models import Sum
