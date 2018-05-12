@@ -58,6 +58,10 @@ class Jdorder(models.Model):
 						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc, get_column_value(title, l, "商品名称"))
 			return result
 
+		def __handle_transaction(t):
+			print "[同步订单...] {}: {}".format(t.booktime, t.id)
+			pass
+
 		def __import():
 			ts = []
 			with open('/tmp/jd.csv', 'rb') as csvfile:
@@ -80,7 +84,6 @@ class Jdorder(models.Model):
 						t.status = status
 						t.invoices = []
 						ts.append(t)
-						print "发现新订单: {} {} {} {}".format(t.id, t.sale, t.remark, t.booktime)
 
 					invc = Jdinvoice()
 					invc.id = int(get_column_value(title, l, "商品ID"))
@@ -89,6 +92,9 @@ class Jdorder(models.Model):
 					invc.status = get_column_value(title, l, "订单状态")
 					invc.depository = get_column_value(title, l, "仓库名称")
 					t.invoices.append(invc)
+
+				for t in ts:
+					__handle_transaction(t)
 
 		if __preliminary_check():
 			__import()
