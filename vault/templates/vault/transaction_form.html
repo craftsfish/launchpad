@@ -53,6 +53,7 @@
 
 {% block content %}
 <div class="col col-lg-6">
+	<label>交易编号: </label><label id="id_transaction">{{object.id}}</label>
 	<form action="" method="post">
 		{% csrf_token %}
 		<fieldset>
