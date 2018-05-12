@@ -23,6 +23,9 @@ class JdcommodityDetailView(DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(JdcommodityDetailView, self).get_context_data(**kwargs)
 		context['maps'] = self.object.maps.all()
+		for m in context['maps']:
+			m.t = m.str_time()
+			m.d = m.str_items()
 		return context
 
 class JdcommoditymapForm(forms.ModelForm):

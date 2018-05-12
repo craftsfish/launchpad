@@ -22,13 +22,19 @@ class Jdcommoditymap(models.Model):
 	since = models.DateTimeField("生效时间")
 	items = models.ManyToManyField(Item, verbose_name="物品")
 
-	def __str__(self):
-		result = self.since.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S") + " | "
+	def str_time(self):
+		return self.since.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S")
+
+	def str_items(self):
+		result = ""
 		for i, v in enumerate(self.items.all()):
 			if i:
 				result += ", "
 			result += v.name
 		return result
+
+	def __str__(self):
+		return self.str_time() + " | " + self.str_items()
 
 	def get_absolute_url(self):
 		return reverse('jdcommodity_list')

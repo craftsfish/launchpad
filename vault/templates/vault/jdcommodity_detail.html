@@ -10,6 +10,12 @@
 				<th>时间</th>
 				<th>物资明细</th>
 			</tr>
+			{% for m in maps %}
+			<tr class="text-monospace">
+				<td>{{m.t}}</td>
+				<td>{{m.d}}</td>
+			</tr>
+			{% endfor %}
 		</table>
 	</div>
 {% endblock %}
