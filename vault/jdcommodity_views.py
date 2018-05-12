@@ -19,10 +19,18 @@ class JdcommodityListView(ListView):
 class JdcommoditymapForm(forms.ModelForm):
 	class Meta:
 		model = Jdcommoditymap
-		fields = ['since', 'items']
-		widgets = {'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1"})}
+		fields = ['jdcommodity', 'since', 'items']
+		widgets = {
+			'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1"}),
+			'jdcommodity': forms.HiddenInput(),
+		}
 
 class JdcommoditymapCreateView(CreateView):
 	model = Jdcommoditymap
 	form_class = JdcommoditymapForm
 	template_name_suffix = '_create_form'
+
+	def get_initial(self):
+		initial = super(JdcommoditymapCreateView, self).get_initial()
+		initial['jdcommodity'] = Jdcommodity.objects.get(pk=self.kwargs['pk']).id
+		return initial
