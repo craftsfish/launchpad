@@ -13,14 +13,26 @@
 			<th>支出</th>
 			<th>所有者权益</th>
 		</tr>
+		{% if orgs %}
 		<tr>
-			<td>汇总</td>
-			{% for i in total %}
-				<td align="right">{{i}}</td>
+			<td>组织</td>
+			{% for k in orgs %}
+			<td>
+				<table cellpadding="4">
+					{% for i, o in k.items %}
+					<tr>
+						<td align="left">{{o.0.name}}</td>
+						<td align="right">{{o.1}}</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</td>
 			{% endfor %}
 		</tr>
+		{% endif %}
+		{% if accounts %}
 		<tr>
-			<td>直属账户</td>
+			<td>账户</td>
 			{% for j in accounts %}
 			<td>
 				<table cellpadding="4">
@@ -32,6 +44,13 @@
 					{% endfor %}
 				</table>
 			</td>
+			{% endfor %}
+		</tr>
+		{% endif %}
+		<tr>
+			<td>合计</td>
+			{% for i in total %}
+				<td align="right">{{i}}</td>
 			{% endfor %}
 		</tr>
 	</table>
