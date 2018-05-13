@@ -7,4 +7,7 @@ class TaskDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
+		context['trans'] = self.object.transactions.all().order_by("time", "id")
+		for t in context['trans']:
+			t.ss = t.splits.all()
 		return context
