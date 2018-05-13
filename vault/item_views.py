@@ -21,11 +21,10 @@ class ItemListView(ListView):
 class ItemDetailView(DetailView):
 	model = Item
 
+	def get(self, request, *args, **kwargs):
+		self.org = Organization.objects.get(pk=kwargs['org'])
+		return super(ItemDetailView, self).get(request, *args, **kwargs)
+
 	def get_context_data(self, **kwargs):
 		context = super(ItemDetailView, self).get_context_data(**kwargs)
-		candidates = set() #root organizations that operates item
-		for o in Account.objects.filter(item=self.object).values_list('organization', flat=True).distinct():
-			candidates.add(Organization.objects.get(pk=o).root())
-		for c in candidates:
-			print c
 		return context

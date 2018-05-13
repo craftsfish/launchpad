@@ -14,7 +14,7 @@
 		{% for item in object_list %}
 			<tr>
 				<td>{{item.supplier}}</td>
-				<td><a href="{% url 'item_detail' item.id %}">{{ item.name }}</a></td>
+				<td>{{item.name}}</td>
 				<td>{{item.value }}</td>
 				{% if item.onsale %}
 					<td>在售</td>
@@ -27,7 +27,7 @@
 					<td>停产</td>
 				{% endif %}
 				{% for org in item.orgs %}
-					<td><a href="{% url 'item_detail' item.id %}">{{ org.name }}</a></td>
+					<td><a href="{% url 'item_detail' item.id org.id %}">{{ org.name }}</a></td>
 				{% endfor %}
 			<tr>
 			<tr>
