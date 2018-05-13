@@ -8,20 +8,23 @@
 		<a href="{% url 'transaction_update' object.id %}">编辑</a>
 		<a href="{% url 'transaction_duplicate' object.id %}">复制</a>
 	</div>
-	<table border="1">
-		<caption>{{object.desc}} | 交易编号: {{object.id}}</caption>
+	<table cellpadding="4" border="1">
+		<tr><th>编号</th><td>{{object.id}}</td></tr>
+		<tr><th>概述</th><td>{{object.desc}}</td></tr>
+		<tr><th>时间</th><td>{{object.time}}</td></tr>
 		<tr>
-			<th>调整编号</th>
-			<th>账户</th>
-			<th>调整</th>
+			<th>明细</th>
+			<td>
+				<table cellpadding="4">
+					{% for s in splits %}
+						<tr>
+							<td align="left"><a href="{% url 'account_detail' s.account.id %}">{{s.account}}</a></td>
+							<td align="right">{{s.change}}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			</td>
 		</tr>
-		{% for s in splits %}
-			<tr>
-				<td>{{s.id}}</td>
-				<td>{{s.account}}</td>
-				<td>{{s.change}}</td>
-			</tr>
-		{% endfor %}
 	</table>
 </div>
 {% endblock %}
