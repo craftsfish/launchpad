@@ -4,6 +4,7 @@ from item_views import *
 from account_views import *
 from transaction_views import *
 from jdcommodity_views import *
+from task_views import *
 
 urlpatterns = [
 	#supplier
@@ -28,4 +29,6 @@ urlpatterns = [
 	url(r'^jdcommodity/(?P<pk>[\d]+)/$', JdcommodityDetailView.as_view(), name='jdcommodity_detail'),
 	url(r'^jdcommodity/(?P<pk>[\d]+)/map/create/$', JdcommoditymapCreateView.as_view(), name='jdcommoditymap_create'),
 
+	#task
+	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 ]

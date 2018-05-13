@@ -10,6 +10,14 @@
 	</div>
 	<table cellpadding="4" border="1">
 		<tr><th>编号</th><td>{{object.id}}</td></tr>
+		<tr>
+			<th>任务</th>
+			{% if object.task %}
+				<td><a href="{% url 'task_detail' object.task.id %}">{{object.task}}</a></td>
+			{% else %}
+				<td>{{object.task}}</td>
+			{% endif %}
+		</tr>
 		<tr><th>概述</th><td>{{object.desc}}</td></tr>
 		<tr><th>时间</th><td>{{object.time}}</td></tr>
 		<tr>
