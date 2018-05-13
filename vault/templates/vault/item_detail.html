@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block header %}[账本]{{org}} : {{object}}{% endblock %}
+{% block header %}账本-{{object}}: {{org}}{% endblock %}
 
 {% block content %}
 <div class="col-sm-auto">
@@ -13,16 +13,16 @@
 			<th>支出</th>
 			<th>所有者权益</th>
 		</tr>
-		{% if orgs %}
+		{% if accounts %}
 		<tr>
-			<td>组织</td>
-			{% for k in orgs %}
+			<td>直属账户</td>
+			{% for j in accounts %}
 			<td>
 				<table cellpadding="4">
-					{% for i, o in k.items %}
+					{% for a in j %}
 					<tr>
-						<td align="left">{{o.0.name}}</td>
-						<td align="right">{{o.1}}</td>
+						<td align="left"><a href="{% url 'account_detail' a.id %}">{{a.name}}</a></td>
+						<td align="right">{{a.balance}}</td>
 					</tr>
 					{% endfor %}
 				</table>
@@ -30,16 +30,16 @@
 			{% endfor %}
 		</tr>
 		{% endif %}
-		{% if accounts %}
+		{% if orgs %}
 		<tr>
-			<td>账户</td>
-			{% for j in accounts %}
+			<td>下辖组织</td>
+			{% for k in orgs %}
 			<td>
 				<table cellpadding="4">
-					{% for a in j %}
+					{% for i, o in k.items %}
 					<tr>
-						<td align="left">{{a.name}}</td>
-						<td align="right">{{a.balance}}</td>
+						<td align="left"><a href="{% url 'item_detail' object.id o.0.id %}">{{o.0.name}}</a></td>
+						<td align="right">{{o.1}}</td>
 					</tr>
 					{% endfor %}
 				</table>
