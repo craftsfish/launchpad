@@ -27,4 +27,17 @@ class ItemDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ItemDetailView, self).get_context_data(**kwargs)
+		context['org'] = self.org
+		total = [0, 0, 0, 0, 0]
+		#orgs = [{}, {}, {}, {}, {}]
+		accounts = [[], [], [], [], []]
+
+		#direct monitored accounts
+		for a in Account.objects.filter(item=self.object).filter(organization=self.org).order_by("category", "name"):
+			c = a.category
+			total[c] += a.balance
+			accounts[c].append(a)
+		context['accounts'] = accounts
+		context['total'] = total
+
 		return context
