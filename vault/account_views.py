@@ -8,6 +8,7 @@ from django.views import View
 from django.db.models import Sum
 from django.http import HttpResponse
 import json
+from django.utils import timezone
 
 class AccountListView(View):
 	def post(self, request, *args, **kwargs):
@@ -54,7 +55,9 @@ class AccountDetailView(ListView):
 			total = 0
 		balance -= total
 		for s in context["object_list"]:
+			s.time = s.transaction.time.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S")
 			s.balance = balance
 			balance -= s.change
+			s.counters = s.transaction.splits.exclude(id=s.id)
 
 		return context
