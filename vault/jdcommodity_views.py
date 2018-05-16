@@ -2,6 +2,7 @@
 
 from .models import *
 from django import forms
+from django.utils import timezone
 from django.views.generic import ListView
 from django.views.generic import CreateView
 from django.views.generic import DetailView
@@ -33,7 +34,7 @@ class JdcommoditymapForm(forms.ModelForm):
 		model = Jdcommoditymap
 		fields = ['jdcommodity', 'since', 'items']
 		widgets = {
-			'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1"}),
+			'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1", "data-toggle": "datetimepicker"}),
 			'jdcommodity': forms.HiddenInput(),
 		}
 
@@ -45,4 +46,5 @@ class JdcommoditymapCreateView(CreateView):
 	def get_initial(self):
 		initial = super(JdcommoditymapCreateView, self).get_initial()
 		initial['jdcommodity'] = Jdcommodity.objects.get(pk=self.kwargs['pk']).id
+		initial['since'] = timezone.now()
 		return initial
