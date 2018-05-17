@@ -14,7 +14,9 @@ class JdcommodityListView(ListView):
 	def get_context_data(self, **kwargs):
 		context = super(JdcommodityListView, self).get_context_data(**kwargs)
 		for c in context['object_list']:
-			c.map = Jdcommoditymap.objects.filter(jdcommodity=c).order_by("-since")[0]
+			maps = Jdcommoditymap.objects.filter(jdcommodity=c).order_by("-since")
+			if len(maps):
+				c.map = maps[0]
 			c.url = "https://item.jd.com/{}.html".format(c.id)
 		return context
 

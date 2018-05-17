@@ -66,7 +66,7 @@ class Jdorder(models.Model):
 					items = Jdcommoditymap.get(jdc, booktime)
 					if items == None:
 						result = False
-						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc, get_column_value(title, l, "商品名称"))
+						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, l, "商品名称"))
 			return result
 
 		def __get_suffix(quantity):
