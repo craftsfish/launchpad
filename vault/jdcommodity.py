@@ -13,6 +13,9 @@ class Jdcommodity(models.Model):
 	id = models.BigIntegerField("商品编码", primary_key=True)
 	name = models.CharField(max_length=120)
 
+	def __str__(self):
+		return "{}: {}".format(self.id, self.name)
+
 class Jdcommoditymap(models.Model):
 	class Meta:
 		unique_together = ("jdcommodity", "since")
@@ -60,6 +63,7 @@ class Jdcommoditymap(models.Model):
 				except Jdcommodity.DoesNotExist as e:
 					jdc = Jdcommodity(id=int(l[1]))
 					jdc.save()
+					print "增加京东商品: {}".format(jdc)
 				cs = l[2:]
 
 				try:
@@ -68,6 +72,12 @@ class Jdcommoditymap(models.Model):
 					j = Jdcommoditymap(jdcommodity=jdc, since=t)
 					j.save()
 					for c in cs:
-						j.items.add(Item.objects.get(name=c))
+						try:
+							i = Item.objects.get(name=c)
+						except Item.DoesNotExist as e:
+							i = Item(name=c, supplier=Supplier.objects.get(name="未知"))
+							i.save()
+							print "增加物资: {}".format(i)
+						j.items.add(i)
 					j.save()
 					print "增加京东商品映射: {}".format(j)
