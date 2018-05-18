@@ -33,6 +33,10 @@ class Task(models.Model):
 				i = i + 2;
 			Split(account=a, change=change, transaction=tr).save()
 
+	def get_absolute_url(self):
+		return reverse('task_detail', kwargs={'pk': self.pk})
+
+
 class Transaction(models.Model):
 	class Meta:
 		ordering = ['-time', '-id']

@@ -10,3 +10,10 @@ class ShippingForm(forms.Form):
 class ShippingInCreateView(FormView):
 	template_name = "{}/shipping_form.html".format(Organization._meta.app_label)
 	form_class = ShippingForm
+
+	def post(self, request, *args, **kwargs):
+		self.task = Task.objects.get(pk=kwargs['task_id'])
+		return super(ShippingInCreateView, self).post(request, *args, **kwargs)
+
+	def get_success_url(self):
+		return self.task.get_absolute_url()
