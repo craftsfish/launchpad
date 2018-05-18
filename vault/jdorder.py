@@ -24,6 +24,7 @@ class Jdorder(models.Model):
 		(3, "(删除)锁定"),
 		(4, "(删除)等待出库"),
 		(5, "(删除)等待确认收货"),
+		(6, "锁定"),
 	)
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS)
 	task = models.OneToOneField(Task)
@@ -61,7 +62,8 @@ class Jdorder(models.Model):
 						jdc = Jdcommodity.objects.get(id=jdcid)
 					except Jdcommodity.DoesNotExist as e:
 						jdc = Jdcommodity(id=jdcid)
-						jdc.save()
+					jdc.name=get_column_value(title, l, "商品名称")
+					jdc.save()
 					booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
 					items = Jdcommoditymap.get(jdc, booktime)
 					if items == None:
@@ -89,6 +91,9 @@ class Jdorder(models.Model):
 				s.save()
 
 		def __handle_transaction(info, org, repo):
+			if info.status == "锁定":
+				return
+
 			f = 0
 			if re.compile("朱").match(info.remark): #fake order
 				f = 1
