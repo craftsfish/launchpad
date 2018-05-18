@@ -95,7 +95,29 @@ class Jdorder(models.Model):
 			try:
 				o = Jdorder.objects.get(id=info.id)
 				print "[更新订单...] {}: {}".format(info.id, info.status)
-				#TODO
+				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
+					for t in o.task.transactions.all():
+						t.delete()
+					return
+
+				if o.fake != f: #刷单状态变更
+					for t in o.task.transactions.filter(desc__in=["出货", "发货"]):
+						t.delete()
+					if f:
+						__shipping_out(o.task, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
+					else:
+						__jdorder_shipping(o.task, info, org)
+					if info.status != "等待出库":
+						__jdorder_deliver(o.task, repo)
+				else: #正常订单状态迁移
+					if Jdorder.str2status(info.status) != o.status:
+						__jdorder_deliver(o.task, repo)
+
+				#TODO: 发货仓库发生变化
+				o.status = Jdorder.str2status(info.status)
+				o.fake = f
+				o.save()
+
 			except Jdorder.DoesNotExist as e:
 				t = Task(desc="京东订单")
 				t.save()
