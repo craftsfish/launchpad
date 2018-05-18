@@ -17,3 +17,8 @@ class ShippingInCreateView(FormView):
 
 	def get_success_url(self):
 		return self.task.get_absolute_url()
+
+	def get_context_data(self, **kwargs):
+		context = super(ShippingInCreateView, self).get_context_data(**kwargs)
+		context['items'] = Item.objects.all()
+		return context

@@ -6,8 +6,20 @@
 <div class="col col-lg-6">
 	<form action="" method="post">
 		{% csrf_token %}
-		{{ form.as_p }}
 		<input type="submit" value="提交" />
+
+		{{ form.as_p }}
+
+		<table cellpadding="4">
+		<th>
+			<td>品名</td>
+		</th>
+		{% for i in items %}
+		<tr>
+			<td>{{i.name}}</td>
+		</tr>
+		{% endfor %}
+		</table>
 	</form>
 </div>
 {% endblock %}
