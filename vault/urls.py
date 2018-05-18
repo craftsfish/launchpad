@@ -30,5 +30,6 @@ urlpatterns = [
 	url(r'^jdcommodity/(?P<pk>[\d]+)/map/create/$', JdcommoditymapCreateView.as_view(), name='jdcommoditymap_create'),
 
 	#task
+	url(r'^task/$', TaskListView.as_view(), name='task_list'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 ]

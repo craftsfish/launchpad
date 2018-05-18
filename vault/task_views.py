@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import DetailView
+from django.views.generic import ListView
 from task import *
+
+class TaskListView(ListView):
+	model = Task
+	paginate_by = 20
 
 class TaskDetailView(DetailView):
 	model = Task

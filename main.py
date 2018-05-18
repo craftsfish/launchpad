@@ -17,11 +17,16 @@ import traceback
 from vault.item import *
 from vault.jdcommodity import *
 from vault.jdorder import *
+from vault.task import *
+
+def test():
+	Task(desc="经营调整").save()
 
 options = (
 	["ii", "导入物资", Item.Import],
 	["ijcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijdo", "导入京东订单", Jdorder.Import],
+	["t", "测试", test],
 )
 
 def command_handling():
