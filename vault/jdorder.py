@@ -119,6 +119,8 @@ class Jdorder(models.Model):
 						__jdorder_deliver(o.task, repo)
 
 				#TODO: 发货仓库发生变化
+
+				#更新订单状态
 				o.status = Jdorder.str2status(info.status)
 				o.fake = f
 				o.save()
