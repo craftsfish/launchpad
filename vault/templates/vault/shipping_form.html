@@ -8,7 +8,8 @@
 			jQuery("#item_keyword").on("keyup", function(){
 				var val = jQuery(this).val();
 				jQuery("#item_table tr").filter(function(){
-					$(this).toggle($(this).text().indexOf(val) > -1)
+					var checked=jQuery("[type='checkbox']", this)[0].checked
+					jQuery(this).toggle(checked || ($(this).text().indexOf(val) > -1))
 				});
 			});
 		});
@@ -24,7 +25,7 @@
 		{{ form.as_p }}
 
 		<input id="item_keyword" type="text" placeholder="筛选..."/>
-		<table cellpadding="4">
+		<table cellpadding="4" border="1">
 		<thead>
 			<tr>
 			<th></th>
