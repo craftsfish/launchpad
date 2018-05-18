@@ -7,6 +7,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 import django
+from django.utils import timezone
 
 #setup django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "launchpad.settings")
@@ -20,7 +21,9 @@ from vault.jdorder import *
 from vault.task import *
 
 def test():
-	Task(desc="经营调整").save()
+	t = Task(desc="经营调整")
+	t.save()
+	t.add_transaction("测试",timezone.now(), Organization.objects.get(pk=1), Item.objects.get(pk=1), ("资产", "库存"), 1, ("收入", "收货"))
 
 options = (
 	["ii", "导入物资", Item.Import],

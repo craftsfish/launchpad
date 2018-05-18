@@ -26,12 +26,18 @@
 		<input id="item_keyword" type="text" placeholder="筛选..."/>
 		<table cellpadding="4">
 		<thead>
-			<tr><th>品名</th></tr>
+			<tr>
+			<th></th>
+			<th>品名</th>
+			<th>数量</th>
+			</tr>
 		</thead>
 		<tbody id="item_table">
 		{% for i in items %}
 		<tr>
-			<td>{{i.name}}</td>
+			<td><input type="checkbox" id={{i.check_id}} /></td>
+			<td>{{i.name}}<input type="hidden" id={{i.item_id}} value={{i.id}}/></td>
+			<td><input type="number" id={{i.number_id}} value=1 step="1"/></td>
 		</tr>
 		{% endfor %}
 		</tbody>
