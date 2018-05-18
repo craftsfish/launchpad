@@ -69,17 +69,24 @@ class Jdorder(models.Model):
 						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, l, "商品名称"))
 			return result
 
-		def __get_suffix(quantity):
-			if quantity < 0:
-				return "(-)"
-			return "(+)"
-
-		def __shipping_out(task, time, organization, item, quantity, repository):
-			task.add_transaction("出货" + __get_suffix(quantity), time, organization, item, ("资产", "库存"), -quantity, ("支出", "出货"))
-			task.add_transaction("发货" + __get_suffix(quantity), time, repository, item, ("负债", "应发"), quantity, ("支出", "发货"))
+		def __shipping_out(task, time, organization, item, quantity):
+			task.add_transaction("出货", time, organization, item, ("负债", "应发"), quantity, ("支出", "出货"))
 
 		def __deliver(task, time, item, quantity, repository):
-			task.add_transaction("出库" + __get_suffix(quantity), time, repository, item, ("资产", "库存"), -quantity, ("负债", "应发"))
+			task.add_transaction("发货", time, repository, item, ("资产", "库存"), -quantity, ("支出", "出货"))
+
+		def __jdorder_shipping(task, info, organization):
+			for i in info.invoices:
+				for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
+					__shipping_out(task, info.booktime, organization, item, i.number)
+
+		def __jdorder_deliver(task, repository):
+			for t in task.transactions.filter(desc="出货"):
+				s = t.splits.get(account__category=1) #负债, 应发
+				__deliver(task, t.time, s.account.item, s.change, repository)
+				s.account = Account.get(s.account.organization, s.account.item, "资产", "库存")
+				s.change = -s.change
+				s.save()
 
 		def __handle_transaction(info, org, repo):
 			try:
@@ -98,23 +105,11 @@ class Jdorder(models.Model):
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					return #no transaction should be added
 
-				#出单
 				t.add_transaction("出单", info.booktime, org, Item.objects.get(name="人民币"),
 					("资产", "应收账款"), info.sale, ("收入", "营业收入"))
-
-				#出货
-				if f == 1: #fake order
-					__shipping_out(t, info.booktime, org, Item.objects.get(name="洗衣粉"), 1, repo)
-				else:
-					for i in info.invoices:
-						for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
-							__shipping_out(t, info.booktime, org, item, i.number, repo)
-
-				#出库
-				for transaction in t.transactions.filter(desc="出货"):
-					split = transaction.splits.get(account__category=3) #支出
-					if info.status != "等待出库":
-						__deliver(t, info.booktime, split.account.item, split.change, repo)
+				__jdorder_shipping(t, info, org)
+				if info.status != "等待出库":
+					__jdorder_deliver(t, repo)
 
 		def __import():
 			ts = []

@@ -9,5 +9,5 @@ class TaskDetailView(DetailView):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
 		context['trans'] = self.object.transactions.all().order_by("time", "id")
 		for t in context['trans']:
-			t.ss = t.splits.all()
+			t.ss = t.splits.all().order_by("id")
 		return context
