@@ -2,23 +2,39 @@
 
 {% block header %}进货{% endblock %}
 
+{% block extra_script %}
+	<script>
+		jQuery(document).ready(function(){
+			jQuery("#item_keyword").on("keyup", function(){
+				var val = jQuery(this).val();
+				jQuery("#item_table tr").filter(function(){
+					$(this).toggle($(this).text().indexOf(val) > -1)
+				});
+			});
+		});
+	</script>
+{% endblock %}
+
 {% block content %}
 <div class="col col-lg-6">
 	<form action="" method="post">
 		{% csrf_token %}
-		<input type="submit" value="提交" />
+		<input type="submit" value="提交"/>
 
 		{{ form.as_p }}
 
+		<input id="item_keyword" type="text" placeholder="筛选..."/>
 		<table cellpadding="4">
-		<th>
-			<td>品名</td>
-		</th>
+		<thead>
+			<tr><th>品名</th></tr>
+		</thead>
+		<tbody id="item_table">
 		{% for i in items %}
 		<tr>
 			<td>{{i.name}}</td>
 		</tr>
 		{% endfor %}
+		</tbody>
 		</table>
 	</form>
 </div>
