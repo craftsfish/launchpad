@@ -5,6 +5,7 @@ from account_views import *
 from transaction_views import *
 from jdcommodity_views import *
 from task_views import *
+from shipping_views import *
 
 urlpatterns = [
 	#supplier
@@ -32,4 +33,7 @@ urlpatterns = [
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
+
+	#misc
+	url(r'^shipping_in/(?P<task_id>[\d]+)/$', ShippingInCreateView.as_view(), name='shipping_in_create'),
 ]
