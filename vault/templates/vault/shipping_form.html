@@ -20,7 +20,31 @@
 <div class="col col-lg-6">
 	<form action="" method="post">
 		{% csrf_token %}
-		{{ form.as_p }}
+		{{ form.non_field_errors }}
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		<div class="fieldWrapper">
+			{{ form.organization.errors }}
+			{{ form.organization.label_tag }}
+			{{ form.organization }}
+		</div>
+		<br>
+
+		<fieldset>
+			<legend>收货设置(选填)</legend>
+			<div class="fieldWrapper">
+				{{ form.repository.errors }}
+				{{ form.repository.label_tag }}
+				{{ form.repository }}
+			</div>
+			<div class="fieldWrapper">
+				{{ form.status.errors }}
+				{{ form.status.label_tag }}
+				{{ form.status }}
+			</div>
+		</fieldset>
+		<br>
 
 		<fieldset>
 			<legend>商品清单</legend>
