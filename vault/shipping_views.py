@@ -6,7 +6,7 @@ from django.views.generic import FormView
 from django.utils import timezone
 
 class ShippingForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects.all())
+	organization = forms.ModelChoiceField(queryset=Organization.objects.all(), label="进/出货单位")
 
 class ShippingInCreateView(FormView):
 	template_name = "{}/shipping_form.html".format(Organization._meta.app_label)

@@ -20,29 +20,35 @@
 <div class="col col-lg-6">
 	<form action="" method="post">
 		{% csrf_token %}
-		<input type="submit" value="提交"/>
 		{{ form.as_p }}
 
-		<input id="item_keyword" type="text" placeholder="筛选..."/>
-		<input type="hidden" name="items_total" value={{items|length}} />
-		<table cellpadding="4" border="1">
-		<thead>
+		<fieldset>
+			<legend>商品清单</legend>
+			<input id="item_keyword" type="text" placeholder="筛选..."/>
+			<input type="hidden" name="items_total" value={{items|length}} />
+			<table cellpadding="4" border="1">
+			<thead>
+				<tr>
+				<th></th>
+				<th>品名</th>
+				<th>数量</th>
+				</tr>
+			</thead>
+			<tbody id="item_table">
+			{% for i in items %}
 			<tr>
-			<th></th>
-			<th>品名</th>
-			<th>数量</th>
+				<td><input type="checkbox" name={{i.name_check}} /></td>
+				<td>{{i.name}}<input type="hidden" name={{i.name_item}} value={{i.id}} /></td>
+				<td><input type="number" name={{i.name_quantity}} value=1 step=3 /></td>
 			</tr>
-		</thead>
-		<tbody id="item_table">
-		{% for i in items %}
-		<tr>
-			<td><input type="checkbox" name={{i.name_check}} /></td>
-			<td>{{i.name}}<input type="hidden" name={{i.name_item}} value={{i.id}} /></td>
-			<td><input type="number" name={{i.name_quantity}} value=1 step=3 /></td>
-		</tr>
-		{% endfor %}
-		</tbody>
-		</table>
+			{% endfor %}
+			</tbody>
+			</table>
+		</fieldset>
+
+		<br/>
+
+		<input type="submit" value="提交"/>
 	</form>
 </div>
 {% endblock %}
