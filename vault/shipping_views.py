@@ -7,6 +7,13 @@ from django.utils import timezone
 
 class ShippingForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects.all(), label="进/出货单位")
+	repository = forms.ModelChoiceField(queryset=Organization.objects.all(), label="收货仓库", required=False)
+	ITEM_STATUS_CHOICES = (
+		(0, "完好"),
+		(1, "残缺"),
+		(2, "破损"),
+	)
+	status = forms.ChoiceField(choices=ITEM_STATUS_CHOICES, label="验货结果")
 
 class ShippingInCreateView(FormView):
 	template_name = "{}/shipping_form.html".format(Organization._meta.app_label)
