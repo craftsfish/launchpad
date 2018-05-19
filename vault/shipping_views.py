@@ -50,10 +50,20 @@ def sale(task, time, organization, item, quantity, repository, status):
 	if repository:
 		task.add_transaction("出库", time, repository, item, ("资产", status), -quantity, ("支出", "发货"))
 
+def back_2_supplier(task, time, organization, item, quantity, repository, status):
+	cash = Item.objects.get(name="人民币")
+	if repository:
+		task.add_transaction("发货", time, organization, item, ("资产", "在库"), -quantity, ("收入", "进货"))
+	else:
+		task.add_transaction("出货", time, organization, item, ("负债", "应发"), quantity, ("收入", "进货"))
+	task.add_transaction("货款", time, organization, cash, ("资产", "应收货款"), quantity*item.value, ("支出", "进货"))
+	if repository:
+		task.add_transaction("出库", time, repository, item, ("资产", status), -quantity, ("收入", "收货"))
+
 class ShippingInCreateView(FormView):
 	template_name = "{}/shipping_form.html".format(Organization._meta.app_label)
 	form_class = ShippingForm
-	TITLES = ("进货", "出货", "收货", "发货")
+	TITLES = ("进货", "销售", "退供", "召回")
 
 	def post(self, request, *args, **kwargs):
 		self.shipping_type = int(kwargs['type'])
@@ -72,6 +82,8 @@ class ShippingInCreateView(FormView):
 					purchase(self.task, timezone.now(), o, it, q, r, s)
 				elif self.shipping_type == 1:
 					sale(self.task, timezone.now(), o, it, q, r, s)
+				elif self.shipping_type == 2:
+					back_2_supplier(self.task, timezone.now(), o, it, q, r, s)
 				else:
 					#TODO: we should not be here
 					pass
