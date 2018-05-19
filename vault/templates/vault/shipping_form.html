@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block header %}进货{% endblock %}
+{% block header %}{{title}}{% endblock %}
 
 {% block extra_script %}
 	<script>
@@ -32,7 +32,7 @@
 		<br>
 
 		<fieldset>
-			<legend>收货设置(选填)</legend>
+			<legend>仓库设置(选填)</legend>
 			<div class="fieldWrapper">
 				{{ form.repository.errors }}
 				{{ form.repository.label_tag }}

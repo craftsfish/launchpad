@@ -35,5 +35,5 @@ urlpatterns = [
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 
 	#misc
-	url(r'^shipping_in/(?P<task_id>[\d]+)/$', ShippingInCreateView.as_view(), name='shipping_in_create'),
+	url(r'^shipping/((?P<type>\d))/(?P<task_id>[\d]+)/$', ShippingInCreateView.as_view(), name='shipping_in_create'),
 ]

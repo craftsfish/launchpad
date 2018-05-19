@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col-sm-auto">
 	<p>{{object.desc}}</p>
-	<a href="{% url 'shipping_in_create' object.id %}">+进货</a>
+	<a href="{% url 'shipping_in_create' 0 object.id %}">进货(+/-)</a>
 	<table cellpadding="4" border="1">
 	<tr>
 		<th>时间</th>

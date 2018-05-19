@@ -33,6 +33,7 @@ class ShippingForm(forms.Form):
 class ShippingInCreateView(FormView):
 	template_name = "{}/shipping_form.html".format(Organization._meta.app_label)
 	form_class = ShippingForm
+	TITLES = ("进货", "出货", "收货", "发货")
 
 	def post(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['task_id'])
@@ -61,9 +62,14 @@ class ShippingInCreateView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ShippingInCreateView, self).get_context_data(**kwargs)
+		context['title'] = ShippingInCreateView.TITLES[self.shipping_type]
 		context['items'] = Item.objects.all()
 		for i, j in enumerate(context['items']):
 			j.name_check = "invoice_{}_include".format(i)
 			j.name_item = "invoice_{}_item".format(i)
 			j.name_quantity = "invoice_{}_quantity".format(i)
 		return context
+
+	def get(self, request, *args, **kwargs):
+		self.shipping_type = int(kwargs['type'])
+		return super(ShippingInCreateView, self).get(request, *args, **kwargs)
