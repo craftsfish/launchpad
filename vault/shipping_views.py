@@ -14,14 +14,14 @@ class ShippingForm(forms.Form):
 	rs = []
 	for i in r.descendants():
 		rs.append(i.id)
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=os), label="进/出货单位")
-	repository = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=rs), label="收货仓库", required=False)
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=os))
+	repository = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=rs), required=False)
 	ITEM_STATUS_CHOICES = (
 		(0, "完好"),
 		(1, "残缺"),
 		(2, "破损"),
 	)
-	status = forms.ChoiceField(choices=ITEM_STATUS_CHOICES, label="验货结果")
+	status = forms.ChoiceField(choices=ITEM_STATUS_CHOICES)
 
 	@staticmethod
 	def status_2_str(s):
