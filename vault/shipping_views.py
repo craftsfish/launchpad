@@ -30,20 +30,25 @@ class ShippingForm(forms.Form):
 				return v
 		return None
 
-def get_sign(i):
-	if i < 0:
-		return "-"
-	return "+"
-
 def purchase(task, time, organization, item, quantity, repository, status):
 	cash = Item.objects.get(name="人民币")
-	account = ("资产", "应收")
 	if repository:
-		account = ("资产", "在库")
-	task.add_transaction("进货("+get_sign(quantity)+")", time, organization, item, account, quantity, ("收入", "进货"))
-	task.add_transaction("货款("+get_sign(quantity)+")", time, organization, cash, ("负债", "应付货款"), quantity*item.value, ("支出", "进货"))
+		task.add_transaction("收货", time, organization, item, ("资产", "在库"), quantity, ("收入", "进货"))
+	else:
+		task.add_transaction("进货", time, organization, item, ("资产", "应收"), quantity, ("收入", "进货"))
+	task.add_transaction("货款", time, organization, cash, ("负债", "应付货款"), quantity*item.value, ("支出", "进货"))
 	if repository:
-		task.add_transaction("收货("+get_sign(quantity)+")", time, repository, item, ("资产", status), quantity, ("收入", "收货"))
+		task.add_transaction("入库", time, repository, item, ("资产", status), quantity, ("收入", "收货"))
+
+def sale(task, time, organization, item, quantity, repository, status):
+	cash = Item.objects.get(name="人民币")
+	if repository:
+		task.add_transaction("发货", time, organization, item, ("资产", "在库"), -quantity, ("支出", "出货"))
+	else:
+		task.add_transaction("出货", time, organization, item, ("负债", "应发"), quantity, ("支出", "出货"))
+	task.add_transaction("营收", time, organization, cash, ("资产", "应收货款"), quantity*item.value, ("收入", "营收"))
+	if repository:
+		task.add_transaction("出库", time, repository, item, ("资产", status), -quantity, ("支出", "发货"))
 
 class ShippingInCreateView(FormView):
 	template_name = "{}/shipping_form.html".format(Organization._meta.app_label)
@@ -63,7 +68,13 @@ class ShippingInCreateView(FormView):
 			if p.get("invoice_{}_include".format(i)) == "on":
 				it = Item.objects.get(pk=p["invoice_{}_item".format(i)])
 				q = int(p["invoice_{}_quantity".format(i)])
-				purchase(self.task, timezone.now(), o, it, q, r, s)
+				if self.shipping_type == 0:
+					purchase(self.task, timezone.now(), o, it, q, r, s)
+				elif self.shipping_type == 1:
+					sale(self.task, timezone.now(), o, it, q, r, s)
+				else:
+					#TODO: we should not be here
+					pass
 		return super(ShippingInCreateView, self).post(request, *args, **kwargs)
 
 	def get_success_url(self):
@@ -77,6 +88,7 @@ class ShippingInCreateView(FormView):
 			j.name_check = "invoice_{}_include".format(i)
 			j.name_item = "invoice_{}_item".format(i)
 			j.name_quantity = "invoice_{}_quantity".format(i)
+			j.step = 3
 		return context
 
 	def get(self, request, *args, **kwargs):
