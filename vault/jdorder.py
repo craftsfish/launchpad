@@ -81,7 +81,7 @@ class Jdorder(models.Model):
 			for t in task.transactions.filter(desc="期货出货"):
 				s = t.splits.get(account__category=1) #负债, 应发
 				shipping_out(task, t.time, s.account.organization, s.account.item, s.change)
-				shipping_deliver(task, t.time, s.account.item, s.change, repository)
+				shipping_deliver(task, t.time, repository, s.account.item, s.change, "完好")
 
 		def __handle_transaction(info, org, repo):
 			if info.status == "锁定":
@@ -99,7 +99,7 @@ class Jdorder(models.Model):
 					return
 
 				if o.fake != f: #刷单状态变更
-					for t in o.task.transactions.filter(desc__in=["出货", "发货"]):
+					for t in o.task.transactions.filter(desc__in=["期货出货", "期货发货", "出库"]):
 						t.delete()
 					if f:
 						shipping_out_future(o.task, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)

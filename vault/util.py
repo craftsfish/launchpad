@@ -15,5 +15,5 @@ def shipping_out_future(task, time, organization, item, quantity):
 def shipping_out(task, time, organization, item, quantity):
 	task.add_transaction("期货发货", time, organization, item, ("资产", "在库"), -quantity, ("负债", "应发"))
 
-def shipping_deliver(task, time, item, quantity, repository):
-	task.add_transaction("出库", time, repository, item, ("资产", "库存"), -quantity, ("支出", "出库"))
+def shipping_deliver(task, time, repository, item, quantity, status):
+	task.add_transaction("出库", time, repository, item, ("资产", status), -quantity, ("支出", "出库"))
