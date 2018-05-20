@@ -39,6 +39,26 @@ class Tmorder(models.Model):
 
 	@staticmethod
 	def Import_List():
+		def __handle_list(order_id, time, status, sale, fake, organization, repository):
+			if status not in Tmorder.statuses():
+				print "[天猫]未知订单状态: {}".format(status)
+				return
+
+			try:
+				o = Tmorder.objects.get(id=order_id)
+				#TODO: update
+			except Tmorder.DoesNotExist as e:
+				t = Task(desc="天猫订单")
+				t.save()
+				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake)
+				o.save()
+				if status == "交易关闭":
+					return
+				t.add_transaction("出单", time, organization, Item.objects.get(name="人民币"), ("资产", "应收账款"), sale, ("收入", "营业收入"))
+				if fake:
+					Shipping.future_out(t, time, organization, Item.objects.get(name="洗衣粉"), 1)
+					task_future_deliver(t, repository)
+
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
@@ -53,27 +73,5 @@ class Tmorder(models.Model):
 				f = False
 				if remark.find("朱") != -1:
 					f = True
-				print "[天猫]订单: {}".format(order_id)
 
-				#check
-				if status not in Tmorder.statuses():
-					print "[天猫]未知订单状态: {}".format(status)
-					return
-
-				#sync
-				try:
-					o = Tmorder.objects.get(id=order_id)
-					#TODO: update
-				except Tmorder.DoesNotExist as e:
-					t = Task(desc="天猫订单")
-					t.save()
-					print "[添加订单...] {}: {} | 刷单标记: {}".format(order_id, status, f)
-					o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=f)
-					o.save()
-
-					if status == "交易关闭":
-						continue
-					t.add_transaction("出单", when, org, Item.objects.get(name="人民币"), ("资产", "应收账款"), sale, ("收入", "营业收入"))
-					if f:
-						Shipping.future_out(t, when, org, Item.objects.get(name="洗衣粉"), 1)
-						task_future_deliver(t, repo)
+				__handle_list(order_id, when, status, sale, f, org, repo)
