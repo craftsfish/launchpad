@@ -13,6 +13,11 @@ class Task(models.Model):
 			t.delete()
 		super(Task, self).delete(*args, **kwargs)
 
+	def delete_transactions_start_with(self, *descs):
+		for d in descs:
+			for t in self.transactions.filter(desc__startswith=d):
+				t.delete()
+
 	def add_transaction(self, desc, time, organization, item, *args):
 		tr = Transaction(desc=desc, task=self, time=time)
 		tr.save()

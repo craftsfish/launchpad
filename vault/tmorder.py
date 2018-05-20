@@ -42,19 +42,13 @@ class Tmorder(models.Model):
 	@staticmethod
 	def Import_List():
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
-			if status not in Tmorder.statuses():
-				print "[天猫]未知订单状态: {}".format(status)
-				return
-
 			try: #更新
 				o = Tmorder.objects.get(id=order_id)
 				if status == "交易关闭":
-					for t in o.task.transactions.all():
-						t.delete()
+					order.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
 					return
 				if o.fake != fake:
-					for t in o.task.transactions.filter(desc__in=["期货出货", "期货发货", "出库"]):
-						t.delete()
+					order.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
 					if fake:
 						Shipping.future_out(o.task, time, organization, Item.objects.get(name="洗衣粉"), 1)
 						task_future_deliver(o.task, repository)
@@ -79,8 +73,11 @@ class Tmorder(models.Model):
 			org = Organization.objects.get(name="泰福高腾复专卖店")
 			repo = Organization.objects.get(name="孤山仓")
 			for i in reader:
-				order_id = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
 				status = get_column_value(title, i, "订单状态")
+				if status not in Tmorder.statuses():
+					print "[天猫]未知订单状态: {}".format(status)
+					continue
+				order_id = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
 				when = utc_2_datetime(cst_2_utc(get_column_value(title, i, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
 				sale = Decimal(get_column_value(title, i, "买家应付货款"))
 				remark = get_column_value(title, i, "订单备注")
@@ -107,14 +104,9 @@ class Tmorder(models.Model):
 				future_deliver = True
 
 			#update
-			if status == "等待买家付款" and future_out:
-				for t in order.task.transactions.filter(desc__startswith="期货出货."+commodity.id):
-					t.delete()
-				for t in order.task.transactions.filter(desc__startswith="期货发货."+commodity.id):
-					t.delete()
-				for t in order.task.transactions.filter(desc__startswith="出库."+commodity.id):
-					t.delete()
-					return
+			if status in ["等待买家付款", "交易关闭"] and future_out:
+				order.task.delete_transactions_start_with("期货出货."+commodity.id, "期货发货."+commodity.id, "出库."+commodity.id)
+				return
 
 			if status in ["买家已付款，等待卖家发货", "卖家已发货，等待买家确认", "交易成功"] and not future_out:
 				for item in m:
