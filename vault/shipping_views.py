@@ -6,7 +6,7 @@ from django.views.generic import FormView
 from django.utils import timezone
 
 class ShippingForm(forms.Form):
-	o = Organization.objects.get(name="组织")
+	o = Organization.objects.get(name="企业")
 	os = []
 	for i in o.descendants():
 		os.append(i.id)
