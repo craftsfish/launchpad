@@ -39,8 +39,8 @@ class Tmcommoditymap(models.Model):
 	def __str__(self):
 		return self.str_time() + " | " + self.str_items()
 
-	#def get_absolute_url(self):
-		#return reverse('tmcommodity_detail', kwargs={'pk': self.tmcommodity.pk})
+	def get_absolute_url(self):
+		return reverse('tmcommodity_detail', kwargs={'pk': self.tmcommodity.pk})
 
 	@staticmethod
 	def get(in_tmcommodity, in_timestamp):

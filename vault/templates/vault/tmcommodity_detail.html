@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block header %}天猫商品详情{% endblock %}
+
+{% block content %}
+	<div class="col-sm-auto">
+		<p>{{object.name}}</p>
+		<table border="1" cellpadding="4">
+			<tr>
+				<th>时间</th>
+				<th>物资明细</th>
+			</tr>
+			{% for m in maps %}
+			<tr class="text-monospace">
+				<td>{{m.t}}</td>
+				<td>{{m.d}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

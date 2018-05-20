@@ -4,6 +4,7 @@ from item_views import *
 from account_views import *
 from transaction_views import *
 from jdcommodity_views import *
+from tmcommodity_views import *
 from task_views import *
 from shipping_views import *
 
@@ -29,6 +30,11 @@ urlpatterns = [
 	url(r'^jdcommodity/$', JdcommodityListView.as_view(), name='jdcommodity_list'),
 	url(r'^jdcommodity/(?P<pk>[\d]+)/$', JdcommodityDetailView.as_view(), name='jdcommodity_detail'),
 	url(r'^jdcommodity/(?P<pk>[\d]+)/map/create/$', JdcommoditymapCreateView.as_view(), name='jdcommoditymap_create'),
+
+	#tmcommodity
+	url(r'^tmcommodity/$', TmcommodityListView.as_view(), name='tmcommodity_list'),
+	url(r'^tmcommodity/(?P<pk>[\w]+)/$', TmcommodityDetailView.as_view(), name='tmcommodity_detail'),
+	url(r'^tmcommodity/(?P<pk>[\w]+)/map/create/$', TmcommoditymapCreateView.as_view(), name='tmcommoditymap_create'),
 
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),

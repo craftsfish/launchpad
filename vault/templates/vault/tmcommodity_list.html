@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block header %}天猫商品{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>编号</th>
+			<th>名称</th>
+			<th colspan="2">映射</th>
+		</tr>
+		{% for tmcommodity in object_list %}
+			<tr>
+				<td><a href="{% url 'tmcommodity_detail' tmcommodity.id %}">{{tmcommodity.id}}</a></td>
+				<td>{{tmcommodity.name}}</td>
+				<td><a href="{% url 'tmcommoditymap_create' tmcommodity.id%}">+</a></td>
+				<td class="text-monospace">{{ tmcommodity.map }}</td>
+			<tr>
+		{% endfor %}
+	</table>
+
+	{% if is_paginated %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page={{ page_obj.previous_page_number }}">前一页</a>
+				{% endif %}
+
+				<span class="current">
+					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+				</span>
+
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">后一页</a>
+				{% endif %}
+			</span>
+		</div>
+	{%endif %}
+</div>
+{% endblock %}
