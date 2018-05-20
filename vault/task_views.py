@@ -5,7 +5,6 @@ from task import *
 
 class TaskListView(ListView):
 	model = Task
-	paginate_by = 20
 
 class TaskDetailView(DetailView):
 	model = Task

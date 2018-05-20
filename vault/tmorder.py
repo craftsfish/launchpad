@@ -9,6 +9,7 @@ from organization import *
 from account import *
 from decimal import Decimal
 from util import *
+from django.utils import timezone
 
 class Tmorder(models.Model):
 	id = models.BigIntegerField("订单编号", primary_key=True)
@@ -22,6 +23,7 @@ class Tmorder(models.Model):
 	status = models.IntegerField("状态", choices=TM_ORDER_STATUS)
 	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
+	time = models.DateTimeField(default=timezone.now)
 
 	@staticmethod
 	def statuses():
@@ -62,7 +64,7 @@ class Tmorder(models.Model):
 			except Tmorder.DoesNotExist as e: #新增
 				t = Task(desc="天猫订单")
 				t.save()
-				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake)
+				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake, time=time)
 				o.save()
 				if status == "交易关闭":
 					return
@@ -90,6 +92,38 @@ class Tmorder(models.Model):
 
 	@staticmethod
 	def Import_Detail():
+		def __handle_detail(order, commodity, status, quantity, organization, repository):
+			m = Tmcommoditymap.get(commodity, order.time)
+			if m == None:
+				print "商家编码: {}还没有商品映射信息".format(commodity.id)
+				return
+
+			#retrieve existing status
+			future_out = False
+			if order.task.transactions.filter(desc__startswith="期货出货."+commodity.id).count():
+				future_out = True
+			future_deliver = False
+			if order.task.transactions.filter(desc__startswith="期货发货."+commodity.id).count():
+				future_deliver = True
+
+			#update
+			if status == "等待买家付款" and future_out:
+				for t in order.task.transactions.filter(desc__startswith="期货出货."+commodity.id):
+					t.delete()
+				for t in order.task.transactions.filter(desc__startswith="期货发货."+commodity.id):
+					t.delete()
+				for t in order.task.transactions.filter(desc__startswith="出库."+commodity.id):
+					t.delete()
+					return
+
+			if status in ["买家已付款，等待卖家发货", "卖家已发货，等待买家确认", "交易成功"] and not future_out:
+				for item in m:
+					Shipping.future_out(order.task, order.time, organization, item, quantity, commodity.id)
+
+			if status in ["卖家已发货，等待买家确认", "交易成功"] and not future_deliver:
+				for item in m:
+					Shipping.future_deliver(order.task, order.time, organization, item, quantity, repository, "完好", commodity.id)
+
 		with open('/tmp/tm.detail.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
@@ -97,11 +131,16 @@ class Tmorder(models.Model):
 			repo = Organization.objects.get(name="孤山仓")
 			for i in reader:
 				oid = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
+				o = Tmorder.objects.get(pk=oid)
+				if o.fake or o.status == Tmorder.str2status("交易关闭"):
+					continue
+
 				cid = get_column_value(title, i, "商家编码")
 				if cid == "null":
 					print "订单{}缺少商家编码".format(oid)
 					continue
 				c = Tmcommodity.objects.get(pk=cid)
-				o = Tmorder.objects.get(pk=oid)
 				status = get_column_value(title, i, "订单状态")
 				quantity = int(get_column_value(title, i, "购买数量"))
+
+				__handle_detail(o, c, status, quantity, org, repo)
