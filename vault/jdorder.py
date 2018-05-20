@@ -77,12 +77,6 @@ class Jdorder(models.Model):
 				for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
 					shipping_out_future(task, info.booktime, organization, item, i.number)
 
-		def __jdorder_deliver(task, repository):
-			for t in task.transactions.filter(desc="期货出货"):
-				s = t.splits.get(account__category=1) #负债, 应发
-				shipping_out(task, t.time, s.account.organization, s.account.item, s.change)
-				shipping_deliver(task, t.time, repository, s.account.item, s.change, "完好")
-
 		def __handle_transaction(info, org, repo):
 			if info.status == "锁定":
 				return
@@ -106,10 +100,10 @@ class Jdorder(models.Model):
 					else:
 						__jdorder_shipping_out_future(o.task, info, org)
 					if info.status != "等待出库":
-						__jdorder_deliver(o.task, repo)
+						task_future_deliver(o.task, repo)
 				else: #正常订单状态迁移
 					if Jdorder.str2status(info.status) != o.status:
-						__jdorder_deliver(o.task, repo)
+						task_future_deliver(o.task, repo)
 
 				#TODO: 发货仓库发生变化
 
@@ -134,7 +128,7 @@ class Jdorder(models.Model):
 				else:
 					__jdorder_shipping_out_future(t, info, org)
 				if info.status != "等待出库":
-					__jdorder_deliver(t, repo)
+					task_future_deliver(t, repo)
 
 		def __import():
 			ts = []

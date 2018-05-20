@@ -8,6 +8,7 @@ from tmcommodity import *
 from organization import *
 from account import *
 from decimal import Decimal
+from util import *
 
 class Tmorder(models.Model):
 	id = models.BigIntegerField("订单编号", primary_key=True)
@@ -73,3 +74,6 @@ class Tmorder(models.Model):
 					if status == "交易关闭":
 						continue
 					t.add_transaction("出单", when, org, Item.objects.get(name="人民币"), ("资产", "应收账款"), sale, ("收入", "营业收入"))
+					if f:
+						shipping_out_future(t, when, org, Item.objects.get(name="洗衣粉"), 1)
+						task_future_deliver(t, repo)
