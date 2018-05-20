@@ -7,6 +7,7 @@ from ground import *
 from jdcommodity import *
 from organization import *
 from account import *
+from util import *
 from decimal import Decimal
 
 class Jdtransaction:
@@ -71,24 +72,16 @@ class Jdorder(models.Model):
 						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, l, "商品名称"))
 			return result
 
-		def __shipping_out(task, time, organization, item, quantity):
-			task.add_transaction("出货", time, organization, item, ("负债", "应发"), quantity, ("支出", "出货"))
-
-		def __deliver(task, time, item, quantity, repository):
-			task.add_transaction("发货", time, repository, item, ("资产", "库存"), -quantity, ("支出", "出货"))
-
-		def __jdorder_shipping(task, info, organization):
+		def __jdorder_shipping_out_future(task, info, organization):
 			for i in info.invoices:
 				for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
-					__shipping_out(task, info.booktime, organization, item, i.number)
+					shipping_out_future(task, info.booktime, organization, item, i.number)
 
 		def __jdorder_deliver(task, repository):
-			for t in task.transactions.filter(desc="出货"):
+			for t in task.transactions.filter(desc="期货出货"):
 				s = t.splits.get(account__category=1) #负债, 应发
-				__deliver(task, t.time, s.account.item, s.change, repository)
-				s.account = Account.get(s.account.organization, s.account.item, "资产", "库存")
-				s.change = -s.change
-				s.save()
+				shipping_out(task, t.time, s.account.organization, s.account.item, s.change)
+				shipping_deliver(task, t.time, s.account.item, s.change, repository)
 
 		def __handle_transaction(info, org, repo):
 			if info.status == "锁定":
@@ -109,9 +102,9 @@ class Jdorder(models.Model):
 					for t in o.task.transactions.filter(desc__in=["出货", "发货"]):
 						t.delete()
 					if f:
-						__shipping_out(o.task, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
+						shipping_out_future(o.task, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
 					else:
-						__jdorder_shipping(o.task, info, org)
+						__jdorder_shipping_out_future(o.task, info, org)
 					if info.status != "等待出库":
 						__jdorder_deliver(o.task, repo)
 				else: #正常订单状态迁移
@@ -137,9 +130,9 @@ class Jdorder(models.Model):
 				t.add_transaction("出单", info.booktime, org, Item.objects.get(name="人民币"),
 					("资产", "应收账款"), info.sale, ("收入", "营业收入"))
 				if f:
-					__shipping_out(t, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
+					shipping_out_future(t, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
 				else:
-					__jdorder_shipping(t, info, org)
+					__jdorder_shipping_out_future(t, info, org)
 				if info.status != "等待出库":
 					__jdorder_deliver(t, repo)
 
