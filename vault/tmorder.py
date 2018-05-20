@@ -44,10 +44,22 @@ class Tmorder(models.Model):
 				print "[天猫]未知订单状态: {}".format(status)
 				return
 
-			try:
+			try: #更新
 				o = Tmorder.objects.get(id=order_id)
-				#TODO: update
-			except Tmorder.DoesNotExist as e:
+				if status == "交易关闭":
+					for t in o.task.transactions.all():
+						t.delete()
+					return
+				if o.fake != fake:
+					for t in o.task.transactions.filter(desc__in=["期货出货", "期货发货", "出库"]):
+						t.delete()
+					if fake:
+						Shipping.future_out(o.task, time, organization, Item.objects.get(name="洗衣粉"), 1)
+						task_future_deliver(o.task, repository)
+				o.status = Tmorder.str2status(status)
+				o.fake = fake
+				o.save()
+			except Tmorder.DoesNotExist as e: #新增
 				t = Task(desc="天猫订单")
 				t.save()
 				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake)
