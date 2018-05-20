@@ -87,3 +87,21 @@ class Tmorder(models.Model):
 					f = True
 
 				__handle_list(order_id, when, status, sale, f, org, repo)
+
+	@staticmethod
+	def Import_Detail():
+		with open('/tmp/tm.detail.csv', 'rb') as csvfile:
+			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
+			title = reader.next()
+			org = Organization.objects.get(name="泰福高腾复专卖店")
+			repo = Organization.objects.get(name="孤山仓")
+			for i in reader:
+				oid = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
+				cid = get_column_value(title, i, "商家编码")
+				if cid == "null":
+					print "订单{}缺少商家编码".format(oid)
+					continue
+				c = Tmcommodity.objects.get(pk=cid)
+				o = Tmorder.objects.get(pk=oid)
+				status = get_column_value(title, i, "订单状态")
+				quantity = int(get_column_value(title, i, "购买数量"))
