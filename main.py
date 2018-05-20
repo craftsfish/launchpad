@@ -20,6 +20,7 @@ from vault.jdcommodity import *
 from vault.jdorder import *
 from vault.task import *
 from vault.tmcommodity import *
+from vault.tmorder import *
 
 def test():
 	t = Task(desc="经营调整")
@@ -28,9 +29,10 @@ def test():
 
 options = (
 	["ii", "导入物资", Item.Import],
-	["ijcm", "导入京东商品映射", Jdcommoditymap.Import],
+	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijdo", "导入京东订单", Jdorder.Import],
-	["itcm", "导入天猫商品映射", Tmcommoditymap.Import],
+	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
+	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["t", "测试", test],
 )
 
