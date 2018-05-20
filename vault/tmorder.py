@@ -75,5 +75,5 @@ class Tmorder(models.Model):
 						continue
 					t.add_transaction("出单", when, org, Item.objects.get(name="人民币"), ("资产", "应收账款"), sale, ("收入", "营业收入"))
 					if f:
-						shipping_out_future(t, when, org, Item.objects.get(name="洗衣粉"), 1)
+						Shipping.future_out(t, when, org, Item.objects.get(name="洗衣粉"), 1)
 						task_future_deliver(t, repo)

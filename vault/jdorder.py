@@ -75,7 +75,7 @@ class Jdorder(models.Model):
 		def __jdorder_shipping_out_future(task, info, organization):
 			for i in info.invoices:
 				for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
-					shipping_out_future(task, info.booktime, organization, item, i.number)
+					Shipping.future_out(task, info.booktime, organization, item, i.number)
 
 		def __handle_transaction(info, org, repo):
 			if info.status == "锁定":
@@ -96,7 +96,7 @@ class Jdorder(models.Model):
 					for t in o.task.transactions.filter(desc__in=["期货出货", "期货发货", "出库"]):
 						t.delete()
 					if f:
-						shipping_out_future(o.task, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
+						Shipping.future_out(o.task, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
 					else:
 						__jdorder_shipping_out_future(o.task, info, org)
 					if info.status != "等待出库":
@@ -124,7 +124,7 @@ class Jdorder(models.Model):
 				t.add_transaction("出单", info.booktime, org, Item.objects.get(name="人民币"),
 					("资产", "应收账款"), info.sale, ("收入", "营业收入"))
 				if f:
-					shipping_out_future(t, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
+					Shipping.future_out(t, info.booktime, org, Item.objects.get(name="洗衣粉"), 1)
 				else:
 					__jdorder_shipping_out_future(t, info, org)
 				if info.status != "等待出库":
