@@ -45,10 +45,11 @@ class Tmorder(models.Model):
 			try: #更新
 				o = Tmorder.objects.get(id=order_id)
 				if status == "交易关闭":
-					order.task.delete_transactions_start_with("出单", "期货出货", "期货发货", "出库")
+					for t in o.task.transactions.all():
+						t.delete()
 					return
 				if o.fake != fake:
-					order.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
+					o.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
 					if fake:
 						Shipping.future_out(o.task, time, organization, Item.objects.get(name="洗衣粉"), 1)
 						task_future_deliver(o.task, repository)

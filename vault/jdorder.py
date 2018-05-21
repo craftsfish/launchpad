@@ -47,31 +47,6 @@ class Jdorder(models.Model):
 
 	@staticmethod
 	def Import():
-		def __preliminary_check():
-			with open('/tmp/jd.csv', 'rb') as csvfile:
-				result = True
-				reader = csv.reader(csv_gb18030_2_utf8(csvfile))
-				title = reader.next()
-				for l in reader:
-					status = get_column_value(title, l, "订单状态")
-					if status not in Jdorder.statuses():
-						result = False
-						print "[京东订单]发现新的订单状态: {}".format(status)
-						break
-					jdcid = int(get_column_value(title, l, "商品ID"))
-					try:
-						jdc = Jdcommodity.objects.get(id=jdcid)
-					except Jdcommodity.DoesNotExist as e:
-						jdc = Jdcommodity(id=jdcid)
-					jdc.name=get_column_value(title, l, "商品名称")
-					jdc.save()
-					booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
-					items = Jdcommoditymap.get(jdc, booktime)
-					if items == None:
-						result = False
-						print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, l, "商品名称"))
-			return result
-
 		def __jdorder_shipping_out_future(task, info, organization):
 			for i in info.invoices:
 				for item in Jdcommoditymap.get(Jdcommodity.objects.get(pk=i.id), info.booktime):
@@ -86,7 +61,6 @@ class Jdorder(models.Model):
 				f = 1
 			try:
 				o = Jdorder.objects.get(id=info.id)
-				print "[更新订单...] {}: {}".format(info.id, info.status)
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					for t in o.task.transactions.all():
 						t.delete()
@@ -115,7 +89,6 @@ class Jdorder(models.Model):
 			except Jdorder.DoesNotExist as e:
 				t = Task(desc="京东订单")
 				t.save()
-				print "[添加订单...] {}: {} | 刷单标记: {}".format(info.id, info.status, f)
 				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f)
 				o.save()
 
@@ -130,43 +103,62 @@ class Jdorder(models.Model):
 				if info.status != "等待出库":
 					task_future_deliver(t, repo)
 
-		def __import():
-			ts = []
-			with open('/tmp/jd.csv', 'rb') as csvfile:
-				reader = csv.reader(csv_gb18030_2_utf8(csvfile))
-				title = reader.next()
-				for l in reader:
-					status = get_column_value(title, l, "订单状态")
-					found = False
-					order_id = int(get_column_value(title, l, "订单号"))
-					for t in ts:
-						if t.id == order_id:
-							found = True
-							break
-					if not found:
-						t = Jdtransaction()
-						t.id = order_id
-						t.sale = Decimal(get_column_value(title, l, "应付金额"))
-						t.remark = get_column_value(title, l, "商家备注")
-						t.booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
-						t.status = status
-						t.invoices = []
-						ts.append(t)
+		ts = []
+		with open('/tmp/jd.csv', 'rb') as csvfile:
+			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
+			title = reader.next()
+			bad_orders = set()
+			for l in reader:
+				order_id = int(get_column_value(title, l, "订单号"))
+				#status validation
+				status = get_column_value(title, l, "订单状态")
+				if status not in Jdorder.statuses():
+					print "[京东订单]发现新的订单状态: {}".format(status)
+					bad_orders.add(order_id)
 
-					invc = Jdinvoice()
-					invc.id = int(get_column_value(title, l, "商品ID"))
-					invc.name = get_column_value(title, l, "商品名称")
-					invc.number = int(get_column_value(title, l, "订购数量"))
-					invc.status = get_column_value(title, l, "订单状态")
-					invc.depository = get_column_value(title, l, "仓库名称")
-					t.invoices.append(invc)
+				#add Jdcommodity
+				jdcid = int(get_column_value(title, l, "商品ID"))
+				try:
+					jdc = Jdcommodity.objects.get(id=jdcid)
+				except Jdcommodity.DoesNotExist as e:
+					jdc = Jdcommodity(id=jdcid)
+				jdc.name=get_column_value(title, l, "商品名称")
+				jdc.save()
 
-				org = Organization.objects.get(name="为绿厨具专营店")
-				repo = Organization.objects.get(name="孤山仓")
+				#jdcommodity mapping validation
+				booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
+				if not Jdcommoditymap.get(jdc, booktime):
+					print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, l, "商品名称"))
+					bad_orders.add(order_id)
+
+				#ignore invalid order
+				if order_id in bad_orders:
+					continue
+
+				found = False
 				for t in ts:
-					__handle_transaction(t, org, repo)
+					if t.id == order_id:
+						found = True
+						break
+				if not found:
+					t = Jdtransaction()
+					t.id = order_id
+					t.sale = Decimal(get_column_value(title, l, "应付金额"))
+					t.remark = get_column_value(title, l, "商家备注")
+					t.booktime = booktime
+					t.status = status
+					t.invoices = []
+					ts.append(t)
 
-		if __preliminary_check():
-			__import()
-		else:
-			print "请完善相关信息后重试!!!"
+				invc = Jdinvoice()
+				invc.id = jdc.id
+				invc.name = jdc.name
+				invc.number = int(get_column_value(title, l, "订购数量"))
+				invc.status = status
+				invc.depository = get_column_value(title, l, "仓库名称")
+				t.invoices.append(invc)
+
+			org = Organization.objects.get(name="为绿厨具专营店")
+			repo = Organization.objects.get(name="孤山仓")
+			for t in ts:
+				__handle_transaction(t, org, repo)
