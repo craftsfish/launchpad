@@ -45,7 +45,7 @@ class Tmorder(models.Model):
 			try: #更新
 				o = Tmorder.objects.get(id=order_id)
 				if status == "交易关闭":
-					order.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
+					order.task.delete_transactions_start_with("出单", "期货出货", "期货发货", "出库")
 					return
 				if o.fake != fake:
 					order.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
