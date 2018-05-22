@@ -41,6 +41,7 @@ urlpatterns = [
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
+	url(r'^task/(?P<pk>[\d]+)/buy_future/$', TaskBuyFutureView.as_view(), name='task_buy_future'),
 
 	#misc
 	url(r'^shipping/(?P<type>\d)/(?P<task_id>[\d]+)/$', ShippingInCreateView.as_view(), name='shipping_in_create'),
