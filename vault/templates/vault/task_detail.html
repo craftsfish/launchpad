@@ -27,22 +27,16 @@
 	<tr>
 		<th>时间</th>
 		<th>概述</th>
-		<th>详情</th>
+		<th colspan="{{detail_spans}}">详情</th>
 	</tr>
 	{% for t in trans %}
 	<tr>
 		<td>{{t.time}}</td>
 		<td>{{t.desc}}</td>
-		<td>
-			<table cellpadding="4">
-				{% for s in t.ss %}
-					<tr>
-						<td align="left"><a href="{% url 'account_detail' s.account.id %}">{{s.account}}</a></td>
-						<td align="right">{{s.change}}</td>
-					</tr>
-				{% endfor %}
-			</table>
-		</td>
+		{% for s in t.ss %}
+		<td align="left"><a href="{% url 'account_detail' s.account.id %}">{{s.account}}</a></td>
+		<td align="right">{{s.change}}</td>
+		{% endfor %}
 	</tr>
 	{% endfor %}
 	</table>
