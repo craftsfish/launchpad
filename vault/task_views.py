@@ -81,7 +81,7 @@ class ReceiveForm(forms.Form):
 	for i in r.descendants():
 		rs.append(i.id)
 	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=os))
-	repository = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=rs), required=False)
+	repository = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=rs))
 	ITEM_STATUS_CHOICES = (
 		(0, "完好"),
 		(1, "残缺"),
@@ -121,20 +121,27 @@ class TaskReceiveFutureView(FormView):
 
 	def get(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
+		self.candidate_org = None
+		self.candidates = {}
+		for k, v in self.task.unreceived_accounts().items():
+			a = Account.objects.get(pk=k)
+			if a.item.id == Item.objects.get(name="人民币").id:
+				continue
+			if self.candidate_org == None:
+				self.candidate_org = a.organization
+			if a.organization == self.candidate_org:
+				self.candidates[a.item.id] = v
 		return super(TaskReceiveFutureView, self).get(request, *args, **kwargs)
 
-	def get_context_data(self, **kwargs):
-		candidates = {}
-		for tr in self.task.transactions.all():
-			for s in tr.splits.all():
-				a = s.account
-				if a.name.find("应收") == 0 and a.item.name != "人民币":
-					if candidates.get(a.item.id) == None:
-						candidates[a.item.id] = s.change
-					else:
-						candidates[a.item.id] += s.change
+	def get_initial(self):
+		kwargs = super(TaskReceiveFutureView, self).get_initial()
+		if self.request.method == 'GET':
+			kwargs['organization'] = self.candidate_org
+		return kwargs
 
+	def get_context_data(self, **kwargs):
 		context = super(TaskReceiveFutureView, self).get_context_data(**kwargs)
+
 		context['items'] = Item.objects.all()
 		for i, j in enumerate(context['items']):
 			j.name_check = "invoice_{}_include".format(i)
@@ -143,8 +150,8 @@ class TaskReceiveFutureView(FormView):
 			j.step = 1
 			j.quantity = 1
 			j.checked = ""
-			if candidates.has_key(j.id):
+			if self.candidates.has_key(j.id):
 				j.checked = "checked"
-				j.quantity = int(candidates[j.id])
+				j.quantity = int(self.candidates[j.id])
 
 		return context

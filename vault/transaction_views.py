@@ -68,5 +68,8 @@ class TransactionDeleteView(RedirectView):
 		return Task.objects.get(pk=kwargs['task_id']).get_absolute_url()
 
 	def get(self, request, *args, **kwargs):
-		Transaction.objects.get(pk=kwargs['pk']).delete()
+		t = Transaction.objects.get(pk=kwargs['pk'])
+		task = t.task
+		t.delete()
+		task.update()
 		return super(TransactionDeleteView, self).get(request, *args, **kwargs)

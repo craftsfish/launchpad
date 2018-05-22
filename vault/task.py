@@ -43,7 +43,7 @@ class Task(models.Model):
 	def get_absolute_url(self):
 		return reverse('task_detail', kwargs={'pk': self.pk})
 
-	def update(self):
+	def unreceived_accounts(self):
 		balance = {}
 		for tr in self.transactions.all():
 			for s in tr.splits.all():
@@ -53,15 +53,19 @@ class Task(models.Model):
 						balance[a.id] += s.change
 					else:
 						balance[a.id] = s.change
+		for k, v in balance.items():
+			if v == 0:
+				balance.pop(k)
+		return balance
 
+	def update(self):
 		self.clear = True
 		self.settle = True
-		for k, v in balance.items():
-			if v != 0:
-				if k == Item.objects.get(name="人民币").id:
-					self.clear = False
-				else:
-					self.settle = False
+		for k, v in self.unreceived_accounts().items():
+			if Account.objects.get(pk=k).item.id == Item.objects.get(name="人民币").id:
+				self.clear = False
+			else:
+				self.settle = False
 		self.save()
 
 class Transaction(models.Model):
