@@ -43,6 +43,26 @@ class Task(models.Model):
 	def get_absolute_url(self):
 		return reverse('task_detail', kwargs={'pk': self.pk})
 
+	def update(self):
+		balance = {}
+		for tr in self.transactions.all():
+			for s in tr.splits.all():
+				a = s.account
+				if a.name.find("应收") == 0:
+					if balance.get(a.id) != None:
+						balance[a.id] += s.change
+					else:
+						balance[a.id] = s.change
+
+		self.clear = True
+		self.settle = True
+		for k, v in balance.items():
+			if v != 0:
+				if k == Item.objects.get(name="人民币").id:
+					self.clear = False
+				else:
+					self.settle = False
+		self.save()
 
 class Transaction(models.Model):
 	class Meta:

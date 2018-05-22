@@ -55,6 +55,7 @@ class TaskBuyFutureView(FormView):
 				t = timezone.now()
 				self.task.add_transaction("进货", t, o, it, ("资产", "应收"), q, ("收入", "进货"))
 				self.task.add_transaction("货款", t, o, cash, ("负债", "应付货款"), q*it.value, ("支出", "进货"))
+		self.task.update()
 		return super(TaskBuyFutureView, self).post(request, *args, **kwargs)
 
 	def get_success_url(self):
@@ -112,6 +113,7 @@ class TaskReceiveFutureView(FormView):
 				t = timezone.now()
 				self.task.add_transaction("收货", t, o, it, ("资产", "应收"), -q, ("资产", "在库"))
 				self.task.add_transaction("入库", t, r, it, ("资产", s), q, ("收入", "收货"))
+		self.task.update()
 		return super(TaskReceiveFutureView, self).post(request, *args, **kwargs)
 
 	def get_success_url(self):

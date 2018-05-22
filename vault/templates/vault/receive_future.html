@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block header %}收到期货{% endblock %}
+
+{% block extra_script %}
+	<script>
+		jQuery(document).ready(function(){
+			jQuery("#item_keyword").on("keyup", function(){
+				var val = jQuery(this).val();
+				jQuery("#item_table tr").filter(function(){
+					var checked=jQuery("[type='checkbox']", this)[0].checked
+					jQuery(this).toggle(checked || ($(this).text().indexOf(val) > -1))
+				});
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+<div class="col col-lg-6">
+	<form action="" method="post">
+		{% csrf_token %}
+		{{form.as_p}}
+
+		<fieldset>
+			<legend>商品清单</legend>
+			<input id="item_keyword" type="text" placeholder="筛选..."/>
+			<input type="hidden" name="items_total" value={{items|length}} />
+			<table cellpadding="4" border="1">
+			<thead>
+				<tr>
+				<th></th>
+				<th>品名</th>
+				<th>数量</th>
+				</tr>
+			</thead>
+			<tbody id="item_table">
+			{% for i in items %}
+			<tr>
+				<td><input type="checkbox" name={{i.name_check}} /></td>
+				<td>{{i.name}}<input type="hidden" name={{i.name_item}} value={{i.id}} /></td>
+				<td><input type="number" name={{i.name_quantity}} min={{i.step}} value={{i.step}} step={{i.step}} /></td>
+			</tr>
+			{% endfor %}
+			</tbody>
+			</table>
+		</fieldset>
+
+		<br/>
+
+		<input type="submit" value="提交"/>
+	</form>
+</div>
+{% endblock %}
