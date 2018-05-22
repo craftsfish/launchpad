@@ -25,6 +25,7 @@ urlpatterns = [
 	url(r'^transaction/(?P<pk>[\d]+)/$', TransactionDetailView.as_view(), name='transaction_detail'),
 	url(r'^transaction/(?P<pk>[\d]+)/change/$', TransactionUpdateView.as_view(), name='transaction_update'),
 	url(r'^transaction/(?P<pk>[\d]+)/duplicate/$', TransactionDuplicateView.as_view(), name='transaction_duplicate'),
+	url(r'^transaction/(?P<pk>[\d]+)/delete/from/(?P<task_id>[\d]+)/$', TransactionDeleteView.as_view(), name='transaction_delete'),
 
 	#jdcommodity
 	url(r'^jdcommodity/$', JdcommodityListView.as_view(), name='jdcommodity_list'),
@@ -39,7 +40,8 @@ urlpatterns = [
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
+	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
 
 	#misc
-	url(r'^shipping/((?P<type>\d))/(?P<task_id>[\d]+)/$', ShippingInCreateView.as_view(), name='shipping_in_create'),
+	url(r'^shipping/(?P<type>\d)/(?P<task_id>[\d]+)/$', ShippingInCreateView.as_view(), name='shipping_in_create'),
 ]

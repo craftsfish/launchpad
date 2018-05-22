@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import DetailView
 from django.views.generic import ListView
+from django.views.generic import RedirectView
 from task import *
 
 class TaskListView(ListView):
@@ -19,3 +20,11 @@ class TaskDetailView(DetailView):
 				max_splits = len(t.ss)
 		context['detail_spans'] = max_splits * 2
 		return context
+
+class TaskDeleteView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return reverse('task_list')
+
+	def get(self, request, *args, **kwargs):
+		Task.objects.get(pk=kwargs['pk']).delete()
+		return super(TaskDeleteView, self).get(request, *args, **kwargs)

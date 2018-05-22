@@ -62,3 +62,11 @@ class TransactionDuplicateView(RedirectView):
 		for s in f.splits.all():
 			Split(account=s.account, change=s.change, transaction=t).save()
 		return reverse('transaction_update', kwargs={'pk': t.id})
+
+class TransactionDeleteView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return Task.objects.get(pk=kwargs['task_id']).get_absolute_url()
+
+	def get(self, request, *args, **kwargs):
+		Transaction.objects.get(pk=kwargs['pk']).delete()
+		return super(TransactionDeleteView, self).get(request, *args, **kwargs)
