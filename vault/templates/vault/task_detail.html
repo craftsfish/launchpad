@@ -4,7 +4,21 @@
 
 {% block content %}
 <div class="col-sm-auto">
-	<p>{{object.desc}}</p>
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>编号</th>
+			<th>概述</th>
+			<th>结算</th>
+			<th>交割</th>
+		</tr>
+		<tr>
+			<td>{{object.id}}</td>
+			<td>{{object.desc}}</td>
+			<td>{{object.clear}}</td>
+			<td>{{object.settle}}</td>
+		</tr>
+	</table>
+
 	<a href="{% url 'shipping_in_create' 0 object.id %}">进货</a>
 	<a href="{% url 'shipping_in_create' 1 object.id %}">销售</a>
 	<a href="{% url 'shipping_in_create' 2 object.id %}">退供</a>
