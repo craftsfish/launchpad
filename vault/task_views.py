@@ -119,7 +119,21 @@ class TaskReceiveFutureView(FormView):
 	def get_success_url(self):
 		return self.task.get_absolute_url()
 
+	def get(self, request, *args, **kwargs):
+		self.task = Task.objects.get(pk=kwargs['pk'])
+		return super(TaskReceiveFutureView, self).get(request, *args, **kwargs)
+
 	def get_context_data(self, **kwargs):
+		candidates = {}
+		for tr in self.task.transactions.all():
+			for s in tr.splits.all():
+				a = s.account
+				if a.name.find("应收") == 0 and a.item.name != "人民币":
+					if candidates.get(a.item.id) == None:
+						candidates[a.item.id] = s.change
+					else:
+						candidates[a.item.id] += s.change
+
 		context = super(TaskReceiveFutureView, self).get_context_data(**kwargs)
 		context['items'] = Item.objects.all()
 		for i, j in enumerate(context['items']):
@@ -127,4 +141,10 @@ class TaskReceiveFutureView(FormView):
 			j.name_item = "invoice_{}_item".format(i)
 			j.name_quantity = "invoice_{}_quantity".format(i)
 			j.step = 1
+			j.quantity = 1
+			j.checked = ""
+			if candidates.has_key(j.id):
+				j.checked = "checked"
+				j.quantity = int(candidates[j.id])
+
 		return context

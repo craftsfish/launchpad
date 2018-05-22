@@ -37,9 +37,9 @@
 			<tbody id="item_table">
 			{% for i in items %}
 			<tr>
-				<td><input type="checkbox" name={{i.name_check}} /></td>
+				<td><input type="checkbox" name={{i.name_check}} {{i.checked}} /></td>
 				<td>{{i.name}}<input type="hidden" name={{i.name_item}} value={{i.id}} /></td>
-				<td><input type="number" name={{i.name_quantity}} min={{i.step}} value={{i.step}} step={{i.step}} /></td>
+				<td><input type="number" name={{i.name_quantity}} min={{i.step}} value={{i.quantity}} step={{i.step}} /></td>
 			</tr>
 			{% endfor %}
 			</tbody>
