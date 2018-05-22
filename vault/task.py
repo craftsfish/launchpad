@@ -4,6 +4,8 @@ from account import *
 
 class Task(models.Model):
 	desc = models.CharField(max_length=120)
+	settle = models.BooleanField("交割", default=True) #交割完成
+	clear = models.BooleanField("结算", default=True) #账单结清
 
 	def __str__(self):
 		return self.desc
