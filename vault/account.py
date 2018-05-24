@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from organization import *
+from repository import *
 from item import *
 from .models import *
 
@@ -20,7 +21,8 @@ class Account(models.Model):
 		(3, "支出"),
 		(4, "所有者权益"),
 	)
-	category = models.IntegerField(choices=ACCOUNT_CATEGORY_CHOICES, default=0)
+	category = models.IntegerField(choices=ACCOUNT_CATEGORY_CHOICES, verbose_name="会计类目", default=0)
+	repository = models.ForeignKey(Repository, verbose_name="仓库", default=Repository.objects.get(name="未知").id)
 
 	def __str__(self):
 		return "{}.{}.{}.{}".format(str(self.organization), self.item.name, self.get_category_display(), self.name)
