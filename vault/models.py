@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from repository import *
 from organization import *
 from supplier import *
 from item import *
