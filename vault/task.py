@@ -87,6 +87,29 @@ class Transaction(models.Model):
 			s.delete()
 		super(Transaction, self).delete(*args, **kwargs)
 
+	@staticmethod
+	def add(task, desc, time, organization, item, *args):
+		tr = Transaction(desc=desc, task=task, time=time)
+		tr.save()
+
+		balance = 0
+		i = 0
+		while i < len(args):
+			category, name, repository = args[i]
+			a = Account.get(organization, item, category, name, repository)
+			sign = a.sign()
+			change = 0
+			if i + 1 == len(args): #last item without change
+				change = -balance / sign
+			else:
+				change = args[i+1]
+			balance += sign * change
+			i = i + 2;
+			Split(account=a, change=change, transaction=tr).save()
+
+		if balance != 0:
+			print "[Error]交易帐目不平!" #TODO: raise exception
+
 class Split(models.Model):
 	account = models.ForeignKey(Account)
 	change = models.DecimalField(max_digits=20, decimal_places=2)

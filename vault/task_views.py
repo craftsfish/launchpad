@@ -32,29 +32,29 @@ class TaskDeleteView(RedirectView):
 		Task.objects.get(pk=kwargs['pk']).delete()
 		return super(TaskDeleteView, self).get(request, *args, **kwargs)
 
-class EnterpriseForm(forms.Form):
-	os = []
-	o = Organization.objects.get(name="企业")
-	for i in o.descendants():
-		os.append(i.id)
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=os))
+class BuyFutureForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, required=False)
 
 class TaskBuyFutureView(FormView):
 	template_name = "{}/buy_future.html".format(Organization._meta.app_label)
-	form_class = EnterpriseForm
+	form_class = BuyFutureForm
 
 	def post(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
 		p = self.request.POST
 		o = Organization.objects.get(pk=p['organization'])
+		r = None
+		if p['repository'] != '':
+			r = Repository.objects.get(pk=p['repository'])
 		for i in range(int(p['items_total'])):
 			if p.get("invoice_{}_include".format(i)) == "on":
-				it = Item.objects.get(pk=p["invoice_{}_item".format(i)])
+				c = Commodity.objects.get(pk=p["invoice_{}_item".format(i)])
 				q = int(p["invoice_{}_quantity".format(i)])
 				cash = Item.objects.get(name="人民币")
 				t = timezone.now()
-				self.task.add_transaction("进货", t, o, it, ("资产", "应收"), q, ("收入", "进货"))
-				self.task.add_transaction("货款", t, o, cash, ("负债", "应付货款"), q*it.value, ("支出", "进货"))
+				Transaction.add(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
+				Transaction.add(self.task, "货款", t, o, cash, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
 		self.task.update()
 		return super(TaskBuyFutureView, self).post(request, *args, **kwargs)
 
@@ -63,7 +63,7 @@ class TaskBuyFutureView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskBuyFutureView, self).get_context_data(**kwargs)
-		context['items'] = Item.objects.all()
+		context['items'] = Commodity.objects.all()
 		for i, j in enumerate(context['items']):
 			j.name_check = "invoice_{}_include".format(i)
 			j.name_item = "invoice_{}_item".format(i)

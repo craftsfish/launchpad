@@ -25,14 +25,17 @@ class Account(models.Model):
 	repository = models.ForeignKey(Repository, verbose_name="仓库", null=True, blank=True)
 
 	def __str__(self):
-		return "{}.{}.{}.{}".format(str(self.organization), self.item.name, self.get_category_display(), self.name)
+		r = self.organization.name + '.' + self.get_category_display() + '.' + self.item.name
+		if self.repository:
+			r += '.' + self.repository.name
+		return r + '.' + self.name
 
 	def sign(self):
 		signs = [1, -1, -1, 1, -1]
 		return signs[self.category]
 
 	@staticmethod
-	def get(o, i, c, n):
+	def get(o, i, c, n, r=None):
 		hit = False
 		for j,v in Account.ACCOUNT_CATEGORY_CHOICES:
 			if v == c:
@@ -43,9 +46,9 @@ class Account(models.Model):
 			return None
 
 		try:
-			return Account.objects.filter(organization=o).filter(item=i).filter(category=j).get(name=n)
+			return Account.objects.filter(organization=o).filter(item=i).filter(category=j).filter(repository=r).get(name=n)
 		except Account.DoesNotExist as e:
-			a = Account(organization=o, item=i, category=j, name=n)
+			a = Account(organization=o, item=i, category=j, repository=r, name=n)
 			a.save()
 			print "[账户]增加新账户: {}".format(a)
 			return a
