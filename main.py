@@ -28,7 +28,8 @@ def test():
 	t.add_transaction("测试",timezone.now(), Organization.objects.get(pk=1), Item.objects.get(pk=1), ("资产", "库存"), 1, ("收入", "收货"))
 
 options = (
-	["ii", "导入物资", Item.Import],
+	["ic", "导入物资", Commodity.Import],
+	["im", "导入货币", Money.Import],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijdo", "导入京东订单", Jdorder.Import],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
