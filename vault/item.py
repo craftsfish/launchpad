@@ -11,7 +11,7 @@ class Item(models.Model):
 		ordering = ['supplier__id', 'name']
 
 	name = models.CharField("品名", max_length=30, unique=True)
-	supplier = models.ForeignKey(Supplier, verbose_name="供应商")
+	supplier = models.ForeignKey(Supplier, verbose_name="供应商", null=True, blank=True)
 	value = models.DecimalField("价值", default=0, max_digits=8, decimal_places=2)
 	onsale = models.BooleanField("在售", default=True) #在售/下架
 	inproduction = models.BooleanField("在产", default=True) #在产/停产
