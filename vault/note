@@ -4,10 +4,8 @@ Menu {
 	receive_actual 现货收货
 	deliver_actual 现货发货
 	buy_future 买入期货
-	acquire_future_contract 获得期货合约
-	receive_future 期货收货
 	sell_future 卖出期货
-	grant_future_contract 授予期货合约
+	receive_future 期货收货
 	deliver_future 期货发货
 }
 
