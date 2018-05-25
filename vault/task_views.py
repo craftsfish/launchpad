@@ -3,6 +3,7 @@ from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django import forms
+from django.forms import formset_factory
 from django.views.generic import FormView
 from django.utils import timezone
 from task import *
@@ -36,6 +37,13 @@ class BuyFutureForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, required=False)
 
+class CommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	name = forms.CharField(max_length=30, disabled=True, required=False)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+CommodityFormSet = formset_factory(CommodityForm, extra=0)
+
 class TaskBuyFutureView(FormView):
 	template_name = "{}/buy_future.html".format(Organization._meta.app_label)
 	form_class = BuyFutureForm
@@ -47,15 +55,19 @@ class TaskBuyFutureView(FormView):
 		r = None
 		if p['repository'] != '':
 			r = Repository.objects.get(pk=p['repository'])
-		for i in range(int(p['items_total'])):
-			if p.get("invoice_{}_include".format(i)) == "on":
-				c = Commodity.objects.get(pk=p["invoice_{}_item".format(i)])
-				q = int(p["invoice_{}_quantity".format(i)])
-				cash = Item.objects.get(name="人民币")
+		formset = CommodityFormSet(self.request.POST)
+		if formset.is_valid():
+			for f in formset:
+				d = f.cleaned_data
+				if not d['check']:
+					continue
+				c = Commodity.objects.get(pk=d['id'])
+				q = d['quantity']
+				cash = Money.objects.get(name="人民币")
 				t = timezone.now()
 				Transaction.add(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
-				Transaction.add(self.task, "货款", t, o, cash, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
-		self.task.update()
+				Transaction.add(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
+			self.task.update()
 		return super(TaskBuyFutureView, self).post(request, *args, **kwargs)
 
 	def get_success_url(self):
@@ -63,12 +75,10 @@ class TaskBuyFutureView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskBuyFutureView, self).get_context_data(**kwargs)
-		context['items'] = Commodity.objects.all()
-		for i, j in enumerate(context['items']):
-			j.name_check = "invoice_{}_include".format(i)
-			j.name_item = "invoice_{}_item".format(i)
-			j.name_quantity = "invoice_{}_quantity".format(i)
-			j.step = 3
+		formset_initial = []
+		for c in Commodity.objects.all():
+			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False})
+		context['formset'] = CommodityFormSet(initial = formset_initial)
 		return context
 
 class ReceiveForm(forms.Form):

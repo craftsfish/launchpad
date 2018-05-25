@@ -9,7 +9,7 @@
 				var val = jQuery(this).val();
 				jQuery("#item_table tr").filter(function(){
 					var checked=jQuery("[type='checkbox']", this)[0].checked
-					jQuery(this).toggle(checked || ($(this).text().indexOf(val) > -1))
+					jQuery(this).toggle(checked || (jQuery("[type='text']", this)[0].value.indexOf(val) > -1))
 				});
 			});
 		});
@@ -35,12 +35,17 @@
 				</tr>
 			</thead>
 			<tbody id="item_table">
-			{% for i in items %}
-			<tr>
-				<td><input type="checkbox" name={{i.name_check}} /></td>
-				<td>{{i.name}}<input type="hidden" name={{i.name_item}} value={{i.id}} /></td>
-				<td><input type="number" name={{i.name_quantity}} min={{i.step}} value={{i.step}} step={{i.step}} /></td>
-			</tr>
+			{{ formset.management_form }}
+			{% for form in formset %}
+				<tr>
+					<td>{{form.check}}</td>
+					<td>{{form.name}}</td>
+					<td>{{form.quantity}}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+					</td>
+				</tr>
 			{% endfor %}
 			</tbody>
 			</table>
