@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from supplier_views import *
 from item_views import *
+from commodity_views import *
 from account_views import *
 from transaction_views import *
 from jdcommodity_views import *
@@ -14,6 +15,9 @@ urlpatterns = [
 	#item
 	url(r'^item/$', ItemListView.as_view(), name='item_list'),
 	url(r'^item/(?P<pk>[\d]+)/organization/(?P<org>[\d]+)/$', ItemDetailView.as_view(), name='item_detail'),
+
+	#commodity
+	url(r'^commodity/$', CommodityListView.as_view(), name='commodity_list'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),

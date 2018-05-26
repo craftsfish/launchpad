@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block header %}物资列表{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>供应商</th>
+			<th>品名</th>
+			<th>价值</th>
+			<th>在售</th>
+			<th>在产</th>
+		</tr>
+		{% for commodity in object_list %}
+			<tr>
+				<td>{{commodity.supplier}}</td>
+				<td>{{commodity.name}}</td>
+				<td>{{commodity.value }}</td>
+				{% if commodity.onsale %}
+					<td>在售</td>
+				{% else %}
+					<td>下架</td>
+				{% endif %}
+				{% if commodity.inproduction %}
+					<td>在产</td>
+				{% else %}
+					<td>停产</td>
+				{% endif %}
+				{% for org in commodity.orgs %}
+					<td><a href="{% url 'commodity_detail' commodity.id org.id %}">{{ org.name }}</a></td>
+				{% endfor %}
+			<tr>
+			<tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}
