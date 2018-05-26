@@ -28,13 +28,13 @@ class JdcommodityDetailView(DetailView):
 		context['maps'] = self.object.maps.all()
 		for m in context['maps']:
 			m.t = m.str_time()
-			m.d = m.str_items()
+			m.d = m.str_commodities()
 		return context
 
 class JdcommoditymapForm(forms.ModelForm):
 	class Meta:
 		model = Jdcommoditymap
-		fields = ['jdcommodity', 'since', 'items']
+		fields = ['jdcommodity', 'since', 'commodities']
 		widgets = {
 			'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1", "data-toggle": "datetimepicker"}),
 			'jdcommodity': forms.HiddenInput(),

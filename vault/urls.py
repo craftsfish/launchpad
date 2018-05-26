@@ -6,7 +6,6 @@ from transaction_views import *
 from jdcommodity_views import *
 from tmcommodity_views import *
 from task_views import *
-from shipping_views import *
 
 urlpatterns = [
 	#supplier
