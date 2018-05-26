@@ -21,9 +21,9 @@
 		</div>
 	</div>
 	<div class="fieldWrapper">
-		{{ form.items.errors }}
-		{{ form.items.label_tag }}
-		{{ form.items }}
+		{{ form.commodities.errors }}
+		{{ form.commodities.label_tag }}
+		{{ form.commodities }}
 	</div>
 	<input type="submit" value="提交" />
 </form>
@@ -33,7 +33,7 @@
 {% block extra_script %}
 	<script>
 		jQuery(document).ready(function(){
-			jQuery("#id_items").attr({"size": 16});
+			jQuery("#id_commodities").attr({"size": 16});
 			jQuery('#datetimepicker1').datetimepicker({
 				format: 'YYYY-MM-DD HH:mm:ss',
 			});

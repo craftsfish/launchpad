@@ -15,6 +15,9 @@ class Item(models.Model):
 		return self.name
 
 class Commodity(Item):
+	class Meta:
+		ordering = ['supplier', 'name']
+
 	supplier = models.ForeignKey(Supplier, verbose_name="供应商", null=True, blank=True)
 	value = models.DecimalField("价值", default=0, max_digits=8, decimal_places=2)
 	onsale = models.BooleanField("在售", default=True) #在售/下架
