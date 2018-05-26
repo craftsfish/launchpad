@@ -27,13 +27,13 @@ class TmcommodityDetailView(DetailView):
 		context['maps'] = self.object.tmcommoditymap_set.all()
 		for m in context['maps']:
 			m.t = m.str_time()
-			m.d = m.str_items()
+			m.d = m.str_commodities()
 		return context
 
 class TmcommoditymapForm(forms.ModelForm):
 	class Meta:
 		model = Tmcommoditymap
-		fields = ['tmcommodity', 'since', 'items']
+		fields = ['tmcommodity', 'since', 'commodities']
 		widgets = {
 			'since': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1", "data-toggle": "datetimepicker"}),
 			'tmcommodity': forms.HiddenInput(),

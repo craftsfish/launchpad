@@ -23,21 +23,21 @@ class Tmcommoditymap(models.Model):
 
 	tmcommodity = models.ForeignKey(Tmcommodity)
 	since = models.DateTimeField("生效时间")
-	items = models.ManyToManyField(Item, verbose_name="物品")
+	commodities = models.ManyToManyField(Commodity, verbose_name="商品")
 
 	def str_time(self):
 		return self.since.astimezone(timezone.get_current_timezone()).strftime("%Y-%m-%d %H:%M:%S")
 
-	def str_items(self):
+	def str_commodities(self):
 		result = ""
-		for i, v in enumerate(self.items.all()):
+		for i, v in enumerate(self.commodities.all()):
 			if i:
 				result += ", "
 			result += v.name
 		return result
 
 	def __str__(self):
-		return self.str_time() + " | " + self.str_items()
+		return self.str_time() + " | " + self.str_commodities()
 
 	def get_absolute_url(self):
 		return reverse('tmcommodity_detail', kwargs={'pk': self.tmcommodity.pk})
@@ -48,7 +48,7 @@ class Tmcommoditymap(models.Model):
 		result = []
 		m = Tmcommoditymap.objects.filter(tmcommodity=in_tmcommodity).filter(since__lte=in_timestamp).order_by("-since")
 		if len(m):
-			return m[0].items.all()
+			return m[0].commodities.all()
 		else:
 			return None
 
@@ -73,11 +73,11 @@ class Tmcommoditymap(models.Model):
 					j.save()
 					for c in cs:
 						try:
-							i = Item.objects.get(name=c)
-						except Item.DoesNotExist as e:
-							i = Item(name=c, supplier=Supplier.objects.get(name="未知"))
+							i = Commodity.objects.get(name=c)
+						except Commodity.DoesNotExist as e:
+							i = Commodity(name=c, supplier=Supplier.objects.get(name="未知"))
 							i.save()
 							print "增加物资: {}".format(i)
-						j.items.add(i)
+						j.commodities.add(i)
 					j.save()
 					print "增加天猫商品映射: {}".format(j)
