@@ -30,7 +30,7 @@ class Tmorder(models.Model):
 	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
 	time = models.DateTimeField(default=timezone.now)
-	repository = models.ForeignKey(Repository, default=Repository.objects.get(name="孤山仓").id)
+	repository = models.ForeignKey(Repository)
 
 	@staticmethod
 	def statuses():
