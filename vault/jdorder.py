@@ -95,7 +95,7 @@ class Jdorder(models.Model):
 					for i in range(len(info.invoices)):
 						s = "{}.出货.".format(i+1)
 						for t in o.task.transactions.filter(desc__startswith=s):
-							s = t.splits.exclude(account__category=Account.str2category("收入"))[0]
+							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
 							if s.account.category == Account.str2category("负债") and info.status != "等待出库":
 								a = s.account
 								s.account = Account.get(a.organization, a.item, "资产", "完好", a.repository)

@@ -11,6 +11,12 @@ from decimal import Decimal
 from util import *
 from django.utils import timezone
 
+class Tmtransaction:
+	pass
+
+class Tminvoice:
+	pass
+
 class Tmorder(models.Model):
 	id = models.BigIntegerField("订单编号", primary_key=True)
 	TM_ORDER_STATUS = (
@@ -96,50 +102,93 @@ class Tmorder(models.Model):
 
 	@staticmethod
 	def Import_Detail():
-		def __handle_detail(order, commodity, status, quantity, organization, repository):
-			m = Tmcommoditymap.get(commodity, order.time)
-			if m == None:
-				print "商家编码: {}还没有商品映射信息".format(commodity.id)
-				return
+		def __handle_detail(info, organization, repository):
+			for i, v in enumerate(info.invoices):
+				#retrieve existing status
+				s = "{}.出货.".format(i+1)
+				if info.order.task.transactions.filter(desc__startswith=s).exists(): #update commodity transactions
+					for t in info.order.task.transactions.filter(desc__startswith=s):
+							if v.status == "交易关闭":
+								t.delete()
+								continue
+							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
+							if s.account.category == Account.str2category("负债") and v.status in ["卖家已发货，等待买家确认", "交易成功"]:
+								a = s.account
+								s.account = Account.get(a.organization, a.item, "资产", "完好", a.repository)
+								s.change = -s.change
+								s.save()
+				else: #add commodity transactions
+					if v.status == "交易关闭":
+						continue
+					for c in Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), info.order.time):
+						if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
+							Transaction.add(info.order.task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
+								("负债", "应发", repository), v.number, ("支出", "出货", repository))
+						else:
+							Transaction.add(info.order.task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
+								("资产", "完好", repository), -v.number, ("支出", "出货", repository))
 
-			#retrieve existing status
-			future_out = False
-			if order.task.transactions.filter(desc__startswith="期货出货."+commodity.id).count():
-				future_out = True
-			future_deliver = False
-			if order.task.transactions.filter(desc__startswith="期货发货."+commodity.id).count():
-				future_deliver = True
-
-			#update
-			if status in ["等待买家付款", "交易关闭"] and future_out:
-				order.task.delete_transactions_start_with("期货出货."+commodity.id, "期货发货."+commodity.id, "出库."+commodity.id)
-				return
-
-			if status in ["买家已付款，等待卖家发货", "卖家已发货，等待买家确认", "交易成功"] and not future_out:
-				for item in m:
-					Shipping.future_out(order.task, order.time, organization, item, quantity, commodity.id)
-
-			if status in ["卖家已发货，等待买家确认", "交易成功"] and not future_deliver:
-				for item in m:
-					Shipping.future_deliver(order.task, order.time, organization, item, quantity, repository, "完好", commodity.id)
-
+		#Import_Detail
+		ts = []
 		with open('/tmp/tm.detail.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
-			org = Organization.objects.get(name="泰福高腾复专卖店")
-			repo = Repository.objects.get(name="孤山仓")
+			bad_orders = set()
 			for i in reader:
 				oid = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
 				o = Tmorder.objects.get(pk=oid)
+
+				#status check
+				status = get_column_value(title, i, "订单状态")
+				if status not in Tmorder.statuses():
+					print "[天猫订单]发现新的订单状态: {}".format(status)
+					bad_orders.add(o.id)
+
+				#fast check
 				if o.fake or o.status == Tmorder.str2status("交易关闭"):
 					continue
 
+				#add Tmcommodity
 				cid = get_column_value(title, i, "商家编码")
 				if cid == "null":
-					print "订单{}缺少商家编码".format(oid)
-					continue
-				c = Tmcommodity.objects.get(pk=cid)
-				status = get_column_value(title, i, "订单状态")
-				quantity = int(get_column_value(title, i, "购买数量"))
+					print "订单{}没有设定商家编码".format(oid)
+				try:
+					tmc = Tmcommodity.objects.get(id=cid)
+				except Tmcommodity.DoesNotExist as e:
+					tmc = Tmcommodity(id=cid)
+				tmc.name=get_column_value(title, i, "标题")
+				tmc.save()
 
-				__handle_detail(o, c, status, quantity, org, repo)
+				#tmcommodity mapping validation
+				if not Tmcommoditymap.get(tmc, o.time):
+					print "{}) {}:{} 缺乏商品信息".format(o.time.astimezone(timezone.get_current_timezone()), tmc.id, tmc.name)
+					bad_orders.add(o.id)
+
+				#ignore invalid order
+				if o.id in bad_orders:
+					continue
+
+				found = False
+				for t in ts:
+					if t.order.id == o.id:
+						found = True
+						break
+				if not found:
+					t = Tmtransaction()
+					t.order = o
+					t.invoices = []
+					ts.append(t)
+
+				invc = Tminvoice()
+				invc.id = tmc.id
+				invc.number = int(get_column_value(title, i, "购买数量"))
+				invc.status = status
+				t.invoices.append(invc)
+
+				org = Organization.objects.get(name="泰福高腾复专卖店")
+				repo = Repository.objects.get(name="孤山仓")
+				for t in ts:
+					if t.order.id in bad_orders:
+						continue
+					t.invoices = sorted(t.invoices, key = lambda i: (i.id + str(i.number)))
+				__handle_detail(t, org, repo)
