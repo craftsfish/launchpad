@@ -41,6 +41,12 @@ class Tmorder(models.Model):
 
 	@staticmethod
 	def Import_List():
+		#增加一条刷单Transaction
+		def __add_fake_transaction(task, organization, repository, time):
+			c = Commodity.objects.get(name="洗衣粉")
+			Transaction.add(task, "0.出货.{}".format(c.name), time, organization, c.item_ptr,
+				("资产", "完好", repository), -1, ("支出", "出货", repository))
+
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
 			try: #更新
 				o = Tmorder.objects.get(id=order_id)
@@ -49,10 +55,9 @@ class Tmorder(models.Model):
 						t.delete()
 					return
 				if o.fake != fake:
-					o.task.delete_transactions_start_with("期货出货", "期货发货", "出库")
+					#TODO: 删除出货记录
 					if fake:
-						Shipping.future_out(o.task, time, organization, Item.objects.get(name="洗衣粉"), 1)
-						task_future_deliver(o.task, repository)
+						__add_fake_transaction(t, organization, repository, time)
 				o.status = Tmorder.str2status(status)
 				o.fake = fake
 				o.save()
@@ -63,16 +68,16 @@ class Tmorder(models.Model):
 				o.save()
 				if status == "交易关闭":
 					return
-				t.add_transaction("出单", time, organization, Item.objects.get(name="人民币"), ("资产", "应收账款"), sale, ("收入", "营业收入"))
+				Transaction.add(t, "出单", time, organization, Money.objects.get(name="人民币").item_ptr,
+					("资产", "应收账款", None), sale, ("收入", "营业收入", None))
 				if fake:
-					Shipping.future_out(t, time, organization, Item.objects.get(name="洗衣粉"), 1)
-					task_future_deliver(t, repository)
+					__add_fake_transaction(t, organization, repository, time)
 
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
 			org = Organization.objects.get(name="泰福高腾复专卖店")
-			repo = Organization.objects.get(name="孤山仓")
+			repo = Repository.objects.get(name="孤山仓")
 			for i in reader:
 				status = get_column_value(title, i, "订单状态")
 				if status not in Tmorder.statuses():
@@ -121,7 +126,7 @@ class Tmorder(models.Model):
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
 			org = Organization.objects.get(name="泰福高腾复专卖店")
-			repo = Organization.objects.get(name="孤山仓")
+			repo = Repository.objects.get(name="孤山仓")
 			for i in reader:
 				oid = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
 				o = Tmorder.objects.get(pk=oid)
