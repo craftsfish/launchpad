@@ -30,6 +30,7 @@ class Tmorder(models.Model):
 	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
 	time = models.DateTimeField(default=timezone.now)
+	repository = models.ForeignKey(Repository, default=Repository.objects.get(name="孤山仓").id)
 
 	@staticmethod
 	def statuses():
@@ -65,13 +66,21 @@ class Tmorder(models.Model):
 						t.delete()
 					if fake:
 						__add_fake_transaction(o.task, organization, repository, time)
+				elif fake:
+					t = o.task.transactions.get(desc__startswith='0.出货.')
+					s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
+					original_repository = s.account.repository
+					if original_repository.id != repository.id: #仓库发生变化
+						t.change_repository(original_repository, repository)
+
 				o.status = Tmorder.str2status(status)
 				o.fake = fake
+				o.repository = repository
 				o.save()
 			except Tmorder.DoesNotExist as e: #新增
 				t = Task(desc="天猫订单")
 				t.save()
-				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake, time=time)
+				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake, time=time, repository=repository)
 				o.save()
 				if status == "交易关闭":
 					return
@@ -84,7 +93,6 @@ class Tmorder(models.Model):
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
 			org = Organization.objects.get(name="泰福高腾复专卖店")
-			repo = Repository.objects.get(name="孤山仓")
 			for i in reader:
 				status = get_column_value(title, i, "订单状态")
 				if status not in Tmorder.statuses():
@@ -97,12 +105,16 @@ class Tmorder(models.Model):
 				f = False
 				if remark.find("朱") != -1:
 					f = True
+				repo = Repository.objects.get(name="孤山仓")
+				if re.compile("南京仓").search(remark):
+					repo = Repository.objects.get(name="南京仓")
 
 				__handle_list(order_id, when, status, sale, f, org, repo)
 
 	@staticmethod
 	def Import_Detail():
-		def __handle_detail(info, organization, repository):
+		def __handle_detail(info, organization):
+			repository=info.order.repository
 			for i, v in enumerate(info.invoices):
 				#retrieve existing status
 				s = "{}.出货.".format(i+1)
@@ -111,12 +123,17 @@ class Tmorder(models.Model):
 							if v.status == "交易关闭":
 								t.delete()
 								continue
+
 							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
+							original_repository = s.account.repository
 							if s.account.category == Account.str2category("负债") and v.status in ["卖家已发货，等待买家确认", "交易成功"]:
 								a = s.account
 								s.account = Account.get(a.organization, a.item, "资产", "完好", a.repository)
 								s.change = -s.change
 								s.save()
+
+							if original_repository.id != repository.id: #仓库发生变化
+								t.change_repository(original_repository, repository)
 				else: #add commodity transactions
 					if v.status == "交易关闭":
 						continue
@@ -186,9 +203,8 @@ class Tmorder(models.Model):
 				t.invoices.append(invc)
 
 				org = Organization.objects.get(name="泰福高腾复专卖店")
-				repo = Repository.objects.get(name="孤山仓")
 				for t in ts:
 					if t.order.id in bad_orders:
 						continue
 					t.invoices = sorted(t.invoices, key = lambda i: (i.id + str(i.number)))
-				__handle_detail(t, org, repo)
+				__handle_detail(t, org)
