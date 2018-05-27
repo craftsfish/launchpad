@@ -175,5 +175,7 @@ class Jdorder(models.Model):
 			org = Organization.objects.get(name="为绿厨具专营店")
 			repo = Repository.objects.get(name="孤山仓")
 			for t in ts:
+				if t.id in bad_orders:
+					continue
 				t.invoices = sorted(t.invoices, key = lambda i: (i.id * 100000 + i.number))
 				__handle_transaction(t, org, repo)
