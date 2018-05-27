@@ -35,20 +35,19 @@ class Account(models.Model):
 		return signs[self.category]
 
 	@staticmethod
-	def get(o, i, c, n, r=None):
-		hit = False
-		for j,v in Account.ACCOUNT_CATEGORY_CHOICES:
-			if v == c:
-				hit = True
-				break
-		if not hit:
-			print "非法账户类型: {}".format(c)
-			return None
+	def str2category(s):
+		for i, v in Account.ACCOUNT_CATEGORY_CHOICES:
+			if v == s:
+				return i
+		return -1
 
+	@staticmethod
+	def get(o, i, c, n, r=None):
+		c = Account.str2category(c)
 		try:
-			return Account.objects.filter(organization=o).filter(item=i).filter(category=j).filter(repository=r).get(name=n)
+			return Account.objects.filter(organization=o).filter(item=i).filter(category=c).filter(repository=r).get(name=n)
 		except Account.DoesNotExist as e:
-			a = Account(organization=o, item=i, category=j, repository=r, name=n)
+			a = Account(organization=o, item=i, category=c, repository=r, name=n)
 			a.save()
 			print "[账户]增加新账户: {}".format(a)
 			return a
