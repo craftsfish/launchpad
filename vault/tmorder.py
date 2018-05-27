@@ -55,9 +55,10 @@ class Tmorder(models.Model):
 						t.delete()
 					return
 				if o.fake != fake:
-					#TODO: 删除出货记录
+					for t in o.task.transactions.filter(desc__contains='.出货.'):
+						t.delete()
 					if fake:
-						__add_fake_transaction(t, organization, repository, time)
+						__add_fake_transaction(o.task, organization, repository, time)
 				o.status = Tmorder.str2status(status)
 				o.fake = fake
 				o.save()
