@@ -30,7 +30,7 @@ class Jdorder(models.Model):
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS)
 	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
-	repository = models.ForeignKey(Repository, default=Repository.objects.get(name="孤山仓").id)
+	repository = models.ForeignKey(Repository)
 
 	@staticmethod
 	def statuses():
