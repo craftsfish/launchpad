@@ -30,6 +30,7 @@ class Jdorder(models.Model):
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS)
 	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
+	repository = models.ForeignKey(Repository, default=Repository.objects.get(name="孤山仓").id)
 
 	@staticmethod
 	def statuses():
@@ -75,7 +76,7 @@ class Jdorder(models.Model):
 				return
 
 			f = 0
-			if re.compile("朱").match(info.remark): #fake order
+			if re.compile("朱").search(info.remark): #fake order
 				f = 1
 			try:
 				o = Jdorder.objects.get(id=info.id)
@@ -102,13 +103,18 @@ class Jdorder(models.Model):
 								s.change = -s.change
 								s.save()
 
+				if o.repository.id != repo.id: #发货仓库发生变化
+					for t in o.task.transactions.filter(desc__contains=".出货."):
+						t.change_repository(o.repository, repo)
+
 				o.status = Jdorder.str2status(info.status)
 				o.fake = f
+				o.repository = repo
 				o.save()
 			except Jdorder.DoesNotExist as e:
 				t = Task(desc="京东订单")
 				t.save()
-				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f)
+				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f, repository=repo)
 				o.save()
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					return #no transaction should be added
@@ -173,9 +179,11 @@ class Jdorder(models.Model):
 				t.invoices.append(invc)
 
 			org = Organization.objects.get(name="为绿厨具专营店")
-			repo = Repository.objects.get(name="孤山仓")
 			for t in ts:
 				if t.id in bad_orders:
 					continue
 				t.invoices = sorted(t.invoices, key = lambda i: (i.id * 100000 + i.number))
+				repo = Repository.objects.get(name="孤山仓")
+				if re.compile("南京仓").search(t.remark):
+					repo = Repository.objects.get(name="南京仓")
 				__handle_transaction(t, org, repo)

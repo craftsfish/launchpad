@@ -8,7 +8,7 @@ from .models import *
 # Create your models here.
 class Account(models.Model):
 	class Meta:
-		unique_together = ("organization", "item", "category", "name")
+		unique_together = ("organization", "item", "category", "repository", "name")
 
 	name = models.CharField("名称", max_length=30, null=True, blank=True)
 	balance = models.DecimalField("余额", default=0, max_digits=20, decimal_places=2)

@@ -87,6 +87,12 @@ class Transaction(models.Model):
 			s.delete()
 		super(Transaction, self).delete(*args, **kwargs)
 
+	def change_repository(self, origin, current):
+		for s in self.splits.filter(account__repository=origin):
+			a = s.account
+			s.account = Account.get(a.organization, a.item, a.get_category_display(), a.name, current)
+			s.save()
+
 	@staticmethod
 	def add(task, desc, time, organization, item, *args):
 		tr = Transaction(desc=desc, task=task, time=time)
