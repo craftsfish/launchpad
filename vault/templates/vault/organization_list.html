@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block header %}组织列表{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<ul>
+	{% for object in object_list %}
+		<li><a href="{% url 'item_detail' 1 object.id %}">{{ object }}</a></li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}
