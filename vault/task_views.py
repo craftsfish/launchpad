@@ -57,18 +57,24 @@ class TaskBuyFutureView(FormView):
 		if p['repository'] != '':
 			r = Repository.objects.get(pk=p['repository'])
 		formset = CommodityFormSet(self.request.POST)
+		merged = {}
 		if formset.is_valid():
 			for f in formset:
 				d = f.cleaned_data
 				if not d['check']:
 					continue
-				c = Commodity.objects.get(pk=d['id'])
-				q = d['quantity']
-				cash = Money.objects.get(name="人民币")
-				t = timezone.now()
-				Transaction.add(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
-				Transaction.add(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
-			self.task.update()
+				cid = d['id']
+				if merged.get(cid):
+					merged[cid] += d['quantity']
+				else:
+					merged[cid] = d['quantity']
+		for cid, quantity in merged.items():
+			c = Commodity.objects.get(pk=cid)
+			t = timezone.now()
+			cash = Money.objects.get(name="人民币")
+			Transaction.add(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), quantity, ("收入", "进货", r))
+			Transaction.add(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), quantity*c.value, ("支出", "进货", None))
+
 		return super(TaskBuyFutureView, self).post(request, *args, **kwargs)
 
 	def get_success_url(self):
