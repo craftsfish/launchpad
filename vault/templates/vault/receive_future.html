@@ -5,11 +5,12 @@
 {% block extra_script %}
 	<script>
 		jQuery(document).ready(function(){
-			jQuery("#item_keyword").on("keyup", function(){
+			jQuery("#id_repository").on("change paste keyup", function(){
 				var val = jQuery(this).val();
+				var str = jQuery("option[value="+val+"]", this).text();
 				jQuery("#item_table tr").filter(function(){
-					var checked=jQuery("[type='checkbox']", this)[0].checked
-					jQuery(this).toggle(checked || ($(this).text().indexOf(val) > -1))
+					var name=jQuery("[id$='repository']", this).val()
+					jQuery(this).toggle(name == "" || name == str)
 				});
 			});
 		});

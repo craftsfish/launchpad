@@ -146,7 +146,7 @@ class TaskReceiveFutureView(FormView):
 	def get_context_data(self, **kwargs):
 		context = super(TaskReceiveFutureView, self).get_context_data(**kwargs)
 		formset_initial = []
-		for aid, balance in self.candidates:
+		for aid, balance in self.candidates: #TODO: sorted with repository
 			a = Account.objects.get(pk=aid)
 			c = a.item
 			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': balance, 'check': False, 'repository': a.repository})
