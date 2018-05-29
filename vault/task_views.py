@@ -82,16 +82,8 @@ class TaskBuyFutureView(FormView):
 		return context
 
 class ReceiveForm(forms.Form):
-	o = Organization.objects.get(name="企业")
-	os = []
-	for i in o.descendants():
-		os.append(i.id)
-	r = Organization.objects.get(name="仓库")
-	rs = []
-	for i in r.descendants():
-		rs.append(i.id)
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=os))
-	repository = forms.ModelChoiceField(queryset=Organization.objects.filter(id__in=rs))
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	repository = forms.ModelChoiceField(queryset=Repository.objects)
 	ITEM_STATUS_CHOICES = (
 		(0, "完好"),
 		(1, "残缺"),
