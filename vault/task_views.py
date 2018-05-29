@@ -42,7 +42,7 @@ class CommodityForm(forms.Form):
 	name = forms.CharField(max_length=30, disabled=True, required=False)
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
-	suggest_by = forms.CharField(max_length=30, disabled=True, required=False)
+	repository = forms.CharField(max_length=30, disabled=True, required=False)
 CommodityFormSet = formset_factory(CommodityForm, extra=0)
 
 class TaskBuyFutureView(FormView):
@@ -84,10 +84,10 @@ class TaskBuyFutureView(FormView):
 		context = super(TaskBuyFutureView, self).get_context_data(**kwargs)
 		it = Commodity.objects.all()[0] #TODO: replace with actual candidates
 		formset_initial = [
-			{'id': it.id, 'name': it.name, 'quantity':8, 'check': True, 'suggest_by': 'Repository_A'},
+			{'id': it.id, 'name': it.name, 'quantity':8, 'check': True, 'repository': 'Repository_A'},
 		]
 		for c in Commodity.objects.all():
-			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False, 'suggest_by': None})
+			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False, 'repository': None})
 		context['formset'] = CommodityFormSet(initial = formset_initial)
 		return context
 
@@ -133,37 +133,12 @@ class TaskReceiveFutureView(FormView):
 
 	def get(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
-		self.candidate_org = None
-		self.candidates = {}
-		for k, v in self.task.unreceived_accounts().items():
-			a = Account.objects.get(pk=k)
-			if a.item.id == Item.objects.get(name="人民币").id:
-				continue
-			if self.candidate_org == None:
-				self.candidate_org = a.organization
-			if a.organization == self.candidate_org:
-				self.candidates[a.item.id] = v
 		return super(TaskReceiveFutureView, self).get(request, *args, **kwargs)
-
-	def get_initial(self):
-		kwargs = super(TaskReceiveFutureView, self).get_initial()
-		if self.request.method == 'GET':
-			kwargs['organization'] = self.candidate_org
-		return kwargs
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskReceiveFutureView, self).get_context_data(**kwargs)
-
-		context['items'] = Item.objects.all()
-		for i, j in enumerate(context['items']):
-			j.name_check = "invoice_{}_include".format(i)
-			j.name_item = "invoice_{}_item".format(i)
-			j.name_quantity = "invoice_{}_quantity".format(i)
-			j.step = 1
-			j.quantity = 1
-			j.checked = ""
-			if self.candidates.has_key(j.id):
-				j.checked = "checked"
-				j.quantity = int(self.candidates[j.id])
-
+		formset_initial = []
+		for c in Commodity.objects.all():
+			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False, 'repository': None})
+		context['formset'] = CommodityFormSet(initial = formset_initial)
 		return context

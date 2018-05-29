@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block header %}收到期货{% endblock %}
+{% block header %}期货收货{% endblock %}
 
 {% block extra_script %}
 	<script>
@@ -24,23 +24,28 @@
 
 		<fieldset>
 			<legend>商品清单</legend>
-			<input id="item_keyword" type="text" placeholder="筛选..."/>
-			<input type="hidden" name="items_total" value={{items|length}} />
 			<table cellpadding="4" border="1">
 			<thead>
 				<tr>
 				<th></th>
 				<th>品名</th>
 				<th>数量</th>
+				<th>进货来源</th>
 				</tr>
 			</thead>
 			<tbody id="item_table">
-			{% for i in items %}
-			<tr>
-				<td><input type="checkbox" name={{i.name_check}} {{i.checked}} /></td>
-				<td>{{i.name}}<input type="hidden" name={{i.name_item}} value={{i.id}} /></td>
-				<td><input type="number" name={{i.name_quantity}} min={{i.step}} value={{i.quantity}} step={{i.step}} /></td>
-			</tr>
+			{{ formset.management_form }}
+			{% for form in formset %}
+				<tr>
+					<td>{{form.check}}</td>
+					<td>{{form.name}}</td>
+					<td>{{form.quantity}}
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+					</td>
+					<td>{{form.repository}}</td>
+				</tr>
 			{% endfor %}
 			</tbody>
 			</table>
