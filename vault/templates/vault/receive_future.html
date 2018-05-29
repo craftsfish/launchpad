@@ -1,17 +1,28 @@
 {% extends "base.html" %}
 
-{% block header %}期货收货: {{organization}}{% endblock %}
+{% block header %}期货收货{% endblock %}
 
 {% block extra_script %}
 	<script>
 		jQuery(document).ready(function(){
-			jQuery("#id_repository").on("change paste keyup", function(){
-				var val = jQuery(this).val();
-				var str = jQuery("option[value="+val+"]", this).text();
+			function candidate_filter(){
+				var str_org = ""
+				var org = jQuery("#id_organization").val();
+				if (org != "") str_org = jQuery("#id_organization option[value="+org+"]").text();
+				var str_repo = ""
+				var repo = jQuery("#id_repository").val();
+				if (repo != "") str_repo = jQuery("#id_repository option[value="+repo+"]").text();
 				jQuery("#item_table tr").filter(function(){
-					var name=jQuery("[id$='repository']", this).val()
-					jQuery(this).toggle(name == "" || name == str)
+					var repo_name=jQuery("[id$='repository']", this).val()
+					var org_name=jQuery("[id$='organization']", this).val()
+					jQuery(this).toggle((org_name == "" || str_org == "" || str_org == org_name) && (repo_name == "" || str_repo == "" || repo_name == str_repo))
 				});
+			}
+			jQuery("#id_repository").on("change paste keyup", function(){
+				candidate_filter();
+			});
+			jQuery("#id_organization").on("change paste keyup", function(){
+				candidate_filter();
 			});
 		});
 	</script>
@@ -31,7 +42,8 @@
 				<th></th>
 				<th>品名</th>
 				<th>数量</th>
-				<th>进货来源</th>
+				<th>组织</th>
+				<th>仓库</th>
 				</tr>
 			</thead>
 			<tbody id="item_table">
@@ -45,6 +57,7 @@
 						{{ hidden }}
 						{% endfor %}
 					</td>
+					<td>{{form.organization}}</td>
 					<td>{{form.repository}}</td>
 				</tr>
 			{% endfor %}

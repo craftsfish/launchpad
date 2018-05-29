@@ -92,6 +92,7 @@ class TaskBuyFutureView(FormView):
 		return context
 
 class ReceiveForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
 	repository = forms.ModelChoiceField(queryset=Repository.objects)
 	ITEM_STATUS_CHOICES = (
 		(0, "完好"),
@@ -106,6 +107,15 @@ class ReceiveForm(forms.Form):
 			if i == s:
 				return v
 		return None
+
+class ReceiveCommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	name = forms.CharField(max_length=30, disabled=True, required=False)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+	organization = forms.CharField(max_length=30, disabled=True, required=False)
+	repository = forms.CharField(max_length=30, disabled=True, required=False)
+ReceiveCommodityFormSet = formset_factory(ReceiveCommodityForm, extra=0)
 
 class TaskReceiveFutureView(FormView):
 	template_name = "{}/receive_future.html".format(Organization._meta.app_label)
@@ -132,24 +142,14 @@ class TaskReceiveFutureView(FormView):
 
 	def get(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
-		self.organization = None
-		self.candidates = []
-		for aid, b in self.task.candidates_of_repository_in().items():
-			a = Account.objects.get(pk=aid)
-			if not self.organization:
-				self.organization = a.organization
-
-			if self.organization.id == a.organization.id:
-				self.candidates.append([aid, b])
 		return super(TaskReceiveFutureView, self).get(request, *args, **kwargs)
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskReceiveFutureView, self).get_context_data(**kwargs)
 		formset_initial = []
-		for aid, balance in self.candidates: #TODO: sorted with repository
+		for aid, balance in self.task.candidates_of_repository_in().items(): #TODO: sorted with organization & repository
 			a = Account.objects.get(pk=aid)
 			c = a.item
-			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': balance, 'check': False, 'repository': a.repository})
-		context['formset'] = CommodityFormSet(initial = formset_initial)
-		context['organization'] = self.organization
+			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': balance, 'check': False, 'organization': a.organization, 'repository': a.repository})
+		context['formset'] = ReceiveCommodityFormSet(initial = formset_initial)
 		return context
