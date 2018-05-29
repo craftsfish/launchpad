@@ -123,18 +123,21 @@ class TaskReceiveFutureView(FormView):
 
 	def post(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
-		p = self.request.POST
-		o = Organization.objects.get(pk=p['organization'])
-		r = Organization.objects.get(pk=p['repository'])
-		s = ReceiveForm.status_2_str(int(p.get('status')))
-		for i in range(int(p['items_total'])):
-			if p.get("invoice_{}_include".format(i)) == "on":
-				it = Item.objects.get(pk=p["invoice_{}_item".format(i)])
-				q = int(p["invoice_{}_quantity".format(i)])
-				t = timezone.now()
-				self.task.add_transaction("收货", t, o, it, ("资产", "应收"), -q, ("资产", "在库"))
-				self.task.add_transaction("入库", t, r, it, ("资产", s), q, ("收入", "收货"))
-		self.task.update()
+		form = ReceiveForm(self.request.POST)
+		if form.is_valid():
+			o = form.cleaned_data['organization']
+			r = form.cleaned_data['repository']
+			s = int(form.cleaned_data['status'])
+		formset = ReceiveCommodityFormSet(self.request.POST)
+		if formset.is_valid():
+			for f in formset:
+				d = f.cleaned_data
+				if d['check']:
+					a = Account.objects.get(pk = d['id'])
+					t = timezone.now()
+					Transaction.add(self.task, "入库", t, o, a.item,
+						("资产", ReceiveForm.status_2_str(s), r), d['quantity'],
+						(a.get_category_display(), a.name, a.repository))
 		return super(TaskReceiveFutureView, self).post(request, *args, **kwargs)
 
 	def get_success_url(self):
@@ -150,6 +153,6 @@ class TaskReceiveFutureView(FormView):
 		for aid, balance in self.task.candidates_of_repository_in().items(): #TODO: sorted with organization & repository
 			a = Account.objects.get(pk=aid)
 			c = a.item
-			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': balance, 'check': False, 'organization': a.organization, 'repository': a.repository})
+			formset_initial.append({'id': a.id, 'name': c.name, 'quantity': balance, 'check': False, 'organization': a.organization, 'repository': a.repository})
 		context['formset'] = ReceiveCommodityFormSet(initial = formset_initial)
 		return context

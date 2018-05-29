@@ -71,5 +71,4 @@ class TransactionDeleteView(RedirectView):
 		t = Transaction.objects.get(pk=kwargs['pk'])
 		task = t.task
 		t.delete()
-		task.update()
 		return super(TransactionDeleteView, self).get(request, *args, **kwargs)
