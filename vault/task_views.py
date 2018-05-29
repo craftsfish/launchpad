@@ -42,6 +42,7 @@ class CommodityForm(forms.Form):
 	name = forms.CharField(max_length=30, disabled=True, required=False)
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
+	suggest_by = forms.CharField(max_length=30, disabled=True, required=False)
 CommodityFormSet = formset_factory(CommodityForm, extra=0)
 
 class TaskBuyFutureView(FormView):
@@ -75,9 +76,12 @@ class TaskBuyFutureView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskBuyFutureView, self).get_context_data(**kwargs)
-		formset_initial = []
+		it = Commodity.objects.all()[0] #TODO: replace with actual candidates
+		formset_initial = [
+			{'id': it.id, 'name': it.name, 'quantity':8, 'check': True, 'suggest_by': 'Repository_A'},
+		]
 		for c in Commodity.objects.all():
-			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False})
+			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False, 'suggest_by': None})
 		context['formset'] = CommodityFormSet(initial = formset_initial)
 		return context
 

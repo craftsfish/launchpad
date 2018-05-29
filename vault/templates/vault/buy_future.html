@@ -32,6 +32,7 @@
 				<th></th>
 				<th>品名</th>
 				<th>数量</th>
+				<th>推荐来源</th>
 				</tr>
 			</thead>
 			<tbody id="item_table">
@@ -45,6 +46,7 @@
 						{{ hidden }}
 						{% endfor %}
 					</td>
+					<td>{{form.repository}}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
