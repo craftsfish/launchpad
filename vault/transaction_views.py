@@ -46,13 +46,34 @@ class TransactionUpdateView(TransactionMixin, UpdateView):
 		for f in context['formset']:
 			f.account_display_name = str(f.instance.account)
 		context['account'] = AccountForm()
+		context['error'] = self.error
 		return context
 
 	def form_valid(self, form):
 		formset = SplitFormSet(self.request.POST, self.request.FILES, instance=self.object)
 		if formset.is_valid():
 			formset.save()
+
+		#splits in same transaction must belongs to same root organization and balanced
+		balance = 0
+		ref_org = None
+		for s in self.object.splits.all():
+			o = s.account.organization
+			if ref_org == None:
+				ref_org = o.root()
+			if o.root().id != ref_org.id:
+				self.error = "错误: 账户不属于同一个组织!"
+				return self.render_to_response(self.get_context_data(form=form))
+			balance += s.account.sign() * s.change
+		if balance != 0:
+			self.error = "错误: 帐目不平衡!"
+			return self.render_to_response(self.get_context_data(form=form))
+
 		return super(TransactionUpdateView, self).form_valid(form)
+
+	def dispatch(self, request, *args, **kwargs):
+		self.error = None
+		return super(TransactionUpdateView, self).dispatch(request, *args, **kwargs)
 
 class TransactionDuplicateView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
