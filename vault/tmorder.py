@@ -8,7 +8,6 @@ from tmcommodity import *
 from organization import *
 from account import *
 from decimal import Decimal
-from util import *
 from django.utils import timezone
 
 class Tmtransaction:

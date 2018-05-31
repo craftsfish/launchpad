@@ -7,7 +7,6 @@ from ground import *
 from jdcommodity import *
 from organization import *
 from account import *
-from util import *
 from decimal import Decimal
 
 class Jdtransaction:
@@ -31,6 +30,7 @@ class Jdorder(models.Model):
 	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
 	repository = models.ForeignKey(Repository)
+	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
 	@staticmethod
 	def statuses():
@@ -81,16 +81,14 @@ class Jdorder(models.Model):
 			try:
 				o = Jdorder.objects.get(id=info.id)
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
-					for t in o.task.transactions.all():
+					for t in o.task.transactions.filter(desc__contains='.出货.'):
 						t.delete()
 					return
 
 				if o.fake != f: #刷单状态变更
 					#delete obsolete transactions and re-add
-					for i in range(len(info.invoices)+1):
-						s = "{}.出货.".format(i)
-						for t in o.task.transactions.filter(desc__startswith=s):
-							t.delete()
+					for t in o.task.transactions.filter(desc__contains='.出货.'):
+						t.delete()
 					__add_commodity_transaction(o.task, org, repo, info, f)
 				elif not f: #正常订单状态迁移
 					for i in range(len(info.invoices)):
@@ -110,16 +108,15 @@ class Jdorder(models.Model):
 				o.status = Jdorder.str2status(info.status)
 				o.fake = f
 				o.repository = repo
+				o.sale = info.sale
 				o.save()
 			except Jdorder.DoesNotExist as e:
 				t = Task(desc="京东订单")
 				t.save()
-				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f, repository=repo)
+				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f, repository=repo, sale=info.sale)
 				o.save()
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					return #no transaction should be added
-				Transaction.add(t, "出单", info.booktime, org, Money.objects.get(name="人民币").item_ptr,
-					("资产", "应收账款", None), info.sale, ("收入", "营业收入", None))
 				__add_commodity_transaction(t, org, repo, info, f)
 
 		#Import
