@@ -81,21 +81,18 @@ class Jdorder(models.Model):
 			try:
 				o = Jdorder.objects.get(id=info.id)
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
-					for t in o.task.transactions.filter(desc__contains='.出货.'):
-						t.delete()
+					o.task.delete_transactions_contains_desc('.出货.')
 					return
 
 				if o.fake != f: #刷单状态变更
-					#delete obsolete transactions and re-add
-					for t in o.task.transactions.filter(desc__contains='.出货.'):
-						t.delete()
+					o.task.delete_transactions_contains_desc('.出货.')
 					__add_commodity_transaction(o.task, org, repo, info, f)
-				elif not f: #正常订单状态迁移
+				elif not f and info.status != "等待出库": #正常订单状态迁移
 					for i in range(len(info.invoices)):
 						s = "{}.出货.".format(i+1)
 						for t in o.task.transactions.filter(desc__startswith=s):
 							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
-							if s.account.category == Account.str2category("负债") and info.status != "等待出库":
+							if s.account.category == Account.str2category("负债"):
 								a = s.account
 								s.account = Account.get(a.organization, a.item, "资产", "完好", a.repository)
 								s.change = -s.change

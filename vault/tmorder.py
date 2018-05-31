@@ -30,6 +30,7 @@ class Tmorder(models.Model):
 	fake = models.IntegerField("刷单", default=0)
 	time = models.DateTimeField(default=timezone.now)
 	repository = models.ForeignKey(Repository)
+	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
 	@staticmethod
 	def statuses():
@@ -57,12 +58,10 @@ class Tmorder(models.Model):
 			try: #更新
 				o = Tmorder.objects.get(id=order_id)
 				if status == "交易关闭":
-					for t in o.task.transactions.all():
-						t.delete()
+					o.task.delete_transactions_contains_desc('.出货.')
 					return
 				if o.fake != fake:
-					for t in o.task.transactions.filter(desc__contains='.出货.'):
-						t.delete()
+					o.task.delete_transactions_contains_desc('.出货.')
 					if fake:
 						__add_fake_transaction(o.task, organization, repository, time)
 				elif fake:
@@ -75,16 +74,15 @@ class Tmorder(models.Model):
 				o.status = Tmorder.str2status(status)
 				o.fake = fake
 				o.repository = repository
+				o.sale = sale
 				o.save()
 			except Tmorder.DoesNotExist as e: #新增
 				t = Task(desc="天猫订单")
 				t.save()
-				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake, time=time, repository=repository)
+				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake, time=time, repository=repository, sale=sale)
 				o.save()
 				if status == "交易关闭":
 					return
-				Transaction.add(t, "出单", time, organization, Money.objects.get(name="人民币").item_ptr,
-					("资产", "应收账款", None), sale, ("收入", "营业收入", None))
 				if fake:
 					__add_fake_transaction(t, organization, repository, time)
 
