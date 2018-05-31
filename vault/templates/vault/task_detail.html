@@ -26,6 +26,15 @@
 	<div>
 		<a href="{% url 'task_buy_future' object.id %}">进货</a>
 		<a href="{% url 'task_receive_future' object.id %}">应收货物交割</a>
+		<table cellpadding="4" border="1">
+		<th>品名</th>
+		<th>交易</th>
+		{% for i in items %}
+		<tr>
+			<td>{{i.name}}</td>
+			<td>+</td>
+		</tr>
+		{% endfor %}
 	</div>
 
 	<table cellpadding="4" border="1">

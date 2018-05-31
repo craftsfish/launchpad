@@ -16,6 +16,7 @@ class TaskDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
+		context['items'] = Item.objects.all()
 		context['trans'] = self.object.transactions.all().order_by("time", "id")
 		max_splits = 0
 		for t in context['trans']:

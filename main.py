@@ -23,9 +23,8 @@ from vault.tmcommodity import *
 from vault.tmorder import *
 
 def test():
-	t = Task(desc="经营调整")
+	t = Task(desc="临时任务")
 	t.save()
-	t.add_transaction("测试",timezone.now(), Organization.objects.get(pk=1), Item.objects.get(pk=1), ("资产", "库存"), 1, ("收入", "收货"))
 
 options = (
 	["ic", "导入物资", Commodity.Import],
