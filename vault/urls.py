@@ -8,6 +8,7 @@ from transaction_views import *
 from jdcommodity_views import *
 from tmcommodity_views import *
 from task_views import *
+from misc_views import *
 
 urlpatterns = [
 	#supplier
@@ -50,4 +51,7 @@ urlpatterns = [
 	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
 	url(r'^task/(?P<pk>[\d]+)/buy_future/$', TaskBuyFutureView.as_view(), name='task_buy_future'),
 	url(r'^task/(?P<pk>[\d]+)/receive_future/$', TaskReceiveFutureView.as_view(), name='task_receive_future'),
+
+	#misc
+	url(r'^misc/daily_task/$', DailyTaskView.as_view(), name='daily_task'),
 ]
