@@ -27,7 +27,7 @@
 							n = items[i].str
 							j = p + parseInt(i)
 							r = jQuery("<tr></tr>");
-							jQuery("#item_table").append(r);
+							jQuery("#item_table").prepend(r);
 							r.append(`<td><input  type="checkbox" name=form-${j}-check /></td>
 										<td>${n}</td>
 										<td><input type="number" name=form-${j}-quantity value="1" />
@@ -41,6 +41,8 @@
 
 {% block content %}
 <div class="col col-lg-6">
+	<label>添加交易品</label>
+	<input id="item_keyword" type="text"/>
 	<form action="" method="post">
 		{% csrf_token %}
 		{{ form.as_p }}
@@ -74,12 +76,5 @@
 
 		<input type="submit" value="提交"/>
 	</form>
-</div>
-
-<div class="col col-lg-6">
-	<label>筛选交易品</label>
-	<input id="item_keyword" type="text"/>
-	<div id="id_filtered_items">
-	</div>
 </div>
 {% endblock %}
