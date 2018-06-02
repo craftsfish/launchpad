@@ -56,8 +56,5 @@ class RetailView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(RetailView, self).get_context_data(**kwargs)
-		formset_initial = []
-		for c in Commodity.objects.all():
-			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False})
-		context['formset'] = RetailCommodityFormSet(initial = formset_initial)
+		context['formset'] = RetailCommodityFormSet()
 		return context

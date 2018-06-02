@@ -5,12 +5,11 @@
 {% block extra_script %}
 	<script>
 		jQuery(document).ready(function(){
-			jQuery("#item_keyword").on("keyup", function(){
-				var val = jQuery(this).val();
-				jQuery("#item_table tr").filter(function(){
-					var checked=jQuery("[type='checkbox']", this)[0].checked
-					jQuery(this).toggle(checked || (jQuery("[type='text']", this)[0].value.indexOf(val) > -1))
-				});
+			jQuery("#item_keyword").keyup(function(event){
+				if (event.keyCode != 13) {
+					return;
+				}
+				alert(jQuery("#item_keyword").val());
 			});
 		});
 	</script>
@@ -22,37 +21,29 @@
 		{% csrf_token %}
 		{{ form.as_p }}
 
-		<fieldset>
-			<legend>商品清单</legend>
-			<input id="item_keyword" type="text" placeholder="筛选..."/>
-			<table cellpadding="4" border="1">
-			<thead>
-				<tr>
-				<th></th>
-				<th>品名</th>
-				<th>数量</th>
-				</tr>
-			</thead>
-			<tbody id="item_table">
-			{{ formset.management_form }}
-			{% for form in formset %}
-				<tr>
-					<td>{{form.check}}</td>
-					<td>{{form.name}}</td>
-					<td>{{form.quantity}}
-						{% for hidden in form.hidden_fields %}
-						{{ hidden }}
-						{% endfor %}
-					</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-			</table>
-		</fieldset>
+		<table cellpadding="4" border="1">
+		<thead>
+			<tr>
+			<th></th>
+			<th>品名</th>
+			<th>数量</th>
+			</tr>
+		</thead>
+		<tbody id="item_table">
+		{{ formset.management_form }}
+		</tbody>
+		</table>
 
 		<br/>
 
 		<input type="submit" value="提交"/>
 	</form>
+</div>
+
+<div class="col col-lg-6">
+	<label>筛选交易品</label>
+	<input id="item_keyword" type="text"/>
+	<div id="id_filtered_items">
+	</div>
 </div>
 {% endblock %}
