@@ -18,10 +18,6 @@
 						csrfmiddlewaretoken: '{{ csrf_token  }}'
 					},
 					function(data,status){
-						jQuery("#item_table tr").each(function(){
-							var checked=jQuery("[type='checkbox']", this)[0].checked
-							jQuery(this).toggle(checked)
-						})
 						items = eval("("+data+")");
 						total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
 						var p = parseInt(total.attr("value"))
