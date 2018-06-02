@@ -9,7 +9,26 @@
 				if (event.keyCode != 13) {
 					return;
 				}
-				alert(jQuery("#item_keyword").val());
+				if (jQuery("#item_keyword").val() == "") {
+					return;
+				}
+				jQuery.post("/vault/item/",
+					{
+						keyword: jQuery("#item_keyword").val(),
+						csrfmiddlewaretoken: '{{ csrf_token  }}'
+					},
+					function(data,status){
+						items = eval("("+data+")");
+						p = jQuery("#id_filtered_items");
+						p.empty();
+						for (i in items)
+						{
+							b = jQuery("<button></button>").text("添加");
+							p.append(b);
+							p.append(jQuery("<label></label>").text(items[i].str));
+							p.append("<br/>");
+						}
+					});
 			});
 		});
 	</script>
