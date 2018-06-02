@@ -54,4 +54,5 @@ urlpatterns = [
 
 	#misc
 	url(r'^misc/daily_task/$', DailyTaskView.as_view(), name='daily_task'),
+	url(r'^misc/retail/$', RetailView.as_view(), name='retail'),
 ]
