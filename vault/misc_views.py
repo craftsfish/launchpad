@@ -16,7 +16,6 @@ class RetailForm(forms.Form):
 
 class RetailCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
-	name = forms.CharField(max_length=30, disabled=True, required=False)
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
 RetailCommodityFormSet = formset_factory(RetailCommodityForm, extra=0)
@@ -56,5 +55,5 @@ class RetailView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(RetailView, self).get_context_data(**kwargs)
-		context['formset'] = RetailCommodityFormSet()
+		context['formset'] = RetailCommodityFormSet(auto_id=False)
 		return context

@@ -18,15 +18,24 @@
 						csrfmiddlewaretoken: '{{ csrf_token  }}'
 					},
 					function(data,status){
+						jQuery("#item_table tr").each(function(){
+							var checked=jQuery("[type='checkbox']", this)[0].checked
+							jQuery(this).toggle(checked)
+						})
 						items = eval("("+data+")");
-						p = jQuery("#id_filtered_items");
-						p.empty();
+						total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
+						var p = parseInt(total.attr("value"))
+						total.attr({"value": p+items.length});
 						for (i in items)
 						{
-							b = jQuery("<button></button>").text("添加");
-							p.append(b);
-							p.append(jQuery("<label></label>").text(items[i].str));
-							p.append("<br/>");
+							n = items[i].str
+							j = p + parseInt(i)
+							r = jQuery("<tr></tr>");
+							jQuery("#item_table").append(r);
+							r.append(`<td><input  type="checkbox" name=form-${j}-check /></td>
+										<td>${n}</td>
+										<td><input type="number" name=form-${j}-quantity value="1" />
+											<input type="hidden" name=form-${j}-id value=${items[i].id} /> </td>`);
 						}
 					});
 			});
@@ -50,6 +59,18 @@
 		</thead>
 		<tbody id="item_table">
 		{{ formset.management_form }}
+		{% for form in formset %}
+		<tr>
+			<td>{{form.check}}</td>
+			<td>{{form.item_name}}</td>
+			<td>
+				{{form.quantity}}
+				{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
 		</tbody>
 		</table>
 
