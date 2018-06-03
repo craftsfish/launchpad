@@ -2,6 +2,51 @@
 
 {% block header %}换货{% endblock %}
 
+{% block extra_script %}
+	<script>
+		jQuery(document).ready(function(){
+			jQuery("#item_keyword").keyup(function(event){
+				if (event.keyCode != 13) {
+					return;
+				}
+				if (jQuery("#item_keyword").val() == "") {
+					return;
+				}
+				jQuery.post("/vault/item/",
+					{
+						keyword: jQuery("#item_keyword").val(),
+						csrfmiddlewaretoken: '{{ csrf_token  }}'
+					},
+					function(data,status){
+						items = eval("("+data+")");
+						total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
+						var p = parseInt(total.attr("value"))
+						total.attr({"value": p+items.length});
+						var repo = jQuery("#id_repository").val();
+						var str_repo = jQuery("#id_repository option[value="+repo+"]").text();
+						var stat = jQuery("#id_status").val();
+						var str_stat = jQuery("#id_status option[value="+stat+"]").text();
+						for (i in items)
+						{
+							n = items[i].str
+							j = p + parseInt(i)
+							r = jQuery("<tr></tr>");
+							jQuery("#item_table").prepend(r);
+							r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
+										<td>${n}</td>
+										<td><input type="number" name=form-${j}-quantity value="1" /></td>
+										<td>${str_repo}</td>
+										<td>${str_stat}</td>
+										<input type="hidden" name=form-${j}-id value=${items[i].id} />
+										<input type="hidden" name=form-${j}-repository value=${repo} />
+										<input type="hidden" name=form-${j}-status value=${stat} />`);
+						}
+					});
+			});
+		});
+	</script>
+{% endblock %}
+
 {% block content %}
 <div class="col col-lg-12">
 	<label>+交易品</label>
