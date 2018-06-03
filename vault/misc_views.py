@@ -75,6 +75,33 @@ class ChangeView(FormView):
 	template_name = "{}/change.html".format(Organization._meta.app_label)
 	form_class = ChangeForm
 
+	def post(self, request, *args, **kwargs):
+		self.task = Task(desc="换货")
+		self.task.save()
+		t = timezone.now()
+		form = ChangeForm(self.request.POST)
+		if form.is_valid():
+			o = form.cleaned_data['organization']
+		formset = ChangeCommodityFormSet(self.request.POST)
+		if formset.is_valid():
+			for f in formset:
+				d = f.cleaned_data
+				if d['check']:
+					c = Commodity.objects.get(pk=d['id'])
+					q = d['quantity']
+					if not q:
+						continue
+					r = d['repository']
+					s = Itemstatus.v2s(d['status'])
+					if q > 0:
+						Transaction.add(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+					else:
+						Transaction.add(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+		return super(ChangeView, self).post(request, *args, **kwargs)
+
+	def get_success_url(self):
+		return self.task.get_absolute_url()
+
 	def get_context_data(self, **kwargs):
 		context = super(ChangeView, self).get_context_data(**kwargs)
 		r = Repository.objects.get(name="孤山仓")
