@@ -16,8 +16,8 @@ class Tmtransaction:
 class Tminvoice:
 	pass
 
-class Tmorder(models.Model):
-	id = models.BigIntegerField("订单编号", primary_key=True)
+class Tmorder(Task):
+	oid = models.BigIntegerField("订单编号", unique=True)
 	TM_ORDER_STATUS = (
 		(0, "等待买家付款"),
 		(1, "买家已付款，等待卖家发货"),
@@ -26,7 +26,6 @@ class Tmorder(models.Model):
 		(4, "交易关闭"),
 	)
 	status = models.IntegerField("状态", choices=TM_ORDER_STATUS)
-	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
 	time = models.DateTimeField(default=timezone.now)
 	repository = models.ForeignKey(Repository)
@@ -56,16 +55,16 @@ class Tmorder(models.Model):
 
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
 			try: #更新
-				o = Tmorder.objects.get(id=order_id)
+				o = Tmorder.objects.get(oid=order_id)
 				if status == "交易关闭":
-					o.task.delete_transactions_contains_desc('.出货.')
+					o.task_ptr.delete_transactions_contains_desc('.出货.')
 					return
 				if o.fake != fake:
-					o.task.delete_transactions_contains_desc('.出货.')
+					o.task_ptr.delete_transactions_contains_desc('.出货.')
 					if fake:
-						__add_fake_transaction(o.task, organization, repository, time)
+						__add_fake_transaction(o.task_ptr, organization, repository, time)
 				elif fake:
-					t = o.task.transactions.get(desc__startswith='0.出货.')
+					t = o.task_ptr.transactions.get(desc__startswith='0.出货.')
 					s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
 					original_repository = s.account.repository
 					if original_repository.id != repository.id: #仓库发生变化
@@ -77,14 +76,12 @@ class Tmorder(models.Model):
 				o.sale = sale
 				o.save()
 			except Tmorder.DoesNotExist as e: #新增
-				t = Task(desc="天猫订单")
-				t.save()
-				o = Tmorder(id=order_id, status=Tmorder.str2status(status), task=t, fake=fake, time=time, repository=repository, sale=sale)
+				o = Tmorder(desc="天猫订单", oid=order_id, status=Tmorder.str2status(status), fake=fake, time=time, repository=repository, sale=sale)
 				o.save()
 				if status == "交易关闭":
 					return
 				if fake:
-					__add_fake_transaction(t, organization, repository, time)
+					__add_fake_transaction(o.task_ptr, organization, repository, time)
 
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
@@ -99,9 +96,9 @@ class Tmorder(models.Model):
 				when = utc_2_datetime(cst_2_utc(get_column_value(title, i, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
 				sale = Decimal(get_column_value(title, i, "买家应付货款"))
 				remark = get_column_value(title, i, "订单备注")
-				f = False
+				f = 0
 				if remark.find("朱") != -1:
-					f = True
+					f = 1
 				repo = Repository.objects.get(name="孤山仓")
 				if re.compile("南京仓").search(remark):
 					repo = Repository.objects.get(name="南京仓")
@@ -115,8 +112,8 @@ class Tmorder(models.Model):
 			for i, v in enumerate(info.invoices):
 				#retrieve existing status
 				s = "{}.出货.".format(i+1)
-				if info.order.task.transactions.filter(desc__startswith=s).exists(): #update commodity transactions
-					for t in info.order.task.transactions.filter(desc__startswith=s):
+				if info.order.task_ptr.transactions.filter(desc__startswith=s).exists(): #update commodity transactions
+					for t in info.order.task_ptr.transactions.filter(desc__startswith=s):
 							if v.status == "交易关闭":
 								t.delete()
 								continue
@@ -136,10 +133,10 @@ class Tmorder(models.Model):
 						continue
 					for c in Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), info.order.time):
 						if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
-							Transaction.add(info.order.task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
+							Transaction.add(info.order.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
 								("负债", "应发", repository), v.number, ("支出", "出货", repository))
 						else:
-							Transaction.add(info.order.task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
+							Transaction.add(info.order.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
 								("资产", "完好", repository), -v.number, ("支出", "出货", repository))
 
 		#Import_Detail
@@ -150,13 +147,13 @@ class Tmorder(models.Model):
 			bad_orders = set()
 			for i in reader:
 				oid = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
-				o = Tmorder.objects.get(pk=oid)
+				o = Tmorder.objects.get(oid=oid)
 
 				#status check
 				status = get_column_value(title, i, "订单状态")
 				if status not in Tmorder.statuses():
 					print "[天猫订单]发现新的订单状态: {}".format(status)
-					bad_orders.add(o.id)
+					bad_orders.add(o.oid)
 
 				#fast check
 				if o.fake or o.status == Tmorder.str2status("交易关闭"):
@@ -176,15 +173,15 @@ class Tmorder(models.Model):
 				#tmcommodity mapping validation
 				if not Tmcommoditymap.get(tmc, o.time):
 					print "{}) {}:{} 缺乏商品信息".format(o.time.astimezone(timezone.get_current_timezone()), tmc.id, tmc.name)
-					bad_orders.add(o.id)
+					bad_orders.add(o.oid)
 
 				#ignore invalid order
-				if o.id in bad_orders:
+				if o.oid in bad_orders:
 					continue
 
 				found = False
 				for t in ts:
-					if t.order.id == o.id:
+					if t.order.oid == o.oid:
 						found = True
 						break
 				if not found:
@@ -201,7 +198,7 @@ class Tmorder(models.Model):
 
 				org = Organization.objects.get(name="泰福高腾复专卖店")
 				for t in ts:
-					if t.order.id in bad_orders:
+					if t.order.oid in bad_orders:
 						continue
 					t.invoices = sorted(t.invoices, key = lambda i: (i.id + str(i.number)))
 				__handle_detail(t, org)
