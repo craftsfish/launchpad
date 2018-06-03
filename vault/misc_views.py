@@ -57,3 +57,10 @@ class RetailView(FormView):
 		context = super(RetailView, self).get_context_data(**kwargs)
 		context['formset'] = RetailCommodityFormSet(auto_id=False)
 		return context
+
+class ChangeForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
+
+class ChangeView(FormView):
+	template_name = "{}/change.html".format(Organization._meta.app_label)
+	form_class = ChangeForm
