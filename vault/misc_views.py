@@ -60,6 +60,7 @@ class RetailView(FormView):
 
 class ChangeForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 
 class ChangeView(FormView):
 	template_name = "{}/change.html".format(Organization._meta.app_label)
