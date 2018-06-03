@@ -15,8 +15,8 @@ class Jdtransaction:
 class Jdinvoice:
 	pass
 
-class Jdorder(models.Model):
-	id = models.BigIntegerField("订单编号", primary_key=True)
+class Jdorder(Task):
+	oid = models.BigIntegerField("订单编号", unique=True)
 	JD_ORDER_STATUS = (
 		(0, "等待出库"),
 		(1, "等待确认收货"),
@@ -27,7 +27,6 @@ class Jdorder(models.Model):
 		(6, "锁定"),
 	)
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS)
-	task = models.OneToOneField(Task)
 	fake = models.IntegerField("刷单", default=0)
 	repository = models.ForeignKey(Repository)
 	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
@@ -79,18 +78,18 @@ class Jdorder(models.Model):
 			if re.compile("朱").search(info.remark): #fake order
 				f = 1
 			try:
-				o = Jdorder.objects.get(id=info.id)
+				o = Jdorder.objects.get(oid=info.id)
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
-					o.task.delete_transactions_contains_desc('.出货.')
+					o.task_ptr.delete_transactions_contains_desc('.出货.')
 					return
 
 				if o.fake != f: #刷单状态变更
-					o.task.delete_transactions_contains_desc('.出货.')
-					__add_commodity_transaction(o.task, org, repo, info, f)
+					o.task_ptr.delete_transactions_contains_desc('.出货.')
+					__add_commodity_transaction(o.task_ptr, org, repo, info, f)
 				elif not f and info.status != "等待出库": #正常订单状态迁移
 					for i in range(len(info.invoices)):
 						s = "{}.出货.".format(i+1)
-						for t in o.task.transactions.filter(desc__startswith=s):
+						for t in o.task_ptr.transactions.filter(desc__startswith=s):
 							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
 							if s.account.category == Account.str2category("负债"):
 								a = s.account
@@ -99,7 +98,7 @@ class Jdorder(models.Model):
 								s.save()
 
 				if o.repository.id != repo.id: #发货仓库发生变化
-					for t in o.task.transactions.filter(desc__contains=".出货."):
+					for t in o.task_ptr.transactions.filter(desc__contains=".出货."):
 						t.change_repository(o.repository, repo)
 
 				o.status = Jdorder.str2status(info.status)
@@ -108,13 +107,11 @@ class Jdorder(models.Model):
 				o.sale = info.sale
 				o.save()
 			except Jdorder.DoesNotExist as e:
-				t = Task(desc="京东订单")
-				t.save()
-				o = Jdorder(id=info.id, status=Jdorder.str2status(info.status), task=t, fake=f, repository=repo, sale=info.sale)
+				o = Jdorder(oid=info.id, status=Jdorder.str2status(info.status), desc="京东订单", fake=f, repository=repo, sale=info.sale)
 				o.save()
 				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 					return #no transaction should be added
-				__add_commodity_transaction(t, org, repo, info, f)
+				__add_commodity_transaction(o.task_ptr, org, repo, info, f)
 
 		#Import
 		ts = []
