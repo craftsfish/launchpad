@@ -10,8 +10,8 @@ class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 
 class RetailForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
-	repository = forms.ModelChoiceField(queryset=Repository.objects)
+	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	sale = forms.DecimalField(initial=0, max_digits=20, decimal_places=2)
 
 class RetailCommodityForm(forms.Form):
