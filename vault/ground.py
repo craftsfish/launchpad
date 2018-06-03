@@ -42,3 +42,16 @@ class Itemstatus:
 			if i == int(c):
 				return v
 		return None
+
+class Shipstatus:
+	choices = (
+		(0, "收货"),
+		(1, "发货"),
+	)
+
+	@staticmethod
+	def v2s(c):
+		for i, v in Shipstatus.choices:
+			if i == int(c):
+				return v
+		return None

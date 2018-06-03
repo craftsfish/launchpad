@@ -62,6 +62,7 @@ class ChangeForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	status = forms.ChoiceField(choices=Itemstatus.choices)
+	ship = forms.ChoiceField(choices=Shipstatus.choices)
 
 class ChangeCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
@@ -69,6 +70,7 @@ class ChangeCommodityForm(forms.Form):
 	check = forms.BooleanField(required=False)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
 	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+	ship = forms.ChoiceField(choices=Shipstatus.choices, widget=forms.HiddenInput)
 ChangeCommodityFormSet = formset_factory(ChangeCommodityForm, extra=0)
 
 class ChangeView(FormView):
