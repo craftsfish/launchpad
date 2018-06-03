@@ -7,12 +7,7 @@ class Organization(models.Model):
 	parent = models.ForeignKey('self', verbose_name="上级", null=True, blank=True, related_name="children")
 
 	def __str__(self):
-		result = self.name
-		parent = self.parent
-		while parent:
-			result = parent.name + "." + result
-			parent = parent.parent
-		return result
+		return self.name
 
 	def descendants(self):
 		result = [self]
