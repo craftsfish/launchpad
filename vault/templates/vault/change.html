@@ -61,20 +61,8 @@
 
 			<div class="col col-lg-6">
 				<table cellpadding="4" border="1">
-				<tbody id="item_table">
 				{{ formset.management_form }}
-				{% for form in formset %}
-				<tr>
-					<td>{{form.check}}</td>
-					<td>{{form.commodity_name}}</td>
-					<td>{{form.quantity}}</td>
-					<td>{{form.repository_name}}</td>
-					<td>{{form.status_name}}</td>
-					{% for hidden in form.hidden_fields %}
-					{{ hidden }}
-					{% endfor %}
-				</tr>
-				{% endfor %}
+				<tbody id="item_table">
 				</tbody>
 				</table>
 			</div>
