@@ -28,3 +28,17 @@ def cst_2_utc(str_time, str_format):
 
 def utc_2_datetime(utc):
 	return datetime.utcfromtimestamp(utc).replace(tzinfo=timezone.utc)
+
+class Itemstatus:
+	choices = (
+		(0, "完好"),
+		(1, "残缺"),
+		(2, "破损"),
+	)
+
+	@staticmethod
+	def v2s(c):
+		for i, v in Itemstatus.choices:
+			if i == int(c):
+				return v
+		return None

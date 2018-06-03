@@ -4,10 +4,36 @@
 
 {% block content %}
 <div class="col col-lg-12">
+	<label>+交易品</label>
+	<input id="item_keyword" type="text"/>
 	<form class="border border-dark" action="" method="post">
 		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" value="提交"/>
+		<div class = "row">
+			<div class="col col-lg-6">
+				{{ form.as_p }}
+				<input type="submit" value="提交"/>
+			</div>
+
+			<div class="col col-lg-6">
+				<table cellpadding="4" border="1">
+				<tbody id="item_table">
+				{{ formset.management_form }}
+				{% for form in formset %}
+				<tr>
+					<td>{{form.check}}</td>
+					<td>{{form.commodity_name}}</td>
+					<td>{{form.quantity}}</td>
+					<td>{{form.repository_name}}</td>
+					<td>{{form.status_name}}</td>
+					{% for hidden in form.hidden_fields %}
+					{{ hidden }}
+					{% endfor %}
+				</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+			</div>
+		</div>
 	</form>
 </div>
 {% endblock %}

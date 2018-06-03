@@ -61,7 +61,27 @@ class RetailView(FormView):
 class ChangeForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+
+class ChangeCommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+ChangeCommodityFormSet = formset_factory(ChangeCommodityForm, extra=0)
 
 class ChangeView(FormView):
 	template_name = "{}/change.html".format(Organization._meta.app_label)
 	form_class = ChangeForm
+
+	def get_context_data(self, **kwargs):
+		context = super(ChangeView, self).get_context_data(**kwargs)
+		r = Repository.objects.get(name="孤山仓")
+		formset_initial = [{'id': 3, 'quantity': 8, 'check': True, 'repository': r, 'status': 1}]
+		context['formset'] = ChangeCommodityFormSet(initial = formset_initial, auto_id=False)
+		for f in context['formset']:
+			f.commodity_name = Commodity.objects.get(pk=f['id'].value()).name
+			f.repository_name = Repository.objects.get(pk=f['repository'].value()).name
+			f.status_name = Itemstatus.v2s(f['status'].value())
+		return context
