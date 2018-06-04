@@ -130,23 +130,33 @@ class ChangeRepositoryView(FormView):
 	template_name = "{}/change_repository.html".format(Organization._meta.app_label)
 	form_class = ChangeRepositoryForm
 
+	def post(self, request, *args, **kwargs):
+		self.task = Task(desc="换仓")
+		self.task.save()
+		t = timezone.now()
+		form = ChangeRepositoryForm(self.request.POST)
+		if form.is_valid():
+			o = form.cleaned_data['organization']
+		formset = ChangeRepositoryCommodityFormSet(self.request.POST)
+		if formset.is_valid():
+			for f in formset:
+				d = f.cleaned_data
+				if d['check']:
+					c = Commodity.objects.get(pk=d['id'])
+					q = d['quantity']
+					if not q:
+						continue
+					rf = d['repository_f']
+					sf = Itemstatus.v2s(d['status_f'])
+					rt = d['repository_t']
+					st = Itemstatus.v2s(d['status_t'])
+					Transaction.add(self.task, "换仓", t, o, c.item_ptr, ("资产", sf, rf), -q, ("资产", st, rt))
+		return super(ChangeRepositoryView, self).post(request, *args, **kwargs)
+
+	def get_success_url(self):
+		return self.task.get_absolute_url()
+
 	def get_context_data(self, **kwargs):
 		context = super(ChangeRepositoryView, self).get_context_data(**kwargs)
-		formset_initial = [
-						{
-							'id': 3,
-							'quantity': 5,
-							'check': True,
-							'repository_f': Repository.objects.get(name="孤山仓"),
-							'status_f': 0,
-							'repository_t': Repository.objects.get(name="南京仓"),
-							'status_t': 2,
-						}]
-		context['formset'] = ChangeRepositoryCommodityFormSet(initial = formset_initial, auto_id=False)
-		for f in context['formset']:
-			f.label = Repository.objects.get(pk=f['repository_f'].value()).name + "."
-			f.label += Itemstatus.v2s(f['status_f'].value()) + " -> "
-			f.label += Repository.objects.get(pk=f['repository_t'].value()).name + "."
-			f.label += Itemstatus.v2s(f['status_t'].value()) + ": "
-			f.label += Commodity.objects.get(pk=f['id'].value()).name
+		context['formset'] = ChangeRepositoryCommodityFormSet(auto_id=False)
 		return context
