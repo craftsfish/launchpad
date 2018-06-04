@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "vault/item_filter_base.html" %}
 
 {% block header %}换仓{% endblock %}
 
@@ -38,6 +38,19 @@
 	{% include 'vault/script/item_filter.html' %}
 {% endblock %}
 
-{% block content %}
-	{% include 'vault/html/item_filter.html' %}
+{% block extend_form %}
+	<fieldset>
+		<legend>主体</legend>
+		{{form.organization}}
+	</fieldset>
+	<fieldset>
+		<legend>始发仓</legend>
+		{{form.repository_f}}
+		{{form.status_f}}
+	</fieldset>
+	<fieldset>
+		<legend>目的仓</legend>
+		{{form.repository_t}}
+		{{form.status_t}}
+	</fieldset>
 {% endblock %}
