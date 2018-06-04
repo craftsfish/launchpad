@@ -106,15 +106,47 @@ class ChangeView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(ChangeView, self).get_context_data(**kwargs)
-		r = Repository.objects.get(name="孤山仓")
 		context['formset'] = ChangeCommodityFormSet(auto_id=False)
 		return context
 
 class ChangeRepositoryForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
+	repository_f = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status_f = forms.ChoiceField(choices=Itemstatus.choices)
+	repository_t = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status_t = forms.ChoiceField(choices=Itemstatus.choices)
+
+class ChangeRepositoryCommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+	repository_f = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+	repository_t = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+ChangeRepositoryCommodityFormSet = formset_factory(ChangeRepositoryCommodityForm, extra=0)
 
 class ChangeRepositoryView(FormView):
 	template_name = "{}/change_repository.html".format(Organization._meta.app_label)
 	form_class = ChangeRepositoryForm
+
+	def get_context_data(self, **kwargs):
+		context = super(ChangeRepositoryView, self).get_context_data(**kwargs)
+		formset_initial = [
+						{
+							'id': 3,
+							'quantity': 5,
+							'check': True,
+							'repository_f': Repository.objects.get(name="孤山仓"),
+							'status_f': 0,
+							'repository_t': Repository.objects.get(name="南京仓"),
+							'status_t': 2,
+						}]
+		context['formset'] = ChangeRepositoryCommodityFormSet(initial = formset_initial, auto_id=False)
+		for f in context['formset']:
+			f.label = Repository.objects.get(pk=f['repository_f'].value()).name + "."
+			f.label += Itemstatus.v2s(f['status_f'].value()) + " -> "
+			f.label += Repository.objects.get(pk=f['repository_t'].value()).name + "."
+			f.label += Itemstatus.v2s(f['status_t'].value()) + ": "
+			f.label += Commodity.objects.get(pk=f['id'].value()).name
+		return context

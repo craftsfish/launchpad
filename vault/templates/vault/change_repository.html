@@ -19,6 +19,16 @@
 				{{ formset.management_form }}
 				<tbody id="item_table">
 				</tbody>
+					{% for form in formset %}
+						<tr>
+							<td>{{form.check}}</td>
+							<td>{{form.label}}</td>
+							<td>{{form.quantity}}</td>
+							{% for hidden in form.hidden_fields %}
+							{{ hidden }}
+							{% endfor %}
+						</tr>
+					{% endfor %}
 				</table>
 			</div>
 		</div>
