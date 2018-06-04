@@ -4,6 +4,36 @@
 
 {% block extra_script %}
 	<script>
+		function on_item_retrieved(data,status){
+			items = eval("("+data+")");
+			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
+			var p = parseInt(total.attr("value"))
+			total.attr({"value": p+items.length});
+			var repo_f = jQuery("#id_repository_f").val();
+			var str_repo_f = jQuery("#id_repository_f option[value="+repo_f+"]").text();
+			var stat_f = jQuery("#id_status_f").val();
+			var str_stat_f = jQuery("#id_status_f option[value="+stat_f+"]").text();
+			var repo_t = jQuery("#id_repository_t").val();
+			var str_repo_t = jQuery("#id_repository_t option[value="+repo_t+"]").text();
+			var stat_t = jQuery("#id_status_t").val();
+			var str_stat_t = jQuery("#id_status_t option[value="+stat_t+"]").text();
+			for (i in items)
+			{
+				n = str_repo_f + "." + str_stat_f + " -> " + str_repo_t + "." + str_stat_t + ": " + items[i].str
+				j = p + parseInt(i)
+				r = jQuery("<tr></tr>");
+				q = 1
+				jQuery("#item_table").prepend(r);
+				r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
+							<td>${n}</td>
+							<td><input type="number" name=form-${j}-quantity value=${q} /></td>
+							<input type="hidden" name=form-${j}-id value=${items[i].id} />
+							<input type="hidden" name=form-${j}-repository_f value=${repo_f} />
+							<input type="hidden" name=form-${j}-status_f value=${stat_f} />
+							<input type="hidden" name=form-${j}-repository_t value=${repo_t} />
+							<input type="hidden" name=form-${j}-status_t value=${stat_t} />`);
+			}
+		};
 		jQuery(document).ready(function(){
 			jQuery("#item_keyword").keyup(function(event){
 				if (event.keyCode != 13) {
@@ -12,41 +42,7 @@
 				if (jQuery("#item_keyword").val() == "") {
 					return;
 				}
-				jQuery.post("/vault/item/",
-					{
-						keyword: jQuery("#item_keyword").val(),
-						csrfmiddlewaretoken: '{{ csrf_token  }}'
-					},
-					function(data,status){
-						items = eval("("+data+")");
-						total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
-						var p = parseInt(total.attr("value"))
-						total.attr({"value": p+items.length});
-						var repo_f = jQuery("#id_repository_f").val();
-						var str_repo_f = jQuery("#id_repository_f option[value="+repo_f+"]").text();
-						var stat_f = jQuery("#id_status_f").val();
-						var str_stat_f = jQuery("#id_status_f option[value="+stat_f+"]").text();
-						var repo_t = jQuery("#id_repository_t").val();
-						var str_repo_t = jQuery("#id_repository_t option[value="+repo_t+"]").text();
-						var stat_t = jQuery("#id_status_t").val();
-						var str_stat_t = jQuery("#id_status_t option[value="+stat_t+"]").text();
-						for (i in items)
-						{
-							n = str_repo_f + "." + str_stat_f + " -> " + str_repo_t + "." + str_stat_t + ": " + items[i].str
-							j = p + parseInt(i)
-							r = jQuery("<tr></tr>");
-							q = 1
-							jQuery("#item_table").prepend(r);
-							r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
-										<td>${n}</td>
-										<td><input type="number" name=form-${j}-quantity value=${q} /></td>
-										<input type="hidden" name=form-${j}-id value=${items[i].id} />
-										<input type="hidden" name=form-${j}-repository_f value=${repo_f} />
-										<input type="hidden" name=form-${j}-status_f value=${stat_f} />
-										<input type="hidden" name=form-${j}-repository_t value=${repo_t} />
-										<input type="hidden" name=form-${j}-status_t value=${stat_t} />`);
-						}
-					});
+				jQuery.post("/vault/item/", {keyword: jQuery("#item_keyword").val(), csrfmiddlewaretoken: '{{ csrf_token  }}'}, on_item_retrieved);
 			});
 		});
 	</script>
