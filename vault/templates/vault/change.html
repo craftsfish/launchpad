@@ -34,23 +34,7 @@
 			}
 		}
 	</script>
-	<script>
-		jQuery(document).ready(function(){
-			jQuery("#item_keyword").keyup(function(event){
-				if (event.keyCode != 13) {
-					return;
-				}
-				if (jQuery("#item_keyword").val() == "") {
-					return;
-				}
-				jQuery.post("/vault/item/",
-					{
-						keyword: jQuery("#item_keyword").val(),
-						csrfmiddlewaretoken: '{{ csrf_token  }}'
-					}, on_item_retrieved);
-			});
-		});
-	</script>
+	{% include 'vault/script_item_filter.html' %}
 {% endblock %}
 
 {% block content %}
