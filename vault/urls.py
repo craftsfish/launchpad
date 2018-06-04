@@ -56,4 +56,5 @@ urlpatterns = [
 	url(r'^misc/daily_task/$', DailyTaskView.as_view(), name='daily_task'),
 	url(r'^misc/retail/$', RetailView.as_view(), name='retail'),
 	url(r'^misc/change/$', ChangeView.as_view(), name='change'),
+	url(r'^misc/commodity/change/repository/$', ChangeRepositoryView.as_view(), name='change_repository'),
 ]

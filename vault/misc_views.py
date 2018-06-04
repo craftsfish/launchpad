@@ -109,3 +109,12 @@ class ChangeView(FormView):
 		r = Repository.objects.get(name="孤山仓")
 		context['formset'] = ChangeCommodityFormSet(auto_id=False)
 		return context
+
+class ChangeRepositoryForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+
+class ChangeRepositoryView(FormView):
+	template_name = "{}/change_repository.html".format(Organization._meta.app_label)
+	form_class = ChangeRepositoryForm
