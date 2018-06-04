@@ -112,9 +112,9 @@ class ChangeView(FormView):
 class ChangeRepositoryForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
 	repository_f = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status_f = forms.ChoiceField(choices=Itemstatus.choices)
+	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
 	repository_t = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status_t = forms.ChoiceField(choices=Itemstatus.choices)
+	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
 
 class ChangeRepositoryCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
