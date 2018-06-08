@@ -125,7 +125,7 @@ class JdorderChangeView(FormView):
 			try:
 				j = Jdorder.objects.get(oid=j)
 			except Jdorder.DoesNotExist as e:
-				j = Jdorder(oid=j)
+				j = Jdorder(oid=j, desc="京东订单")
 				j.save()
 			self.task = j.task_ptr
 		formset = ChangeCommodityFormSet(self.request.POST)
@@ -180,7 +180,7 @@ class JdorderCompensateView(FormView):
 			try:
 				j = Jdorder.objects.get(oid=j)
 			except Jdorder.DoesNotExist as e:
-				j = Jdorder(oid=j)
+				j = Jdorder(oid=j, desc="京东订单")
 				j.save()
 			self.task = j.task_ptr
 		else:
