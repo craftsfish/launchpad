@@ -11,6 +11,13 @@ from task import *
 class TaskListView(ListView):
 	model = Task
 
+	def get_context_data(self, **kwargs):
+		context = super(TaskListView, self).get_context_data(**kwargs)
+		for t in context['object_list']:
+			t.start = t.transactions.order_by("time").values_list('time', flat=True).first()
+			t.end = t.transactions.order_by("time").values_list('time', flat=True).last()
+		return context
+
 class TaskDetailView(DetailView):
 	model = Task
 

@@ -4,10 +4,19 @@
 
 {% block content %}
 <div class="col-sm-auto">
-	<ul>
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>开始</th>
+			<th>结束</th>
+			<th>描述</th>
+		</tr>
 	{% for object in object_list %}
-		<li><a href="{% url 'task_detail' object.id %}">{{object}}</a></li>
+		<tr>
+			<td>{{object.start | date:"Y-m-d H:i:s" }}</td>
+			<td>{{object.end | date:"Y-m-d H:i:s" }}</td>
+			<td><a href="{% url 'task_detail' object.id %}">{{object}}</a></td>
+		</tr>
 	{% endfor %}
-	</ul>
+	</table>
 </div>
 {% endblock %}
