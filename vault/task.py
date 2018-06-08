@@ -4,8 +4,6 @@ from account import *
 
 class Task(models.Model):
 	desc = models.CharField(max_length=120)
-	settle = models.BooleanField("交割", default=True) #交割完成
-	clear = models.BooleanField("结算", default=True) #账单结清
 
 	def __str__(self):
 		return self.desc
@@ -71,16 +69,6 @@ class Task(models.Model):
 			if v == 0:
 				balance.pop(k)
 		return balance
-
-	def update(self):
-		self.clear = True
-		self.settle = True
-		for k, v in self.unreceived_accounts().items():
-			if Account.objects.get(pk=k).item.id == Item.objects.get(name="人民币").id:
-				self.clear = False
-			else:
-				self.settle = False
-		self.save()
 
 class Transaction(models.Model):
 	class Meta:

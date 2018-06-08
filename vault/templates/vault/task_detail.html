@@ -23,15 +23,11 @@
 			<th></th>
 			<th>编号</th>
 			<th>概述</th>
-			<th>结算</th>
-			<th>交割</th>
 		</tr>
 		<tr>
 			<td><a href="{% url 'task_delete' object.id %}">删除</a></td>
 			<td>{{object.id}}</td>
 			<td>{{object.desc}}</td>
-			<td>{{object.clear}}</td>
-			<td>{{object.settle}}</td>
 		</tr>
 	</table>
 
