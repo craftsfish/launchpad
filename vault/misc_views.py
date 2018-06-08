@@ -153,6 +153,61 @@ class JdorderChangeView(FormView):
 		context['formset'] = ChangeCommodityFormSet(auto_id=False)
 		return context
 
+class JdorderCompensateForm(forms.Form):
+	jdorder = forms.IntegerField()
+	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+
+class CompensateCommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+CompensateCommodityFormSet = formset_factory(CompensateCommodityForm, extra=0)
+
+class JdorderCompensateView(FormView):
+	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
+	form_class = JdorderCompensateForm
+
+	def post(self, request, *args, **kwargs):
+		t = timezone.now()
+		form = JdorderCompensateForm(self.request.POST)
+		if form.is_valid():
+			o = form.cleaned_data['organization']
+			j = form.cleaned_data['jdorder']
+			try:
+				j = Jdorder.objects.get(oid=j)
+			except Jdorder.DoesNotExist as e:
+				j = Jdorder(oid=j)
+				j.save()
+			self.task = j.task_ptr
+		else:
+			print form.errors
+			print self.request.POST
+		formset = CompensateCommodityFormSet(self.request.POST)
+		if formset.is_valid():
+			for f in formset:
+				d = f.cleaned_data
+				if d['check']:
+					c = Commodity.objects.get(pk=d['id'])
+					q = d['quantity']
+					if not q:
+						continue
+					r = d['repository']
+					s = Itemstatus.v2s(d['status'])
+					Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
+		return super(JdorderCompensateView, self).post(request, *args, **kwargs)
+
+	def get_success_url(self):
+		return self.task.get_absolute_url()
+
+	def get_context_data(self, **kwargs):
+		context = super(JdorderCompensateView, self).get_context_data(**kwargs)
+		context['formset'] = CompensateCommodityFormSet(auto_id=False)
+		return context
+
 class ChangeRepositoryForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
 	repository_f = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.RadioSelect, empty_label=None, initial=1)

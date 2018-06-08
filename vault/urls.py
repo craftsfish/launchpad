@@ -57,5 +57,6 @@ urlpatterns = [
 	url(r'^misc/retail/$', RetailView.as_view(), name='retail'),
 	url(r'^misc/change/$', ChangeView.as_view(), name='change'),
 	url(r'^misc/jdorder_change/$', JdorderChangeView.as_view(), name='jdorder_change'),
+	url(r'^misc/jdorder_compensate/$', JdorderCompensateView.as_view(), name='jdorder_compensate'),
 	url(r'^misc/commodity/change/repository/$', ChangeRepositoryView.as_view(), name='change_repository'),
 ]
