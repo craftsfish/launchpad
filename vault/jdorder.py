@@ -26,9 +26,9 @@ class Jdorder(Task):
 		(5, "(删除)等待确认收货"),
 		(6, "锁定"),
 	)
-	status = models.IntegerField("状态", choices=JD_ORDER_STATUS)
+	status = models.IntegerField("状态", choices=JD_ORDER_STATUS, null=True, blank=True)
 	fake = models.IntegerField("刷单", default=0)
-	repository = models.ForeignKey(Repository)
+	repository = models.ForeignKey(Repository, null=True, blank=True)
 	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
 	@staticmethod

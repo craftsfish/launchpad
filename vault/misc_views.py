@@ -118,11 +118,16 @@ class JdorderChangeView(FormView):
 
 	def post(self, request, *args, **kwargs):
 		t = timezone.now()
-		form = ChangeForm(self.request.POST)
+		form = JdorderChangeForm(self.request.POST)
 		if form.is_valid():
 			o = form.cleaned_data['organization']
 			j = form.cleaned_data['jdorder']
-			print j
+			try:
+				j = Jdorder.objects.get(oid=j)
+			except Jdorder.DoesNotExist as e:
+				j = Jdorder(oid=j)
+				j.save()
+			self.task = j.task_ptr
 		formset = ChangeCommodityFormSet(self.request.POST)
 		if formset.is_valid():
 			for f in formset:
