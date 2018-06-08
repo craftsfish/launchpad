@@ -25,7 +25,7 @@ class Account(models.Model):
 	repository = models.ForeignKey(Repository, verbose_name="仓库", null=True, blank=True)
 
 	def __str__(self):
-		r = self.organization.name + '.' + self.get_category_display() + '.' + self.item.name
+		r = self.get_category_display()
 		if self.repository:
 			r += '.' + self.repository.name
 		return r + '.' + self.name

@@ -60,6 +60,8 @@
 		<th></th>
 		<th>时间</th>
 		<th>概述</th>
+		<th>组织</th>
+		<th>标的</th>
 		<th colspan="{{detail_spans}}">详情</th>
 	</tr>
 	{% for t in trans %}
@@ -68,6 +70,10 @@
 		<td>{{t.time}}</td>
 		<td>{{t.desc}}</td>
 		{% for s in t.ss %}
+		{% if not forloop.counter0 %}
+			<td>{{s.account.organization}}</td>
+			<td>{{s.account.item}}</td>
+		{% endif %}
 		<td align="left"><a href="{% url 'account_detail' s.account.id %}">{{s.account}}</a></td>
 		<td align="right">{{s.change}}</td>
 		{% endfor %}
