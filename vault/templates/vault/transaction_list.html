@@ -13,7 +13,7 @@
 		{% for transaction in object_list %}
 			<tr>
 				<td><a href="{% url 'transaction_detail' transaction.id %}">{{ transaction.id }}</a></td>
-				<td>{{ transaction.time }}</td>
+				<td>{{transaction.time | date:"Y-m-d H:i:s" }}</td>
 				<td>{{ transaction.desc }}</td>
 			<tr>
 		{% endfor %}

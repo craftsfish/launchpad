@@ -11,6 +11,9 @@ from task import *
 class TaskListView(ListView):
 	model = Task
 
+	def get_queryset(self):
+		return Task.objects.order_by("-id")
+
 	def get_context_data(self, **kwargs):
 		context = super(TaskListView, self).get_context_data(**kwargs)
 		for t in context['object_list']:
