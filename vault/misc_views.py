@@ -14,10 +14,13 @@ class FfsMixin(ContextMixin):
 	"""
 	form_class = None
 	formset_class = None
+	sub_form_class = None
 
 	def get_context_data(self, **kwargs):
 		if 'form' not in kwargs:
 			kwargs['form'] = self.form_class()
+		if 'sub_form' not in kwargs and self.sub_form_class:
+			kwargs['sub_form'] = self.sub_form_class()
 		if 'formset' not in kwargs:
 			kwargs['formset'] = self.formset_class(auto_id=False)
 		return super(FfsMixin, self).get_context_data(**kwargs)
@@ -174,9 +177,7 @@ class JdorderChangeView(FfsMixin, TemplateView):
 
 class JdorderCompensateForm(forms.Form):
 	jdorder = forms.IntegerField()
-	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
 
 class CompensateCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
@@ -213,10 +214,16 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 			Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
 		return super(JdorderCompensateView, self).data_valid(form, formset)
 
+class CommodityShippingForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+	keyword = forms.CharField()
+
 class JdorderReturnView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
 	form_class = JdorderCompensateForm
 	formset_class = CompensateCommodityFormSet
+	sub_form_class = CommodityShippingForm
 
 	def data_valid(self, form, formset):
 		t = timezone.now()

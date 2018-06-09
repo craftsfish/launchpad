@@ -1,25 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div class="col col-lg-12">
-		<label>+交易品</label>
-		<input id="item_keyword" type="text"/>
-		<form class="border border-dark" action="" method="post">
+	<div class="col col-lg-3 border border-dark">
+		<form action="" method="post">
 			{% csrf_token %}
-			<div class = "row">
-				<div class="col col-lg-6">
-					{% block extend_form %}{{ form.as_p }}{% endblock %}
-					<input type="submit" value="提交"/>
-				</div>
-
-				<div class="col col-lg-6">
-					<table cellpadding="4" border="1">
-					{{ formset.management_form }}
-					<tbody id="item_table">
-					</tbody>
-					</table>
-				</div>
-			</div>
+			{% block extend_form %}{{ form.as_p }}{% endblock %}
+			<table cellpadding="4" border="1">
+				{{ formset.management_form }}
+				<tbody id="item_table">
+				</tbody>
+			</table>
+			<br></br>
+			<input type="submit" value="提交"/>
 		</form>
+	</div>
+	<div class="col col-lg-3 border border-dark">
+		<label>增加交易标的</label>
+		{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
 	</div>
 {% endblock %}

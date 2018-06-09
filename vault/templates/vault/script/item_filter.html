@@ -1,13 +1,13 @@
 <script>
 	jQuery(document).ready(function(){
-		jQuery("#item_keyword").keyup(function(event){
+		jQuery("#id_keyword").keyup(function(event){
 			if (event.keyCode != 13) {
 				return;
 			}
-			if (jQuery("#item_keyword").val() == "") {
+			if (jQuery("#id_keyword").val() == "") {
 				return;
 			}
-			jQuery.post("/vault/item/", {keyword: jQuery("#item_keyword").val(), csrfmiddlewaretoken: '{{ csrf_token  }}'}, on_item_retrieved);
+			jQuery.post("/vault/item/", {keyword: jQuery("#id_keyword").val(), csrfmiddlewaretoken: '{{ csrf_token  }}'}, on_item_retrieved);
 		});
 	});
 </script>
