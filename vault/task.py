@@ -40,12 +40,12 @@ class Task(models.Model):
 	def get_absolute_url(self):
 		return reverse('task_detail', kwargs={'pk': self.pk})
 
-	def unreceived_accounts(self):
+	def uncleared_accounts(self):
 		balance = {}
 		for tr in self.transactions.all():
 			for s in tr.splits.all():
 				a = s.account
-				if a.name.find("应收") == 0:
+				if a.name.find("应") == 0:
 					if balance.get(a.id) != None:
 						balance[a.id] += s.change
 					else:

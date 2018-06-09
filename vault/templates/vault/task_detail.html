@@ -16,15 +16,28 @@
 			<td>{{object.desc}}</td>
 		</tr>
 	</table>
-
 	<br/>
 
-	<div>
-		<a href="{% url 'task_receive_future' object.id %}">应收货物交割</a>
-	</div>
+	<a href="{% url 'task_receive_future' object.id %}">应收货物交割</a>
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>组织</th>
+			<th>标的</th>
+			<th>账户</th>
+			<th>余额</th>
+		</tr>
+		{% for a, b in uncleared_list %}
+		<tr>
+			<td>{{a.organization}}</td>
+			<td>{{a.item}}</td>
+			<td>{{a}}</td>
+			<td>{{b}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	<br/>
 
 	<table cellpadding="4" border="1">
-	<caption>交易明细</caption>
 	<tr>
 		<th></th>
 		<th>时间</th>

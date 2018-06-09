@@ -26,6 +26,10 @@ class TaskDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
+		l = []
+		for k, v in self.object.uncleared_accounts().items():
+			l.append([Account.objects.get(pk=k), v])
+		context['uncleared_list'] = l
 		context['trans'] = self.object.transactions.all().order_by("time", "id")
 		max_splits = 0
 		for t in context['trans']:
