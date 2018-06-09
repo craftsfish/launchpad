@@ -9,14 +9,14 @@
 			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
 			var p = parseInt(total.attr("value"))
 			total.attr({"value": p+items.length});
-			var repo_f = jQuery("#id_repository_f input[checked]").val();
-			var str_repo_f = jQuery("#id_repository_f input[checked]").parent().text();
-			var stat_f = jQuery("#id_status_f input[checked]").val();
-			var str_stat_f = jQuery("#id_status_f input[checked]").parent().text();
-			var repo_t = jQuery("#id_repository_t input[checked]").val();
-			var str_repo_t = jQuery("#id_repository_t input[checked]").parent().text();
-			var stat_t = jQuery("#id_status_t input[checked]").val();
-			var str_stat_t = jQuery("#id_status_t input[checked]").parent().text();
+			var repo_f = jQuery("#id_repository_f").val();
+			var str_repo_f = jQuery("#id_repository_f option[value="+repo_f+"]").text();
+			var stat_f = jQuery("#id_status_f input:checked").val();
+			var str_stat_f = jQuery("#id_status_f input:checked").parent().text();
+			var repo_t = jQuery("#id_repository_t").val();
+			var str_repo_t = jQuery("#id_repository_t option[value="+repo_t+"]").text();
+			var stat_t = jQuery("#id_status_t input:checked").val();
+			var str_stat_t = jQuery("#id_status_t input:checked").parent().text();
 			for (i in items)
 			{
 				n = str_repo_f + "." + str_stat_f + " -> " + str_repo_t + "." + str_stat_t + ": " + items[i].str
@@ -38,9 +38,8 @@
 	{% include 'vault/script/item_filter.html' %}
 {% endblock %}
 
-{% block extend_form %}
+{% block sub_form %}
 	<table cellpadding="4" border="1">
-		<tr><td align="center" colspan=2>{{form.organization.label}}: {{form.organization}}</td><tr>
 		<tr>
 			<th>初始仓</th>
 			<th>目标仓</th>
@@ -48,16 +47,17 @@
 		<tr>
 			<td>
 				<p>仓库<p>
-				{{form.repository_f}}
+				{{sub_form.repository_f}}
 				<p>状态<p>
-				{{form.status_f}}
+				{{sub_form.status_f}}
 			</td>
 			<td>
 				<p>仓库<p>
-				{{form.repository_t}}
+				{{sub_form.repository_t}}
 				<p>状态<p>
-				{{form.status_t}}
+				{{sub_form.status_t}}
 			</td>
 		</tr>
 	</table>
+	<label>关键字</label>{{sub_form.keyword}}
 {% endblock %}
