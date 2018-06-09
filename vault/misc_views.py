@@ -224,15 +224,9 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 			Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
 		return super(JdorderCompensateView, self).data_valid(form, formset)
 
-class JdorderReturnForm(forms.Form):
-	jdorder = forms.IntegerField()
-	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
-
 class JdorderReturnView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
-	form_class = JdorderReturnForm
+	form_class = JdorderCompensateForm
 	formset_class = CompensateCommodityFormSet
 
 	def data_valid(self, form, formset):
