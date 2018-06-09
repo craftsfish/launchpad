@@ -132,54 +132,32 @@ class RetailView(FfsMixin, TemplateView):
 		return super(RetailView, self).data_valid(form, formset)
 
 class ChangeForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
-	ship = forms.ChoiceField(choices=Shipstatus.choices)
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
 
-class ChangeCommodityForm(forms.Form):
-	id = forms.IntegerField(widget=forms.HiddenInput)
-	quantity = forms.IntegerField()
-	check = forms.BooleanField(required=False)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
-ChangeCommodityFormSet = formset_factory(ChangeCommodityForm, extra=0)
-
-class ChangeView(FormView):
+class ChangeView(FfsMixin, TemplateView):
 	template_name = "{}/change.html".format(Organization._meta.app_label)
 	form_class = ChangeForm
+	formset_class = CommodityDetailFormSet
+	sub_form_class = CommodityShippingForm
 
-	def post(self, request, *args, **kwargs):
+	def data_valid(self, form, formset):
 		self.task = Task(desc="换货")
 		self.task.save()
 		t = timezone.now()
-		form = ChangeForm(self.request.POST)
-		if form.is_valid():
-			o = form.cleaned_data['organization']
-		formset = ChangeCommodityFormSet(self.request.POST)
-		if formset.is_valid():
-			for f in formset:
-				d = f.cleaned_data
-				if d['check']:
-					c = Commodity.objects.get(pk=d['id'])
-					q = d['quantity']
-					if not q:
-						continue
-					r = d['repository']
-					s = Itemstatus.v2s(d['status'])
-					if q > 0:
-						Transaction.add(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-					else:
-						Transaction.add(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-		return super(ChangeView, self).post(request, *args, **kwargs)
-
-	def get_success_url(self):
-		return self.task.get_absolute_url()
-
-	def get_context_data(self, **kwargs):
-		context = super(ChangeView, self).get_context_data(**kwargs)
-		context['formset'] = ChangeCommodityFormSet(auto_id=False)
-		return context
+		o = form.cleaned_data['organization']
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			c = Commodity.objects.get(pk=d['id'])
+			q = d['quantity']
+			if not q: continue
+			r = d['repository']
+			s = Itemstatus.v2s(d['status'])
+			if q > 0:
+				Transaction.add(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+			else:
+				Transaction.add(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+		return super(ChangeView, self).data_valid(form, formset)
 
 class JdorderChangeView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_change.html".format(Organization._meta.app_label)
