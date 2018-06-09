@@ -5,6 +5,8 @@ from organization import *
 from django import forms
 from django.forms import formset_factory
 from django.views.generic import FormView
+from django.views.generic.base import ContextMixin
+from django.http import HttpResponseRedirect
 
 class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
@@ -208,49 +210,68 @@ class JdorderCompensateView(FormView):
 		context['formset'] = CompensateCommodityFormSet(auto_id=False)
 		return context
 
+class FfsMixin(ContextMixin):
+	"""
+	A mixin that provides a way to show and handle form + formset in a request.
+	"""
+	form_class = None
+	formset_class = None
+
+	def get_context_data(self, **kwargs):
+		if 'form' not in kwargs:
+			kwargs['form'] = self.form_class()
+		if 'formset' not in kwargs:
+			kwargs['formset'] = self.formset_class(auto_id=False)
+		return super(FfsMixin, self).get_context_data(**kwargs)
+
+	def get_success_url(self):
+		return self.task.get_absolute_url()
+
+	def data_valid(self, form, formset):
+		return HttpResponseRedirect(self.get_success_url())
+
+	def post(self, request, *args, **kwargs):
+		form = self.form_class(self.request.POST)
+		formset = self.formset_class(self.request.POST)
+		if form.is_valid() and formset.is_valid():
+			return self.data_valid(form, formset)
+		else:
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+
+
 class JdorderReturnForm(forms.Form):
 	jdorder = forms.IntegerField()
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	status = forms.ChoiceField(choices=Itemstatus.choices)
 
-class JdorderReturnView(FormView):
+class JdorderReturnView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
 	form_class = JdorderReturnForm
+	formset_class = CompensateCommodityFormSet
 
-	def post(self, request, *args, **kwargs):
+	def data_valid(self, form, formset):
 		t = timezone.now()
-		form = JdorderReturnForm(self.request.POST)
-		if form.is_valid():
-			o = form.cleaned_data['organization']
-			j = form.cleaned_data['jdorder']
-			try:
-				j = Jdorder.objects.get(oid=j)
-			except Jdorder.DoesNotExist as e:
-				j = Jdorder(oid=j, desc="京东订单")
-				j.save()
-			self.task = j.task_ptr
-		formset = CompensateCommodityFormSet(self.request.POST)
-		if formset.is_valid():
-			for f in formset:
-				d = f.cleaned_data
-				if d['check']:
-					c = Commodity.objects.get(pk=d['id'])
-					q = d['quantity']
-					if not q:
-						continue
-					r = d['repository']
-					s = Itemstatus.v2s(d['status'])
-					Transaction.add(self.task, "退货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-		return super(JdorderReturnView, self).post(request, *args, **kwargs)
+		o = form.cleaned_data['organization']
+		j = form.cleaned_data['jdorder']
+		try:
+			j = Jdorder.objects.get(oid=j)
+		except Jdorder.DoesNotExist as e:
+			j = Jdorder(oid=j, desc="京东订单")
+			j.save()
+		self.task = j.task_ptr
 
-	def get_success_url(self):
-		return self.task.get_absolute_url()
-
-	def get_context_data(self, **kwargs):
-		context = super(JdorderReturnView, self).get_context_data(**kwargs)
-		context['formset'] = CompensateCommodityFormSet(auto_id=False)
-		return context
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			c = Commodity.objects.get(pk=d['id'])
+			q = d['quantity']
+			if not q:
+				continue
+			r = d['repository']
+			s = Itemstatus.v2s(d['status'])
+			Transaction.add(self.task, "退货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+		return super(JdorderReturnView, self).data_valid(form, formset)
 
 class ChangeRepositoryForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
