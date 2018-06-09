@@ -54,6 +54,8 @@ class FfsMixin(ContextMixin):
 		if form.is_valid() and formset.is_valid():
 			return self.data_valid(form, formset)
 		else:
+			print form.errors
+			print formset.errors
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 class DailyTaskView(TemplateView):
@@ -114,9 +116,6 @@ class ChangeForm(forms.Form):
 	status = forms.ChoiceField(choices=Itemstatus.choices)
 	ship = forms.ChoiceField(choices=Shipstatus.choices)
 
-class JdorderChangeForm(ChangeForm):
-	jdorder = forms.IntegerField()
-
 class ChangeCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	quantity = forms.IntegerField()
@@ -163,8 +162,9 @@ class ChangeView(FormView):
 
 class JdorderChangeView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_change.html".format(Organization._meta.app_label)
-	form_class = JdorderChangeForm
-	formset_class = ChangeCommodityFormSet
+	form_class = JdorderForm
+	formset_class = CommodityDetailFormSet
+	sub_form_class = CommodityShippingForm
 
 	def data_valid(self, form, formset):
 		t = timezone.now()

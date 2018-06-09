@@ -13,14 +13,12 @@
 			var str_repo = jQuery("#id_repository option[value="+repo+"]").text();
 			var stat = jQuery("#id_status").val();
 			var str_stat = jQuery("#id_status option[value="+stat+"]").text();
-			var ship = jQuery("#id_ship").val();
 			for (i in items)
 			{
 				n = items[i].str
 				j = p + parseInt(i)
 				r = jQuery("<tr></tr>");
 				q = 1
-				if (ship == 1) q = -1
 				jQuery("#item_table").prepend(r);
 				r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
 							<td>${str_repo}</td>
@@ -29,8 +27,7 @@
 							<td><input type="number" name=form-${j}-quantity value=${q} /></td>
 							<input type="hidden" name=form-${j}-id value=${items[i].id} />
 							<input type="hidden" name=form-${j}-repository value=${repo} />
-							<input type="hidden" name=form-${j}-status value=${stat} />
-							<input type="hidden" name=form-${j}-ship value=${ship} />`);
+							<input type="hidden" name=form-${j}-status value=${stat} />`);
 			}
 		}
 	</script>
@@ -40,7 +37,4 @@
 {% block extend_form %}
 	<p>京东订单编号: {{form.jdorder}}</p>
 	<p>组织: {{form.organization}}</p>
-	<p>仓库: {{form.repository}}</p>
-	<p>货品状态: {{form.status}}</p>
-	<p>收发标识: {{form.ship}}</p>
 {% endblock %}
