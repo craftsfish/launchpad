@@ -183,23 +183,11 @@ class ChangeView(FormView):
 		context['formset'] = ChangeCommodityFormSet(auto_id=False)
 		return context
 
-class JdorderChangeView(FfsMixin, TemplateView):
+class JdorderChangeView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_change.html".format(Organization._meta.app_label)
-	form_class = JdorderForm
-	formset_class = CommodityDetailFormSet
-	sub_form_class = CommodityShippingForm
 
-	def data_valid(self, form, formset):
+	def formset_process(self, formset):
 		t = timezone.now()
-		o = form.cleaned_data['organization']
-		j = form.cleaned_data['jdorder']
-		try:
-			j = Jdorder.objects.get(oid=j)
-		except Jdorder.DoesNotExist as e:
-			j = Jdorder(oid=j, desc="京东订单")
-			j.save()
-		self.task = j.task_ptr
-
 		for f in formset:
 			d = f.cleaned_data
 			if not d['check']: continue
@@ -209,28 +197,16 @@ class JdorderChangeView(FfsMixin, TemplateView):
 			r = d['repository']
 			s = Itemstatus.v2s(d['status'])
 			if q > 0:
-				Transaction.add(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+				Transaction.add(self.task, "换货.收货", t, self.org, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
 			else:
-				Transaction.add(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-		return super(JdorderChangeView, self).data_valid(form, formset)
+				Transaction.add(self.task, "换货.发货", t, self.org, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+		return super(JdorderChangeView, self).formset_process(formset)
 
-class JdorderCompensateView(FfsMixin, TemplateView):
+class JdorderCompensateView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
-	form_class = JdorderForm
-	formset_class = CommodityDetailFormSet
-	sub_form_class = CommodityShippingForm
 
-	def data_valid(self, form, formset):
+	def formset_process(self, formset):
 		t = timezone.now()
-		o = form.cleaned_data['organization']
-		j = form.cleaned_data['jdorder']
-		try:
-			j = Jdorder.objects.get(oid=j)
-		except Jdorder.DoesNotExist as e:
-			j = Jdorder(oid=j, desc="京东订单")
-			j.save()
-		self.task = j.task_ptr
-
 		for f in formset:
 			d = f.cleaned_data
 			if not d['check']: continue
@@ -239,8 +215,8 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 			if not q: continue
 			r = d['repository']
 			s = Itemstatus.v2s(d['status'])
-			Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
-		return super(JdorderCompensateView, self).data_valid(form, formset)
+			Transaction.add(self.task, "补发", t, self.org, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
+		return super(JdorderCompensateView, self).formset_process(formset)
 
 class JdorderReturnView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
