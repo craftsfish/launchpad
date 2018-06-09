@@ -8,10 +8,22 @@ from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
 from django.http import HttpResponseRedirect
 
+class JdorderForm(forms.Form):
+	jdorder = forms.IntegerField()
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+
 class CommodityShippingForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	status = forms.ChoiceField(choices=Itemstatus.choices)
 	keyword = forms.CharField()
+
+class CommodityDetailForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+CommodityDetailFormSet = formset_factory(CommodityDetailForm, extra=0)
 
 class FfsMixin(ContextMixin):
 	"""
@@ -111,7 +123,6 @@ class ChangeCommodityForm(forms.Form):
 	check = forms.BooleanField(required=False)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
 	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
-	ship = forms.ChoiceField(choices=Shipstatus.choices, widget=forms.HiddenInput)
 ChangeCommodityFormSet = formset_factory(ChangeCommodityForm, extra=0)
 
 class ChangeView(FormView):
@@ -180,22 +191,10 @@ class JdorderChangeView(FfsMixin, TemplateView):
 				Transaction.add(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
 		return super(JdorderChangeView, self).data_valid(form, formset)
 
-class JdorderCompensateForm(forms.Form):
-	jdorder = forms.IntegerField()
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
-
-class CompensateCommodityForm(forms.Form):
-	id = forms.IntegerField(widget=forms.HiddenInput)
-	quantity = forms.IntegerField()
-	check = forms.BooleanField(required=False)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
-CompensateCommodityFormSet = formset_factory(CompensateCommodityForm, extra=0)
-
 class JdorderCompensateView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
-	form_class = JdorderCompensateForm
-	formset_class = CompensateCommodityFormSet
+	form_class = JdorderForm
+	formset_class = CommodityDetailFormSet
 	sub_form_class = CommodityShippingForm
 
 	def data_valid(self, form, formset):
@@ -222,8 +221,8 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 
 class JdorderReturnView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
-	form_class = JdorderCompensateForm
-	formset_class = CompensateCommodityFormSet
+	form_class = JdorderForm
+	formset_class = CommodityDetailFormSet
 	sub_form_class = CommodityShippingForm
 
 	def data_valid(self, form, formset):
