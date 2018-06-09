@@ -2,20 +2,6 @@
 
 {% block header %}任务详情{% endblock %}
 
-{% block extra_script %}
-	<script>
-		jQuery(document).ready(function(){
-			jQuery("#item_keyword").on("keyup", function(){
-				var val = jQuery(this).val();
-				jQuery("#item_table tr").filter(function(){
-					jQuery(this).toggle(jQuery(this).text().indexOf(val) > -1)
-				});
-			});
-		});
-	</script>
-{% endblock %}
-
-
 {% block content %}
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
@@ -35,18 +21,6 @@
 
 	<div>
 		<a href="{% url 'task_receive_future' object.id %}">应收货物交割</a>
-		<br>
-		<label>筛选交易品</label><input id="item_keyword" type="text" placeholder="筛选..."/>
-		<table cellpadding="4" border="1">
-		<tbody id="item_table">
-		{% for i in items %}
-		<tr style="display:none">
-			<td>{{i.name}}</td>
-			<td>+</td>
-		</tr>
-		{% endfor %}
-		</tbody>
-		</table>
 	</div>
 
 	<table cellpadding="4" border="1">
