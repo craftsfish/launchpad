@@ -196,6 +196,7 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
 	form_class = JdorderCompensateForm
 	formset_class = CompensateCommodityFormSet
+	sub_form_class = CommodityShippingForm
 
 	def data_valid(self, form, formset):
 		t = timezone.now()
