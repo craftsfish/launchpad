@@ -66,7 +66,7 @@ class JdorderMixin(FfsMixin):
 	formset_class = CommodityDetailFormSet
 	sub_form_class = CommodityShippingForm
 
-	def formset_process(self, formset):
+	def formset_item_process(self, time, item, quantity, repository, status):
 		pass
 
 	def data_valid(self, form, formset):
@@ -78,7 +78,16 @@ class JdorderMixin(FfsMixin):
 			j = Jdorder(oid=j, desc="京东订单")
 			j.save()
 		self.task = j.task_ptr
-		self.formset_process(formset)
+		t = timezone.now()
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			c = Commodity.objects.get(pk=d['id'])
+			q = d['quantity']
+			if not q: continue
+			r = d['repository']
+			s = Itemstatus.v2s(d['status'])
+			self.formset_item_process(t, c.item_ptr, q, r, s)
 		return super(JdorderMixin, self).data_valid(form, formset)
 
 class DailyTaskView(TemplateView):
@@ -186,54 +195,26 @@ class ChangeView(FormView):
 class JdorderChangeView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_change.html".format(Organization._meta.app_label)
 
-	def formset_process(self, formset):
-		t = timezone.now()
-		for f in formset:
-			d = f.cleaned_data
-			if not d['check']: continue
-			c = Commodity.objects.get(pk=d['id'])
-			q = d['quantity']
-			if not q: continue
-			r = d['repository']
-			s = Itemstatus.v2s(d['status'])
-			if q > 0:
-				Transaction.add(self.task, "换货.收货", t, self.org, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-			else:
-				Transaction.add(self.task, "换货.发货", t, self.org, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-		return super(JdorderChangeView, self).formset_process(formset)
+	def formset_item_process(self, time, item, quantity, repository, status):
+		if quantity > 0:
+			Transaction.add(self.task, "换货.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		else:
+			Transaction.add(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		return super(JdorderChangeView, self).formset_item_process(time, item, quantity, repository, status)
 
 class JdorderCompensateView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
 
-	def formset_process(self, formset):
-		t = timezone.now()
-		for f in formset:
-			d = f.cleaned_data
-			if not d['check']: continue
-			c = Commodity.objects.get(pk=d['id'])
-			q = d['quantity']
-			if not q: continue
-			r = d['repository']
-			s = Itemstatus.v2s(d['status'])
-			Transaction.add(self.task, "补发", t, self.org, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
-		return super(JdorderCompensateView, self).formset_process(formset)
+	def formset_item_process(self, time, item, quantity, repository, status):
+		Transaction.add(self.task, "补发", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
+		return super(JdorderCompensateView, self).formset_item_process(time, item, quantity, repository, status)
 
 class JdorderReturnView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
 
-	def formset_process(self, formset):
-		t = timezone.now()
-		for f in formset:
-			d = f.cleaned_data
-			if not d['check']: continue
-			c = Commodity.objects.get(pk=d['id'])
-			q = d['quantity']
-			if not q:
-				continue
-			r = d['repository']
-			s = Itemstatus.v2s(d['status'])
-			Transaction.add(self.task, "退货", t, self.org, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-		return super(JdorderReturnView, self).formset_process(formset)
+	def formset_item_process(self, time, item, quantity, repository, status):
+		Transaction.add(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status)
 
 class ChangeRepositoryForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
