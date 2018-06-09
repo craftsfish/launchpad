@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block header %}任务结算{% endblock %}
+
+{% block extra_script %}
+	<script>
+		function __f_add_account(aid, aname){
+			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
+			var p = parseInt(total.attr("value"))
+			p = p + 1
+			total.attr({"value": p});
+			r = jQuery("<tr></tr>");
+			jQuery("#item_table").prepend(r);
+			r.append(`<td><input  type="checkbox" name=form-${p}-check checked/></td>
+						<td>${aname}</td>
+						<td><input type="number" name=form-${p}-change value=0 /></td>
+						<input type="hidden" name=form-${p}-id value=${aid} />`);
+		}
+
+		function on_item_retrieved(data,status){
+			accounts = eval("("+data+")");
+			p = jQuery("#id_filtered_accounts");
+			p.empty();
+			for (i in accounts)
+			{
+				b = jQuery("<button></button>").text("添加");
+				p.append(b.attr({"onclick": "__f_add_account("+accounts[i].id+",'"+accounts[i].str+"')"}));
+				p.append(jQuery("<label></label>").text(accounts[i].str));
+				p.append("<br/>");
+			}
+		}
+		jQuery(document).ready(function(){
+			jQuery("#id_organization").on("change paste keyup", function(){
+				jQuery.post("/vault/account/", {organization: jQuery("#id_organization").val(), csrfmiddlewaretoken: '{{ csrf_token  }}'}, on_item_retrieved);
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+	<div class="col col-lg-3 border border-dark">
+		<form action="" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<table cellpadding="4" border="1">
+				{{ formset.management_form }}
+				<tr>
+					<th></th>
+					<th>账户</th>
+					<th>变动</th>
+				</tr>
+				<tbody id="item_table">
+					{% for form in formset %}
+					<tr>
+						<td>{{form.check}}</td>
+						<td>{{form.label}}</td>
+						<td>{{form.change}}</td>
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<br></br>
+			<input type="submit" value="提交"/>
+		</form>
+	</div>
+
+	<div class="col col-lg-3 border border-dark">
+		<label>+结算账户</label>
+		{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
+		<div id="id_filtered_accounts">
+		</div>
+	</div>
+{% endblock %}

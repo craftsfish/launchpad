@@ -7,6 +7,7 @@ from django.forms import formset_factory
 from django.views.generic import FormView
 from django.utils import timezone
 from task import *
+from .misc_views import *
 
 class TaskListView(ListView):
 	model = Task
@@ -169,4 +170,55 @@ class TaskReceiveFutureView(FormView):
 			c = a.item
 			formset_initial.append({'id': a.id, 'name': c.name, 'quantity': balance, 'check': False, 'organization': a.organization, 'repository': a.repository})
 		context['formset'] = ReceiveCommodityFormSet(initial = formset_initial)
+		return context
+
+class EmptyForm(forms.Form):
+	pass
+
+class TaskClearForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+
+class TaskClearAccountForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	change = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+TaskClearAccountFormSet = formset_factory(TaskClearAccountForm, extra=0)
+
+class TaskClearView(FfsMixin, TemplateView):
+	template_name = "{}/task_clear.html".format(Organization._meta.app_label)
+	form_class = EmptyForm
+	formset_class = TaskClearAccountFormSet
+	sub_form_class = TaskClearForm
+
+	def data_valid(self, form, formset):
+		t = timezone.now()
+		o = form.cleaned_data['organization']
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			a = Account.objects.get(pk=d['id'])
+			change = d['change']
+			if not change: continue
+		#Transaction.add(self.task, "结算", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
+		return super(TransShipmentInView, self).data_valid(form, formset)
+
+	def get(self, request, *args, **kwargs):
+		self.task = Task.objects.get(pk=kwargs['pk'])
+		return super(TaskClearView, self).get(request, *args, **kwargs)
+
+	def get_formset_initial(self):
+		r = []
+		for aid, balance in self.task.uncleared_accounts().items():
+			a = Account.objects.get(pk=aid)
+			i = a.item
+			if Money.objects.filter(pk=i.id).exists():
+				r.append({'id': aid, 'change': -balance, 'check': False})
+		return r
+
+	def get_context_data(self, **kwargs):
+		context = super(TaskClearView, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			aid = form['id'].value()
+			a = Account.objects.get(pk=aid)
+			form.label = a.organization.name + ": " + str(a)
 		return context

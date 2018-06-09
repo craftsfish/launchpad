@@ -18,7 +18,8 @@
 	</table>
 	<br/>
 
-	<a href="{% url 'task_receive_future' object.id %}">应收货物交割</a>
+	<a href="{% url 'task_receive_future' object.id %}">货物交割</a>
+	<a href="{% url 'task_clear' object.id %}">资金结算</a>
 	<table cellpadding="4" border="1">
 		<tr>
 			<th>组织</th>
