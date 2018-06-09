@@ -9,6 +9,7 @@ from jdcommodity_views import *
 from tmcommodity_views import *
 from task_views import *
 from misc_views import *
+from jdorder_views import *
 from tmorder_views import *
 
 urlpatterns = [
@@ -58,12 +59,14 @@ urlpatterns = [
 	url(r'^tmorder/compensate/$', TmorderCompensateView.as_view(), name='tmorder_compensate'),
 	url(r'^tmorder/return/$', TmorderReturnView.as_view(), name='tmorder_return'),
 
+	#jdorder
+	url(r'^jdorder/change/$', JdorderChangeView.as_view(), name='jdorder_change'),
+	url(r'^jdorder/compensate/$', JdorderCompensateView.as_view(), name='jdorder_compensate'),
+	url(r'^jdorder/return/$', JdorderReturnView.as_view(), name='jdorder_return'),
+
 	#misc
 	url(r'^misc/daily_task/$', DailyTaskView.as_view(), name='daily_task'),
 	url(r'^misc/retail/$', RetailView.as_view(), name='retail'),
 	url(r'^misc/change/$', ChangeView.as_view(), name='change'),
-	url(r'^misc/jdorder_change/$', JdorderChangeView.as_view(), name='jdorder_change'),
-	url(r'^misc/jdorder_compensate/$', JdorderCompensateView.as_view(), name='jdorder_compensate'),
-	url(r'^misc/jdorder_return/$', JdorderReturnView.as_view(), name='jdorder_return'),
 	url(r'^misc/commodity/change/repository/$', ChangeRepositoryView.as_view(), name='change_repository'),
 ]
