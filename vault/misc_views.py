@@ -8,6 +8,11 @@ from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
 from django.http import HttpResponseRedirect
 
+class CommodityShippingForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+	keyword = forms.CharField()
+
 class FfsMixin(ContextMixin):
 	"""
 	A mixin that provides a way to show and handle form + formset in a request.
@@ -213,11 +218,6 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 			s = Itemstatus.v2s(d['status'])
 			Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
 		return super(JdorderCompensateView, self).data_valid(form, formset)
-
-class CommodityShippingForm(forms.Form):
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
-	keyword = forms.CharField()
 
 class JdorderReturnView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
