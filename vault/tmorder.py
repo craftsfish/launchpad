@@ -25,10 +25,10 @@ class Tmorder(Task):
 		(3, "交易成功"),
 		(4, "交易关闭"),
 	)
-	status = models.IntegerField("状态", choices=TM_ORDER_STATUS)
+	status = models.IntegerField("状态", choices=TM_ORDER_STATUS, null=True, blank=True)
 	fake = models.IntegerField("刷单", default=0)
 	time = models.DateTimeField(default=timezone.now)
-	repository = models.ForeignKey(Repository)
+	repository = models.ForeignKey(Repository, null=True, blank=True)
 	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
 	@staticmethod
