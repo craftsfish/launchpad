@@ -58,6 +58,29 @@ class FfsMixin(ContextMixin):
 			print formset.errors
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
+class JdorderMixin(FfsMixin):
+	"""
+	A mixin that provides a way to show and handle jdorder in a request.
+	"""
+	form_class = JdorderForm
+	formset_class = CommodityDetailFormSet
+	sub_form_class = CommodityShippingForm
+
+	def formset_process(self, formset):
+		pass
+
+	def data_valid(self, form, formset):
+		self.org = form.cleaned_data['organization']
+		j = form.cleaned_data['jdorder']
+		try:
+			j = Jdorder.objects.get(oid=j)
+		except Jdorder.DoesNotExist as e:
+			j = Jdorder(oid=j, desc="京东订单")
+			j.save()
+		self.task = j.task_ptr
+		self.formset_process(formset)
+		return super(JdorderMixin, self).data_valid(form, formset)
+
 class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 
@@ -219,23 +242,11 @@ class JdorderCompensateView(FfsMixin, TemplateView):
 			Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
 		return super(JdorderCompensateView, self).data_valid(form, formset)
 
-class JdorderReturnView(FfsMixin, TemplateView):
+class JdorderReturnView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
-	form_class = JdorderForm
-	formset_class = CommodityDetailFormSet
-	sub_form_class = CommodityShippingForm
 
-	def data_valid(self, form, formset):
+	def formset_process(self, formset):
 		t = timezone.now()
-		o = form.cleaned_data['organization']
-		j = form.cleaned_data['jdorder']
-		try:
-			j = Jdorder.objects.get(oid=j)
-		except Jdorder.DoesNotExist as e:
-			j = Jdorder(oid=j, desc="京东订单")
-			j.save()
-		self.task = j.task_ptr
-
 		for f in formset:
 			d = f.cleaned_data
 			if not d['check']: continue
@@ -245,8 +256,8 @@ class JdorderReturnView(FfsMixin, TemplateView):
 				continue
 			r = d['repository']
 			s = Itemstatus.v2s(d['status'])
-			Transaction.add(self.task, "退货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
-		return super(JdorderReturnView, self).data_valid(form, formset)
+			Transaction.add(self.task, "退货", t, self.org, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+		return super(JdorderReturnView, self).formset_process(formset)
 
 class ChangeRepositoryForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
