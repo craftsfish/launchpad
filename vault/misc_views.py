@@ -197,46 +197,32 @@ class CompensateCommodityForm(forms.Form):
 	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
 CompensateCommodityFormSet = formset_factory(CompensateCommodityForm, extra=0)
 
-class JdorderCompensateView(FormView):
+class JdorderCompensateView(FfsMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
 	form_class = JdorderCompensateForm
+	formset_class = CompensateCommodityFormSet
 
-	def post(self, request, *args, **kwargs):
+	def data_valid(self, form, formset):
 		t = timezone.now()
-		form = JdorderCompensateForm(self.request.POST)
-		if form.is_valid():
-			o = form.cleaned_data['organization']
-			j = form.cleaned_data['jdorder']
-			try:
-				j = Jdorder.objects.get(oid=j)
-			except Jdorder.DoesNotExist as e:
-				j = Jdorder(oid=j, desc="京东订单")
-				j.save()
-			self.task = j.task_ptr
-		else:
-			print form.errors
-			print self.request.POST
-		formset = CompensateCommodityFormSet(self.request.POST)
-		if formset.is_valid():
-			for f in formset:
-				d = f.cleaned_data
-				if d['check']:
-					c = Commodity.objects.get(pk=d['id'])
-					q = d['quantity']
-					if not q:
-						continue
-					r = d['repository']
-					s = Itemstatus.v2s(d['status'])
-					Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
-		return super(JdorderCompensateView, self).post(request, *args, **kwargs)
+		o = form.cleaned_data['organization']
+		j = form.cleaned_data['jdorder']
+		try:
+			j = Jdorder.objects.get(oid=j)
+		except Jdorder.DoesNotExist as e:
+			j = Jdorder(oid=j, desc="京东订单")
+			j.save()
+		self.task = j.task_ptr
 
-	def get_success_url(self):
-		return self.task.get_absolute_url()
-
-	def get_context_data(self, **kwargs):
-		context = super(JdorderCompensateView, self).get_context_data(**kwargs)
-		context['formset'] = CompensateCommodityFormSet(auto_id=False)
-		return context
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			c = Commodity.objects.get(pk=d['id'])
+			q = d['quantity']
+			if not q: continue
+			r = d['repository']
+			s = Itemstatus.v2s(d['status'])
+			Transaction.add(self.task, "补发", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
+		return super(JdorderCompensateView, self).data_valid(form, formset)
 
 class JdorderReturnForm(forms.Form):
 	jdorder = forms.IntegerField()
