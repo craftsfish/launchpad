@@ -8,6 +8,34 @@ from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
 from django.http import HttpResponseRedirect
 
+class FfsMixin(ContextMixin):
+	"""
+	A mixin that provides a way to show and handle form + formset in a request.
+	"""
+	form_class = None
+	formset_class = None
+
+	def get_context_data(self, **kwargs):
+		if 'form' not in kwargs:
+			kwargs['form'] = self.form_class()
+		if 'formset' not in kwargs:
+			kwargs['formset'] = self.formset_class(auto_id=False)
+		return super(FfsMixin, self).get_context_data(**kwargs)
+
+	def get_success_url(self):
+		return self.task.get_absolute_url()
+
+	def data_valid(self, form, formset):
+		return HttpResponseRedirect(self.get_success_url())
+
+	def post(self, request, *args, **kwargs):
+		form = self.form_class(self.request.POST)
+		formset = self.formset_class(self.request.POST)
+		if form.is_valid() and formset.is_valid():
+			return self.data_valid(form, formset)
+		else:
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+
 class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 
@@ -209,35 +237,6 @@ class JdorderCompensateView(FormView):
 		context = super(JdorderCompensateView, self).get_context_data(**kwargs)
 		context['formset'] = CompensateCommodityFormSet(auto_id=False)
 		return context
-
-class FfsMixin(ContextMixin):
-	"""
-	A mixin that provides a way to show and handle form + formset in a request.
-	"""
-	form_class = None
-	formset_class = None
-
-	def get_context_data(self, **kwargs):
-		if 'form' not in kwargs:
-			kwargs['form'] = self.form_class()
-		if 'formset' not in kwargs:
-			kwargs['formset'] = self.formset_class(auto_id=False)
-		return super(FfsMixin, self).get_context_data(**kwargs)
-
-	def get_success_url(self):
-		return self.task.get_absolute_url()
-
-	def data_valid(self, form, formset):
-		return HttpResponseRedirect(self.get_success_url())
-
-	def post(self, request, *args, **kwargs):
-		form = self.form_class(self.request.POST)
-		formset = self.formset_class(self.request.POST)
-		if form.is_valid() and formset.is_valid():
-			return self.data_valid(form, formset)
-		else:
-			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-
 
 class JdorderReturnForm(forms.Form):
 	jdorder = forms.IntegerField()
