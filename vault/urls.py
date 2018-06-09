@@ -11,6 +11,7 @@ from task_views import *
 from misc_views import *
 from jdorder_views import *
 from tmorder_views import *
+from daily_views import *
 
 urlpatterns = [
 	#supplier
@@ -63,6 +64,9 @@ urlpatterns = [
 	url(r'^jdorder/change/$', JdorderChangeView.as_view(), name='jdorder_change'),
 	url(r'^jdorder/compensate/$', JdorderCompensateView.as_view(), name='jdorder_compensate'),
 	url(r'^jdorder/return/$', JdorderReturnView.as_view(), name='jdorder_return'),
+
+	#daily
+	url(r'^daily/trans_shipment_in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),
 
 	#misc
 	url(r'^misc/daily_task/$', DailyTaskView.as_view(), name='daily_task'),
