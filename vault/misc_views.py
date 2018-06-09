@@ -12,16 +12,23 @@ class JdorderForm(forms.Form):
 	jdorder = forms.IntegerField()
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
 
+class CommodityShippingBaseForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	keyword = forms.CharField()
+
 class CommodityShippingForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	status = forms.ChoiceField(choices=Itemstatus.choices)
 	keyword = forms.CharField()
 
-class CommodityDetailForm(forms.Form):
+class CommodityDetailBaseForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+CommodityDetailBaseFormSet = formset_factory(CommodityDetailBaseForm, extra=0)
+
+class CommodityDetailForm(CommodityDetailBaseForm):
 	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
 CommodityDetailFormSet = formset_factory(CommodityDetailForm, extra=0)
 
@@ -94,53 +101,35 @@ class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 
 class RetailForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
 	sale = forms.DecimalField(initial=0, max_digits=20, decimal_places=2)
 
-class RetailCommodityForm(forms.Form):
-	id = forms.IntegerField(widget=forms.HiddenInput)
-	quantity = forms.IntegerField()
-	check = forms.BooleanField(required=False)
-RetailCommodityFormSet = formset_factory(RetailCommodityForm, extra=0)
-
-class RetailView(FormView):
+class RetailView(FfsMixin, TemplateView):
 	template_name = "{}/retail.html".format(Organization._meta.app_label)
 	form_class = RetailForm
+	formset_class = CommodityDetailBaseFormSet
+	sub_form_class = CommodityShippingBaseForm
 
-	def post(self, request, *args, **kwargs):
+	def data_valid(self, form, formset):
 		self.task = Task(desc="销售")
 		self.task.save()
 		t = timezone.now()
-		form = RetailForm(self.request.POST)
-		if form.is_valid():
-			o = form.cleaned_data['organization']
-			r = form.cleaned_data['repository']
-			s = form.cleaned_data['sale']
+		self.org = form.cleaned_data['organization']
+		self.sale = form.cleaned_data['sale']
 		v = 0
-		formset = RetailCommodityFormSet(self.request.POST)
-		if formset.is_valid():
-			for f in formset:
-				d = f.cleaned_data
-				if d['check']:
-					c = Commodity.objects.get(pk=d['id'])
-					q = d['quantity']
-					Transaction.add(self.task, "出货", t, o, c.item_ptr, ("资产", "完好", r), -q, ("支出", "出货", r))
-					v += q * c.value
-		if s == 0:
-			print "hit"
-			s = v
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			c = Commodity.objects.get(pk=d['id'])
+			q = d['quantity']
+			r = d['repository']
+			Transaction.add(self.task, "出货", t, self.org, c.item_ptr, ("资产", "完好", r), -q, ("支出", "出货", r))
+			v += q * c.value
+		if self.sale == 0:
+			self.sale = v
 		cash = Money.objects.get(name="人民币")
-		Transaction.add(self.task, "货款", t, o, cash.item_ptr, ("资产", "应收货款", None), s, ("收入", "销售收入", None))
-		return super(RetailView, self).post(request, *args, **kwargs)
-
-	def get_success_url(self):
-		return self.task.get_absolute_url()
-
-	def get_context_data(self, **kwargs):
-		context = super(RetailView, self).get_context_data(**kwargs)
-		context['formset'] = RetailCommodityFormSet(auto_id=False)
-		return context
+		Transaction.add(self.task, "货款", t, self.org, cash.item_ptr, ("资产", "应收货款", None), self.sale, ("收入", "销售收入", None))
+		return super(RetailView, self).data_valid(form, formset)
 
 class ChangeForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, empty_label=None)

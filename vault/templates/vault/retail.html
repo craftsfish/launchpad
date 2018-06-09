@@ -1,76 +1,36 @@
-{% extends "base.html" %}
+{% extends "vault/item_filter_base.html" %}
 
-{% block header %}销售{% endblock %}
+{% block header %}其他销售{% endblock %}
 
 {% block extra_script %}
 	<script>
-		jQuery(document).ready(function(){
-			jQuery("#item_keyword").keyup(function(event){
-				if (event.keyCode != 13) {
-					return;
-				}
-				if (jQuery("#item_keyword").val() == "") {
-					return;
-				}
-				jQuery.post("/vault/item/",
-					{
-						keyword: jQuery("#item_keyword").val(),
-						csrfmiddlewaretoken: '{{ csrf_token  }}'
-					},
-					function(data,status){
-						items = eval("("+data+")");
-						total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
-						var p = parseInt(total.attr("value"))
-						total.attr({"value": p+items.length});
-						for (i in items)
-						{
-							n = items[i].str
-							j = p + parseInt(i)
-							r = jQuery("<tr></tr>");
-							jQuery("#item_table").prepend(r);
-							r.append(`<td><input  type="checkbox" name=form-${j}-check /></td>
-										<td>${n}</td>
-										<td><input type="number" name=form-${j}-quantity value="1" />
-											<input type="hidden" name=form-${j}-id value=${items[i].id} /> </td>`);
-						}
-					});
-			});
-		});
+		function on_item_retrieved(data,status){
+			items = eval("("+data+")");
+			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
+			var p = parseInt(total.attr("value"))
+			total.attr({"value": p+items.length});
+			var repo = jQuery("#id_repository").val();
+			var str_repo = jQuery("#id_repository option[value="+repo+"]").text();
+			for (i in items)
+			{
+				n = items[i].str
+				j = p + parseInt(i)
+				r = jQuery("<tr></tr>");
+				q = 1
+				jQuery("#item_table").prepend(r);
+				r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
+							<td>${str_repo}</td>
+							<td>${n}</td>
+							<td><input type="number" name=form-${j}-quantity value="1" /></td>
+							<input type="hidden" name=form-${j}-id value=${items[i].id} /> 
+							<input type="hidden" name=form-${j}-repository value=${repo} />`);
+			}
+		}
 	</script>
+	{% include 'vault/script/item_filter.html' %}
 {% endblock %}
 
-{% block content %}
-<div class="col col-lg-12">
-	<label>+交易品</label>
-	<input id="item_keyword" type="text"/>
-	<form class="border border-dark" action="" method="post">
-		{% csrf_token %}
-		<div class = "row">
-		<div class="col col-lg-6">
-			{{ form.as_p }}
-			<input type="submit" value="提交"/>
-		</div>
-
-		<div class="col col-lg-6">
-		<table cellpadding="4" border="1">
-		<tbody id="item_table">
-		{{ formset.management_form }}
-		{% for form in formset %}
-		<tr>
-			<td>{{form.check}}</td>
-			<td>{{form.item_name}}</td>
-			<td>
-				{{form.quantity}}
-				{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-				{% endfor %}
-			</td>
-		</tr>
-		{% endfor %}
-		</tbody>
-		</table>
-		</div>
-		</div>
-	</form>
-</div>
+{% block extend_form %}
+	<p>组织: {{form.organization}}</p>
+	<p>销售额: {{form.sale}}</p>
 {% endblock %}
