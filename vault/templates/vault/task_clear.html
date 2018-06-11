@@ -7,8 +7,7 @@
 		function __f_add_account(aid, aname){
 			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
 			var p = parseInt(total.attr("value"))
-			p = p + 1
-			total.attr({"value": p});
+			total.attr({"value": p+1});
 			r = jQuery("<tr></tr>");
 			jQuery("#item_table").prepend(r);
 			r.append(`<td><input  type="checkbox" name=form-${p}-check checked/></td>
@@ -29,16 +28,29 @@
 				p.append("<br/>");
 			}
 		}
+		function candidate_filter(){
+			var org = jQuery("#id_organization").val();
+			var it = jQuery("#id_item").val();
+			if (org != "" && it != "") {
+				jQuery.post("/vault/account/", {organization: org, item: it, csrfmiddlewaretoken: '{{ csrf_token  }}'}, on_item_retrieved);
+			}
+		}
 		jQuery(document).ready(function(){
 			jQuery("#id_organization").on("change paste keyup", function(){
-				jQuery.post("/vault/account/", {organization: jQuery("#id_organization").val(), csrfmiddlewaretoken: '{{ csrf_token  }}'}, on_item_retrieved);
+				candidate_filter();
+			});
+			jQuery("#id_item").on("change paste keyup", function(){
+				candidate_filter();
 			});
 		});
 	</script>
 {% endblock %}
 
 {% block content %}
-	<div class="col col-lg-3 border border-dark">
+	<div class="col col-lg-6 border border-dark">
+		{% if error %}
+		<div class="alert alert-danger" role="alert">{{error}}</div>
+		{% endif %}
 		<form action="" method="post">
 			{% csrf_token %}
 			{{ form.as_p }}
@@ -67,7 +79,7 @@
 		</form>
 	</div>
 
-	<div class="col col-lg-3 border border-dark">
+	<div class="col col-lg-6 border border-dark">
 		<label>+结算账户</label>
 		{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
 		<div id="id_filtered_accounts">

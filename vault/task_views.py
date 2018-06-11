@@ -177,6 +177,7 @@ class EmptyForm(forms.Form):
 
 class TaskClearForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	item = forms.ModelChoiceField(queryset=Money.objects, empty_label=None)
 
 class TaskClearAccountForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
@@ -192,19 +193,31 @@ class TaskClearView(FfsMixin, TemplateView):
 
 	def data_valid(self, form, formset):
 		t = timezone.now()
-		o = form.cleaned_data['organization']
+		b = 0
+		ref_org = None
 		for f in formset:
 			d = f.cleaned_data
+			print d
 			if not d['check']: continue
 			a = Account.objects.get(pk=d['id'])
 			change = d['change']
 			if not change: continue
+			if ref_org == None:
+				ref_org = a.organization.root().id
+			if a.organization.root().id != ref_org:
+				self.error = "错误: 账户不属于同一个组织!"
+				return self.render_to_response(self.get_context_data(form=form, formset=formset))
+			b += change * a.sign()
+		if b != 0:
+			self.error = "帐目不平衡!!!"
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
 		#Transaction.add(self.task, "结算", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
-		return super(TransShipmentInView, self).data_valid(form, formset)
+		return super(TaskClearView, self).data_valid(form, formset)
 
-	def get(self, request, *args, **kwargs):
+	def dispatch(self, request, *args, **kwargs):
+		self.error = None
 		self.task = Task.objects.get(pk=kwargs['pk'])
-		return super(TaskClearView, self).get(request, *args, **kwargs)
+		return super(TaskClearView, self).dispatch(request, *args, **kwargs)
 
 	def get_formset_initial(self):
 		r = []
@@ -221,4 +234,5 @@ class TaskClearView(FfsMixin, TemplateView):
 			aid = form['id'].value()
 			a = Account.objects.get(pk=aid)
 			form.label = a.organization.name + ": " + str(a)
+		context['error'] = self.error
 		return context

@@ -19,6 +19,9 @@ class AccountListView(View):
 		org = p.get('organization')
 		if org:
 			r = r.filter(organization=org)
+		it = p.get('item')
+		if it:
+			r = r.filter(item=it)
 
 		#result
 		j = []
