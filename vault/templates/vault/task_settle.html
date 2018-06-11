@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block header %}任务交割{% endblock %}
+
+{% block content %}
+	<div class="col col-lg-6 border border-dark">
+		<form action="" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<table cellpadding="4" border="1">
+				{{ formset.management_form }}
+				<tbody id="item_table">
+					{% for form in formset %}
+					<tr>
+						<td>{{form.check}}</td>
+						<td>{{form.label}}</td>
+						<td>{{form.change}}</td>
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<br></br>
+			<input type="submit" value="提交"/>
+		</form>
+	</div>
+{% endblock %}

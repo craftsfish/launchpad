@@ -229,3 +229,21 @@ class TaskClearView(FfsMixin, TemplateView):
 			form.label = a.organization.name + ": " + str(a)
 		context['error'] = self.error
 		return context
+
+class TaskSettleForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	repository = forms.ModelChoiceField(queryset=Repository.objects)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+	ship = forms.ChoiceField(choices=Shipstatus.choices)
+
+class TaskSettleCommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+TaskSettleCommodityFormSet = formset_factory(TaskSettleCommodityForm, extra=0)
+
+class TaskSettleView(FfsMixin, TemplateView):
+	template_name = "{}/task_settle.html".format(Organization._meta.app_label)
+	form_class = TaskSettleForm
+	formset_class = TaskSettleCommodityFormSet
+	sub_form_class = EmptyForm
