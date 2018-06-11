@@ -35,6 +35,7 @@ class Task(models.Model):
 				balance.pop(k)
 		return balance
 
+	#TODO: remove me
 	def candidates_of_repository_in(self):
 		balance = {}
 		for tr in self.transactions.all():
