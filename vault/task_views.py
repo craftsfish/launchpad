@@ -192,27 +192,20 @@ class TaskClearView(FfsMixin, TemplateView):
 	sub_form_class = TaskClearForm
 
 	def data_valid(self, form, formset):
-		t = timezone.now()
-		b = 0
-		ref_org = None
+		args = []
 		for f in formset:
 			d = f.cleaned_data
-			print d
 			if not d['check']: continue
 			a = Account.objects.get(pk=d['id'])
 			change = d['change']
 			if not change: continue
-			if ref_org == None:
-				ref_org = a.organization.root().id
-			if a.organization.root().id != ref_org:
-				self.error = "错误: 账户不属于同一个组织!"
-				return self.render_to_response(self.get_context_data(form=form, formset=formset))
-			b += change * a.sign()
-		if b != 0:
-			self.error = "帐目不平衡!!!"
+			args.append(a)
+			args.append(change)
+		if Transaction.add(self.task, "结算", timezone.now(), *args):
+			return super(TaskClearView, self).data_valid(form, formset)
+		else:
+			self.error = "交易不合法，请检查是否属于同一根组织或者帐目是否平衡!!!"
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		#Transaction.add_raw(self.task, "结算", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
-		return super(TaskClearView, self).data_valid(form, formset)
 
 	def dispatch(self, request, *args, **kwargs):
 		self.error = None

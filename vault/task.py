@@ -99,6 +99,48 @@ class Transaction(models.Model):
 		if balance != 0:
 			print "[Error]交易帐目不平!" #TODO: raise exception
 
+	@staticmethod
+	def __legal(*args):
+		"""
+		1: whether all accounts belong to same ROOT organization
+		2: balanced, in case of lacking of last change, args will be auto-completed
+		"""
+		oid = None
+		balance = 0
+
+		i = 0
+		while i < len(args):
+			a = args[i]
+			if oid == None:
+				oid = a.organization.root().id
+			if oid != a.organization.root().id:
+				return False
+
+			sign = a.sign()
+			if i + 1 == len(args): #last item without change
+				change = -balance / sign
+				args.append(change)
+			else:
+				change = args[i+1]
+			balance += sign * change
+			i += 2;
+
+		if balance != 0:
+			return False
+		return True
+
+	@staticmethod
+	def add(task, desc, time, *args):
+		if not Transaction.__legal(*args):
+			return False
+		tr = Transaction(desc=desc, task=task, time=time)
+		tr.save()
+		i = 0
+		while i < len(args):
+			Split(account=args[i], change=args[i+1], transaction=tr).save()
+			i += 2
+		return True
+
 class Split(models.Model):
 	account = models.ForeignKey(Account)
 	change = models.DecimalField(max_digits=20, decimal_places=2)
