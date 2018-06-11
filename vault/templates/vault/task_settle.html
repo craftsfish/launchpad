@@ -8,13 +8,31 @@
 			var str_org = ""
 			var org = jQuery("#id_organization").val();
 			if (org != "") str_org = jQuery("#id_organization option[value="+org+"]").text();
+			var str_repo = ""
+			var repo = jQuery("#id_repository").val();
+			if (repo != "") str_repo = jQuery("#id_repository option[value="+repo+"]").text();
+			var str_ship = ""
+			var ship = jQuery("#id_ship").val();
+			if (ship != "") {
+				if (jQuery("#id_ship option[value="+ship+"]").text() == "收货") {
+					str_ship = "资产"
+				} else {
+					str_ship = "负债"
+				}
+			}
 			jQuery("#item_table tr").filter(function(){
 				var l=jQuery("td:nth-child(2)", this).text()
-				jQuery(this).toggle(l.indexOf(str_org) > -1)
+				jQuery(this).toggle((l.indexOf(str_org) > -1) && (l.indexOf(str_repo) > -1) && (l.indexOf(str_ship) > -1))
 			});
 		}
 		jQuery(document).ready(function(){
 			jQuery("#id_organization").on("change paste keyup", function(){
+				candidate_filter();
+			});
+			jQuery("#id_repository").on("change paste keyup", function(){
+				candidate_filter();
+			});
+			jQuery("#id_ship").on("change paste keyup", function(){
 				candidate_filter();
 			});
 		});
