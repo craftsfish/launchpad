@@ -17,26 +17,6 @@ class Task(models.Model):
 		for t in self.transactions.filter(desc__contains=desc):
 			t.delete()
 
-	def add_transaction(self, desc, time, organization, item, *args):
-		tr = Transaction(desc=desc, task=self, time=time)
-		tr.save()
-
-		balance = 0
-		i = 0
-		while i < len(args):
-			category, name = args[i]
-			a = Account.get(organization, item, category, name)
-			sign = a.sign()
-			change = 0
-			if i + 1 == len(args): #last item
-				change = -balance / sign
-				i = i + 1
-			else:
-				change = args[i+1]
-				balance += sign * change
-				i = i + 2;
-			Split(account=a, change=change, transaction=tr).save()
-
 	def get_absolute_url(self):
 		return reverse('task_detail', kwargs={'pk': self.pk})
 
