@@ -52,7 +52,6 @@ urlpatterns = [
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
-	url(r'^task/(?P<pk>[\d]+)/receive_future/$', TaskReceiveFutureView.as_view(), name='task_receive_future'),
 	url(r'^task/(?P<pk>[\d]+)/clear/$', TaskClearView.as_view(), name='task_clear'),
 	url(r'^task/(?P<pk>[\d]+)/settle/$', TaskSettleView.as_view(), name='task_settle'),
 
