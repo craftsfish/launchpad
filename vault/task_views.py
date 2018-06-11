@@ -247,3 +247,24 @@ class TaskSettleView(FfsMixin, TemplateView):
 	form_class = TaskSettleForm
 	formset_class = TaskSettleCommodityFormSet
 	sub_form_class = EmptyForm
+
+	def dispatch(self, request, *args, **kwargs):
+		self.task = Task.objects.get(pk=kwargs['pk'])
+		return super(TaskSettleView, self).dispatch(request, *args, **kwargs)
+
+	def get_formset_initial(self):
+		r = []
+		for aid, balance in self.task.uncleared_accounts().items():
+			a = Account.objects.get(pk=aid)
+			i = a.item
+			if Commodity.objects.filter(pk=i.id).exists():
+				r.append({'id': aid, 'quantity': balance, 'check': False})
+		return r
+
+	def get_context_data(self, **kwargs):
+		context = super(TaskSettleView, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			aid = form['id'].value()
+			a = Account.objects.get(pk=aid)
+			form.label = a.organization.name + ": " + str(a)
+		return context
