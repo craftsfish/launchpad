@@ -35,22 +35,6 @@ class Task(models.Model):
 				balance.pop(k)
 		return balance
 
-	#TODO: remove me
-	def candidates_of_repository_in(self):
-		balance = {}
-		for tr in self.transactions.all():
-			for s in tr.splits.all():
-				a = s.account
-				if a.name.find("应收") == 0:
-					if balance.get(a.id) != None:
-						balance[a.id] += s.change
-					else:
-						balance[a.id] = s.change
-		for k, v in balance.items():
-			if v == 0:
-				balance.pop(k)
-		return balance
-
 class Transaction(models.Model):
 	class Meta:
 		ordering = ['-time', '-id']
