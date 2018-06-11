@@ -2,6 +2,25 @@
 
 {% block header %}任务交割{% endblock %}
 
+{% block extra_script %}
+	<script>
+		function candidate_filter(){
+			var str_org = ""
+			var org = jQuery("#id_organization").val();
+			if (org != "") str_org = jQuery("#id_organization option[value="+org+"]").text();
+			jQuery("#item_table tr").filter(function(){
+				var l=jQuery("td:nth-child(2)", this).text()
+				jQuery(this).toggle(l.indexOf(str_org) > -1)
+			});
+		}
+		jQuery(document).ready(function(){
+			jQuery("#id_organization").on("change paste keyup", function(){
+				candidate_filter();
+			});
+		});
+	</script>
+{% endblock %}
+
 {% block content %}
 	<div class="col col-lg-6 border border-dark">
 		<form action="" method="post">
