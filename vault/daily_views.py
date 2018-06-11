@@ -22,7 +22,7 @@ class TransShipmentInView(FfsMixin, TemplateView):
 			q = d['quantity']
 			if not q: continue
 			r = d['repository']
-			Transaction.add(self.task, "串入", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
+			Transaction.add_raw(self.task, "串入", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
 			cash = Money.objects.get(name="人民币")
-			Transaction.add(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
+			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
 		return super(TransShipmentInView, self).data_valid(form, formset)

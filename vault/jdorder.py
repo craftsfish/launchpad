@@ -52,16 +52,16 @@ class Jdorder(Task):
 			for i, v in enumerate(info.invoices):
 				for c in Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime):
 					if info.status == "等待出库":
-						Transaction.add(task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.booktime, organization, c.item_ptr,
+						Transaction.add_raw(task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.booktime, organization, c.item_ptr,
 							("负债", "应发", repository), v.number, ("支出", "出货", repository))
 					else:
-						Transaction.add(task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.booktime, organization, c.item_ptr,
+						Transaction.add_raw(task, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.booktime, organization, c.item_ptr,
 							("资产", "完好", repository), -v.number, ("支出", "出货", repository))
 
 		#增加一条刷单Transaction
 		def __add_fake_transaction(task, organization, repository, info):
 					c = Commodity.objects.get(name="洗衣粉")
-					Transaction.add(task, "0.出货.{}".format(c.name), info.booktime, organization, c.item_ptr,
+					Transaction.add_raw(task, "0.出货.{}".format(c.name), info.booktime, organization, c.item_ptr,
 						("资产", "完好", repository), -1, ("支出", "出货", repository))
 
 		def __add_commodity_transaction(task, organization, repository, info, fake):

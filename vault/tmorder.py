@@ -50,7 +50,7 @@ class Tmorder(Task):
 		#增加一条刷单Transaction
 		def __add_fake_transaction(task, organization, repository, time):
 			c = Commodity.objects.get(name="洗衣粉")
-			Transaction.add(task, "0.出货.{}".format(c.name), time, organization, c.item_ptr,
+			Transaction.add_raw(task, "0.出货.{}".format(c.name), time, organization, c.item_ptr,
 				("资产", "完好", repository), -1, ("支出", "出货", repository))
 
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
@@ -133,10 +133,10 @@ class Tmorder(Task):
 						continue
 					for c in Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), info.order.time):
 						if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
-							Transaction.add(info.order.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
+							Transaction.add_raw(info.order.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
 								("负债", "应发", repository), v.number, ("支出", "出货", repository))
 						else:
-							Transaction.add(info.order.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
+							Transaction.add_raw(info.order.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), info.order.time, organization, c.item_ptr,
 								("资产", "完好", repository), -v.number, ("支出", "出货", repository))
 
 		#Import_Detail

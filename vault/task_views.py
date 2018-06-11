@@ -87,8 +87,8 @@ class TaskBuyFutureView(FormView):
 			c = Commodity.objects.get(pk=cid)
 			t = timezone.now()
 			cash = Money.objects.get(name="人民币")
-			Transaction.add(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), quantity, ("收入", "进货", r))
-			Transaction.add(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), quantity*c.value, ("支出", "进货", None))
+			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), quantity, ("收入", "进货", r))
+			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), quantity*c.value, ("支出", "进货", None))
 
 		return super(TaskBuyFutureView, self).post(request, *args, **kwargs)
 
@@ -150,7 +150,7 @@ class TaskReceiveFutureView(FormView):
 				if d['check']:
 					a = Account.objects.get(pk = d['id'])
 					t = timezone.now()
-					Transaction.add(self.task, "入库", t, o, a.item,
+					Transaction.add_raw(self.task, "入库", t, o, a.item,
 						("资产", ReceiveForm.status_2_str(s), r), d['quantity'],
 						(a.get_category_display(), a.name, a.repository))
 		return super(TaskReceiveFutureView, self).post(request, *args, **kwargs)
@@ -211,7 +211,7 @@ class TaskClearView(FfsMixin, TemplateView):
 		if b != 0:
 			self.error = "帐目不平衡!!!"
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		#Transaction.add(self.task, "结算", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
+		#Transaction.add_raw(self.task, "结算", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "串货", r))
 		return super(TaskClearView, self).data_valid(form, formset)
 
 	def dispatch(self, request, *args, **kwargs):

@@ -42,16 +42,16 @@ class TmorderChangeView(TmorderMixin, TemplateView):
 
 	def formset_item_process(self, time, item, quantity, repository, status):
 		if quantity > 0:
-			Transaction.add(self.task, "换货.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+			Transaction.add_raw(self.task, "换货.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		else:
-			Transaction.add(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+			Transaction.add_raw(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		return super(TmorderChangeView, self).formset_item_process(time, item, quantity, repository, status)
 
 class TmorderCompensateView(TmorderMixin, TemplateView):
 	template_name = "{}/tmorder_compensate.html".format(Organization._meta.app_label)
 
 	def formset_item_process(self, time, item, quantity, repository, status):
-		Transaction.add(self.task, "补发", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
+		Transaction.add_raw(self.task, "补发", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
 		return super(TmorderCompensateView, self).formset_item_process(time, item, quantity, repository, status)
 
 class TmorderReturnView(TmorderMixin, TemplateView):
@@ -59,5 +59,5 @@ class TmorderReturnView(TmorderMixin, TemplateView):
 
 	def formset_item_process(self, time, item, quantity, repository, status):
 		#when order information is synchronized, we will adjust the repository of deliver, now just use what user chose
-		Transaction.add(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("资产", "完好", repository))
+		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("资产", "完好", repository))
 		return super(TmorderReturnView, self).formset_item_process(time, item, quantity, repository, status)

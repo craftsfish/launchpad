@@ -76,7 +76,7 @@ class Transaction(models.Model):
 			s.save()
 
 	@staticmethod
-	def add(task, desc, time, organization, item, *args):
+	def add_raw(task, desc, time, organization, item, *args):
 		tr = Transaction(desc=desc, task=task, time=time)
 		tr.save()
 

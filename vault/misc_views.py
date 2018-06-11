@@ -110,12 +110,12 @@ class RetailView(FfsMixin, TemplateView):
 			c = Commodity.objects.get(pk=d['id'])
 			q = d['quantity']
 			r = d['repository']
-			Transaction.add(self.task, "出货", t, self.org, c.item_ptr, ("资产", "完好", r), -q, ("支出", "出货", r))
+			Transaction.add_raw(self.task, "出货", t, self.org, c.item_ptr, ("资产", "完好", r), -q, ("支出", "出货", r))
 			v += q * c.value
 		if self.sale == 0:
 			self.sale = v
 		cash = Money.objects.get(name="人民币")
-		Transaction.add(self.task, "货款", t, self.org, cash.item_ptr, ("资产", "应收货款", None), self.sale, ("收入", "销售收入", None))
+		Transaction.add_raw(self.task, "货款", t, self.org, cash.item_ptr, ("资产", "应收货款", None), self.sale, ("收入", "销售收入", None))
 		return super(RetailView, self).data_valid(form, formset)
 
 class ChangeView(FfsMixin, TemplateView):
@@ -138,9 +138,9 @@ class ChangeView(FfsMixin, TemplateView):
 			r = d['repository']
 			s = Itemstatus.v2s(d['status'])
 			if q > 0:
-				Transaction.add(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+				Transaction.add_raw(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
 			else:
-				Transaction.add(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+				Transaction.add_raw(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
 		return super(ChangeView, self).data_valid(form, formset)
 
 class ChangeRepositoryView(FfsMixin, TemplateView):
@@ -164,5 +164,5 @@ class ChangeRepositoryView(FfsMixin, TemplateView):
 			sf = Itemstatus.v2s(d['status_f'])
 			rt = d['repository_t']
 			st = Itemstatus.v2s(d['status_t'])
-			Transaction.add(self.task, "换仓", t, o, c.item_ptr, ("资产", sf, rf), -q, ("资产", st, rt))
+			Transaction.add_raw(self.task, "换仓", t, o, c.item_ptr, ("资产", sf, rf), -q, ("资产", st, rt))
 		return super(ChangeRepositoryView, self).data_valid(form, formset)

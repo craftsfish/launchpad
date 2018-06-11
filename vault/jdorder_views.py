@@ -42,21 +42,21 @@ class JdorderChangeView(JdorderMixin, TemplateView):
 
 	def formset_item_process(self, time, item, quantity, repository, status):
 		if quantity > 0:
-			Transaction.add(self.task, "换货.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+			Transaction.add_raw(self.task, "换货.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		else:
-			Transaction.add(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+			Transaction.add_raw(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		return super(JdorderChangeView, self).formset_item_process(time, item, quantity, repository, status)
 
 class JdorderCompensateView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
 
 	def formset_item_process(self, time, item, quantity, repository, status):
-		Transaction.add(self.task, "补发", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
+		Transaction.add_raw(self.task, "补发", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
 		return super(JdorderCompensateView, self).formset_item_process(time, item, quantity, repository, status)
 
 class JdorderReturnView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
 
 	def formset_item_process(self, time, item, quantity, repository, status):
-		Transaction.add(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status)
