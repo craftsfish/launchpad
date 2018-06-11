@@ -27,9 +27,9 @@ class Commodity(Item):
 		with open('/tmp/commodity.csv', 'rb') as csvfile:
 			reader = csv.reader((csvfile))
 			title = reader.next()
-			columns = ["品名", "供应商"]
+			columns = ["品名", "供应商", "价值"]
 			for line in reader:
-				n, sn = get_column_values(title, line, *columns)
+				n, sn, v = get_column_values(title, line, *columns)
 				if sn != None:
 					try:
 						s = Supplier.objects.get(name=sn)
@@ -40,14 +40,15 @@ class Commodity(Item):
 
 				try:
 					i = Commodity.objects.get(name=n)
+					i.value = v
 				except Commodity.DoesNotExist as e:
-					i = Commodity(name=n, supplier=s)
+					i = Commodity(name=n, supplier=s, value=v)
 					try:
 						i.item_ptr = Item.objects.get(name=n)
 					except Item.DoesNotExist as e:
 						i.item_ptr = None
-					i.save()
 					print "增加物资: {}".format(i)
+				i.save()
 
 class Money(Item):
 	@staticmethod
