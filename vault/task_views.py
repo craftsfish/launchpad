@@ -248,6 +248,28 @@ class TaskSettleView(FfsMixin, TemplateView):
 	formset_class = TaskSettleAccountFormSet
 	sub_form_class = EmptyForm
 
+	def data_valid(self, form, formset):
+		o = form.cleaned_data['organization']
+		r = form.cleaned_data['repository']
+		n = form.cleaned_data['status']
+		s = int(form.cleaned_data['ship'])
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			a = Account.objects.get(pk=d['id'])
+			q = d['quantity']
+			if not q: continue
+			if a.organization.id != o.id: continue
+			if a.repository.id != r.id: continue
+			if s == 0 and a.category != 0: continue
+			if s == 1 and a.category != 1: continue
+			b = Account.get(o, a.item, "资产", Itemstatus.v2s(n), r)
+			if s:
+				Transaction.add(self.task, "出库", timezone.now(), a, -q, b)
+			else:
+				Transaction.add(self.task, "入库", timezone.now(), a, -q, b)
+		return super(TaskSettleView, self).data_valid(form, formset)
+
 	def dispatch(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
 		return super(TaskSettleView, self).dispatch(request, *args, **kwargs)
@@ -266,5 +288,5 @@ class TaskSettleView(FfsMixin, TemplateView):
 		for form in context['formset']:
 			aid = form['id'].value()
 			a = Account.objects.get(pk=aid)
-			form.label = a.organization.name + ": " + str(a)
+			form.label = a.organization.name + " : " + a.item.name + " : " + str(a)
 		return context

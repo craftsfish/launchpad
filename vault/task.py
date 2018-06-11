@@ -105,6 +105,7 @@ class Transaction(models.Model):
 		1: whether all accounts belong to same ROOT organization
 		2: balanced, in case of lacking of last change, args will be auto-completed
 		"""
+		r = []
 		oid = None
 		balance = 0
 
@@ -114,25 +115,26 @@ class Transaction(models.Model):
 			if oid == None:
 				oid = a.organization.root().id
 			if oid != a.organization.root().id:
-				return False
+				return None
 
 			sign = a.sign()
 			if i + 1 == len(args): #last item without change
 				change = -balance / sign
-				args.append(change)
 			else:
 				change = args[i+1]
+			r.append(a)
+			r.append(change)
 			balance += sign * change
 			i += 2;
 
 		if balance != 0:
-			return False
-		return True
+			return None
+		return r
 
 	@staticmethod
 	def add(task, desc, time, *args):
-		if not Transaction.__legal(*args):
-			return False
+		args = Transaction.__legal(*args)
+		if not args: return False
 		tr = Transaction(desc=desc, task=task, time=time)
 		tr.save()
 		i = 0
