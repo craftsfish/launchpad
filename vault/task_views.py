@@ -48,64 +48,6 @@ class TaskDeleteView(RedirectView):
 		Task.objects.get(pk=kwargs['pk']).delete()
 		return super(TaskDeleteView, self).get(request, *args, **kwargs)
 
-class BuyFutureForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, required=False)
-
-class CommodityForm(forms.Form):
-	id = forms.IntegerField(widget=forms.HiddenInput)
-	name = forms.CharField(max_length=30, disabled=True, required=False)
-	quantity = forms.IntegerField()
-	check = forms.BooleanField(required=False)
-	repository = forms.CharField(max_length=30, disabled=True, required=False)
-CommodityFormSet = formset_factory(CommodityForm, extra=0)
-
-class TaskBuyFutureView(FormView):
-	template_name = "{}/buy_future.html".format(Organization._meta.app_label)
-	form_class = BuyFutureForm
-
-	def post(self, request, *args, **kwargs):
-		self.task = Task.objects.get(pk=kwargs['pk'])
-		p = self.request.POST
-		o = Organization.objects.get(pk=p['organization'])
-		r = None
-		if p['repository'] != '':
-			r = Repository.objects.get(pk=p['repository'])
-		formset = CommodityFormSet(self.request.POST)
-		merged = {}
-		if formset.is_valid():
-			for f in formset:
-				d = f.cleaned_data
-				if not d['check']:
-					continue
-				cid = d['id']
-				if merged.get(cid):
-					merged[cid] += d['quantity']
-				else:
-					merged[cid] = d['quantity']
-		for cid, quantity in merged.items():
-			c = Commodity.objects.get(pk=cid)
-			t = timezone.now()
-			cash = Money.objects.get(name="人民币")
-			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), quantity, ("收入", "进货", r))
-			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), quantity*c.value, ("支出", "进货", None))
-
-		return super(TaskBuyFutureView, self).post(request, *args, **kwargs)
-
-	def get_success_url(self):
-		return self.task.get_absolute_url()
-
-	def get_context_data(self, **kwargs):
-		context = super(TaskBuyFutureView, self).get_context_data(**kwargs)
-		it = Commodity.objects.all()[0] #TODO: replace with actual candidates
-		formset_initial = [
-			{'id': it.id, 'name': it.name, 'quantity':8, 'check': True, 'repository': 'Repository_A'},
-		]
-		for c in Commodity.objects.all():
-			formset_initial.append({'id': c.id, 'name': c.name, 'quantity': 1, 'check': False, 'repository': None})
-		context['formset'] = CommodityFormSet(initial = formset_initial)
-		return context
-
 class EmptyForm(forms.Form):
 	pass
 
