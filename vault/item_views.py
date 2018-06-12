@@ -28,6 +28,7 @@ class ItemListView(ListView):
 
 class BookDetailView(DetailView):
 	model = Item
+	template_name = "{}/book_detail.html".format(Item._meta.app_label)
 
 	def get(self, request, *args, **kwargs):
 		self.org = Organization.objects.get(pk=kwargs['org'])
