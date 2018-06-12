@@ -6,13 +6,18 @@
 <div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<tr>
-			<th></th>
-			<th>资产</th>
-			<th>负债</th>
-			<th>收入</th>
-			<th>支出</th>
-			<th>所有者权益</th>
+			<td>
+			{% for i in title %}
+			<td>{{i}}</td>
+			{% endfor %}
 		</tr>
+		{% for repo in repos %}
+		<tr>
+			{% for i in repo %}
+			<td>{{i}}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
 	</table>
 </div>
 {% endblock %}
