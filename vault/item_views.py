@@ -9,16 +9,6 @@ import json
 
 class ItemListView(ListView):
 	model = Item
-	paginate_by = 100
-
-	def get_context_data(self, **kwargs):
-		context = super(ItemListView, self).get_context_data(**kwargs)
-		for item in context["object_list"]:
-			candidates = set() #root organizations that operates item
-			for o in Account.objects.filter(item=item).values_list('organization', flat=True).distinct():
-				candidates.add(Organization.objects.get(pk=o).root())
-			item.orgs = candidates
-		return context
 
 	def post(self, request, *args, **kwargs):
 		j = []
