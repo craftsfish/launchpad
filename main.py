@@ -21,10 +21,18 @@ from vault.jdorder import *
 from vault.task import *
 from vault.tmcommodity import *
 from vault.tmorder import *
+from django.utils import timezone
+from django.utils import formats
+from datetime import timedelta
 
 def test():
-	t = Task(desc="临时任务")
-	t.save()
+	print (timezone.now())
+	t = timezone.now().astimezone(timezone.get_current_timezone())
+	print t
+	t = t.replace(hour=0, minute=0, second=0, microsecond = 0)
+	print t
+	t = t - timedelta(1)
+	print t
 
 options = (
 	["ic", "导入物资", Commodity.Import],
