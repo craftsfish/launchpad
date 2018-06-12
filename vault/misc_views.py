@@ -169,3 +169,9 @@ class ChangeRepositoryView(FfsMixin, TemplateView):
 
 class ReceivableCommodityView(TemplateView):
 	template_name = "{}/receivable_commodity.html".format(Organization._meta.app_label)
+
+	def get_context_data(self, **kwargs):
+		for i in Account.objects.filter(name="应收").exclude(balance=0).values_list('item', flat=True).distinct():
+			if Commodity.objects.filter(pk=i).exists():
+				print Commodity.objects.get(pk=i)
+		return super(ReceivableCommodityView, self).get_context_data(**kwargs)
