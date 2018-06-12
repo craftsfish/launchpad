@@ -6,16 +6,11 @@
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
 		<tr>
-			<th></th>
-			<th>编号</th>
-			<th>概述</th>
-			<th></th>
-		</tr>
-		<tr>
 			<td><a href="{% url 'task_delete' object.id %}">删除</a></td>
-			<td>{{object.id}}</td>
+			<td>编号: {{object.id}}</td>
 			<td>{{object.desc}}</td>
 			<td><a href="{% url 'task_previous' object.id %}">前一任务</a></td>
+			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
 		</tr>
 	</table>
 	<br/>

@@ -59,6 +59,17 @@ class TaskPreviousView(RedirectView):
 			self.prev = Task.objects.get(id=i)
 		return super(TaskPreviousView, self).get(request, *args, **kwargs)
 
+class TaskNextView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return reverse('task_detail', kwargs={'pk': self.next.id})
+
+	def get(self, request, *args, **kwargs):
+		i = kwargs['pk']
+		self.next = Task.objects.filter(id__gt=i).order_by("id").last()
+		if not self.next:
+			self.next = Task.objects.get(id=i)
+		return super(TaskNextView, self).get(request, *args, **kwargs)
+
 class EmptyForm(forms.Form):
 	pass
 
