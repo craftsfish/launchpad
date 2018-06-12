@@ -166,3 +166,6 @@ class ChangeRepositoryView(FfsMixin, TemplateView):
 			st = Itemstatus.v2s(d['status_t'])
 			Transaction.add_raw(self.task, "换仓", t, o, c.item_ptr, ("资产", sf, rf), -q, ("资产", st, rt))
 		return super(ChangeRepositoryView, self).data_valid(form, formset)
+
+class ReceivableCommodityView(TemplateView):
+	template_name = "{}/receivable_commodity.html".format(Organization._meta.app_label)
