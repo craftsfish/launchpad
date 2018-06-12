@@ -65,7 +65,7 @@ class TaskNextView(RedirectView):
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['pk']
-		self.next = Task.objects.filter(id__gt=i).order_by("id").last()
+		self.next = Task.objects.filter(id__gt=i).order_by("id").first()
 		if not self.next:
 			self.next = Task.objects.get(id=i)
 		return super(TaskNextView, self).get(request, *args, **kwargs)
