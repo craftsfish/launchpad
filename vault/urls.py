@@ -26,6 +26,7 @@ urlpatterns = [
 
 	#commodity
 	url(r'^commodity/$', CommodityListView.as_view(), name='commodity_list'),
+	url(r'^commodity/(?P<pk>[\d]+)/$', CommodityDetailView.as_view(), name='commodity_detail'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
