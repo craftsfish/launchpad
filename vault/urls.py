@@ -22,7 +22,7 @@ urlpatterns = [
 
 	#item
 	url(r'^item/$', ItemListView.as_view(), name='item_list'),
-	url(r'^item/(?P<pk>[\d]+)/organization/(?P<org>[\d]+)/$', ItemDetailView.as_view(), name='item_detail'),
+	url(r'^item/(?P<pk>[\d]+)/organization/(?P<org>[\d]+)/$', BookDetailView.as_view(), name='book_detail'),
 
 	#commodity
 	url(r'^commodity/$', CommodityListView.as_view(), name='commodity_list'),

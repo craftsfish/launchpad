@@ -26,15 +26,15 @@ class ItemListView(ListView):
 			j.append({"id": i.id, "str": i.name})
 		return HttpResponse(json.dumps(j))
 
-class ItemDetailView(DetailView):
+class BookDetailView(DetailView):
 	model = Item
 
 	def get(self, request, *args, **kwargs):
 		self.org = Organization.objects.get(pk=kwargs['org'])
-		return super(ItemDetailView, self).get(request, *args, **kwargs)
+		return super(BookDetailView, self).get(request, *args, **kwargs)
 
 	def get_context_data(self, **kwargs):
-		context = super(ItemDetailView, self).get_context_data(**kwargs)
+		context = super(BookDetailView, self).get_context_data(**kwargs)
 		context['org'] = self.org
 		total = [0, 0, 0, 0, 0]
 		orgs = [{}, {}, {}, {}, {}]

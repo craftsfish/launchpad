@@ -38,7 +38,7 @@
 				<table cellpadding="4">
 					{% for i, o in k.items %}
 					<tr>
-						<td align="left"><a href="{% url 'item_detail' object.id o.0.id %}">{{o.0.name}}</a></td>
+						<td align="left"><a href="{% url 'book_detail' object.id o.0.id %}">{{o.0.name}}</a></td>
 						<td align="right">{{o.1}}</td>
 					</tr>
 					{% endfor %}

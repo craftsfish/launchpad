@@ -27,7 +27,7 @@
 					<td>停产</td>
 				{% endif %}
 				{% for org in item.orgs %}
-					<td><a href="{% url 'item_detail' item.id org.id %}">{{ org.name }}</a></td>
+					<td><a href="{% url 'book_detail' item.id org.id %}">{{ org.name }}</a></td>
 				{% endfor %}
 			<tr>
 			<tr>
