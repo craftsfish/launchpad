@@ -12,6 +12,23 @@ class CommodityListView(ListView):
 class CommodityDetailView(DetailView):
 	model = Commodity
 
+	@staticmethod
+	def __get_shipping_out_information(commodity, repository, span):
+		r = []
+		speed = 0
+		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
+		for i in range(span):
+			q = Split.objects.filter(account__item=commodity).filter(account__repository=repository).filter(account__name="出货")
+			q = q.filter(transaction__time__gte=(e-timedelta(1))).filter(transaction__time__lt=e)
+			v = q.aggregate(Sum('change'))['change__sum']
+			if v: v = int(v)
+			else: v = 0
+			r.append(v)
+			speed += 1 #TODO, calculate shipping speed
+			e -= timedelta(1)
+		r.append(speed)
+		return r
+
 	def get_context_data(self, **kwargs):
 		span = 7
 		threshold = 15 #TODO, modify with each supplier's particular limitaion
@@ -38,21 +55,11 @@ class CommodityDetailView(DetailView):
 			l.append(total)
 
 			#shipment
-			s = 0
-			e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
-			for i in range(span):
-				q = Split.objects.filter(account__item=self.object).filter(account__repository=r).filter(account__name="出货")
-				q = q.filter(transaction__time__gte=(e-timedelta(1))).filter(transaction__time__lt=e)
-				v = q.aggregate(Sum('change'))['change__sum']
-				if v: v = int(v)
-				else: v = 0
-				l.append(v)
-				s = 1 #TODO, calculate shipping speed
-				e -= timedelta(1)
+			l += CommodityDetailView.__get_shipping_out_information(self.object, r, span)
 
 			#storage
+			s = l[len(l)-1]
 			inventory = l[1] + l[4]
-			l.append(s)
 			l.append(threshold)
 			if s <= 0:
 				l.append(8888)
