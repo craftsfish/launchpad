@@ -16,6 +16,8 @@ class CommodityDetailView(DetailView):
 	def __get_shipping_out_information(commodity, repository, span):
 		r = []
 		speed = 0
+		active = 0
+		decay = 0.7
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 		for i in range(span):
 			q = Split.objects.filter(account__item=commodity).filter(account__repository=repository).filter(account__name="出货")
@@ -24,13 +26,15 @@ class CommodityDetailView(DetailView):
 			if v: v = int(v)
 			else: v = 0
 			r.append(v)
-			speed += 1 #TODO, calculate shipping speed
+			speed += decay ** i * (1 - decay) * v
+			if v: active += 1
 			e -= timedelta(1)
+		speed = speed * active / span
 		r.append(speed)
 		return r
 
 	def get_context_data(self, **kwargs):
-		span = 7
+		span = 10
 		threshold = 15 #TODO, modify with each supplier's particular limitaion
 		context = super(CommodityDetailView, self).get_context_data(**kwargs)
 		context['title'] = []
