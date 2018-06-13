@@ -8,6 +8,7 @@ from django.views.generic import FormView
 from django.utils import timezone
 from task import *
 from .misc_views import *
+from turbine import *
 
 class TaskListView(ListView):
 	model = Task
@@ -69,9 +70,6 @@ class TaskNextView(RedirectView):
 		if not self.next:
 			self.next = Task.objects.get(id=i)
 		return super(TaskNextView, self).get(request, *args, **kwargs)
-
-class EmptyForm(forms.Form):
-	pass
 
 class TaskClearForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)

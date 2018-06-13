@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from .models import *
 from organization import *
 from django import forms
+from turbine import *
 from django.forms import formset_factory
 from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
@@ -189,3 +190,22 @@ class ReceivableCommodityView(TemplateView):
 				return "None-{}".format(c.name)
 		context['object_list'] = sorted(l, key=__key)
 		return context
+
+class PurchaseForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	repository = forms.ModelChoiceField(queryset=Repository.objects)
+
+class PurchaseCommodityForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	check = forms.BooleanField(required=False)
+PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
+
+class PurchaseFilterForm(forms.Form):
+	keyword = forms.CharField()
+
+class PurchaseView(FfsMixin, TemplateView):
+	template_name = "{}/purchase.html".format(Organization._meta.app_label)
+	form_class = PurchaseForm
+	formset_class = PurchaseCommodityForm
+	sub_form_class = PurchaseFilterForm

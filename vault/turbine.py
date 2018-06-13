@@ -2,7 +2,11 @@
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Sum
+from django import forms
 from .models import *
+
+class EmptyForm(forms.Form):
+	pass
 
 class Turbine:
 	@staticmethod

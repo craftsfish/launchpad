@@ -77,4 +77,5 @@ urlpatterns = [
 	url(r'^misc/change/$', ChangeView.as_view(), name='change'),
 	url(r'^misc/commodity/change/repository/$', ChangeRepositoryView.as_view(), name='change_repository'),
 	url(r'^misc/receivable/commodity/$', ReceivableCommodityView.as_view(), name='receivable_commodity'),
+	url(r'^misc/purchase/$', PurchaseView.as_view(), name='purchase'),
 ]
