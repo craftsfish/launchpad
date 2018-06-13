@@ -62,3 +62,4 @@ class Turbine:
 		for c in l:
 			for repo, level, refill in c.detail:
 				print "{}: {} | 库存天数: {} | 补仓数量: {}".format(c, repo, level, refill)
+		return l

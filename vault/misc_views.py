@@ -199,6 +199,7 @@ class PurchaseCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput, required=False)
 PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 
 class PurchaseFilterForm(forms.Form):
@@ -207,5 +208,23 @@ class PurchaseFilterForm(forms.Form):
 class PurchaseView(FfsMixin, TemplateView):
 	template_name = "{}/purchase.html".format(Organization._meta.app_label)
 	form_class = PurchaseForm
-	formset_class = PurchaseCommodityForm
+	formset_class = PurchaseCommodityFormSet
 	sub_form_class = PurchaseFilterForm
+
+	def get_formset_initial(self):
+		r = []
+		for c in Turbine.replenish():
+			for repo, level, refill in c.detail:
+				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False})
+		return r
+
+	def get_context_data(self, **kwargs):
+		context = super(PurchaseView, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			c = Commodity.objects.get(pk=cid)
+			rid = form['repository'].value()
+			r = Repository.objects.get(pk=rid)
+			form.label = c.name
+			form.note = r.name
+		return context

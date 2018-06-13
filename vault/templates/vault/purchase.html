@@ -1,3 +1,34 @@
-{% extends "vault/item_filter_base.html" %}
+{% extends "base.html" %}
 
 {% block header %}进货{% endblock %}
+
+{% block content %}
+	<div class="col col-lg-6 border border-dark">
+		<form action="" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<table cellpadding="4" border="1">
+				{{ formset.management_form }}
+				<tbody id="item_table">
+					{% for form in formset %}
+					<tr>
+						<td>{{form.check}}</td>
+						<td>{{form.label}}</td>
+						<td>{{form.quantity}}</td>
+						<td>{{form.note}}</td>
+						{% for hidden in form.hidden_fields %}
+						{{ hidden }}
+						{% endfor %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<br></br>
+			<input type="submit" value="提交"/>
+		</form>
+	</div>
+	<div class="col col-lg-6 border border-dark">
+		<label>+交易标的</label>
+		{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
+	</div>
+{% endblock %}
