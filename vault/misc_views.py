@@ -228,3 +228,27 @@ class PurchaseView(FfsMixin, TemplateView):
 			form.label = c.name
 			form.note = r.name
 		return context
+
+	def data_valid(self, form, formset):
+		self.task = Task(desc="进货")
+		self.task.save()
+		t = timezone.now()
+		o = form.cleaned_data['organization']
+		r = form.cleaned_data['repository']
+		merged = {}
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			q = d['quantity']
+			if not q: continue
+			c = d['id']
+			if merged.get(c) != None:
+				merged[c] += q
+			else:
+				merged[c] = q
+		for cid, q in merged.items():
+			c = Commodity.objects.get(pk=cid)
+			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
+			cash = Money.objects.get(name="人民币")
+			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
+		return super(PurchaseView, self).data_valid(form, formset)
