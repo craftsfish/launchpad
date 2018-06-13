@@ -171,7 +171,21 @@ class ReceivableCommodityView(TemplateView):
 	template_name = "{}/receivable_commodity.html".format(Organization._meta.app_label)
 
 	def get_context_data(self, **kwargs):
+		context = super(ReceivableCommodityView, self).get_context_data(**kwargs)
+		l = []
 		for i in Account.objects.filter(name="应收").exclude(balance=0).values_list('item', flat=True).distinct():
 			if Commodity.objects.filter(pk=i).exists():
-				print Commodity.objects.get(pk=i)
-		return super(ReceivableCommodityView, self).get_context_data(**kwargs)
+				c = Commodity.objects.get(pk=i)
+				c.accounts = Account.objects.filter(name="应收").filter(item=c).exclude(balance=0).order_by('organization')
+				c.total = 0
+				for a in c.accounts:
+					c.total += a.balance
+				l.append(c)
+				print c
+		def __key(c):
+			if c.supplier:
+				return "{}-{}".format(c.supplier.id, c.name)
+			else:
+				return "None-{}".format(c.name)
+		context['object_list'] = sorted(l, key=__key)
+		return context
