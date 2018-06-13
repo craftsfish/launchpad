@@ -33,6 +33,16 @@ class CommodityDetailView(DetailView):
 		r.append(speed)
 		return r
 
+	@staticmethod
+	def __get_replenish_information(commodity, repository, speed, threshold):
+		inventory = Account.objects.filter(item=commodity).filter(repository=repository).filter(name__in=["完好", "应收"]).aggregate(Sum('balance'))['balance__sum']
+		if inventory: inventory = int(inventory)
+		else: inventory = 0
+		if speed <= 0:
+			return [8888, -inventory]
+		else:
+			return [inventory/speed, speed * threshold - inventory]
+
 	def get_context_data(self, **kwargs):
 		span = 10
 		threshold = 15 #TODO, modify with each supplier's particular limitaion
@@ -63,14 +73,8 @@ class CommodityDetailView(DetailView):
 
 			#storage
 			s = l[len(l)-1]
-			inventory = l[1] + l[4]
 			l.append(threshold)
-			if s <= 0:
-				l.append(8888)
-				l.append(-inventory)
-			else:
-				l.append(inventory/s)
-				l.append(s * threshold - inventory)
+			l += CommodityDetailView.__get_replenish_information(self.object, r, s, threshold)
 
 		context['title'].append("合计")
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
