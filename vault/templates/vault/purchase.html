@@ -2,6 +2,31 @@
 
 {% block header %}进货{% endblock %}
 
+{% block extra_script %}
+	<script>
+		function on_item_retrieved(data,status){
+			items = eval("("+data+")");
+			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
+			var p = parseInt(total.attr("value"))
+			total.attr({"value": p+items.length});
+			for (i in items)
+			{
+				n = items[i].str
+				j = p + parseInt(i)
+				r = jQuery("<tr></tr>");
+				q = 1
+				jQuery("#item_table").prepend(r);
+				r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
+							<td>${n}</td>
+							<td><input type="number" name=form-${j}-quantity value=${q} /></td>
+							<td></td>
+							<input type="hidden" name=form-${j}-id value=${items[i].id} />`);
+			}
+		}
+	</script>
+	{% include 'vault/script/item_filter.html' %}
+{% endblock %}
+
 {% block content %}
 	<div class="col col-lg-6 border border-dark">
 		<form action="" method="post">
