@@ -9,7 +9,6 @@
 			<td><a href="{% url 'task_previous' object.id %}">前一任务</a></td>
 			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
 		<tr>
-		<tr><td colspan=2 align='center'><a href="{% url 'task_delete' object.id %}">删除此任务</a></td></tr>
 		<tr><td>任务编号</td><td>{{object.id}}</td></tr>
 		<tr><td>任务描述</td><td>{{object.desc}}</td></tr>
 		{% if order %}
@@ -19,6 +18,7 @@
 			<tr><td>发货仓库</td><td>{{order.repository}}</td></tr>
 			<tr><td>销售额</td><td>{{order.sale}}</td></tr>
 		{% endif %}
+		<tr><td colspan=2 align='center'><a href="{% url 'task_delete' object.id %}">删除此任务</a></td></tr>
 	</table>
 	<br/>
 
