@@ -22,17 +22,31 @@
 	</table>
 	<br/>
 
-	<a href="{% url 'task_settle' object.id %}">货物交割</a>
-	<a href="{% url 'task_clear' object.id %}">资金结算</a>
+	{% if uncleared or unsettled %}
 	<table cellpadding="4" border="1">
 		<tr>
+			<th></th>
 			<th>组织</th>
 			<th>标的</th>
 			<th>账户</th>
 			<th>余额</th>
 		</tr>
-		{% for a, b in uncleared_list %}
+		{% for a, b in uncleared %}
 		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{uncleared | length}}><a href="{% url 'task_clear' object.id %}">资金结算</a></td>
+			{% endif %}
+			<td>{{a.organization}}</td>
+			<td>{{a.item}}</td>
+			<td>{{a}}</td>
+			<td>{{b}}</td>
+		</tr>
+		{% endfor %}
+		{% for a, b in unsettled %}
+		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{unsettled | length}}><a href="{% url 'task_settle' object.id %}">货物交割</a></td>
+			{% endif %}
 			<td>{{a.organization}}</td>
 			<td>{{a.item}}</td>
 			<td>{{a}}</td>
@@ -40,6 +54,7 @@
 		</tr>
 		{% endfor %}
 	</table>
+	{% endif %}
 	<br/>
 
 	<table cellpadding="4" border="1">

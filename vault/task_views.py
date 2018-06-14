@@ -28,10 +28,16 @@ class TaskDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
-		l = []
+		m = [] #for currency accounts
+		c = [] #for commodity accounts
 		for k, v in self.object.uncleared_accounts().items():
-			l.append([Account.objects.get(pk=k), v])
-		context['uncleared_list'] = l
+			a = Account.objects.get(pk=k)
+			if Commodity.objects.filter(pk=a.item.id).exists():
+				c.append([a, v])
+			else:
+				m.append([a, v])
+		context['uncleared'] = m
+		context['unsettled'] = c
 
 		context['trans'] = self.object.transactions.all().order_by("time", "id")
 		max_splits = 0
