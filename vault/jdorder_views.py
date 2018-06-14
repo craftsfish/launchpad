@@ -60,3 +60,13 @@ class JdorderReturnView(JdorderMixin, TemplateView):
 	def formset_item_process(self, time, item, quantity, repository, status):
 		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status)
+
+class JdorderWechatFakeView(JdorderMixin, TemplateView):
+	template_name = "{}/jdorder_wechat_fake.html".format(Organization._meta.app_label)
+
+	def formset_item_process(self, time, item, quantity, repository, status):
+		if quantity > 0:
+			Transaction.add_raw(self.task, "微信刷单.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		else:
+			Transaction.add_raw(self.task, "微信刷单.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		return super(JdorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status)
