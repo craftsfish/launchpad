@@ -61,3 +61,14 @@ class TmorderReturnView(TmorderMixin, TemplateView):
 		#when order information is synchronized, we will adjust the repository of deliver, now just use what user chose
 		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("资产", "完好", repository))
 		return super(TmorderReturnView, self).formset_item_process(time, item, quantity, repository, status)
+
+class TmorderWechatFakeView(TmorderMixin, TemplateView):
+	template_name = "{}/tmorder_wechat_fake.html".format(Organization._meta.app_label)
+
+	def formset_item_process(self, time, item, quantity, repository, status):
+		if quantity > 0:
+			Transaction.add_raw(self.task, "微信刷单.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		else:
+			Transaction.add_raw(self.task, "微信刷单.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
+		return super(TmorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status)
+
