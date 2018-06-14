@@ -32,6 +32,7 @@ class TaskDetailView(DetailView):
 		for k, v in self.object.uncleared_accounts().items():
 			l.append([Account.objects.get(pk=k), v])
 		context['uncleared_list'] = l
+
 		context['trans'] = self.object.transactions.all().order_by("time", "id")
 		max_splits = 0
 		for t in context['trans']:
@@ -39,6 +40,12 @@ class TaskDetailView(DetailView):
 			if len(t.ss) > max_splits:
 				max_splits = len(t.ss)
 		context['detail_spans'] = max_splits * 2
+
+		if Jdorder.objects.filter(pk=self.object.id).exists():
+			context['jdorder'] = Jdorder.objects.get(pk=self.object.id)
+		if Tmorder.objects.filter(pk=self.object.id).exists():
+			context['tmorder'] = Tmorder.objects.get(pk=self.object.id)
+
 		return context
 
 class TaskDeleteView(RedirectView):

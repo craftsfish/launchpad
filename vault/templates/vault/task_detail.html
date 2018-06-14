@@ -12,6 +12,26 @@
 			<td><a href="{% url 'task_previous' object.id %}">前一任务</a></td>
 			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
 		</tr>
+		{% if jdorder %}
+		<tr>
+			<td>订单信息</td>
+			<td>{{jdorder.oid}}</td>
+			<td>{{jdorder.status}}</td>
+			<td>{{jdorder.fake}}</td>
+			<td>{{jdorder.repository}}</td>
+			<td>{{jdorder.sale}}</td>
+		</tr>
+		{% endif %}
+		{% if tmorder %}
+		<tr>
+			<td>订单信息</td>
+			<td>{{tmorder.oid}}</td>
+			<td>{{tmorder.status}}</td>
+			<td>{{tmorder.fake}}</td>
+			<td>{{tmorder.repository}}</td>
+			<td>{{tmorder.sale}}</td>
+		</tr>
+		{% endif %}
 	</table>
 	<br/>
 
