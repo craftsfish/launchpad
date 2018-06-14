@@ -6,31 +6,18 @@
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
 		<tr>
-			<td><a href="{% url 'task_delete' object.id %}">删除</a></td>
-			<td>编号: {{object.id}}</td>
-			<td>{{object.desc}}</td>
 			<td><a href="{% url 'task_previous' object.id %}">前一任务</a></td>
 			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
-		</tr>
-		{% if jdorder %}
 		<tr>
-			<td>订单信息</td>
-			<td>{{jdorder.oid}}</td>
-			<td>{{jdorder.status}}</td>
-			<td>{{jdorder.fake}}</td>
-			<td>{{jdorder.repository}}</td>
-			<td>{{jdorder.sale}}</td>
-		</tr>
-		{% endif %}
-		{% if tmorder %}
-		<tr>
-			<td>订单信息</td>
-			<td>{{tmorder.oid}}</td>
-			<td>{{tmorder.status}}</td>
-			<td>{{tmorder.fake}}</td>
-			<td>{{tmorder.repository}}</td>
-			<td>{{tmorder.sale}}</td>
-		</tr>
+		<tr><td colspan=2 align='center'><a href="{% url 'task_delete' object.id %}">删除此任务</a></td></tr>
+		<tr><td>任务编号</td><td>{{object.id}}</td></tr>
+		<tr><td>任务描述</td><td>{{object.desc}}</td></tr>
+		{% if order %}
+			<tr><td>订单编号</td><td>{{order.oid}}</td></tr>
+			<tr><td>订单状态</td><td>{{order.status}}</td></tr>
+			<tr><td>刷单状态</td><td>{{order.fake}}</td></tr>
+			<tr><td>发货仓库</td><td>{{order.repository}}</td></tr>
+			<tr><td>销售额</td><td>{{order.sale}}</td></tr>
 		{% endif %}
 	</table>
 	<br/>

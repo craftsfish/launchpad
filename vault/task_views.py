@@ -42,9 +42,9 @@ class TaskDetailView(DetailView):
 		context['detail_spans'] = max_splits * 2
 
 		if Jdorder.objects.filter(pk=self.object.id).exists():
-			context['jdorder'] = Jdorder.objects.get(pk=self.object.id)
+			context['order'] = Jdorder.objects.get(pk=self.object.id)
 		if Tmorder.objects.filter(pk=self.object.id).exists():
-			context['tmorder'] = Tmorder.objects.get(pk=self.object.id)
+			context['order'] = Tmorder.objects.get(pk=self.object.id)
 
 		return context
 
