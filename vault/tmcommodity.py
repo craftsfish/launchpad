@@ -5,6 +5,7 @@ from item import *
 from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.utils import timezone
+from django.db import transaction
 
 class Tmcommodity(models.Model):
 	class Meta:
@@ -54,30 +55,31 @@ class Tmcommoditymap(models.Model):
 
 	@staticmethod
 	def Import():
+		@transaction.atomic
+		def __csv_handler(l):
+			t = datetime.utcfromtimestamp(float(l[0])).replace(tzinfo=timezone.utc)
+			tmc, created = Tmcommodity.objects.get_or_create(id=l[1])
+			if created:
+				print "增加天猫商品: {}".format(tmc)
+			cs = l[2:]
+
+			try:
+				Tmcommoditymap.objects.filter(since=t).get(tmcommodity=tmc)
+			except Tmcommoditymap.DoesNotExist as e:
+				j = Tmcommoditymap(tmcommodity=tmc, since=t)
+				j.save()
+				for c in cs:
+					try:
+						i = Commodity.objects.get(name=c)
+					except Commodity.DoesNotExist as e:
+						i = Commodity(name=c, supplier=Supplier.objects.get(name="未知"))
+						i.save()
+						print "增加物资: {}".format(i)
+					j.commodities.add(i)
+				j.save()
+				print "增加天猫商品映射: {}".format(j)
+
 		with open('/tmp/tmcommoditymap.csv', 'rb') as csvfile:
 			reader = csv.reader((csvfile))
 			for l in reader:
-				t = datetime.utcfromtimestamp(float(l[0])).replace(tzinfo=timezone.utc)
-				try:
-					tmc = Tmcommodity.objects.get(id=l[1])
-				except Tmcommodity.DoesNotExist as e:
-					tmc = Tmcommodity(id=l[1])
-					tmc.save()
-					print "增加天猫商品: {}".format(tmc)
-				cs = l[2:]
-
-				try:
-					Tmcommoditymap.objects.filter(since=t).get(tmcommodity=tmc)
-				except Tmcommoditymap.DoesNotExist as e:
-					j = Tmcommoditymap(tmcommodity=tmc, since=t)
-					j.save()
-					for c in cs:
-						try:
-							i = Commodity.objects.get(name=c)
-						except Commodity.DoesNotExist as e:
-							i = Commodity(name=c, supplier=Supplier.objects.get(name="未知"))
-							i.save()
-							print "增加物资: {}".format(i)
-						j.commodities.add(i)
-					j.save()
-					print "增加天猫商品映射: {}".format(j)
+				__csv_handler(l)
