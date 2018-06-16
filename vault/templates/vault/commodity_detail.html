@@ -6,7 +6,7 @@
 <div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<tr>
-			<td>
+			<td></td>
 			{% for i in title %}
 			<td>{{i}}</td>
 			{% endfor %}
@@ -16,6 +16,23 @@
 			{% for i in repo %}
 			<td>{{i}}</td>
 			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+
+	<br/>
+
+	<table border="1" cellpadding="4">
+		<tr>
+			<td>组织</td>
+			<td>账户</td>
+			<td>余额</td>
+		</tr>
+		{% for a in accounts %}
+		<tr>
+			<td>{{a.organization}}</td>
+			<td align="left"><a href="{% url 'account_detail' a.id %}">{{a}}</a></td>
+			<td>{{a.balance}}</td>
 		</tr>
 		{% endfor %}
 	</table>

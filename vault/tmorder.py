@@ -88,10 +88,10 @@ class Tmorder(Task):
 			for t in o.task_ptr.transactions.filter(desc="退货"):
 				for s in t.splits.all():
 					a = s.account
-					if a.repository.id == repository.id:
-						break
-					s.account = Account.get(a.organization, a.item, a.get_category_display(), a.name, repository)
-					s.save()
+					if s.change < 0:
+						if a.repository.id != repository.id:
+							s.account = Account.get(a.organization, a.item, a.get_category_display(), a.name, repository)
+							s.save()
 
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))

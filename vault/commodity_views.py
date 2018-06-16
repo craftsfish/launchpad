@@ -55,4 +55,6 @@ class CommodityDetailView(DetailView):
 		context['title'].append("实际库存天数")
 		context['title'].append("补仓数量")
 
+		context['accounts'] = Account.objects.exclude(balance=0).filter(item=self.object).order_by('organization', 'category', 'repository', 'name')
+
 		return context

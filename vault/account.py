@@ -49,5 +49,5 @@ class Account(models.Model):
 		except Account.DoesNotExist as e:
 			a = Account(organization=o, item=i, category=c, repository=r, name=n)
 			a.save()
-			print "[账户]增加新账户: {}".format(a)
+			print "[账户]增加新账户: {}.{}.{}".format(a.organization, a.item, a)
 			return a
