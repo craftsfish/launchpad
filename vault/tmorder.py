@@ -9,6 +9,7 @@ from organization import *
 from account import *
 from decimal import Decimal
 from django.utils import timezone
+from django.db import transaction
 
 class Tmtransaction:
 	pass
@@ -83,27 +84,38 @@ class Tmorder(Task):
 				if fake:
 					__add_fake_transaction(o.task_ptr, organization, repository, time)
 
+			#更新退货的仓库信息
+			for t in o.task_ptr.transactions.filter(desc="退货"):
+				for s in t.splits.all():
+					a = s.account
+					if a.repository.id == repository.id:
+						break
+					s.account = Account.get(a.organization, a.item, a.get_category_display(), a.name, repository)
+					s.save()
+
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
 			title = reader.next()
 			org = Organization.objects.get(name="泰福高腾复专卖店")
 			for i in reader:
-				status = get_column_value(title, i, "订单状态")
-				if status not in Tmorder.statuses():
-					print "[天猫]未知订单状态: {}".format(status)
-					continue
-				order_id = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
-				when = utc_2_datetime(cst_2_utc(get_column_value(title, i, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
-				sale = Decimal(get_column_value(title, i, "买家应付货款"))
-				remark = get_column_value(title, i, "订单备注")
-				f = 0
-				if remark.find("朱") != -1:
-					f = 1
-				repo = Repository.objects.get(name="孤山仓")
-				if re.compile("南京仓").search(remark):
-					repo = Repository.objects.get(name="南京仓")
+				with transaction.atomic():
+					print transaction.get_connection().isolation_level #todo
+					status = get_column_value(title, i, "订单状态")
+					if status not in Tmorder.statuses():
+						print "[天猫]未知订单状态: {}".format(status)
+						continue
+					order_id = int(re.compile(r"\d+").search(get_column_value(title, i, "订单编号")).group())
+					when = utc_2_datetime(cst_2_utc(get_column_value(title, i, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
+					sale = Decimal(get_column_value(title, i, "买家应付货款"))
+					remark = get_column_value(title, i, "订单备注")
+					f = 0
+					if remark.find("朱") != -1:
+						f = 1
+					repo = Repository.objects.get(name="孤山仓")
+					if re.compile("南京仓").search(remark):
+						repo = Repository.objects.get(name="南京仓")
 
-				__handle_list(order_id, when, status, sale, f, org, repo)
+					__handle_list(order_id, when, status, sale, f, org, repo)
 
 	@staticmethod
 	def Import_Detail():
