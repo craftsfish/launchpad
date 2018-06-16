@@ -99,7 +99,6 @@ class Tmorder(Task):
 			org = Organization.objects.get(name="泰福高腾复专卖店")
 			for i in reader:
 				with transaction.atomic():
-					print transaction.get_connection().isolation_level #todo
 					status = get_column_value(title, i, "订单状态")
 					if status not in Tmorder.statuses():
 						print "[天猫]未知订单状态: {}".format(status)

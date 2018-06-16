@@ -12,6 +12,7 @@ from turbine import *
 
 class TaskListView(ListView):
 	model = Task
+	paginate_by = 50
 
 	def get_queryset(self):
 		return Task.objects.order_by("-id")
