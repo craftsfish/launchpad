@@ -4,6 +4,7 @@ from item import *
 from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.utils import timezone
+from django.db import transaction
 
 class Jdcommodity(models.Model):
 	class Meta:
@@ -13,7 +14,7 @@ class Jdcommodity(models.Model):
 	name = models.CharField(max_length=120)
 
 	def __str__(self):
-		return "{}: {}".format(self.id, self.name)
+		return "{} : {}".format(self.id, self.name)
 
 class Jdcommoditymap(models.Model):
 	class Meta:
@@ -53,30 +54,31 @@ class Jdcommoditymap(models.Model):
 
 	@staticmethod
 	def Import():
+		@transaction.atomic
+		def __csv_handler(l):
+			t = datetime.utcfromtimestamp(float(l[0])).replace(tzinfo=timezone.utc)
+			jdc, created = Jdcommodity.objects.get_or_create(id=int(l[1]))
+			if created:
+				print "增加京东商品: {}".format(jdc)
+			cs = l[2:]
+
+			try:
+				Jdcommoditymap.objects.filter(since=t).get(jdcommodity=jdc)
+			except Jdcommoditymap.DoesNotExist as e:
+				j = Jdcommoditymap(jdcommodity=jdc, since=t)
+				j.save()
+				for c in cs:
+					try:
+						i = Commodity.objects.get(name=c)
+					except Commodity.DoesNotExist as e:
+						i = Commodity(name=c, supplier=Supplier.objects.get(name="未知"))
+						i.save()
+						print "增加物资: {}".format(i)
+					j.commodities.add(i)
+				j.save()
+				print "增加京东商品映射: {}".format(j)
+
 		with open('/tmp/jdcommoditymap.csv', 'rb') as csvfile:
 			reader = csv.reader((csvfile))
 			for l in reader:
-				t = datetime.utcfromtimestamp(float(l[0])).replace(tzinfo=timezone.utc)
-				try:
-					jdc = Jdcommodity.objects.get(id=int(l[1]))
-				except Jdcommodity.DoesNotExist as e:
-					jdc = Jdcommodity(id=int(l[1]))
-					jdc.save()
-					print "增加京东商品: {}".format(jdc)
-				cs = l[2:]
-
-				try:
-					Jdcommoditymap.objects.filter(since=t).get(jdcommodity=jdc)
-				except Jdcommoditymap.DoesNotExist as e:
-					j = Jdcommoditymap(jdcommodity=jdc, since=t)
-					j.save()
-					for c in cs:
-						try:
-							i = Commodity.objects.get(name=c)
-						except Commodity.DoesNotExist as e:
-							i = Commodity(name=c, supplier=Supplier.objects.get(name="未知"))
-							i.save()
-							print "增加物资: {}".format(i)
-						j.commodities.add(i)
-					j.save()
-					print "增加京东商品映射: {}".format(j)
+				__csv_handler(l)
