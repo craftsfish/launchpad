@@ -8,6 +8,7 @@ from jdcommodity import *
 from organization import *
 from account import *
 from decimal import Decimal
+from django.db import transaction
 
 class Jdtransaction:
 	pass
@@ -97,7 +98,7 @@ class Jdorder(Task):
 								s.change = -s.change
 								s.save()
 
-				if o.repository.id != repo.id: #发货仓库发生变化
+				if o.repository and o.repository.id != repo.id: #发货仓库发生变化
 					for t in o.task_ptr.transactions.filter(desc__contains=".出货."):
 						t.change_repository(o.repository, repo)
 
@@ -129,12 +130,10 @@ class Jdorder(Task):
 
 				#add Jdcommodity
 				jdcid = int(get_column_value(title, l, "商品ID"))
-				try:
-					jdc = Jdcommodity.objects.get(id=jdcid)
-				except Jdcommodity.DoesNotExist as e:
-					jdc = Jdcommodity(id=jdcid)
-				jdc.name=get_column_value(title, l, "商品名称")
-				jdc.save()
+				with transaction.atomic():
+					jdc, created = Jdcommodity.objects.get_or_create(id=jdcid)
+					jdc.name=get_column_value(title, l, "商品名称")
+					jdc.save()
 
 				#jdcommodity mapping validation
 				booktime = utc_2_datetime(cst_2_utc(get_column_value(title, l, "下单时间"), "%Y-%m-%d %H:%M:%S"))
@@ -173,8 +172,9 @@ class Jdorder(Task):
 			for t in ts:
 				if t.id in bad_orders:
 					continue
-				t.invoices = sorted(t.invoices, key = lambda i: (i.id * 100000 + i.number))
-				repo = Repository.objects.get(name="孤山仓")
-				if re.compile("南京仓").search(t.remark):
-					repo = Repository.objects.get(name="南京仓")
-				__handle_transaction(t, org, repo)
+				with transaction.atomic():
+					t.invoices = sorted(t.invoices, key = lambda i: (i.id * 100000 + i.number))
+					repo = Repository.objects.get(name="孤山仓")
+					if re.compile("南京仓").search(t.remark):
+						repo = Repository.objects.get(name="南京仓")
+					__handle_transaction(t, org, repo)
