@@ -69,6 +69,7 @@
 	{% for t in trans %}
 	<tr>
 		<td><a href="{% url 'transaction_delete' t.id t.task.id %}">删除</a></td>
+		<td><a href="{% url 'transaction_update' t.id %}">编辑</a></td>
 		<td>{{t.time}}</td>
 		<td>{{t.desc}}</td>
 		{% for s in t.ss %}
