@@ -37,6 +37,7 @@ options = (
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
+	["ica", "仓库校准", Turbine.calibration],
 	["t", "测试", test],
 )
 
