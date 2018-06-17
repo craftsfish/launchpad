@@ -95,3 +95,16 @@ class Turbine:
 			title = reader.next()
 			for l in reader:
 				__csv_handler(orgs, l)
+
+	@staticmethod
+	def add_account():
+		info = (
+			("南京为绿电子科技有限公司", "人民币", "资产", None, "应收账款"),
+		)
+		for o, i, c, r, n in info:
+			with transaction.atomic():
+				o = Organization.objects.get(name=o)
+				i = Item.objects.get(name=i)
+				if r:
+					r = Repository.objects.get(name=r)
+				Account.get(o, i, c, n, r)
