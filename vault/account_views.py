@@ -66,6 +66,7 @@ class AccountDetailView(ListView):
 			d = ""
 			if tsk:
 				d += tsk.desc
+				o = None
 				if Jdorder.objects.filter(pk=tsk.id).exists():
 					o = Jdorder.objects.get(pk=tsk.id)
 				if Tmorder.objects.filter(pk=tsk.id).exists():
