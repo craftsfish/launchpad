@@ -19,6 +19,12 @@ class JdorderMixin(FfsMixin):
 	def data_valid(self, form, formset):
 		self.org = form.cleaned_data['organization']
 		j = form.cleaned_data['jdorder']
+		if j > 100000000000:
+			self.error = "非法京东订单"
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+		if self.org.name.find("为绿厨具专营店") == -1:
+			self.error = "店铺不对"
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
 		try:
 			j = Jdorder.objects.get(oid=j)
 		except Jdorder.DoesNotExist as e:

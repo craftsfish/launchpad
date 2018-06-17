@@ -2,6 +2,9 @@
 
 {% block content %}
 	<div class="col col-lg-6 border border-dark">
+		{% if error %}
+		<div class="alert alert-danger" role="alert">{{error}}</div>
+		{% endif %}
 		<form action="" method="post">
 			{% csrf_token %}
 			{% block extend_form %}{{ form.as_p }}{% endblock %}

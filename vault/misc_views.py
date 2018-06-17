@@ -64,6 +64,10 @@ class FfsMixin(ContextMixin):
 	def get_formset_initial(self):
 		return []
 
+	def dispatch(self, request, *args, **kwargs):
+		self.error = None
+		return super(FfsMixin, self).dispatch(request, *args, **kwargs)
+
 	def get_context_data(self, **kwargs):
 		if 'form' not in kwargs:
 			kwargs['form'] = self.form_class()
@@ -71,6 +75,8 @@ class FfsMixin(ContextMixin):
 			kwargs['sub_form'] = self.sub_form_class()
 		if 'formset' not in kwargs:
 			kwargs['formset'] = self.formset_class(initial=self.get_formset_initial(), auto_id=False)
+		if 'error' not in kwargs:
+			kwargs['error'] = self.error
 		return super(FfsMixin, self).get_context_data(**kwargs)
 
 	def get_success_url(self):
