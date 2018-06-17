@@ -88,6 +88,8 @@ class Jdorder(Task):
 					o.task_ptr.delete_transactions_contains_desc('.出货.')
 					__add_commodity_transaction(o.task_ptr, org, repo, info, f)
 				elif not f and info.status != "等待出库": #正常订单状态迁移
+					if not o.task_ptr.transactions.filter(desc__contains='.出货.').exists():
+						__add_commodity_transaction(o.task_ptr, org, repo, info, f)
 					for i in range(len(info.invoices)):
 						s = "{}.出货.".format(i+1)
 						for t in o.task_ptr.transactions.filter(desc__startswith=s):
