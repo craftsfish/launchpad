@@ -18,7 +18,7 @@
 				<td>{{ split.time }}</td>
 				<td align="right">{{ split.change }}</td>
 				<td align="right">{{ split.balance }}</td>
-				<td><a href="{% url 'transaction_detail' split.transaction.id %}">{{ split.transaction.desc }}</a></td>
+				<td><a href="{% url 'transaction_detail' split.transaction.id %}">{{ split.desc }}</a></td>
 				<td>
 				<table cellpadding="4">
 					{% for c in split.counters %}
