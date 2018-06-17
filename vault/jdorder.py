@@ -190,3 +190,33 @@ class Jdorder(Task):
 					if re.compile("南京仓").search(t.remark):
 						repo = Repository.objects.get(name="南京仓")
 					__handle_transaction(t, org, repo)
+
+	@staticmethod
+	def import_fake_order():
+		@transaction.atomic
+		def __csv_handler(oid, sale, fee):
+			org = Organization.objects.get(name="为绿厨具专营店")
+			o = Jdorder.objects.get(oid=oid)
+			if not o.task_ptr.transactions.filter(desc="陆凤刷单.结算").exists():
+				if o.fake != 1:
+					print "订单未标记为刷单: {}".format(oid)
+					return
+				if o.sale != sale:
+					print "订单金额不对: {}".format(oid)
+					return
+				cash = Money.objects.get(name="人民币")
+				a = Account.get(org.root(), cash.item_ptr, "负债", "陆凤刷单", None)
+				b = Account.get(org, cash.item_ptr, "支出", "陆凤刷单", None)
+				Transaction.add(o.task_ptr, "陆凤刷单.结算", timezone.now(), a, sale+fee, b)
+			else:
+				print "订单已经结算: {}".format(oid)
+
+		with open('/tmp/jd.fake.csv', 'rb') as csvfile:
+			orgs = Organization.objects.filter(parent=None).exclude(name="个人")
+			reader = csv.reader((csvfile))
+			title = reader.next()
+			columns = ["订单编号", "金额", "佣金"]
+			for l in reader:
+				order_id, sale, fee = get_column_values(title, l, *columns)
+				print "刷单 | 订单编号: {} | 订单金额: {} | 费用 : {}".format(order_id, sale, fee)
+				__csv_handler(order_id, Decimal(sale), Decimal(fee))
