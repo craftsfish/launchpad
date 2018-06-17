@@ -44,6 +44,7 @@ class TaskDetailView(DetailView):
 		max_splits = 0
 		for t in context['trans']:
 			t.ss = t.splits.all().order_by("id")
+			t.is_money = Money.objects.filter(pk=t.ss[0].account.item.id).exists()
 			if len(t.ss) > max_splits:
 				max_splits = len(t.ss)
 		context['detail_spans'] = max_splits * 2
