@@ -29,6 +29,7 @@
 				jQuery.post("/vault/account/",
 					{
 						organization: jQuery("#id_organization").val(),
+						item: jQuery("#id_item").text(),
 						csrfmiddlewaretoken: '{{ csrf_token  }}'
 					},
 					function(data,status){
@@ -57,6 +58,8 @@
 	<div class="alert alert-danger" role="alert">{{error}}</div>
 	{% endif %}
 	<label>交易编号: </label><label id="id_transaction">{{object.id}}</label>
+	<br/>
+	<label>标的编号: </label><label id="id_item">{{item.id}}</label>
 	<form action="" method="post">
 		{% csrf_token %}
 		<fieldset>

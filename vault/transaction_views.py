@@ -45,6 +45,7 @@ class TransactionUpdateView(TransactionMixin, UpdateView):
 		context['formset'] = SplitFormSet(instance=self.object)
 		for f in context['formset']:
 			f.account_display_name = str(f.instance.account)
+		context['item'] = Account.objects.get(pk=f['account'].value()).item
 		context['account'] = AccountForm()
 		context['error'] = self.error
 		return context
