@@ -59,6 +59,12 @@ class Turbine:
 						c.detail.append([r, level, refill])
 				if need_refill:
 					l.append(c)
+		def __key(c):
+			if c.supplier:
+				return "{}-{}".format(c.supplier.id, c.name)
+			else:
+				return "None-{}".format(c.name)
+		l = sorted(l, key=__key)
 		for c in l:
 			for repo, level, refill in c.detail:
 				print "{}: {} | 库存天数: {} | 补仓数量: {}".format(c, repo, level, refill)
