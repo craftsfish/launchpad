@@ -110,7 +110,7 @@ class Turbine:
 				Account.get(o, i, c, n, r)
 
 	@staticmethod
-	def import_wechat():
+	def import_wechat(): #TODO: remove me
 		@transaction.atomic
 		def __csv_handler(l):
 			q, id, n = l
