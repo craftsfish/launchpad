@@ -32,7 +32,10 @@ class TransactionDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TransactionDetailView, self).get_context_data(**kwargs)
-		context['splits'] = self.object.splits.all()
+		splits = self.object.splits.all()
+		context['splits'] = splits
+		context['organization'] = splits[0].account.organization
+		context['item'] = splits[0].account.item
 		return context
 
 class AccountForm(forms.Form):

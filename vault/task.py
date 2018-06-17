@@ -37,7 +37,7 @@ class Task(models.Model):
 
 class Transaction(models.Model):
 	class Meta:
-		ordering = ['-time', '-id']
+		ordering = ['-id']
 
 	desc = models.CharField(max_length=120)
 	task = models.ForeignKey(Task, null=True, blank=True, related_name="transactions")
