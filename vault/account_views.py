@@ -12,7 +12,7 @@ from django.utils import timezone
 
 class AccountListView(View):
 	def post(self, request, *args, **kwargs):
-		r = Account.objects.all()
+		r = Account.objects.all().order_by("category", "name")
 
 		#filter
 		p = request.POST
