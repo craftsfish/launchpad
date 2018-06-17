@@ -167,12 +167,11 @@ class Turbine:
 	@staticmethod
 	def dump_storage():
 		@transaction.atomic
-		def __handler(result, repository, commodity):
-			for i, status in Itemstatus.choices:
-				v = Account.objects.filter(item=commodity).filter(repository=r).filter(name=status).aggregate(Sum('balance'))['balance__sum']
-				if v: v = int(v)
-				else: v = 0
-				result.append([repository, commodity, status, v])
+		def __handler(result, repository, status, commodity):
+			v = Account.objects.filter(item=commodity).filter(repository=r).filter(name=status).aggregate(Sum('balance'))['balance__sum']
+			if v: v = int(v)
+			else: v = 0
+			result.append([repository, status, commodity, v])
 
 		with transaction.atomic():
 			commodities = Commodity.objects.exclude(supplier=Supplier.objects.get(name="耗材")).order_by("supplier", "name")
@@ -180,8 +179,9 @@ class Turbine:
 
 		result = []
 		for r in repositories:
-			for c in commodities:
-				__handler(result, r, c)
+			for i, s in Itemstatus.choices:
+				for c in commodities:
+					__handler(result, r, s, c)
 
 		with open("/tmp/storage.csv", "wb") as csvfile:
 			writer = csv.writer(csvfile)
