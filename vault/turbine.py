@@ -108,3 +108,52 @@ class Turbine:
 				if r:
 					r = Repository.objects.get(name=r)
 				Account.get(o, i, c, n, r)
+
+	@staticmethod
+	def import_wechat():
+		@transaction.atomic
+		def __csv_handler(l):
+			q, id, n = l
+			q = Decimal(q)
+			if n == "为绿":
+				org = Organization.objects.get(name="为绿厨具专营店")
+				o = Jdorder.objects.get(oid=id)
+				if not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
+					query = o.task_ptr.transactions.filter(desc__contains="出货")
+					if not query.exists():
+						print "订单未导入 : {}".format(id)
+						return
+					t = query[0].time
+					cash = Money.objects.get(name="人民币")
+					a = Account.get(org.root(), cash.item_ptr, "负债", "应付账款", None)
+					b = Account.get(org, cash.item_ptr, "支出", "刷单", None)
+					Transaction.add(o.task_ptr, "微信刷单.结算", t, a, q, b)
+					_org = Organization.objects.get(name="个人")
+					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-为绿", None)
+					b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
+					Transaction.add(None, "微信刷单", t, a, q, b)
+			elif n == "腾复":
+				org = Organization.objects.get(name="泰福高腾复专卖店")
+				o = Tmorder.objects.get(oid=id)
+				if not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
+					query = o.task_ptr.transactions.filter(desc__contains="出货")
+					if not query.exists():
+						print "订单未导入 : {}".format(id)
+						return
+					t = query[0].time
+					cash = Money.objects.get(name="人民币")
+					a = Account.get(org.root(), cash.item_ptr, "负债", "应付账款", None)
+					b = Account.get(org, cash.item_ptr, "支出", "刷单", None)
+					Transaction.add(o.task_ptr, "微信刷单.结算", t, a, q, b)
+					_org = Organization.objects.get(name="个人")
+					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-腾复", None)
+					b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
+					Transaction.add(None, "微信刷单", t, a, q, b)
+			else:
+				print "未知组织"
+
+
+		with open('/tmp/wechat.csv', 'rb') as csvfile:
+			reader = csv.reader((csvfile))
+			for l in reader:
+				__csv_handler(l)
