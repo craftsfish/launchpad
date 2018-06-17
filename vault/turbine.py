@@ -163,3 +163,28 @@ class Turbine:
 			reader = csv.reader((csvfile))
 			for l in reader:
 				__csv_handler(l)
+
+	@staticmethod
+	def dump_storage():
+		@transaction.atomic
+		def __handler(result, repository, commodity):
+			for i, status in Itemstatus.choices:
+				v = Account.objects.filter(item=commodity).filter(repository=r).filter(name=status).aggregate(Sum('balance'))['balance__sum']
+				if v: v = int(v)
+				else: v = 0
+				result.append([repository, commodity, status, v])
+
+		with transaction.atomic():
+			commodities = Commodity.objects.exclude(supplier=Supplier.objects.get(name="耗材")).order_by("supplier", "name")
+			repositories = Repository.objects.all()
+
+		result = []
+		for r in repositories:
+			for c in commodities:
+				__handler(result, r, c)
+
+		with open("/tmp/storage.csv", "wb") as csvfile:
+			writer = csv.writer(csvfile)
+			writer.writerow(["仓库", "品名", "状态", "库存"])
+			for r in result:
+				writer.writerow(r)

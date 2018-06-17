@@ -30,6 +30,7 @@ def test():
 	Turbine.replenish()
 
 options = (
+	["ds", "导出库存", Turbine.dump_storage],
 	["ic", "导入物资", Commodity.Import],
 	["im", "导入货币", Money.Import],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
