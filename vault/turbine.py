@@ -41,11 +41,11 @@ class Turbine:
 			return [inventory/speed, speed * threshold - inventory]
 
 	@staticmethod
-	def replenish():
+	def replenish(supplier):
 		l = []
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 		for c in Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(28))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct():
-			if Commodity.objects.filter(pk=c).filter(inproduction=True).exists():
+			if Commodity.objects.filter(pk=c).filter(supplier=supplier).filter(inproduction=True).exists():
 				c = Commodity.objects.get(pk=c)
 				c.detail = []
 				need_refill = False

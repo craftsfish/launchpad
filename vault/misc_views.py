@@ -211,21 +211,22 @@ PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 class PurchaseFilterForm(forms.Form):
 	keyword = forms.CharField()
 
-class PurchaseView(FfsMixin, TemplateView):
+class PurchaseMixin(FfsMixin):
 	template_name = "{}/purchase.html".format(Organization._meta.app_label)
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
 	sub_form_class = PurchaseFilterForm
+	supplier = None
 
 	def get_formset_initial(self):
 		r = []
-		for c in Turbine.replenish():
+		for c in Turbine.replenish(self.supplier):
 			for repo, level, refill in c.detail:
 				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False})
 		return r
 
 	def get_context_data(self, **kwargs):
-		context = super(PurchaseView, self).get_context_data(**kwargs)
+		context = super(PurchaseMixin, self).get_context_data(**kwargs)
 		for form in context['formset']:
 			cid = form['id'].value()
 			c = Commodity.objects.get(pk=cid)
@@ -257,4 +258,7 @@ class PurchaseView(FfsMixin, TemplateView):
 			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
 			cash = Money.objects.get(name="人民币")
 			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
-		return super(PurchaseView, self).data_valid(form, formset)
+		return super(PurchaseMixin, self).data_valid(form, formset)
+
+class TfgPurchaseView(PurchaseMixin, TemplateView):
+	supplier = Supplier.objects.get(name="泰福高")
