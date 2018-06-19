@@ -263,3 +263,15 @@ class PurchaseMixin(FfsMixin):
 class TfgPurchaseView(PurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return Supplier.objects.get(name="泰福高")
+
+class YstPurchaseView(PurchaseMixin, TemplateView):
+	def get_supplier(self):
+		return Supplier.objects.get(name="原森太")
+
+class KmlPurchaseView(PurchaseMixin, TemplateView):
+	def get_supplier(self):
+		return Supplier.objects.get(name="凯曼隆")
+
+class OtherPurchaseView(PurchaseMixin, TemplateView):
+	def get_supplier(self):
+		return None
