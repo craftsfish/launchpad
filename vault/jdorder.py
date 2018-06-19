@@ -9,6 +9,7 @@ from organization import *
 from account import *
 from decimal import Decimal
 from django.db import transaction
+from order import *
 
 class Jdtransaction:
 	pass
@@ -16,7 +17,7 @@ class Jdtransaction:
 class Jdinvoice:
 	pass
 
-class Jdorder(Task):
+class Jdorder(Order, Task):
 	oid = models.BigIntegerField("订单编号", unique=True)
 	JD_ORDER_STATUS = (
 		(0, "等待出库"),
@@ -28,9 +29,7 @@ class Jdorder(Task):
 		(6, "锁定"),
 	)
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS, null=True, blank=True)
-	fake = models.IntegerField("刷单", default=0)
-	repository = models.ForeignKey(Repository, null=True, blank=True)
-	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+	fake = models.IntegerField("刷单", default=0) #TODO, remove me and using conterfeit instead
 
 	@staticmethod
 	def statuses():

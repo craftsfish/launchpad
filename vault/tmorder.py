@@ -10,6 +10,7 @@ from account import *
 from decimal import Decimal
 from django.utils import timezone
 from django.db import transaction
+from order import *
 
 class Tmtransaction:
 	pass
@@ -17,7 +18,7 @@ class Tmtransaction:
 class Tminvoice:
 	pass
 
-class Tmorder(Task):
+class Tmorder(Order, Task):
 	oid = models.BigIntegerField("订单编号", unique=True)
 	TM_ORDER_STATUS = (
 		(0, "等待买家付款"),
@@ -27,10 +28,7 @@ class Tmorder(Task):
 		(4, "交易关闭"),
 	)
 	status = models.IntegerField("状态", choices=TM_ORDER_STATUS, null=True, blank=True)
-	fake = models.IntegerField("刷单", default=0)
-	time = models.DateTimeField(default=timezone.now)
-	repository = models.ForeignKey(Repository, null=True, blank=True)
-	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+	fake = models.IntegerField("刷单", default=0) #TODO, remove me and using conterfeit instead
 
 	@staticmethod
 	def statuses():
