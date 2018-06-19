@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 from .misc_views import *
+from django.views.generic import RedirectView
+
+class JdorderDetailView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		try:
+			return reverse('task_detail', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
+		except Jdorder.DoesNotExist as e:
+			return reverse('daily_task')
 
 class JdorderForm(forms.Form):
 	jdorder = forms.IntegerField()

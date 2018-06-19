@@ -1,5 +1,14 @@
 {% extends "navi_base.html" %}
 
+{% block extra_script %}
+	<script>
+		function jdorder_lookup(){
+			oid = jQuery("#id_jdorder").val();
+			window.location.href = `/vault/jdorder/${oid}/`;
+		}
+	</script>
+{% endblock %}
+
 {% block header %}日常经营调整{% endblock %}
 
 {% block content %}
@@ -22,6 +31,7 @@
 		<tr><td><a href="{% url 'yst_purchase' %}">原森太进货</a></td><td>原森太进货</td></tr>
 		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td><td>凯曼隆进货</td></tr>
 		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td><td>其他进货</td></tr>
+		<tr><td><a href="javascript:void(0);" onclick ="jdorder_lookup()">查看京东订单</a></td><td><input type="number" id="id_jdorder" /></td></tr>
 	</table>
 </div>
 {% endblock %}
