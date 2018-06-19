@@ -100,7 +100,7 @@ class TaskClearForm(forms.Form):
 
 class TaskClearAccountForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
-	change = forms.IntegerField()
+	change = forms.DecimalField(max_digits=20, decimal_places=2)
 	check = forms.BooleanField(required=False)
 TaskClearAccountFormSet = formset_factory(TaskClearAccountForm, extra=0)
 
