@@ -47,12 +47,16 @@ class Turbine:
 		for c in Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(28))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct():
 			if Commodity.objects.filter(pk=c).filter(supplier=supplier).filter(inproduction=True).exists():
 				c = Commodity.objects.get(pk=c)
+				threshold = 15
+				if c.supplier:
+					threshold = c.supplier.period
+				threshold += 10
 				c.detail = []
 				need_refill = False
 				for r in Repository.objects.order_by("id"):
 					shipping = Turbine.get_shipping_out_information(c, r, 10)
 					speed = shipping[len(shipping)-1]
-					level, refill = Turbine.get_replenish_information(c, r, speed, 30)
+					level, refill = Turbine.get_replenish_information(c, r, speed, threshold)
 					if refill > 0:
 						need_refill = True
 					if refill != 0:

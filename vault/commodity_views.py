@@ -15,7 +15,7 @@ class CommodityDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		span = 10
-		threshold = 15 #TODO, modify with each supplier's particular limitaion
+		threshold = 15
 		context = super(CommodityDetailView, self).get_context_data(**kwargs)
 		context['title'] = []
 		for i, s in Itemstatus.choices:
@@ -23,6 +23,9 @@ class CommodityDetailView(DetailView):
 		context['title'].append("应收")
 
 		context['repos'] = []
+		if self.object.supplier:
+			threshold = self.object.supplier.period
+		threshold += 10
 		for r in Account.objects.exclude(balance=0).filter(item=self.object).order_by('repository').values_list('repository', flat=True).distinct():
 			r = Repository.objects.get(pk=r)
 

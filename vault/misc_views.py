@@ -261,5 +261,5 @@ class PurchaseMixin(FfsMixin):
 		return super(PurchaseMixin, self).data_valid(form, formset)
 
 class TfgPurchaseView(PurchaseMixin, TemplateView):
-	def get_supplier():
+	def get_supplier(self):
 		return Supplier.objects.get(name="泰福高")
