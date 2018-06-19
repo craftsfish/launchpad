@@ -206,6 +206,7 @@ class PurchaseCommodityForm(forms.Form):
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput, required=False)
+	level = forms.IntegerField(required=False, widget=forms.HiddenInput)
 PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 
 class PurchaseFilterForm(forms.Form):
@@ -222,7 +223,7 @@ class PurchaseMixin(FfsMixin):
 		r = []
 		for c in Turbine.replenish(self.supplier):
 			for repo, level, refill in c.detail:
-				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False})
+				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False, 'level': int(level)})
 		return r
 
 	def get_context_data(self, **kwargs):
@@ -233,7 +234,7 @@ class PurchaseMixin(FfsMixin):
 			rid = form['repository'].value()
 			r = Repository.objects.get(pk=rid)
 			form.label = c.name
-			form.note = r.name
+			form.note = "{}库存天数: {}".format(r.name, form['level'].value())
 		return context
 
 	def data_valid(self, form, formset):
