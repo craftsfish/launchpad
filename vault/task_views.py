@@ -34,10 +34,15 @@ class TaskDetailView(DetailView):
 		for k, v in self.object.uncleared_accounts().items():
 			a = Account.objects.get(pk=k)
 			if Commodity.objects.filter(pk=a.item.id).exists():
-				c.append([a, v])
+				c.append([a, v, Commodity.objects.get(pk=a.item.id)])
 			else:
 				m.append([a, v])
 		context['uncleared'] = m
+		def __key(i):
+			return i[2].supplier.name + i[2].name
+		c.sort(key=__key)
+		for i in c:
+			i.pop()
 		context['unsettled'] = c
 
 		context['trans'] = self.object.transactions.all().order_by("time", "id")
