@@ -217,11 +217,10 @@ class PurchaseMixin(FfsMixin):
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
 	sub_form_class = PurchaseFilterForm
-	supplier = None
 
 	def get_formset_initial(self):
 		r = []
-		for c in Turbine.replenish(self.supplier):
+		for c in Turbine.replenish(self.get_supplier()):
 			for repo, level, refill in c.detail:
 				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False, 'level': int(level)})
 		return r
@@ -262,4 +261,5 @@ class PurchaseMixin(FfsMixin):
 		return super(PurchaseMixin, self).data_valid(form, formset)
 
 class TfgPurchaseView(PurchaseMixin, TemplateView):
-	supplier = Supplier.objects.get(name="泰福高")
+	def get_supplier():
+		return Supplier.objects.get(name="泰福高")
