@@ -64,6 +64,7 @@ urlpatterns = [
 	url(r'^tmorder/compensate/$', TmorderCompensateView.as_view(), name='tmorder_compensate'),
 	url(r'^tmorder/return/$', TmorderReturnView.as_view(), name='tmorder_return'),
 	url(r'^tmorder/wechat/fake/$', TmorderWechatFakeView.as_view(), name='tmorder_wechat_fake'),
+	url(r'^tmorder/(?P<pk>[\d]+)/$', TmorderDetailView.as_view(), name='tmorder_detail'),
 
 	#jdorder
 	url(r'^jdorder/change/$', JdorderChangeView.as_view(), name='jdorder_change'),

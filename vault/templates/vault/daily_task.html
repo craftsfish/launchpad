@@ -6,6 +6,10 @@
 			oid = jQuery("#id_jdorder").val();
 			window.location.href = `/vault/jdorder/${oid}/`;
 		}
+		function tmorder_lookup(){
+			oid = jQuery("#id_tmorder").val();
+			window.location.href = `/vault/tmorder/${oid}/`;
+		}
 	</script>
 {% endblock %}
 
@@ -32,6 +36,7 @@
 		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td><td>凯曼隆进货</td></tr>
 		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td><td>其他进货</td></tr>
 		<tr><td><a href="javascript:void(0);" onclick ="jdorder_lookup()">查看京东订单</a></td><td><input type="number" id="id_jdorder" /></td></tr>
+		<tr><td><a href="javascript:void(0);" onclick ="tmorder_lookup()">查看天猫订单</a></td><td><input type="number" id="id_tmorder" /></td></tr>
 	</table>
 </div>
 {% endblock %}
