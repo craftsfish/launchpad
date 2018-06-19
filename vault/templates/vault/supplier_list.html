@@ -3,9 +3,19 @@
 {% block header %}供应商列表{% endblock %}
 
 {% block content %}
-    <ul>
+<div class="col-sm-auto">
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>编号</th>
+			<th>名称</th>
+			<th>供货周期</th>
+		</tr>
         {% for object in object_list %}
-            <li>{{ object }}</li>
+		<tr>
+			<td>{{object.id}}</td>
+			<td>{{object.name}}</td>
+			<td>{{object.period}}</td>
+		</tr>
         {% endfor %}
-    </ul>
+	</table>
 {% endblock %}
