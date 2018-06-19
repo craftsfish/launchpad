@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block header %}办事大厅{% endblock %}
+
+{% block content %}
+<div class="col">
+	<table cellpadding="4" border="1">
+		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
+	</table>
+</div>
+{% endblock %}

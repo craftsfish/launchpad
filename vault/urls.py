@@ -12,6 +12,7 @@ from misc_views import *
 from jdorder_views import *
 from tmorder_views import *
 from daily_views import *
+from chore_views import *
 
 urlpatterns = [
 	#supplier
@@ -83,4 +84,7 @@ urlpatterns = [
 	url(r'^misc/purchase/yst/$', YstPurchaseView.as_view(), name='yst_purchase'),
 	url(r'^misc/purchase/kml/$', KmlPurchaseView.as_view(), name='kml_purchase'),
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
+
+	#chore
+	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),
 ]
