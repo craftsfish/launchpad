@@ -1,0 +1,5 @@
+[Datetime]
+from django.utils import timezone
+from datetime import datetime
+datetime.now(timezone.get_current_timezone()).replace(2018, 6, 20, 0, 0, 0, 0)
+datetime.now(timezone.utc).replace(2018, 6, 20, 0, 0, 0, 0)
