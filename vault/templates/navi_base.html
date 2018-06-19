@@ -1,50 +1,14 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "base.html" %}
 
-    <!-- CSS -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
-    <link rel="stylesheet" href="{% static "tempusdominus-bootstrap-4.min.css" %}">
-    <link rel="stylesheet" href="{% static "font-awesome.css" %}">
-
-    <title>{% block title %}vault{% endblock %}</title>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <div class="row sticky-top bg-white">
-        <div class="col-sm-auto">
-          <ul class="nav">
-            <li class="nav-item"><a class="nav-link active" href="{% url 'organization_list' %}">账本</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'commodity_list' %}">物资</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'transaction_list' %}">交易</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'task_list' %}">任务</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'supplier_list' %}">供应商</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'jdcommodity_list' %}">京东商品</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'tmcommodity_list' %}">天猫商品</a></li>
-            <li class="nav-item"><a class="nav-link active" href="{% url 'daily_task' %}">经营调整</a></li>
-          </ul>
-          <h2>{% block header %}header{% endblock %}</h2>
-        </div><!-- col-sm-auto -->
-      </div><!-- row -->
-
-      <div class="row">
-        {% block content %}{% endblock %}
-      </div><!-- row -->
-    </div><!-- container-fluid -->
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{% static "jquery-3.3.1.min.js" %}"></script>
-    <script src="{% static "popper.min.js" %}"></script>
-    <script src="{% static "bootstrap.min.js" %}"></script>
-    <script src="{% static "moment.min.js" %}"></script>
-    <script src="{% static "tempusdominus-bootstrap-4.min.js" %}"></script>
-
-    <!-- Extra JavaScript -->
-    {% block extra_script %}{% endblock %}
-  </body>
-</html>
+{% block navibar %}
+	<ul class="nav">
+		<li class="nav-item"><a class="nav-link active" href="{% url 'organization_list' %}">账本</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'commodity_list' %}">物资</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'transaction_list' %}">交易</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'task_list' %}">任务</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'supplier_list' %}">供应商</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'jdcommodity_list' %}">京东商品</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'tmcommodity_list' %}">天猫商品</a></li>
+		<li class="nav-item"><a class="nav-link active" href="{% url 'daily_task' %}">经营调整</a></li>
+	</ul>
+{% endblock %}
