@@ -39,7 +39,10 @@ class TaskDetailView(DetailView):
 				m.append([a, v])
 		context['uncleared'] = m
 		def __key(i):
-			return i[2].supplier.name + i[2].name
+			if i[2].supplier:
+				return i[2].supplier.name + i[2].name
+			else:
+				return "None" + i[2].name
 		c.sort(key=__key)
 		for i in c:
 			i.pop()
