@@ -1,24 +1,26 @@
-{% extends "base.html" %}
+{% extends "base_left_middle_right.html" %}
 
-{% block content %}
-	<div class="col col-lg-6 border border-dark">
-		{% if error %}
-		<div class="alert alert-danger" role="alert">{{error}}</div>
-		{% endif %}
-		<form action="" method="post">
-			{% csrf_token %}
-			{% block extend_form %}{{ form.as_p }}{% endblock %}
-			<table cellpadding="4" border="1">
-				{{ formset.management_form }}
-				<tbody id="item_table">
-				</tbody>
-			</table>
-			<br></br>
-			<input type="submit" value="提交"/>
-		</form>
-	</div>
-	<div class="col col-lg-6 border border-dark">
-		<label>+交易标的</label>
-		{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
-	</div>
+{% block content_left %}
+	{% if error %}
+	<div class="alert alert-danger" role="alert">{{error}}</div>
+	{% endif %}
+	<form action="" method="post">
+		{% csrf_token %}
+		{% block extend_form %}{{ form.as_p }}{% endblock %}
+		<table cellpadding="4" border="1">
+			{{ formset.management_form }}
+			<tbody id="item_table">
+			</tbody>
+		</table>
+		<br></br>
+		<input type="submit" value="提交"/>
+	</form>
+{% endblock %}
+{% block content_middle %}
+	<p>交易标的筛选器</p>
+	{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
+{% endblock %}
+{% block content_right %}
+	<p>使用说明:</p>
+	<p>{% block usage %}{% endblock %}<p>
 {% endblock %}
