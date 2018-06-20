@@ -32,6 +32,7 @@ urlpatterns = [
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
 	url(r'^account/(?P<pk>[\d]+)/$', AccountDetailView.as_view(), name='account_detail'),
+	url(r'^account/fake/wechat/$', AccountDetailViewRead.as_view(), name='account_fake_wechat', kwargs={'pk': 87}),
 
 	#transaction
 	url(r'^transaction/$', TransactionListView.as_view(), name='transaction_list'),

@@ -80,3 +80,7 @@ class AccountDetailView(ListView):
 			s.counters = s.transaction.splits.exclude(id=s.id)
 
 		return context
+
+class AccountDetailViewRead(AccountDetailView):
+	def get_template_names(self):
+		return ["%s/account_detail_read.html" % (Account._meta.app_label)]
