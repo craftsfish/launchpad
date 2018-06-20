@@ -53,6 +53,7 @@ urlpatterns = [
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
+	url(r'^task/(?P<pk>[\d]+)/read/$', TaskDetailViewRead.as_view(), name='task_detail_read'),
 	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
 	url(r'^task/(?P<pk>[\d]+)/clear/$', TaskClearView.as_view(), name='task_clear'),
 	url(r'^task/(?P<pk>[\d]+)/settle/$', TaskSettleView.as_view(), name='task_settle'),
@@ -72,7 +73,7 @@ urlpatterns = [
 	url(r'^jdorder/return/$', JdorderReturnView.as_view(), name='jdorder_return'),
 	url(r'^jdorder/wechat/fake/$', JdorderWechatFakeView.as_view(), name='jdorder_wechat_fake'),
 	url(r'^jdorder/(?P<pk>[\d]+)/$', JdorderDetailView.as_view(), name='jdorder_detail'),
-	url(r'^jdorder/(?P<pk>[\d]+)/r/$', JdorderDetailViewRead.as_view(), name='jdorder_detail_r'),
+	url(r'^jdorder/(?P<pk>[\d]+)/read/$', JdorderDetailViewRead.as_view(), name='jdorder_detail_read'),
 
 	#daily
 	url(r'^daily/trans_shipment_in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),

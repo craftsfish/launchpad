@@ -64,6 +64,9 @@ class TaskDetailView(DetailView):
 
 		return context
 
+class TaskDetailViewRead(TaskDetailView):
+	template_name = "{}/task_detail_read.html".format(Organization._meta.app_label)
+
 class TaskDeleteView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		return reverse('task_list')

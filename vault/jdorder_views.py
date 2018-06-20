@@ -12,7 +12,7 @@ class JdorderDetailView(RedirectView):
 class JdorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		try:
-			return reverse('task_detail', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
+			return reverse('task_detail_read', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
 		except Jdorder.DoesNotExist as e:
 			return reverse('chore_list')
 

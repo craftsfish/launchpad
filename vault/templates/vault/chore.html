@@ -6,8 +6,8 @@
 	<script>
 		function jdorder_lookup(){
 			oid = jQuery("#id_jdorder").val();
-			if oid != "":
-				window.location.href = `/vault/jdorder/${oid}/r/`;
+			if (oid != "")
+				window.location.href = `/vault/jdorder/${oid}/read/`;
 		}
 	</script>
 {% endblock %}
