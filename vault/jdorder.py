@@ -111,7 +111,7 @@ class Jdorder(Order, Task):
 					_org = Organization.objects.get(name="个人")
 					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-为绿", None)
 					b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
-					Transaction.add(None, "微信刷单", info.booktime, a, info.sale, b)
+					Transaction.add(None, "微信刷单.京东.{}".format(info.id), info.booktime, a, info.sale, b)
 
 				o.status = Jdorder.str2status(info.status)
 				o.fake = f

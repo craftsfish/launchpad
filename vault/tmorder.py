@@ -77,7 +77,7 @@ class Tmorder(Order, Task):
 					_org = Organization.objects.get(name="个人")
 					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-腾复", None)
 					b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
-					Transaction.add(None, "微信刷单", time, a, sale, b)
+					Transaction.add(None, "微信刷单.天猫.{}".format(order_id), time, a, sale, b)
 
 				o.status = Tmorder.str2status(status)
 				o.fake = fake
