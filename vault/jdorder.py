@@ -105,7 +105,12 @@ class Jdorder(Order, Task):
 
 				if o.task_ptr.transactions.filter(desc__startswith="微信刷单").exists() and not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
 					cash = Money.objects.get(name="人民币")
-					a = Account.get(org.root(), cash.item_ptr, "负债", "应付账款", None)
+					try:
+						a = Account.get(org.root(), cash.item_ptr, "负债", "债务融资", None)
+					except Account.DoesNotExist as e:
+						a = Account.get(org.root(), cash.item_ptr, "负债", "应付账款", None)
+						a.name = "债务融资"
+						a.save()
 					try:
 						b = Account.get(org, cash.item_ptr, "支出", "微信刷单", None)
 					except Account.DoesNotExist as e:
@@ -114,8 +119,18 @@ class Jdorder(Order, Task):
 						b.save()
 					Transaction.add(o.task_ptr, "微信刷单.结算", info.booktime, a, info.sale, b)
 					_org = Organization.objects.get(name="个人")
-					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-为绿", None)
-					b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
+					try:
+						a = Account.get(_org, cash.item_ptr, "资产", "应收账款.{}".format(org.root().name), None)
+					except Account.DoesNotExist as e:
+						a = Account.get(_org, cash.item_ptr, "资产", "应收账款-为绿", None)
+						a.name = "应收账款.{}".format(org.root().name)
+						a.save()
+					try:
+						b = Account.get(_org, cash.item_ptr, "资产", "运营资金.微信", None)
+					except Account.DoesNotExist as e:
+						b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
+						b.name = "运营资金.微信"
+						b.save()
 					Transaction.add(None, "微信刷单.京东.{}".format(info.id), info.booktime, a, info.sale, b)
 
 				o.status = Jdorder.str2status(info.status)
