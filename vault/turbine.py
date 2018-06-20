@@ -117,7 +117,7 @@ class Turbine:
 				i = Item.objects.get(name=i)
 				if r:
 					r = Repository.objects.get(name=r)
-				Account.get(o, i, c, n, r)
+				Account.get_or_create(o, i, c, n, r)
 
 	@staticmethod
 	def dump_storage():

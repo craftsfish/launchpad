@@ -57,7 +57,7 @@ class Transaction(models.Model):
 	def change_repository(self, origin, current):
 		for s in self.splits.filter(account__repository=origin):
 			a = s.account
-			s.account = Account.get(a.organization, a.item, a.get_category_display(), a.name, current)
+			s.account = Account.get_or_create(a.organization, a.item, a.get_category_display(), a.name, current)
 			s.save()
 
 	@staticmethod
@@ -69,7 +69,7 @@ class Transaction(models.Model):
 		i = 0
 		while i < len(args):
 			category, name, repository = args[i]
-			a = Account.get(organization, item, category, name, repository)
+			a = Account.get_or_create(organization, item, category, name, repository)
 			sign = a.sign()
 			change = 0
 			if i + 1 == len(args): #last item without change

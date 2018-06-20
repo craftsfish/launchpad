@@ -71,12 +71,12 @@ class Tmorder(Order, Task):
 
 				if o.task_ptr.transactions.filter(desc__startswith="微信刷单").exists() and not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
 					cash = Money.objects.get(name="人民币")
-					a = Account.get(org.root(), cash.item_ptr, "负债", "应付账款", None)
-					b = Account.get(org, cash.item_ptr, "支出", "刷单", None)
+					a = Account.get_or_create(org.root(), cash.item_ptr, "负债", "应付账款", None)
+					b = Account.get_or_create(org, cash.item_ptr, "支出", "刷单", None)
 					Transaction.add(o.task_ptr, "微信刷单.结算", time, a, sale, b)
 					_org = Organization.objects.get(name="个人")
-					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-腾复", None)
-					b = Account.get(_org, cash.item_ptr, "资产", "刷单资金", None)
+					a = Account.get_or_create(_org, cash.item_ptr, "资产", "应收账款-腾复", None)
+					b = Account.get_or_create(_org, cash.item_ptr, "资产", "刷单资金", None)
 					Transaction.add(None, "微信刷单.天猫.{}".format(order_id), time, a, sale, b)
 
 				o.status = Tmorder.str2status(status)
@@ -98,7 +98,7 @@ class Tmorder(Order, Task):
 					a = s.account
 					if s.change < 0:
 						if a.repository.id != repository.id:
-							s.account = Account.get(a.organization, a.item, a.get_category_display(), a.name, repository)
+							s.account = Account.get_or_create(a.organization, a.item, a.get_category_display(), a.name, repository)
 							s.save()
 
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
@@ -147,7 +147,7 @@ class Tmorder(Order, Task):
 							original_repository = s.account.repository
 							if s.account.category == Account.str2category("负债") and v.status in ["卖家已发货，等待买家确认", "交易成功"]:
 								a = s.account
-								s.account = Account.get(a.organization, a.item, "资产", "完好", a.repository)
+								s.account = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
 								s.change = -s.change
 								s.save()
 

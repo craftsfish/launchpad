@@ -42,7 +42,7 @@ class Account(models.Model):
 		return -1
 
 	@staticmethod
-	def get(o, i, c, n, r=None):
+	def get_or_create(o, i, c, n, r=None):
 		c = Account.str2category(c)
 		obj, created = Account.objects.get_or_create(organization=o, item=i, category=c, repository=r, name=n)
 		if created: print "[账户]增加<{}>账户: {}".format(obj.item, obj)

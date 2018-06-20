@@ -185,7 +185,7 @@ class TaskSettleView(FfsMixin, TemplateView):
 			if a.repository.id != r.id: continue
 			if s == 0 and a.category != 0: continue
 			if s == 1 and a.category != 1: continue
-			b = Account.get(o, a.item, "资产", Itemstatus.v2s(n), r)
+			b = Account.get_or_create(o, a.item, "资产", Itemstatus.v2s(n), r)
 			if s:
 				Transaction.add(self.task, "出库", timezone.now(), a, -q, b)
 			else:
