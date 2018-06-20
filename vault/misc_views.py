@@ -314,5 +314,30 @@ class AppendPurchaseView(FfsMixin, TemplateView):
 			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
 		return super(AppendPurchaseView, self).data_valid(form, formset)
 
-class DailyCalibrationView(TemplateView):
+class StorageCalibarionForm(forms.Form):
+	check = forms.BooleanField()
+
+class CommodityStorageCalibarionForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	in_book = forms.IntegerField(disabled=True, required=False)
+	q1 = forms.IntegerField()
+	q2 = forms.IntegerField()
+	q3 = forms.IntegerField()
+	q4 = forms.IntegerField()
+CommodityStorageCalibarionFormSet = formset_factory(CommodityStorageCalibarionForm, extra=0)
+
+class DailyCalibrationView(FfsMixin, TemplateView):
 	template_name = "{}/daily_calibration.html".format(Organization._meta.app_label)
+	form_class = StorageCalibarionForm
+	formset_class = CommodityStorageCalibarionFormSet
+	sub_form_class = EmptyForm
+
+	def get_formset_initial(self):
+		d = []
+		for c in Commodity.objects.order_by("calibration", "supplier", "name")[:20]:
+			r = Repository.objects.get(name="孤山仓")
+			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
+			if v: v = int(v)
+			else: v = 0
+			d.append({'id': c.id, 'in_book': v})
+		return d

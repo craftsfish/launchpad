@@ -4,5 +4,28 @@
 
 {% block content %}
 <div class="col-sm-auto">
-	建设中。。。
+	{% if error %}
+	<div class="alert alert-danger" role="alert">{{error}}</div>
+	{% endif %}
+	<form action="" method="post">
+		{% csrf_token %}
+		<table cellpadding="4" border="1">
+			{{ formset.management_form }}
+			{% for form in formset %}
+			<tr>
+				<td>{{form.in_book}}</td>
+				<td>{{form.q1}}</td>
+				<td>{{form.q2}}</td>
+				<td>{{form.q3}}</td>
+				<td>{{form.q4}}</td>
+				{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</table>
+		<br></br>
+		{{ form.as_p }}
+		<input type="submit" value="提交"/>
+	</form>
 {% endblock %}
