@@ -92,6 +92,7 @@ urlpatterns = [
 	url(r'^misc/purchase/kml/$', KmlPurchaseView.as_view(), name='kml_purchase'),
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
 	url(r'^misc/purchase/append/$', AppendPurchaseView.as_view(), name='append_purchase'),
+	url(r'^misc/daily/calibration/$', DailyCalibrationView.as_view(), name='daily_calibration'),
 
 	#chore
 	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),

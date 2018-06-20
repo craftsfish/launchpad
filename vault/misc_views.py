@@ -313,3 +313,6 @@ class AppendPurchaseView(FfsMixin, TemplateView):
 			cash = Money.objects.get(name="人民币")
 			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
 		return super(AppendPurchaseView, self).data_valid(form, formset)
+
+class DailyCalibrationView(TemplateView):
+	template_name = "{}/daily_calibration.html".format(Organization._meta.app_label)

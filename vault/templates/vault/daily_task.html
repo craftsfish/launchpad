@@ -15,6 +15,7 @@
 {% block content %}
 <div class="col">
 	<table cellpadding="4" border="1">
+		<tr><td><a href="{% url 'daily_calibration' %}">股山仓每日盘点</a></td><td>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口</td></tr>
 		<tr><td><a href="javascript:void(0);" onclick ="task_lookup()">查看任务</a></td><td><input type="number" id="id_task" /></td></tr>
 		<tr><td><a href="{% url 'trans_shipment_in' %}">串入</a></td><td>从其他经销商处进货</td></tr>
 		<tr><td><a href="{% url 'retail' %}">其他销售</a></td><td>非平台(天猫/京东)订单销售</td></tr>
