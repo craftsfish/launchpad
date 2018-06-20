@@ -44,10 +44,6 @@ class Account(models.Model):
 	@staticmethod
 	def get(o, i, c, n, r=None):
 		c = Account.str2category(c)
-		try:
-			return Account.objects.filter(organization=o).filter(item=i).filter(category=c).filter(repository=r).get(name=n)
-		except Account.DoesNotExist as e:
-			a = Account(organization=o, item=i, category=c, repository=r, name=n)
-			a.save()
-			print "[账户]增加新账户: {}.{}.{}".format(a.organization, a.item, a)
-			return a
+		obj, created = Account.objects.get_or_create(organization=o, item=i, category=c, repository=r, name=n)
+		if created: print "[账户]增加<{}>账户: {}".format(obj.item, obj)
+		return obj
