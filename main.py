@@ -41,7 +41,6 @@ options = (
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
 	["ica", "仓库校准", Turbine.calibration],
 	["aa", "增加账户", Turbine.add_account],
-	["iw", "导入微信刷单信息", Turbine.import_wechat],
 	["t", "测试", test],
 )
 
