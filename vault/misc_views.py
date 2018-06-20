@@ -275,3 +275,41 @@ class KmlPurchaseView(PurchaseMixin, TemplateView):
 class OtherPurchaseView(PurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return None
+
+class AppendPurchaseForm(forms.Form):
+	task = forms.IntegerField()
+	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	repository = forms.ModelChoiceField(queryset=Repository.objects)
+
+class AppendPurchaseView(FfsMixin, TemplateView):
+	template_name = "{}/purchase.html".format(Organization._meta.app_label)
+	form_class = AppendPurchaseForm
+	formset_class = PurchaseCommodityFormSet
+	sub_form_class = PurchaseFilterForm
+
+	def data_valid(self, form, formset):
+		try:
+			self.task = Task.objects.get(pk=form.cleaned_data['task'])
+		except Task.DoesNotExist as e:
+			self.error = "任务不存在!"
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+		t = timezone.now()
+		o = form.cleaned_data['organization']
+		r = form.cleaned_data['repository']
+		merged = {}
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			q = d['quantity']
+			if not q: continue
+			c = d['id']
+			if merged.get(c) != None:
+				merged[c] += q
+			else:
+				merged[c] = q
+		for cid, q in merged.items():
+			c = Commodity.objects.get(pk=cid)
+			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
+			cash = Money.objects.get(name="人民币")
+			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
+		return super(AppendPurchaseView, self).data_valid(form, formset)

@@ -91,6 +91,7 @@ urlpatterns = [
 	url(r'^misc/purchase/yst/$', YstPurchaseView.as_view(), name='yst_purchase'),
 	url(r'^misc/purchase/kml/$', KmlPurchaseView.as_view(), name='kml_purchase'),
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
+	url(r'^misc/purchase/append/$', AppendPurchaseView.as_view(), name='append_purchase'),
 
 	#chore
 	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),
