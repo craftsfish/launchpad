@@ -3,6 +3,8 @@ from django.db import models
 from supplier import *
 import csv
 from ground import *
+from django.utils import timezone
+from datetime import datetime
 
 class Item(models.Model):
 	class Meta:
@@ -21,6 +23,7 @@ class Commodity(Item):
 	value = models.DecimalField("价值", default=0, max_digits=8, decimal_places=2)
 	onsale = models.BooleanField("在售", default=True) #在售/下架
 	inproduction = models.BooleanField("在产", default=True) #在产/停产
+	calibration = models.DateTimeField(default=datetime.now(timezone.get_current_timezone()).replace(2010, 1, 1, 0, 0, 0, 0))
 
 	@staticmethod
 	def Import():
