@@ -38,3 +38,7 @@
 	<p>京东订单编号: {{form.jdorder}}</p>
 	<p>组织: {{form.organization}}</p>
 {% endblock %}
+
+{% block usage %}
+	{% include 'vault/include/wechat_fake_instruction.html' %}
+{% endblock %}

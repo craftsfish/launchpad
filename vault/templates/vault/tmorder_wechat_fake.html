@@ -38,3 +38,7 @@
 	<p>天猫订单编号: {{form.tmorder}}</p>
 	<p>组织: {{form.organization}}</p>
 {% endblock %}
+
+{% block usage %}
+	{% include 'vault/include/wechat_fake_instruction.html' %}
+{% endblock %}
