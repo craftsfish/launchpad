@@ -47,3 +47,8 @@ class Account(models.Model):
 		obj, created = Account.objects.get_or_create(organization=o, item=i, category=c, repository=r, name=n)
 		if created: print "[账户]增加<{}>账户: {}".format(obj.item, obj)
 		return obj
+
+	@staticmethod
+	def get(o, i, c, n, r=None):
+		c = Account.str2category(c)
+		return Account.objects.get(organization=o, item=i, category=c, repository=r, name=n)
