@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block header %}办事大厅{% endblock %}
+{% block header %}运营工作室{% endblock %}
 
 {% block extra_script %}
 	<script>
@@ -21,7 +21,15 @@
 <div class="col">
 	<table cellpadding="4" border="1">
 		<tr><td><a href="javascript:void(0);" onclick ="jdorder_lookup()">查看京东订单</a></td><td><input type="number" id="id_jdorder" /></td></tr>
+		<tr><td><a href="{% url 'jdorder_change' %}">京东换货</a></td><td>京东订单换货</td></tr>
+		<tr><td><a href="{% url 'jdorder_compensate' %}">京东补发</a></td><td>京东订单补发</td></tr>
+		<tr><td><a href="{% url 'jdorder_return' %}">京东退货</a></td><td>京东订单退货</td></tr>
+		<tr><td><a href="{% url 'jdorder_wechat_fake' %}">京东微信刷单</a></td><td>京东微信刷单</td></tr>
 		<tr><td><a href="javascript:void(0);" onclick ="tmorder_lookup()">查看天猫订单</a></td><td><input type="number" id="id_tmorder" /></td></tr>
+		<tr><td><a href="{% url 'tmorder_change' %}">天猫换货</a></td><td>天猫订单换货</td></tr>
+		<tr><td><a href="{% url 'tmorder_compensate' %}">天猫补发</a></td><td>天猫订单补发</td></tr>
+		<tr><td><a href="{% url 'tmorder_return' %}">天猫退货</a></td><td>天猫订单退货</td></tr>
+		<tr><td><a href="{% url 'tmorder_wechat_fake' %}">天猫微信刷单</a></td><td>天猫微信刷单</td></tr>
 		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
 	</table>
 </div>
