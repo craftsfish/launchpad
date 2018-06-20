@@ -80,7 +80,7 @@ class FfsMixin(ContextMixin):
 		return super(FfsMixin, self).get_context_data(**kwargs)
 
 	def get_success_url(self):
-		return self.task.get_absolute_url()
+		return reverse('task_detail_read', kwargs={'pk': self.task.id})
 
 	def data_valid(self, form, formset):
 		return HttpResponseRedirect(self.get_success_url())
