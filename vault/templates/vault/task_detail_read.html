@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block header %}任务详情{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<table cellpadding="4" border="1">
+		<tr><td>任务编号</td><td>{{object.id}}</td></tr>
+		<tr><td>任务描述</td><td>{{object.desc}}</td></tr>
+		{% if order %}
+			<tr><td>订单编号</td><td>{{order.oid}}</td></tr>
+			<tr><td>订单状态</td><td>{{order.status}}</td></tr>
+			<tr><td>刷单状态</td><td>{{order.fake}}</td></tr>
+			<tr><td>发货仓库</td><td>{{order.repository}}</td></tr>
+			<tr><td>销售额</td><td>{{order.sale}}</td></tr>
+		{% endif %}
+	</table>
+	<br/>
+
+	{% if uncleared or unsettled %}
+	<table cellpadding="4" border="1">
+		<tr>
+			<th></th>
+			<th>组织</th>
+			<th>标的</th>
+			<th>账户</th>
+			<th>余额</th>
+		</tr>
+		{% for a, b in uncleared %}
+		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{uncleared | length}}>资金结算</td>
+			{% endif %}
+			<td>{{a.organization}}</td>
+			<td>{{a.item}}</td>
+			<td>{{a}}</td>
+			<td>{{b}}</td>
+		</tr>
+		{% endfor %}
+		{% for a, b in unsettled %}
+		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{unsettled | length}}>货物交割</td>
+			{% endif %}
+			<td>{{a.organization}}</td>
+			<td>{{a.item}}</td>
+			<td>{{a}}</td>
+			<td>{{b}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+	{% endif %}
+	<br/>
+
+	<table cellpadding="4" border="1">
+	<tr>
+		<th>时间</th>
+		<th>概述</th>
+		<th>标的</th>
+		<th colspan="{{detail_spans}}">详情</th>
+	</tr>
+	{% for t in trans %}
+	<tr>
+		<td>{{t.time | date:"Y-m-d H:i:s" }}</td>
+		<td>{{t.desc}}</td>
+		{% for s in t.ss %}
+		{% if not forloop.counter0 %}
+			<td>{{s.account.item}}</td>
+		{% endif %}
+		<td align="left">{{s.account}}</td>
+		{% if t.is_money %}
+			<td align="right">{{s.change | stringformat:"+.2f"}}</td>
+		{% else %}
+			<td align="right">{{s.change | stringformat:"+.0f"}}</td>
+		{% endif %}
+		{% endfor %}
+	</tr>
+	{% endfor %}
+	</table>
+</div>
+{% endblock %}

@@ -9,6 +9,13 @@ class TmorderDetailView(RedirectView):
 		except Tmorder.DoesNotExist as e:
 			return reverse('daily_task')
 
+class TmorderDetailViewRead(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		try:
+			return reverse('task_detail_read', kwargs={'pk': Tmorder.objects.get(oid=kwargs['pk']).id})
+		except Tmorder.DoesNotExist as e:
+			return reverse('chore_list')
+
 class TmorderForm(forms.Form):
 	tmorder = forms.IntegerField()
 	organization = forms.ModelChoiceField(queryset=Organization.objects)

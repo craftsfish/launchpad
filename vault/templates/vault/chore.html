@@ -9,6 +9,11 @@
 			if (oid != "")
 				window.location.href = `/vault/jdorder/${oid}/read/`;
 		}
+		function tmorder_lookup(){
+			oid = jQuery("#id_tmorder").val();
+			if (oid != "")
+				window.location.href = `/vault/tmorder/${oid}/read/`;
+		}
 	</script>
 {% endblock %}
 
@@ -16,6 +21,7 @@
 <div class="col">
 	<table cellpadding="4" border="1">
 		<tr><td><a href="javascript:void(0);" onclick ="jdorder_lookup()">查看京东订单</a></td><td><input type="number" id="id_jdorder" /></td></tr>
+		<tr><td><a href="javascript:void(0);" onclick ="tmorder_lookup()">查看天猫订单</a></td><td><input type="number" id="id_tmorder" /></td></tr>
 		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
 	</table>
 </div>
