@@ -9,6 +9,13 @@ class JdorderDetailView(RedirectView):
 		except Jdorder.DoesNotExist as e:
 			return reverse('daily_task')
 
+class JdorderDetailViewRead(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		try:
+			return reverse('task_detail', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
+		except Jdorder.DoesNotExist as e:
+			return reverse('chore_list')
+
 class JdorderForm(forms.Form):
 	jdorder = forms.IntegerField()
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
