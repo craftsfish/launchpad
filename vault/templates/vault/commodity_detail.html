@@ -1,4 +1,4 @@
-{% extends "navi_base.html" %}
+{% extends "base.html" %}
 
 {% block header %}{{object}}{% endblock %}
 
@@ -24,14 +24,20 @@
 
 	<table border="1" cellpadding="4">
 		<tr>
+			<td>编号</td>
+			<td>分类</td>
+			<td>仓库</td>
+			<td>名称</td>
 			<td>组织</td>
-			<td>账户</td>
 			<td>余额</td>
 		</tr>
 		{% for a in accounts %}
 		<tr>
+			<td align="left"><a href="{% url 'account_detail' a.id %}">{{a.id}}</a></td>
+			<td>{{a.category_name}}</td>
+			<td>{{a.repository}}</td>
+			<td>{{a.name}}</td>
 			<td>{{a.organization}}</td>
-			<td align="left"><a href="{% url 'account_detail' a.id %}">{{a}}</a></td>
 			<td>{{a.balance}}</td>
 		</tr>
 		{% endfor %}
