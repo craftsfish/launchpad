@@ -143,3 +143,13 @@ class Turbine:
 			writer.writerow(["仓库", "品名", "状态", "库存"])
 			for r in result:
 				writer.writerow(r)
+
+	@staticmethod
+	def update_calibration_window():
+		with transaction.atomic():
+			c = Commodity.objects.get(name="虚拟物品")
+			t = datetime.now(timezone.get_current_timezone()) + timedelta(1)
+			t = t.replace(hour=9, minute=0, second=0, microsecond=0)
+			c.calibration = t
+			c.save()
+			print "设置盘库的有效截至日期为: {}".format(t)

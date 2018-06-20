@@ -41,6 +41,7 @@ options = (
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
 	["ica", "仓库校准", Turbine.calibration],
 	["aa", "增加账户", Turbine.add_account],
+	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
 	["t", "测试", test],
 )
 
