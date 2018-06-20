@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div class="col-auto border-left">
+	<div class="col border-left">
 		{% block content_left %}{% endblock %}
-	</div><!-- col-auto -->
-	<div class="col-auto border-left border-right">
+	</div><!-- col -->
+	<div class="col border-left border-right">
 		{% block content_middle %}{% endblock %}
-	</div><!-- col-auto -->
-	<div class="col-auto border-right">
+	</div><!-- col -->
+	<div class="col border-right">
 		{% block content_right %}{% endblock %}
-	</div><!-- col-auto -->
+	</div><!-- col -->
 {% endblock %}

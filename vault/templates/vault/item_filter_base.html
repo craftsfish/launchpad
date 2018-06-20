@@ -21,6 +21,8 @@
 	{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
 {% endblock %}
 {% block content_right %}
+	<div class="alert alert-danger" role="alert">
 	<p>使用说明:</p>
-	<p>{% block usage %}{% endblock %}<p>
+	{% block usage %}{% endblock %}
+	</div>
 {% endblock %}
