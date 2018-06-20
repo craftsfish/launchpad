@@ -106,7 +106,12 @@ class Jdorder(Order, Task):
 				if o.task_ptr.transactions.filter(desc__startswith="微信刷单").exists() and not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
 					cash = Money.objects.get(name="人民币")
 					a = Account.get(org.root(), cash.item_ptr, "负债", "应付账款", None)
-					b = Account.get(org, cash.item_ptr, "支出", "刷单", None)
+					try:
+						b = Account.get(org, cash.item_ptr, "支出", "微信刷单", None)
+					except Account.DoesNotExist as e:
+						b = Account.get(org, cash.item_ptr, "支出", "刷单", None)
+						b.name = "微信刷单"
+						b.save()
 					Transaction.add(o.task_ptr, "微信刷单.结算", info.booktime, a, info.sale, b)
 					_org = Organization.objects.get(name="个人")
 					a = Account.get(_org, cash.item_ptr, "资产", "应收账款-为绿", None)
