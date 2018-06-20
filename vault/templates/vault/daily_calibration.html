@@ -23,7 +23,7 @@
 			{% for form in formset %}
 			<tr>
 				<td>{{form.label}}</td>
-				<td>{{form.in_book}}</td>
+				<td>{{form.label_in_book}}</td>
 				<td>0</td>
 				<td>{{form.q1}}</td>
 				<td>{{form.q2}}</td>
@@ -35,8 +35,9 @@
 			</tr>
 			{% endfor %}
 		</table>
-		<br></br>
-		{{ form.as_p }}
+		<br/>
+		{{ form.check }} <label>本次盘点确认已经结束，所有数据都已经录入</label>
+		<br/>
 		<input type="submit" value="提交"/>
 	</form>
 {% endblock %}

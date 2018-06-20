@@ -319,11 +319,11 @@ class StorageCalibarionForm(forms.Form):
 
 class CommodityStorageCalibarionForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
-	in_book = forms.IntegerField(disabled=True, required=False)
-	q1 = forms.IntegerField()
-	q2 = forms.IntegerField()
-	q3 = forms.IntegerField()
-	q4 = forms.IntegerField()
+	in_book = forms.IntegerField(widget=forms.HiddenInput)
+	q1 = forms.IntegerField(min_value=0, max_value=9999, required=False)
+	q2 = forms.IntegerField(min_value=0, max_value=9999, required=False)
+	q3 = forms.IntegerField(min_value=0, max_value=9999, required=False)
+	q4 = forms.IntegerField(min_value=0, max_value=9999, required=False)
 CommodityStorageCalibarionFormSet = formset_factory(CommodityStorageCalibarionForm, extra=0)
 
 class DailyCalibrationView(FfsMixin, TemplateView):
@@ -348,6 +348,7 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			cid = form['id'].value()
 			c = Commodity.objects.get(pk=cid)
 			form.label = c.name
+			form.label_in_book = form['in_book'].value()
 		return context
 
 	def dispatch(self, request, *args, **kwargs):
@@ -357,3 +358,10 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			self.error = "已过盘点有效时间，请明天盘点"
 			return self.render_to_response(self.get_context_data())
 		return super(FfsMixin, self).dispatch(request, *args, **kwargs)
+
+	def data_valid(self, form, formset):
+		c = Commodity.objects.get(name="虚拟物品")
+		if datetime.now(timezone.utc) > c.calibration:
+			self.error = "已过盘点有效时间，请明天盘点"
+			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+		return super(DailyCalibrationView, self).data_valid(form, formset)
