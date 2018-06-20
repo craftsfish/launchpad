@@ -341,3 +341,19 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			else: v = 0
 			d.append({'id': c.id, 'in_book': v})
 		return d
+
+	def get_context_data(self, **kwargs):
+		context = super(DailyCalibrationView, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			c = Commodity.objects.get(pk=cid)
+			form.label = c.name
+		return context
+
+	def dispatch(self, request, *args, **kwargs):
+		self.error = None
+		c = Commodity.objects.get(name="虚拟物品")
+		if datetime.now(timezone.utc) > c.calibration:
+			self.error = "已过盘点有效时间，请明天盘点"
+			return self.render_to_response(self.get_context_data())
+		return super(FfsMixin, self).dispatch(request, *args, **kwargs)

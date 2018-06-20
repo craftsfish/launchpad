@@ -11,9 +11,20 @@
 		{% csrf_token %}
 		<table cellpadding="4" border="1">
 			{{ formset.management_form }}
+		<tr>
+			<th>品名</th>
+			<th>在帐</th>
+			<th>已盘点</th>
+			<th>盘点1</th>
+			<th>盘点2</th>
+			<th>盘点3</th>
+			<th>盘点4</th>
+		</tr>
 			{% for form in formset %}
 			<tr>
+				<td>{{form.label}}</td>
 				<td>{{form.in_book}}</td>
+				<td>0</td>
 				<td>{{form.q1}}</td>
 				<td>{{form.q2}}</td>
 				<td>{{form.q3}}</td>
