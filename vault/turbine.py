@@ -75,23 +75,25 @@ class Turbine:
 		return l
 
 	@staticmethod
-	def calibration_commodity(commodity, repository, status, quantity, organizations):
+	def calibration_commodity(task, commodity, repository, status, quantity, organizations):
 		v = Account.objects.filter(item=commodity).filter(repository=repository).filter(name=status).aggregate(Sum('balance'))['balance__sum']
 		if v: v = int(v)
 		else: v = 0
 		diff = quantity - v
 		if diff != 0:
-			t = Task(desc="盘库")
-			t.save()
+			if task == None:
+				task = Task(desc="盘库")
+				task.save()
 			n = len(organizations)
 			for o in organizations:
 				__diff = diff / n
 				diff -= __diff
 				n -= 1
 				if __diff > 0: #surplus
-					Transaction.add_raw(t, "盘盈", timezone.now(), o, commodity.item_ptr, ("资产", status, repository), __diff, ("收入", "盘盈", repository))
+					Transaction.add_raw(task, "盘盈", timezone.now(), o, commodity.item_ptr, ("资产", status, repository), __diff, ("收入", "盘盈", repository))
 				elif __diff < 0:
-					Transaction.add_raw(t, "盘亏", timezone.now(), o, commodity.item_ptr, ("资产", status, repository), __diff, ("支出", "盘亏", repository))
+					Transaction.add_raw(task, "盘亏", timezone.now(), o, commodity.item_ptr, ("资产", status, repository), __diff, ("支出", "盘亏", repository))
+		return task
 
 	@staticmethod
 	def calibration_storage():
@@ -101,7 +103,7 @@ class Turbine:
 			s = get_column_value(title, l, "状态")
 			c = Commodity.objects.get(name=get_column_value(title, l, "品名"))
 			q = int(get_column_value(title, l, "库存"))
-			Turbine.calibration_commodity(c, r, s, q, orgs)
+			Turbine.calibration_commodity(None, c, r, s, q, orgs)
 
 		with open('/tmp/storage.csv', 'rb') as csvfile:
 			orgs = Organization.objects.filter(parent=None).exclude(name="个人")

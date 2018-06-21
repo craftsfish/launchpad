@@ -364,4 +364,19 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 		if datetime.now(timezone.utc) > c.calibration:
 			self.error = "已过盘点有效时间，请明天盘点"
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+		self.task = None
+		for f in formset:
+			d = f.cleaned_data
+			c = Commodity.objects.get(pk=d['id'])
+			t = 0
+			for i in range(4):
+				t += get_int_with_default(d.get("q{}".format(i+1)), 0)
+			self.task = Turbine.calibration_commodity(self.task, c, Repository.objects.get(name="孤山仓"), "完好", t,
+				Organization.objects.filter(parent=None).exclude(name="个人"))
 		return super(DailyCalibrationView, self).data_valid(form, formset)
+
+	def get_success_url(self):
+		if self.task:
+			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		else:
+			return reverse('chore_list')

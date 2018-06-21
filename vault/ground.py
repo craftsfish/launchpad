@@ -21,6 +21,11 @@ def get_column_values(table, row, *columns):
 		result.append(get_column_value(table, row, column))
 	return result
 
+def get_int_with_default(data, default):
+	if data != None:
+		return int(data)
+	return default
+
 def cst_2_utc(str_time, str_format):
 	# UTC = LOCAL + LOCAL.TZ
 	# UTC = LOCALA + LOCALA.TZ = LOCALA + LOCALB.TZ - (LOCALB.TZ - LOCALA.TZ)
