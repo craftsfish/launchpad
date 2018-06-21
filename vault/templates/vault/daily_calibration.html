@@ -2,6 +2,28 @@
 
 {% block header %}每日库存盘点{% endblock %}
 
+{% block extra_script %}
+	<script>
+		function calculate(self){
+			p = jQuery(self).parent().parent()
+			dst = jQuery("td:nth-child(3)", p)[0]
+			total = 0
+			jQuery("td input[type=\"number\"]", p).val( function(i, origVal) {
+				if (origVal != "")  {
+					total += parseInt(origVal)
+				}
+				return origVal
+			});
+			dst.innerHTML = total
+		}
+		jQuery(document).ready(function(){
+			jQuery("input[type=\"number\"]").on("change paste keyup", function(){
+				calculate(this);
+			});
+		});
+	</script>
+{% endblock %}
+
 {% block content %}
 <div class="col-sm-auto">
 	{% if error %}
