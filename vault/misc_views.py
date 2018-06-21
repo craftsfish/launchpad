@@ -334,7 +334,7 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 
 	def get_formset_initial(self):
 		d = []
-		for c in Commodity.objects.order_by("calibration", "supplier", "name")[:20]:
+		for c in Commodity.objects.order_by("calibration", "supplier", "name")[:15]:
 			r = Repository.objects.get(name="孤山仓")
 			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
 			if v: v = int(v)
