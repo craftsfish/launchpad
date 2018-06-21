@@ -30,17 +30,17 @@ def test():
 	Turbine.replenish()
 
 options = (
+	["aa", "增加账户", Turbine.add_account],
+	["cs", "仓库校准", Turbine.calibration_storage],
 	["ds", "导出库存", Turbine.dump_storage],
 	["ic", "导入物资", Commodity.Import],
-	["im", "导入货币", Money.Import],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijdo", "导入京东订单", Jdorder.Import],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
+	["im", "导入货币", Money.Import],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
-	["ica", "仓库校准", Turbine.calibration],
-	["aa", "增加账户", Turbine.add_account],
 	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
 	["t", "测试", test],
 )

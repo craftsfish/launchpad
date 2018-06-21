@@ -75,31 +75,35 @@ class Turbine:
 		return l
 
 	@staticmethod
-	def calibration():
+	def calibration_commodity(commodity, repository, status, quantity, organizations):
+		v = Account.objects.filter(item=commodity).filter(repository=repository).filter(name=status).aggregate(Sum('balance'))['balance__sum']
+		if v: v = int(v)
+		else: v = 0
+		diff = quantity - v
+		if diff != 0:
+			t = Task(desc="盘库")
+			t.save()
+			n = len(organizations)
+			for o in organizations:
+				__diff = diff / n
+				diff -= __diff
+				n -= 1
+				if __diff > 0: #surplus
+					Transaction.add_raw(t, "盘盈", timezone.now(), o, commodity.item_ptr, ("资产", status, repository), __diff, ("收入", "盘盈", repository))
+				elif __diff < 0:
+					Transaction.add_raw(t, "盘亏", timezone.now(), o, commodity.item_ptr, ("资产", status, repository), __diff, ("支出", "盘亏", repository))
+
+	@staticmethod
+	def calibration_storage():
 		@transaction.atomic
 		def __csv_handler(orgs, l):
 			r = Repository.objects.get(name=get_column_value(title, l, "仓库"))
 			s = get_column_value(title, l, "状态")
 			c = Commodity.objects.get(name=get_column_value(title, l, "品名"))
 			q = int(get_column_value(title, l, "库存"))
-			v = Account.objects.filter(item=c).filter(repository=r).filter(name=s).aggregate(Sum('balance'))['balance__sum']
-			if v: v = int(v)
-			else: v = 0
-			diff = q - v
-			if diff != 0:
-				t = Task(desc="盘库")
-				t.save()
-				n = len(orgs)
-				for o in orgs:
-					__diff = diff / n
-					diff -= __diff
-					n -= 1
-					if __diff > 0: #surplus
-						Transaction.add_raw(t, "盘盈", timezone.now(), o, c.item_ptr, ("资产", s, r), __diff, ("收入", "盘盈", r))
-					elif __diff < 0:
-						Transaction.add_raw(t, "盘亏", timezone.now(), o, c.item_ptr, ("资产", s, r), __diff, ("支出", "盘亏", r))
+			Turbine.calibration_commodity(c, r, s, q, orgs)
 
-		with open('/tmp/calibration.csv', 'rb') as csvfile:
+		with open('/tmp/storage.csv', 'rb') as csvfile:
 			orgs = Organization.objects.filter(parent=None).exclude(name="个人")
 			reader = csv.reader((csvfile))
 			title = reader.next()
@@ -140,7 +144,7 @@ class Turbine:
 
 		with open("/tmp/storage.csv", "wb") as csvfile:
 			writer = csv.writer(csvfile)
-			writer.writerow(["仓库", "品名", "状态", "库存"])
+			writer.writerow(["仓库", "状态", "品名", "库存"])
 			for r in result:
 				writer.writerow(r)
 
