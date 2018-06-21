@@ -3,3 +3,47 @@ from django.utils import timezone
 from datetime import datetime
 datetime.now(timezone.get_current_timezone()).replace(2018, 6, 20, 0, 0, 0, 0)
 datetime.now(timezone.utc).replace(2018, 6, 20, 0, 0, 0, 0)
+
+class Wallet(object):
+	pass
+
+class Money(object):
+	pass
+
+class Repository(object):
+	pass
+
+class Commodity(object):
+	pass
+
+class Account(object):
+	def __init__(self):
+		self.name = "account"
+	pass
+
+class MoneyAccount(Account):
+	def __init__(self):
+		super(MoneyAccount, self).__init__()
+		self.balance = 1
+		self.item = Money()
+		self.container = Wallet()
+
+class CommodityAccount(Account):
+	def __init__(self):
+		super(CommodityAccount, self).__init__()
+		self.balance = 2.0
+		self.item = Commodity()
+		self.container = Repository()
+
+class Split():
+	def __init__(self, account, change):
+		self.account = account
+		self.change = change
+	pass
+accounts = [MoneyAccount(), MoneyAccount(), CommodityAccount(), CommodityAccount()]
+splits = (Split(MoneyAccount(), 3.0))
+for a in accounts:
+	print a.name
+	print type(a.balance)(3.55)
+	print a.item
+	print a.container
