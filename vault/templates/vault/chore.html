@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_left_middle_right.html" %}
 
 {% block header %}运营工作室{% endblock %}
 
@@ -17,19 +17,20 @@
 	</script>
 {% endblock %}
 
-{% block content %}
-<div class="col">
+{% block content_left %}
 	<table cellpadding="4" border="1">
-		<tr><td><a href="javascript:void(0);" onclick ="jdorder_lookup()">查看京东订单</a></td><td><input type="number" id="id_jdorder" /></td></tr>
-		<tr><td><a href="{% url 'jdorder_change' %}">京东换货</a></td><td>京东订单换货</td></tr>
-		<tr><td><a href="{% url 'jdorder_compensate' %}">京东补发</a></td><td>京东订单补发</td></tr>
-		<tr><td><a href="{% url 'jdorder_return' %}">京东退货</a></td><td>京东订单退货</td></tr>
-		<tr><td><a href="{% url 'jdorder_wechat_fake' %}">京东微信刷单</a></td><td>京东微信刷单</td></tr>
-		<tr><td><a href="javascript:void(0);" onclick ="tmorder_lookup()">查看天猫订单</a></td><td><input type="number" id="id_tmorder" /></td></tr>
-		<tr><td><a href="{% url 'tmorder_change' %}">天猫换货</a></td><td>天猫订单换货</td></tr>
-		<tr><td><a href="{% url 'tmorder_compensate' %}">天猫补发</a></td><td>天猫订单补发</td></tr>
-		<tr><td><a href="{% url 'tmorder_return' %}">天猫退货</a></td><td>天猫订单退货</td></tr>
-		<tr><td><a href="{% url 'tmorder_wechat_fake' %}">天猫微信刷单</a></td><td>天猫微信刷单</td></tr>
+		<tr><td align='center'>京东订单调整</td></tr>
+		<tr><td><input type="number" id="id_jdorder" /><a href="javascript:void(0);" onclick ="jdorder_lookup()">检索</a></td></tr>
+		<tr><td><a href="{% url 'jdorder_change' %}">京东换货</a></td></tr>
+		<tr><td><a href="{% url 'jdorder_compensate' %}">京东补发</a></td></tr>
+		<tr><td><a href="{% url 'jdorder_return' %}">京东退货</a></td></tr>
+		<tr><td><a href="{% url 'jdorder_wechat_fake' %}">京东微信刷单</a></td></tr>
+	</table>
+{% endblock %}
+
+{% block content_middle %}
+	<table cellpadding="4" border="1">
+		<tr><td align='center' colspan=2>其他</td></tr>
 		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
 		<tr><td><a href="{% url 'wallet_detail' 'eea351ea-24ab-47f4-b5e7-45a184518591' %}">运营资金.微信</a></td><td>账户流水</td></tr>
 		<tr><td><a href="{% url 'wallet_detail' '050a90e9-3543-4b98-9a76-538ffd7d6e87' %}">运营资金.支付宝</a></td><td>账户流水</td></tr>
@@ -37,5 +38,15 @@
 		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
 		<tr><td><a href="{% url 'operation_account_clear' %}">运营资金账户收支</a></td><td>微信刷单拉人佣金, 订单返现</td></tr>
 	</table>
-</div>
+{% endblock %}
+
+{% block content_right %}
+	<table cellpadding="4" border="1">
+		<tr><td align='center'>天猫订单调整</td></tr>
+		<tr><td><input type="number" id="id_tmorder" /><a href="javascript:void(0);" onclick ="tmorder_lookup()">检索</a></td></tr>
+		<tr><td><a href="{% url 'tmorder_change' %}">天猫换货</a></td>></tr>
+		<tr><td><a href="{% url 'tmorder_compensate' %}">天猫补发</a></td></tr>
+		<tr><td><a href="{% url 'tmorder_return' %}">天猫退货</a></td>></tr>
+		<tr><td><a href="{% url 'tmorder_wechat_fake' %}">天猫微信刷单</a></td>></tr>
+	</table>
 {% endblock %}
