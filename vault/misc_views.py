@@ -383,16 +383,28 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			return reverse('chore_list')
 
 class OperationAccountClearForm(forms.Form):
+	task = forms.IntegerField(required=False, label='(可选)关联到指定任务')
 	organization = forms.ModelChoiceField(queryset=Organization.objects.exclude(name="个人"), label='收支主体')
 	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='账户')
 	change = forms.DecimalField(initial=0, max_digits=20, decimal_places=2, label="变动金额")
 	desc = forms.CharField(label='描述')
+
+	def clean(self):
+		cleaned_data = super(OperationAccountClearForm, self).clean()
+		task_id = cleaned_data.get("task")
+		if task_id:
+			if not Task.objects.filter(id=task_id).exists():
+				raise forms.ValidationError("非法任务编号")
 
 class OperationAccountClearView(FormView):
 	template_name = "{}/operation_account_clear.html".format(Organization._meta.app_label)
 	form_class = OperationAccountClearForm
 
 	def form_valid(self, form):
+		self.task = None
+		t = form.cleaned_data['task']
+		if t:
+			self.task = Task.objects.get(id=t)
 		o = form.cleaned_data['organization']
 		w = form.cleaned_data['wallet']
 		c = form.cleaned_data['change']
@@ -403,9 +415,12 @@ class OperationAccountClearView(FormView):
 			b = Account.get(o, cash.item_ptr, "支出", "其他支出", None)
 		else:
 			b = Account.get(o, cash.item_ptr, "收入", "其他收入", None)
-		Transaction.add(None, d, timezone.now(), a, c, b)
+		Transaction.add(self.task, d, timezone.now(), a, c, b)
 		self.wallet = w
 		return super(OperationAccountClearView, self).form_valid(form)
 
 	def get_success_url(self):
-		return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
+		if self.task:
+			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		else:
+			return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
