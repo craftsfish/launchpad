@@ -4,7 +4,6 @@ from datetime import timedelta
 from django.db.models import Sum
 from django import forms
 from .models import *
-from time import *
 
 class EmptyForm(forms.Form):
 	pass
@@ -81,6 +80,8 @@ class Turbine:
 		if v: v = int(v)
 		else: v = 0
 		diff = quantity - v
+		commodity.calibration = timezone.now()
+		commodity.save()
 		if diff != 0:
 			if task == None:
 				task = Task(desc="盘库")
