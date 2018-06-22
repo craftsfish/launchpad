@@ -380,3 +380,13 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			return reverse('task_detail_read', kwargs={'pk': self.task.id})
 		else:
 			return reverse('chore_list')
+
+class OperationAccountClearForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects.exclude(name="个人"), label='收支主体')
+	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='账户')
+	change = forms.DecimalField(initial=0, max_digits=20, decimal_places=2, label="变动金额")
+	desc = forms.CharField(label='描述')
+
+class OperationAccountClearView(FormView):
+	template_name = "{}/operation_account_clear.html".format(Organization._meta.app_label)
+	form_class = OperationAccountClearForm
