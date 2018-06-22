@@ -177,3 +177,10 @@ class Turbine:
 					Account.get_or_create(o, cash.item_ptr, "负债", w, None)
 				else:
 					Account.get_or_create(o, cash.item_ptr, "资产", w, None)
+
+	@staticmethod
+	def wechat_fake_clear(organization, task, time, bill):
+		cash = Money.objects.get(name="人民币")
+		a = Account.get(organization, cash.item_ptr, "支出", "微信刷单", None)
+		b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
+		Transaction.add(task, "微信刷单.结算", time, a, bill, b)
