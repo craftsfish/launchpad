@@ -1,0 +1,20 @@
+{% extends "navi_base.html" %}
+
+{% block header %}钱包列表{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>编号</th>
+			<th>名称</th>
+			<th>余额</th>
+		</tr>
+        {% for object in object_list %}
+		<tr>
+			<td>{{object.id}}</td>
+			<td>{{object.name}}</td>
+		</tr>
+        {% endfor %}
+	</table>
+{% endblock %}

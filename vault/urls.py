@@ -13,6 +13,7 @@ from jdorder_views import *
 from tmorder_views import *
 from daily_views import *
 from chore_views import *
+from wallet_views import *
 
 urlpatterns = [
 	#supplier
@@ -34,6 +35,9 @@ urlpatterns = [
 	url(r'^account/3357345155(?P<pk>[\d]+)43255323248799/$', AccountDetailView.as_view(), name='account_detail'),
 	url(r'^account/3357345155(?P<pk>[\d]+)43255323248799/adlkgjdshg33535yufasoi/$', AccountDetailViewRead.as_view(), name='account_detail_read'),
 	url(r'^account/fake/wechat/$', AccountDetailViewRead.as_view(), name='account_fake_wechat', kwargs={'pk': 87}),
+
+	#wallet
+	url(r'^wallet/$', WalletListView.as_view(), name='wallet_list'),
 
 	#transaction
 	url(r'^transaction/$', TransactionListView.as_view(), name='transaction_list'),
