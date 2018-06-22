@@ -185,3 +185,9 @@ class Turbine:
 		a = Account.get(organization, cash.item_ptr, "支出", "微信刷单", None)
 		b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
 		Transaction.add(task, "微信刷单.结算", time, a, bill, b)
+
+	@staticmethod
+	@transaction.atomic
+	def build_platform():
+		for p in ["淘宝", "天猫", "京东"]:
+			Platform.objects.get_or_create(name=p)

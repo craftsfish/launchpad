@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+from django.db import models
+
+class Platform(models.Model): #taobao, tmall, jd and etc.
+	name = models.CharField(max_length=30, unique=True)
+
+	def __str__(self):
+		return self.name
+
 from repository import *
 from organization import *
 from supplier import *

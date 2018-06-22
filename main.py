@@ -31,6 +31,7 @@ def test():
 
 options = (
 	["aa", "增加账户", Turbine.add_account],
+	["bp", "构造平台", Turbine.build_platform],
 	["bw", "构造钱包", Turbine.build_wallet],
 	["cs", "仓库校准", Turbine.calibration_storage],
 	["ds", "导出库存", Turbine.dump_storage],
