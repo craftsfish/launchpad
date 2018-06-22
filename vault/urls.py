@@ -38,6 +38,7 @@ urlpatterns = [
 
 	#wallet
 	url(r'^wallet/$', WalletListView.as_view(), name='wallet_list'),
+	url(r'^wallet/(?P<pk>[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})/$', WalletDetailView.as_view(), name='wallet_detail'),
 
 	#transaction
 	url(r'^transaction/$', TransactionListView.as_view(), name='transaction_list'),

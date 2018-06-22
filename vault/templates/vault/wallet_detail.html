@@ -1,0 +1,54 @@
+{% extends "navi_base.html" %}
+
+{% block header %}共享资金池: {{object}}{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<h3>余额:        ({{object.balance}})</h3>
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>时间</th>
+			<th>增/减</th>
+			<th>余额</th>
+			<th>交易</th>
+			<th>关联信息</th>
+		</tr>
+		{% for split in object_list %}
+			<tr>
+				<td>{{ split.time }}</td>
+				<td align="right">{{ split.change }}</td>
+				<td align="right">{{ split.balance }}</td>
+				<td><a href="{% url 'transaction_detail' split.transaction.id %}">{{ split.desc }}</a></td>
+				<td>
+				<table cellpadding="4">
+					{% for c in split.counters %}
+						<tr>
+							<td align="left"><a href="{% url 'account_detail' c.account.id %}">{{c.account}}</a></td>
+							<td align="right">{{c.change}}</td>
+						</tr>
+					{% endfor %}
+				</table>
+				</td>
+			<tr>
+		{% endfor %}
+	</table>
+	
+	{% if is_paginated %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page={{ page_obj.previous_page_number }}">前一页</a>
+				{% endif %}
+	
+				<span class="current">
+					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+				</span>
+	
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">后一页</a>
+				{% endif %}
+			</span>
+		</div>
+	{%endif %}
+</div>
+{% endblock %}

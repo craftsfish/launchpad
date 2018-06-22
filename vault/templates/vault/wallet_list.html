@@ -12,7 +12,7 @@
 		</tr>
         {% for object in object_list %}
 		<tr>
-			<td>{{object.id}}</td>
+			<td><a href="{% url 'wallet_detail' object.id %}">{{ object.id }}</a></td>
 			<td>{{object.name}}</td>
 		</tr>
         {% endfor %}
