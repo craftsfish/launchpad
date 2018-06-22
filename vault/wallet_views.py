@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 from .models import *
 from django.views.generic import ListView
+from django.db.models import Sum
 
 class WalletListView(ListView):
 	model = Wallet
+
+	def get_context_data(self, **kwargs):
+		context = super(WalletListView, self).get_context_data(**kwargs)
+		for w in context['object_list']:
+			w.category = "资产"
+			if w.name.find("信用卡") == 0:
+				w.category = "负债"
+			w.balance = get_decimal_with_default(Account.objects.filter(name=w.name).aggregate(Sum('balance'))['balance__sum'], 0)
+		return context
 
 class WalletDetailView(ListView):
 	model = Split

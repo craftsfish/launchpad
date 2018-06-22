@@ -2,6 +2,7 @@
 import time
 from datetime import datetime
 from django.utils import timezone
+from decimal import *
 
 #csv
 def csv_gb18030_2_utf8(f):
@@ -24,6 +25,11 @@ def get_column_values(table, row, *columns):
 def get_int_with_default(data, default):
 	if data != None:
 		return int(data)
+	return default
+
+def get_decimal_with_default(data, default):
+	if data != None:
+		return Decimal(data)
 	return default
 
 def cst_2_utc(str_time, str_format):
