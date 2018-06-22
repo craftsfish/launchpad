@@ -3,34 +3,7 @@
 {% block header %}天猫订单换货{% endblock %}
 
 {% block extra_script %}
-	<script>
-		function on_item_retrieved(data,status){
-			items = eval("("+data+")");
-			total = jQuery("input[name=\"form-TOTAL_FORMS\"]");
-			var p = parseInt(total.attr("value"))
-			total.attr({"value": p+items.length});
-			var repo = jQuery("#id_repository").val();
-			var str_repo = jQuery("#id_repository option[value="+repo+"]").text();
-			var stat = jQuery("#id_status").val();
-			var str_stat = jQuery("#id_status option[value="+stat+"]").text();
-			for (i in items)
-			{
-				n = items[i].str
-				j = p + parseInt(i)
-				r = jQuery("<tr></tr>");
-				q = 1
-				jQuery("#item_table").prepend(r);
-				r.append(`<td><input  type="checkbox" name=form-${j}-check checked/></td>
-							<td>${str_repo}</td>
-							<td>${str_stat}</td>
-							<td>${n}</td>
-							<td><input type="number" name=form-${j}-quantity value=${q} /></td>
-							<input type="hidden" name=form-${j}-id value=${items[i].id} />
-							<input type="hidden" name=form-${j}-repository value=${repo} />
-							<input type="hidden" name=form-${j}-status value=${stat} />`);
-			}
-		}
-	</script>
+	{% include 'vault/script/commodity_ship.html' %}
 	{% include 'vault/script/item_filter.html' %}
 {% endblock %}
 

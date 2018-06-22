@@ -23,6 +23,19 @@ class CommodityShippingBaseForm(forms.Form):
 
 class CommodityShippingForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	ship = forms.ChoiceField(choices=Shipstatus.choices)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+	keyword = forms.CharField()
+
+class CommodityReceiveForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	ship = forms.ChoiceField(choices=Shipstatus.choices[:1])
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+	keyword = forms.CharField()
+
+class CommoditySendForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	ship = forms.ChoiceField(choices=Shipstatus.choices[1:])
 	status = forms.ChoiceField(choices=Itemstatus.choices)
 	keyword = forms.CharField()
 
@@ -42,6 +55,7 @@ CommodityDetailBaseFormSet = formset_factory(CommodityDetailBaseForm, extra=0)
 
 class CommodityDetailForm(CommodityDetailBaseForm):
 	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+	ship = forms.ChoiceField(choices=Shipstatus.choices, widget=forms.HiddenInput)
 CommodityDetailFormSet = formset_factory(CommodityDetailForm, extra=0)
 
 class CommodityChangeRepositoryDetailForm(forms.Form):
@@ -145,10 +159,11 @@ class ChangeView(FfsMixin, TemplateView):
 			if not q: continue
 			r = d['repository']
 			s = Itemstatus.v2s(d['status'])
-			if q > 0:
+			ship = Shipstatus.v2s(d['ship'])
+			if ship == "收货":
 				Transaction.add_raw(self.task, "换货.收货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
 			else:
-				Transaction.add_raw(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), q, ("支出", "出货", r))
+				Transaction.add_raw(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
 		return super(ChangeView, self).data_valid(form, formset)
 
 class ChangeRepositoryView(FfsMixin, TemplateView):

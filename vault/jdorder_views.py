@@ -29,7 +29,7 @@ class JdorderMixin(FfsMixin):
 	formset_class = CommodityDetailFormSet
 	sub_form_class = CommodityShippingForm
 
-	def formset_item_process(self, time, item, quantity, repository, status):
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		pass
 
 	def data_valid(self, form, formset):
@@ -56,39 +56,42 @@ class JdorderMixin(FfsMixin):
 			if not q: continue
 			r = d['repository']
 			s = Itemstatus.v2s(d['status'])
-			self.formset_item_process(t, c.item_ptr, q, r, s)
+			ship = Shipstatus.v2s(d['ship'])
+			self.formset_item_process(t, c.item_ptr, q, r, s, ship)
 		return super(JdorderMixin, self).data_valid(form, formset)
 
 class JdorderChangeView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_change.html".format(Organization._meta.app_label)
 
-	def formset_item_process(self, time, item, quantity, repository, status):
-		if quantity > 0:
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
+		if ship == "收货":
 			Transaction.add_raw(self.task, "换货.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		else:
-			Transaction.add_raw(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
-		return super(JdorderChangeView, self).formset_item_process(time, item, quantity, repository, status)
+			Transaction.add_raw(self.task, "换货.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
+		return super(JdorderChangeView, self).formset_item_process(time, item, quantity, repository, status, ship)
 
 class JdorderCompensateView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_compensate.html".format(Organization._meta.app_label)
+	sub_form_class = CommoditySendForm
 
-	def formset_item_process(self, time, item, quantity, repository, status):
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		Transaction.add_raw(self.task, "补发", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
-		return super(JdorderCompensateView, self).formset_item_process(time, item, quantity, repository, status)
+		return super(JdorderCompensateView, self).formset_item_process(time, item, quantity, repository, status, ship)
 
 class JdorderReturnView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_return.html".format(Organization._meta.app_label)
+	sub_form_class = CommodityReceiveForm
 
-	def formset_item_process(self, time, item, quantity, repository, status):
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
-		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status)
+		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status, ship)
 
 class JdorderWechatFakeView(JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_wechat_fake.html".format(Organization._meta.app_label)
 
-	def formset_item_process(self, time, item, quantity, repository, status):
-		if quantity > 0:
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
+		if ship == "收货":
 			Transaction.add_raw(self.task, "微信刷单.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		else:
-			Transaction.add_raw(self.task, "微信刷单.发货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
-		return super(JdorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status)
+			Transaction.add_raw(self.task, "微信刷单.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
+		return super(JdorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status, ship)
