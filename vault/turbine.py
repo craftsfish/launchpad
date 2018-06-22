@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.db.models import Sum
 from django import forms
 from .models import *
+from wallet import *
 
 class EmptyForm(forms.Form):
 	pass
@@ -171,7 +172,6 @@ class Turbine:
 		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "借记卡-民生7158", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573"]
 		cash = Money.objects.get(name="人民币")
 		for w in wallets:
-			sleep(3)
 			Wallet.objects.get_or_create(name=w)
 			for o in Organization.objects.filter(parent=None):
 				if w.find("信用卡") == 0:
