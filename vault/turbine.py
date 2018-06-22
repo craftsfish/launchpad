@@ -164,11 +164,14 @@ class Turbine:
 	@staticmethod
 	@transaction.atomic
 	def build_wallet():
-		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573"]
+		for a in Account.objects.filter(name="民生银行借记卡7158"):
+			a.name = "借记卡-民生7158"
+			a.save()
+		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "借记卡-民生7158", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573"]
 		cash = Money.objects.get(name="人民币")
 		for w in wallets:
 			sleep(3)
-			Wallet.objects.create(name=w)
+			Wallet.objects.get_or_create(name=w)
 			for o in Organization.objects.filter(parent=None):
 				if w.find("信用卡") == 0:
 					Account.get_or_create(o, cash.item_ptr, "负债", w, None)
