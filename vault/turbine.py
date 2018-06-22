@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.db.models import Sum
 from django import forms
 from .models import *
+from time import *
 
 class EmptyForm(forms.Form):
 	pass
@@ -159,3 +160,17 @@ class Turbine:
 			c.calibration = t
 			c.save()
 			print "设置盘库的有效截至日期为: {}".format(t)
+
+	@staticmethod
+	@transaction.atomic
+	def build_wallet():
+		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573"]
+		cash = Money.objects.get(name="人民币")
+		for w in wallets:
+			sleep(3)
+			Wallet.objects.create(name=w)
+			for o in Organization.objects.filter(parent=None):
+				if w.find("信用卡") == 0:
+					Account.get_or_create(o, cash.item_ptr, "负债", w, None)
+				else:
+					Account.get_or_create(o, cash.item_ptr, "资产", w, None)

@@ -10,3 +10,4 @@ from account import *
 from tmcommodity import *
 from tmorder import *
 from counterfeit import *
+from wallet import *
