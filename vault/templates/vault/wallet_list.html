@@ -13,9 +13,9 @@
 		</tr>
         {% for object in object_list %}
 		<tr>
-			<td><a href="{% url 'wallet_detail' object.id %}">{{ object.id }}</a></td>
+			<td>{{ object.id }}</td>
 			<td>{{object.category}}</td>
-			<td>{{object.name}}</td>
+			<td><a href="{% url 'wallet_detail' object.id %}">{{ object.name }}</a></td>
 			<td>{{object.balance}}</td>
 		</tr>
         {% endfor %}
