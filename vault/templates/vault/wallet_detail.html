@@ -1,9 +1,8 @@
-{% extends "navi_base.html" %}
+{% extends "base_single.html" %}
 
 {% block header %}钱包: {{object}}{% endblock %}
 
-{% block content %}
-<div class="col-sm-auto">
+{% block content_single %}
 	<h3>余额:        {{object.balance}}</h3>
 	<table border="1" cellpadding="4">
 		<tr>
@@ -52,5 +51,4 @@
 			</span>
 		</div>
 	{%endif %}
-</div>
 {% endblock %}
