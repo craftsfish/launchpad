@@ -1,13 +1,14 @@
 {% extends "navi_base.html" %}
 
-{% block header %}共享资金池: {{object}}{% endblock %}
+{% block header %}钱包: {{object}}{% endblock %}
 
 {% block content %}
 <div class="col-sm-auto">
-	<h3>余额:        ({{object.balance}})</h3>
+	<h3>余额:        {{object.balance}}</h3>
 	<table border="1" cellpadding="4">
 		<tr>
 			<th>时间</th>
+			<th>账户</th>
 			<th>增/减</th>
 			<th>余额</th>
 			<th>交易</th>
@@ -15,15 +16,16 @@
 		</tr>
 		{% for split in object_list %}
 			<tr>
-				<td>{{ split.time }}</td>
+				<td>{{ split.transaction.time | date:"Y-m-d H:i:s"}}</td>
+				<td>{{ split.account }}</td>
 				<td align="right">{{ split.change }}</td>
 				<td align="right">{{ split.balance }}</td>
-				<td><a href="{% url 'transaction_detail' split.transaction.id %}">{{ split.desc }}</a></td>
+				<td>{{ split.desc }}</td>
 				<td>
 				<table cellpadding="4">
 					{% for c in split.counters %}
 						<tr>
-							<td align="left"><a href="{% url 'account_detail' c.account.id %}">{{c.account}}</a></td>
+							<td align="left">{{c.account}}</td>
 							<td align="right">{{c.change}}</td>
 						</tr>
 					{% endfor %}

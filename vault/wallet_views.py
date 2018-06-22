@@ -28,8 +28,33 @@ class WalletDetailView(ListView):
 
 	def get_context_data(self, **kwargs):
 		context = super(WalletDetailView, self).get_context_data(**kwargs)
+		page = context['page_obj']
+		total = get_decimal_with_default(self.get_queryset()[:self.paginate_by * (page.number - 1)].aggregate(Sum("change"))['change__sum'], 0)
 
 		#object
 		context['object'] = self.object
+		self.object.balance = get_decimal_with_default(Account.objects.filter(name=self.object.name).aggregate(Sum('balance'))['balance__sum'], 0)
+		balance = self.object.balance - total
 
+		#detail
+		for s in context["object_list"]:
+			s.balance = balance
+			balance -= s.change
+			tr = s.transaction
+			tsk = tr.task
+			d = ""
+			if tsk:
+				d += tsk.desc
+				o = None
+				if Jdorder.objects.filter(pk=tsk.id).exists():
+					o = Jdorder.objects.get(pk=tsk.id)
+				if Tmorder.objects.filter(pk=tsk.id).exists():
+					o = Tmorder.objects.get(pk=tsk.id)
+				if o:
+					d += "." + str(o.oid)
+				d += "." + tr.desc
+			else:
+				d = tr.desc
+			s.desc = d
+			s.counters = s.transaction.splits.exclude(id=s.id)
 		return context
