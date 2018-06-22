@@ -8,6 +8,7 @@ from django.forms import formset_factory
 from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 
 class RetailForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
@@ -390,3 +391,21 @@ class OperationAccountClearForm(forms.Form):
 class OperationAccountClearView(FormView):
 	template_name = "{}/operation_account_clear.html".format(Organization._meta.app_label)
 	form_class = OperationAccountClearForm
+
+	def form_valid(self, form):
+		o = form.cleaned_data['organization']
+		w = form.cleaned_data['wallet']
+		c = form.cleaned_data['change']
+		d = form.cleaned_data['desc']
+		cash = Money.objects.get(name="人民币")
+		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
+		if c < 0:
+			b = Account.get(o, cash.item_ptr, "支出", "其他支出", None)
+		else:
+			b = Account.get(o, cash.item_ptr, "收入", "其他收入", None)
+		Transaction.add(None, d, timezone.now(), a, c, b)
+		self.wallet = w
+		return super(OperationAccountClearView, self).form_valid(form)
+
+	def get_success_url(self):
+		return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
