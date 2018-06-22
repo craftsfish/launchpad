@@ -30,6 +30,17 @@
 
 {% block content_middle %}
 	<table cellpadding="4" border="1">
+		<tr><td align='center'>天猫订单调整</td></tr>
+		<tr><td><input type="number" id="id_tmorder" /><a href="javascript:void(0);" onclick ="tmorder_lookup()">检索</a></td></tr>
+		<tr><td><a href="{% url 'tmorder_change' %}">天猫换货</a></td></tr>
+		<tr><td><a href="{% url 'tmorder_compensate' %}">天猫补发</a></td></tr>
+		<tr><td><a href="{% url 'tmorder_return' %}">天猫退货</a></td></tr>
+		<tr><td><a href="{% url 'tmorder_wechat_fake' %}">天猫微信刷单</a></td></tr>
+	</table>
+{% endblock %}
+
+{% block content_right %}
+	<table cellpadding="4" border="1">
 		<tr><td align='center' colspan=2>其他</td></tr>
 		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
 		<tr><td><a href="{% url 'wallet_detail' 'eea351ea-24ab-47f4-b5e7-45a184518591' %}">运营资金.微信</a></td><td>账户流水</td></tr>
@@ -40,13 +51,3 @@
 	</table>
 {% endblock %}
 
-{% block content_right %}
-	<table cellpadding="4" border="1">
-		<tr><td align='center'>天猫订单调整</td></tr>
-		<tr><td><input type="number" id="id_tmorder" /><a href="javascript:void(0);" onclick ="tmorder_lookup()">检索</a></td></tr>
-		<tr><td><a href="{% url 'tmorder_change' %}">天猫换货</a></td></tr>
-		<tr><td><a href="{% url 'tmorder_compensate' %}">天猫补发</a></td></tr>
-		<tr><td><a href="{% url 'tmorder_return' %}">天猫退货</a></td></tr>
-		<tr><td><a href="{% url 'tmorder_wechat_fake' %}">天猫微信刷单</a></td></tr>
-	</table>
-{% endblock %}
