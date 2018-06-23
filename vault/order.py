@@ -53,6 +53,18 @@ class Order(models.Model):
 		abstract = True
 
 	@staticmethod
+	def invoice_shipment_create(task, when, organization, repository, invoice_id, platform_commodity_id, commodities, quantity, delivered): #出货
+		for c in commodities:
+			if delivered: #已经出库
+				target = ("资产", "完好", repository)
+				quantity = -quantity
+			else:
+				target = ("负债", "应发", repository)
+			Transaction.add_raw(task, "{}.出货.{}.{}".format(invoice_id, platform_commodity_id, c.name),
+				when, organization, c.item_ptr,
+				target, quantity, ("支出", "出货", repository))
+
+	@staticmethod
 	def fake_recall_create(task): #刷单.回收
 		for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):
 			p = re.compile(r"\d*").match(i.desc).end()
