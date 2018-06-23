@@ -27,7 +27,10 @@ from django.utils import formats
 from datetime import timedelta
 
 def test():
-	Turbine.replenish()
+	pass
+
+def __quit():
+	raise EOFError()
 
 options = (
 	["aa", "增加账户", Turbine.add_account],
@@ -42,8 +45,9 @@ options = (
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
-	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
+	["q", "退出系统", __quit],
 	["t", "测试", test],
+	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
 )
 
 def command_handling():
@@ -66,4 +70,4 @@ except (EOFError, KeyboardInterrupt) as e: #ctrl+d & ctrl+c
 except Exception, e:
 	traceback.print_exc()
 
-print "End!"
+print "The End!"
