@@ -1,0 +1,9 @@
+{% extends "base_left_right.html" %}
+
+{% block content_left %}
+	<form action="" method="post">
+		{% csrf_token %}
+		{% block form %}{{ form.as_p}}{% endblock %}
+		<input type="submit" value="提交"/>
+	</form>
+{% endblock %}
