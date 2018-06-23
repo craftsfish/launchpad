@@ -10,9 +10,4 @@ class Counterfeit(models.Model):
 	recall = models.BooleanField("实物回收") #whether the recall of real delivered goods is supported by this platform
 
 	def __str__(self):
-		s = self.name
-		if self.delivery:
-			s += " | 支持" + self.__class__._meta.get_field('delivery').verbose_name
-		if self.recall:
-			s += " | 支持" + self.__class__._meta.get_field('recall').verbose_name
-		return s
+		return self.name
