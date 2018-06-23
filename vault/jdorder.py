@@ -90,14 +90,7 @@ class Jdorder(Order, Task):
 					if not o.task_ptr.transactions.filter(desc__contains='.出货.').exists():
 						__add_commodity_transaction(o.task_ptr, org, repo, info, f)
 					for i in range(len(info.invoices)):
-						s = "{}.出货.".format(i+1)
-						for t in o.task_ptr.transactions.filter(desc__startswith=s):
-							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
-							if s.account.category == Account.str2category("负债"):
-								a = s.account
-								s.account = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
-								s.change = -s.change
-								s.save()
+						Order.invoice_shipment_update_status(o.task_ptr, i+1, True)
 
 				if o.repository and o.repository.id != repo.id: #发货仓库发生变化
 					for t in o.task_ptr.transactions.filter(desc__contains=".出货."):

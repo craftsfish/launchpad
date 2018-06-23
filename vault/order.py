@@ -65,6 +65,19 @@ class Order(models.Model):
 				target, quantity, ("支出", "出货", repository))
 
 	@staticmethod
+	def invoice_shipment_update_status(task, invoice_id, delivered):
+		s = "{}.出货.".format(invoice_id)
+		for i in task.transactions.filter(desc__startswith=s):
+			s = i.splits.exclude(account__category=Account.str2category("支出")).first()
+			if (s.account.category == Account.str2category("资产")) != delivered:
+				a = s.account
+				if delivered:
+					s.account = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
+				else:
+					s.account = Account.get_or_create(a.organization, a.item, "负债", "完好", a.repository)
+				s.change = -s.change
+				s.save()
+	@staticmethod
 	def fake_recall_create(task): #刷单.回收
 		for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):
 			p = re.compile(r"\d*").match(i.desc).end()
