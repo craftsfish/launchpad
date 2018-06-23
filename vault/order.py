@@ -74,7 +74,7 @@ class Order(models.Model):
 				if delivered:
 					s.account = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
 				else:
-					s.account = Account.get_or_create(a.organization, a.item, "负债", "完好", a.repository)
+					s.account = Account.get_or_create(a.organization, a.item, "负债", "应发", a.repository)
 				s.change = -s.change
 				s.save()
 	@staticmethod

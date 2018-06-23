@@ -133,19 +133,15 @@ class Tmorder(Order, Task):
 				#retrieve existing status
 				s = "{}.出货.".format(i+1)
 				if o.task_ptr.transactions.filter(desc__startswith=s).exists(): #update commodity transactions
-					for t in o.task_ptr.transactions.filter(desc__startswith=s):
-							if v.status == "交易关闭":
-								t.delete()
-								continue
+					if v.status == "交易关闭":
+						for t in o.task_ptr.transactions.filter(desc__startswith=s):
+							t.delete()
+					else:
+						Order.invoice_shipment_update_status(o.task_ptr, i+1, v.status in ["卖家已发货，等待买家确认", "交易成功"])
 
+						for t in o.task_ptr.transactions.filter(desc__startswith=s):
 							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
 							original_repository = s.account.repository
-							if s.account.category == Account.str2category("负债") and v.status in ["卖家已发货，等待买家确认", "交易成功"]:
-								a = s.account
-								s.account = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
-								s.change = -s.change
-								s.save()
-
 							if original_repository.id != repository.id: #仓库发生变化
 								t.change_repository(original_repository, repository)
 				else: #add commodity transactions
