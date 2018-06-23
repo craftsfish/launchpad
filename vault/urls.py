@@ -32,8 +32,8 @@ urlpatterns = [
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
-	url(r'^account/3357345155(?P<pk>[\d]+)43255323248799/$', AccountDetailView.as_view(), name='account_detail'),
-	url(r'^account/3357345155(?P<pk>[\d]+)43255323248799/adlkgjdshg33535yufasoi/$', AccountDetailViewRead.as_view(), name='account_detail_read'),
+	url(r'^account/3357345155(?P<pk>[\d]+)43255323248799/root/$', AccountDetailView.as_view(), name='account_detail'),
+	url(r'^account/3357345155(?P<pk>[\d]+)43255323248799/$', AccountDetailViewRead.as_view(), name='account_detail_read'),
 	url(r'^account/fake/wechat/$', AccountDetailViewRead.as_view(), name='account_fake_wechat', kwargs={'pk': 87}),
 
 	#wallet
@@ -59,7 +59,7 @@ urlpatterns = [
 
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
-	url(r'^task/(?P<pk>[\d]+)/super/$', TaskDetailView.as_view(), name='task_detail'),
+	url(r'^task/(?P<pk>[\d]+)/root/$', TaskDetailView.as_view(), name='task_detail'),
 	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailViewRead.as_view(), name='task_detail_read'),
 	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
 	url(r'^task/(?P<pk>[\d]+)/clear/$', TaskClearView.as_view(), name='task_clear'),
@@ -72,16 +72,14 @@ urlpatterns = [
 	url(r'^tmorder/compensate/$', TmorderCompensateView.as_view(), name='tmorder_compensate'),
 	url(r'^tmorder/return/$', TmorderReturnView.as_view(), name='tmorder_return'),
 	url(r'^tmorder/wechat/fake/$', TmorderWechatFakeView.as_view(), name='tmorder_wechat_fake'),
-	url(r'^tmorder/(?P<pk>[\d]+)/$', TmorderDetailView.as_view(), name='tmorder_detail'),
-	url(r'^tmorder/(?P<pk>[\d]+)/read/$', TmorderDetailViewRead.as_view(), name='tmorder_detail_read'),
+	url(r'^tmorder/(?P<pk>[\d]+)/$', TmorderDetailViewRead.as_view(), name='tmorder_detail_read'),
 
 	#jdorder
 	url(r'^jdorder/change/$', JdorderChangeView.as_view(), name='jdorder_change'),
 	url(r'^jdorder/compensate/$', JdorderCompensateView.as_view(), name='jdorder_compensate'),
 	url(r'^jdorder/return/$', JdorderReturnView.as_view(), name='jdorder_return'),
 	url(r'^jdorder/wechat/fake/$', JdorderWechatFakeView.as_view(), name='jdorder_wechat_fake'),
-	url(r'^jdorder/(?P<pk>[\d]+)/$', JdorderDetailView.as_view(), name='jdorder_detail'),
-	url(r'^jdorder/(?P<pk>[\d]+)/read/$', JdorderDetailViewRead.as_view(), name='jdorder_detail_read'),
+	url(r'^jdorder/(?P<pk>[\d]+)/$', JdorderDetailViewRead.as_view(), name='jdorder_detail_read'),
 
 	#daily
 	url(r'^daily/trans_shipment_in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),

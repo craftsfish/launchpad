@@ -7,12 +7,12 @@
 		function jdorder_lookup(){
 			oid = jQuery("#id_jdorder").val();
 			if (oid != "")
-				window.location.href = `/vault/jdorder/${oid}/read/`;
+				window.location.href = `/vault/jdorder/${oid}/`;
 		}
 		function tmorder_lookup(){
 			oid = jQuery("#id_tmorder").val();
 			if (oid != "")
-				window.location.href = `/vault/tmorder/${oid}/read/`;
+				window.location.href = `/vault/tmorder/${oid}/`;
 		}
 	</script>
 {% endblock %}

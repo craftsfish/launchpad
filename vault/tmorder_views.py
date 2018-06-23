@@ -3,13 +3,6 @@ from .misc_views import *
 from django.utils import timezone
 from django.views.generic import RedirectView
 
-class TmorderDetailView(RedirectView):
-	def get_redirect_url(self, *args, **kwargs):
-		try:
-			return reverse('task_detail', kwargs={'pk': Tmorder.objects.get(oid=kwargs['pk']).id})
-		except Tmorder.DoesNotExist as e:
-			return reverse('daily_task')
-
 class TmorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		try:
