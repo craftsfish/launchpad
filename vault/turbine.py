@@ -6,6 +6,7 @@ from django import forms
 from .models import *
 from wallet import *
 from counterfeit import *
+import re
 
 class EmptyForm(forms.Form):
 	pass
@@ -200,7 +201,39 @@ class Turbine:
 	def wechat_fake_migration():
 		@transaction.atomic
 		def __handler(task_id):
-			print task_id
+			t = Task.objects.get(pk=task_id)
+			if hasattr(t, "jdorder"):
+				o = t.jdorder
+			else:
+				o = t.tmorder
+			if o.counterfeit:
+				return
+
+			#更新刷单平台信息
+			o.counterfeit = Counterfeit.objects.get(name="微信")
+			o.save()
+
+			#删除老的收货记录
+			for i in t.transactions.filter(desc="微信刷单.收货"):
+				i.delete()
+			#添加新的收货记录
+			for i in t.transactions.filter(desc__contains=".出货.").order_by("id"):
+				p = re.compile(r"\d*").match(i.desc).end()
+				a = i.desc[:p]
+				b = i.desc[p+4:]
+				args = []
+				for s in i.splits.all():
+					args.append(s.account)
+					args.append(-s.change)
+				Transaction.add(t, "{}.刷单.回收.{}".format(a, b), i.time, *args)
+			#修改刷单发货记录
+			for i in t.transactions.filter(desc="微信刷单.发货"):
+				i.desc = "刷单.发货"
+				i.save()
+			#修改刷单结算记录
+			for i in t.transactions.filter(desc="微信刷单.结算"):
+				i.desc = "刷单.结算"
+				i.save()
 
 		with transaction.atomic():
 			tasks = Transaction.objects.filter(desc__startswith="微信刷单").order_by("task").exclude(task=None).values_list('task', flat=True).distinct("task")
