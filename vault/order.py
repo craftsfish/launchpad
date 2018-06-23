@@ -77,6 +77,14 @@ class Order(models.Model):
 					s.account = Account.get_or_create(a.organization, a.item, "负债", "应发", a.repository)
 				s.change = -s.change
 				s.save()
+
+	@staticmethod
+	def delivery_repository_update(task, original, current):
+		for i in task.transactions.filter(desc__contains=".出货."):
+			i.change_repository(original, current)
+		for i in task.transactions.filter(desc__contains=".刷单.回收."):
+			i.change_repository(original, current)
+
 	@staticmethod
 	def fake_recall_create(task): #刷单.回收
 		for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):

@@ -129,6 +129,7 @@ class Tmorder(Order, Task):
 			info.invoices = sorted(info.invoices, key = lambda i: (i.id + str(i.number)))
 
 			repository=o.repository
+			original_repository = None
 			for i, v in enumerate(info.invoices):
 				#retrieve existing status
 				s = "{}.出货.".format(i+1)
@@ -142,8 +143,7 @@ class Tmorder(Order, Task):
 						for t in o.task_ptr.transactions.filter(desc__startswith=s):
 							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
 							original_repository = s.account.repository
-							if original_repository.id != repository.id: #仓库发生变化
-								t.change_repository(original_repository, repository)
+							break
 				else: #add commodity transactions
 					if v.status == "交易关闭":
 						continue
@@ -153,6 +153,9 @@ class Tmorder(Order, Task):
 						delivered = True
 					commodities = Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time)
 					Order.invoice_shipment_create(o.task_ptr, o.time, organization, repository, i+1, v.id, commodities, v.number, delivered)
+
+			if original_repository and original_repository.id != repository.id: #仓库发生变化
+				Order.delivery_repository_update(o.task_ptr, original_repository, repository)
 
 		#merge seperate detail information into it's corresponding transaction
 		def __handle_raw(ts, l):

@@ -93,8 +93,7 @@ class Jdorder(Order, Task):
 						Order.invoice_shipment_update_status(o.task_ptr, i+1, True)
 
 				if o.repository and o.repository.id != repo.id: #发货仓库发生变化
-					for t in o.task_ptr.transactions.filter(desc__contains=".出货."):
-						t.change_repository(o.repository, repo)
+					Order.delivery_repository_update(o.task_ptr, o.repository, repo)
 
 				if o.task_ptr.transactions.filter(desc__startswith="微信刷单").exists() and not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
 					t = o.task_ptr.transactions.filter(desc__startswith="微信刷单").first().time
