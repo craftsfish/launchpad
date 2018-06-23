@@ -52,6 +52,18 @@ class Order(models.Model):
 		abstract = True
 
 	@staticmethod
+	def fake_recall_create(task): #刷单.回收
+		for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):
+			p = re.compile(r"\d*").match(i.desc).end()
+			a = i.desc[:p]
+			b = i.desc[p+4:]
+			args = []
+			for s in i.splits.all():
+				args.append(s.account)
+				args.append(-s.change)
+			Transaction.add(task, "{}.刷单.回收.{}".format(a, b), i.time, *args)
+
+	@staticmethod
 	def wechat_fake_migration():
 		@transaction.atomic
 		def __handler(task_id):
@@ -71,15 +83,7 @@ class Order(models.Model):
 			for i in t.transactions.filter(desc="微信刷单.收货"):
 				i.delete()
 			#添加新的收货记录
-			for i in t.transactions.filter(desc__contains=".出货.").order_by("id"):
-				p = re.compile(r"\d*").match(i.desc).end()
-				a = i.desc[:p]
-				b = i.desc[p+4:]
-				args = []
-				for s in i.splits.all():
-					args.append(s.account)
-					args.append(-s.change)
-				Transaction.add(t, "{}.刷单.回收.{}".format(a, b), i.time, *args)
+			Order.fake_recall_create(t)
 			#修改刷单发货记录
 			for i in t.transactions.filter(desc="微信刷单.发货"):
 				i.desc = "刷单.发货"
