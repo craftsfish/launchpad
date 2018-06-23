@@ -46,7 +46,6 @@
 		<tr><td><a href="{% url 'wallet_detail' wallet_wechat.id %}">运营资金.微信</a></td><td>账户流水</td></tr>
 		<tr><td><a href="{% url 'wallet_detail' wallet_alipay.id %}">运营资金.支付宝</a></td><td>账户流水</td></tr>
 		<tr><td><a href="{% url 'commodity_list' %}">库存明细</a></td><td>库存明细</td></tr>
-		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。<br/>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
 		<tr><td><a href="{% url 'operation_account_clear' %}">运营资金账户收支</a></td><td>微信拉人佣金, 订单返现</td></tr>
 	</table>
 {% endblock %}

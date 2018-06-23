@@ -395,7 +395,10 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 		if self.task:
 			return reverse('task_detail_read', kwargs={'pk': self.task.id})
 		else:
-			return reverse('chore_list')
+			return reverse('daily_calibration_match')
+
+class DailyCalibrationMatchView(TemplateView):
+	template_name = "{}/calibration_match.html".format(Organization._meta.app_label)
 
 class OperationAccountClearForm(forms.Form):
 	task = forms.IntegerField(required=False, label='(可选)关联到指定任务')
