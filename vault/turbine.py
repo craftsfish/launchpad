@@ -195,3 +195,15 @@ class Turbine:
 		a = Account.get(organization, cash.item_ptr, "支出", "微信刷单", None)
 		b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
 		Transaction.add(task, "微信刷单.结算", time, a, bill, b)
+
+	@staticmethod
+	def wechat_fake_migration():
+		@transaction.atomic
+		def __handler(task_id):
+			print task_id
+
+		with transaction.atomic():
+			tasks = Transaction.objects.filter(desc__startswith="微信刷单").order_by("task").exclude(task=None).values_list('task', flat=True).distinct("task")
+
+		for t in tasks:
+			__handler(t)
