@@ -54,12 +54,12 @@ class Order(models.Model):
 
 	@staticmethod
 	def invoice_shipment_create(task, when, organization, repository, invoice_id, platform_commodity_id, commodities, quantity, delivered): #出货
+		if delivered: #已经出库
+			target = ("资产", "完好", repository)
+			quantity = -quantity
+		else:
+			target = ("负债", "应发", repository)
 		for c in commodities:
-			if delivered: #已经出库
-				target = ("资产", "完好", repository)
-				quantity = -quantity
-			else:
-				target = ("负债", "应发", repository)
 			Transaction.add_raw(task, "{}.出货.{}.{}".format(invoice_id, platform_commodity_id, c.name),
 				when, organization, c.item_ptr,
 				target, quantity, ("支出", "出货", repository))

@@ -151,13 +151,12 @@ class Tmorder(Order, Task):
 				else: #add commodity transactions
 					if v.status == "交易关闭":
 						continue
-					for c in Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time):
-						if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
-							Transaction.add_raw(o.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), o.time, organization, c.item_ptr,
-								("负债", "应发", repository), v.number, ("支出", "出货", repository))
-						else:
-							Transaction.add_raw(o.task_ptr, "{}.出货.{}.{}".format(i+1, v.id, c.name), o.time, organization, c.item_ptr,
-								("资产", "完好", repository), -v.number, ("支出", "出货", repository))
+					if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
+						delivered = False
+					else:
+						delivered = True
+					commodities = Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time)
+					Order.invoice_shipment_create(o.task_ptr, o.time, organization, repository, i+1, v.id, commodities, v.number, delivered)
 
 		#merge seperate detail information into it's corresponding transaction
 		def __handle_raw(ts, l):
