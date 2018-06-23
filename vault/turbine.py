@@ -165,10 +165,7 @@ class Turbine:
 
 	@staticmethod
 	@transaction.atomic
-	def build_wallet():
-		for a in Account.objects.filter(name="民生银行借记卡7158"):
-			a.name = "借记卡-民生7158"
-			a.save()
+	def build():
 		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "借记卡-民生7158", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573"]
 		cash = Money.objects.get(name="人民币")
 		for w in wallets:
@@ -179,15 +176,12 @@ class Turbine:
 				else:
 					Account.get_or_create(o, cash.item_ptr, "资产", w, None)
 
+		for p in ["淘宝", "天猫", "京东"]:
+			Platform.objects.get_or_create(name=p)
+
 	@staticmethod
 	def wechat_fake_clear(organization, task, time, bill):
 		cash = Money.objects.get(name="人民币")
 		a = Account.get(organization, cash.item_ptr, "支出", "微信刷单", None)
 		b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
 		Transaction.add(task, "微信刷单.结算", time, a, bill, b)
-
-	@staticmethod
-	@transaction.atomic
-	def build_platform():
-		for p in ["淘宝", "天猫", "京东"]:
-			Platform.objects.get_or_create(name=p)
