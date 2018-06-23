@@ -5,6 +5,7 @@ from django.db.models import Sum
 from django import forms
 from .models import *
 from wallet import *
+from counterfeit import *
 
 class EmptyForm(forms.Form):
 	pass
@@ -178,6 +179,15 @@ class Turbine:
 
 		for p in ["淘宝", "天猫", "京东"]:
 			Platform.objects.get_or_create(name=p)
+
+		counterfeits = (
+			#平台, 真实发货, 实物回收
+			("陆凤", False, False),
+			("微信", False, False),
+			("买家秀", True, True),
+		)
+		for n, d, r in counterfeits:
+			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
 
 	@staticmethod
 	def wechat_fake_clear(organization, task, time, bill):
