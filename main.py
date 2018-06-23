@@ -22,6 +22,7 @@ from vault.task import *
 from vault.tmcommodity import *
 from vault.tmorder import *
 from vault.turbine import *
+from vault.order import *
 from django.utils import timezone
 from django.utils import formats
 from datetime import timedelta
@@ -45,7 +46,7 @@ options = (
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
-	["mwf", "微信刷单迁移", Turbine.wechat_fake_migration],
+	["mwf", "微信刷单迁移", Order.wechat_fake_migration],
 	["q", "退出系统", __quit],
 	["t", "测试", test],
 	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
