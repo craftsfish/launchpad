@@ -48,46 +48,18 @@ class Jdorder(Order, Task):
 
 	@staticmethod
 	def Import():
-		#为订单中的每一条出货记录添加相应的Transaction(s)
-		def __add_shipping_transactions(task, organization, repository, info):
-			for i, v in enumerate(info.invoices):
-				commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
-				if info.status == "等待出库":
-					delivered = False
-				else:
-					delivered = True
-				Order.invoice_shipment_create(task, info.booktime, organization, repository, i+1, v.id, commodities, v.number, delivered)
-
-		#增加一条刷单Transaction
-		def __add_fake_transaction(task, organization, repository, info):
-					c = Commodity.objects.get(name="洗衣粉")
-					Transaction.add_raw(task, "0.出货.{}".format(c.name), info.booktime, organization, c.item_ptr,
-						("资产", "完好", repository), -1, ("支出", "出货", repository))
-
-		def __add_commodity_transaction(task, organization, repository, info, fake):
-			if fake:
-				__add_fake_transaction(task, organization, repository, info)
-			else:
-				__add_shipping_transactions(task, organization, repository, info)
-
 		def __handle_transaction(info, org, repo):
-			if info.status == "锁定":
-				return
-
-			f = 0
-			if re.compile("朱").search(info.remark): #fake order
-				f = 1
-			try:
-				o = Jdorder.objects.get(oid=info.id)
-				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
-					o.task_ptr.delete_transactions_contains_desc('.出货.')
-					return
-
+			if info.status == "锁定": return
+			o, created = Jdorder.objects.get_or_create(oid=info.id, desc="京东订单")
+			if created: print "增加京东订单: {}".format(info.id)
+			if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
+				o.task_ptr.delete_transactions_contains_desc('.出货.')
+			else:
 				if info.status == "等待出库":
 					delivered = False
 				else:
 					delivered = True
-				if o.task_ptr.transactions.filter(desc__contains=".出货.").exists():
+				if o.task_ptr.transactions.filter(desc__contains="1.出货.").exists():
 					for i in range(len(info.invoices)):
 						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivered)
 				else:
@@ -95,24 +67,17 @@ class Jdorder(Order, Task):
 						commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
 						Order.invoice_shipment_create(o.task_ptr, info.booktime, org, repo, i+1, v.id, commodities, v.number, delivered)
 
-				o.status = Jdorder.str2status(info.status)
-				if o.counterfeit:
-					if f and o.counterfeit.name != "陆凤":
-						print "{} {}刷单状态和备注不一致".format(o, o.oid)
+			if re.compile("朱").search(info.remark): #陆凤刷单
+				print "京东订单: {} 被标记为陆凤刷单".format(o.oid)
+				if o.counterfeit and o.counterfeit.name != "陆凤":
+					print "{} {}的刷单状态和备注不一致".format(o, o.oid)
 				else:
-					if f:
-						o.counterfeit = Counterfeit.objects.get(name="陆凤")
-				o.repository = repo
-				o.sale = info.sale
-				o.save()
-
-				o.update()
-			except Jdorder.DoesNotExist as e:
-				o = Jdorder(oid=info.id, status=Jdorder.str2status(info.status), desc="京东订单", fake=f, repository=repo, sale=info.sale)
-				o.save()
-				if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
-					return #no transaction should be added
-				__add_commodity_transaction(o.task_ptr, org, repo, info, f)
+					o.counterfeit = Counterfeit.objects.get(name="陆凤")
+			o.status = Jdorder.str2status(info.status)
+			o.repository = repo
+			o.sale = info.sale
+			o.save()
+			o.update()
 
 		#Import
 		ts = []
