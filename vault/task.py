@@ -6,6 +6,10 @@ class Task(models.Model):
 	desc = models.CharField(max_length=120)
 
 	def __str__(self):
+		if hasattr(self, "jdorder"):
+			return self.desc + "." + str(self.jdorder.oid)
+		if hasattr(self, "tmorder"):
+			return self.desc + "." + str(self.tmorder.oid)
 		return self.desc
 
 	def delete(self, *args, **kwargs):
