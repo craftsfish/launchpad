@@ -46,6 +46,7 @@ class Order(models.Model):
 
 	[内部处理]
 	为每一种transaction设计处理相应的handler，各自负责对于的transaction的增加，删除，更新
+	冲突处理原则: 自动生成的数据采用激进策略，强制同步，人工输入的数据提示错误，由管理员手动调整。
 	"""
 	time = models.DateTimeField(default=timezone.now)
 	repository = models.ForeignKey(Repository, null=True, blank=True, related_name="%(app_label)s_%(class)s_order_set", related_query_name="%(app_label)s_%(class)s", verbose_name="发货仓库")
