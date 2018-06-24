@@ -80,9 +80,9 @@ class Order(models.Model):
 
 	@staticmethod
 	def delivery_repository_update(task, original, current):
+		if original.id == current.id:
+			return
 		for i in task.transactions.filter(desc__contains=".出货."):
-			i.change_repository(original, current)
-		for i in task.transactions.filter(desc__contains=".刷单.回收."):
 			i.change_repository(original, current)
 
 	@staticmethod
@@ -92,10 +92,24 @@ class Order(models.Model):
 			a = i.desc[:p]
 			b = i.desc[p+4:]
 			args = []
-			for s in i.splits.all():
+			for s in i.splits.order_by("account__category"):
 				args.append(s.account)
 				args.append(-s.change)
 			Transaction.add(task, "{}.刷单.回收.{}".format(a, b), i.time, *args)
+
+	def fake_recall_update(self): #刷单.回收
+		task = self.task_ptr
+		for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):
+			p = re.compile(r"\d*").match(i.desc).end()
+			a = i.desc[:p]
+			b = i.desc[p+4:]
+			j = task.transactions.get(desc="{}.刷单.回收.{}".format(a, b))
+			f = j.splits.order_by("account__category", "-change")
+			t = i.splits.order_by("account__category", "-change")
+			for k, s in enumerate(f):
+				s.account = t[k].account
+				s.change = -t[k].change
+				s.save()
 
 	@staticmethod
 	def wechat_fake_migration():
@@ -132,3 +146,33 @@ class Order(models.Model):
 
 		for t in tasks:
 			__handler(t)
+
+	def update(self):
+		task = self.task_ptr
+		first_shipment = task.transactions.filter(desc__startswith="1.出货.").first()
+		if not first_shipment:
+			return
+
+		shipout_split = first_shipment.splits.filter(account__category=Account.str2category("支出")).get(change__gt=0)
+		original_repository = shipout_split.account.repository
+		organization = shipout_split.account.organization
+		#出货
+		Order.delivery_repository_update(task, original_repository, self.repository)
+		#刷单.回收
+		if self.counterfeit and not self.counterfeit.delivery:
+					if not task.transactions.filter(desc__contains="刷单.回收").exists():
+						Order.fake_recall_create(task)
+					else:
+						self.fake_recall_update()
+		#刷单.结算
+		if self.counterfeit and not task.transactions.filter(desc="刷单.结算").exists():
+			fake_deliver = task.transactions.filter(desc="刷单.发货").first()
+			if fake_deliver:
+				when = fake_deliver.time
+			else:
+				when = task.transactions.filter(desc__contains=".出货.").first().time
+			cash = Money.objects.get(name="人民币")
+			a = Account.get(organization, cash.item_ptr, "支出", "{}刷单".format(self.counterfeit), None)
+			b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None) #TODO:取决于具体的情况
+			Transaction.add(task, "刷单.结算", when, a, self.sale, b)
+			#TODO, 更新

@@ -92,18 +92,13 @@ class Jdorder(Order, Task):
 					for i in range(len(info.invoices)):
 						Order.invoice_shipment_update_status(o.task_ptr, i+1, True)
 
-				if o.repository and o.repository.id != repo.id: #发货仓库发生变化
-					Order.delivery_repository_update(o.task_ptr, o.repository, repo)
-
-				if o.task_ptr.transactions.filter(desc__startswith="微信刷单").exists() and not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
-					t = o.task_ptr.transactions.filter(desc__startswith="微信刷单").first().time
-					Turbine.wechat_fake_clear(org, o.task_ptr, t, info.sale)
-
 				o.status = Jdorder.str2status(info.status)
 				o.fake = f
 				o.repository = repo
 				o.sale = info.sale
 				o.save()
+
+				o.update()
 			except Jdorder.DoesNotExist as e:
 				o = Jdorder(oid=info.id, status=Jdorder.str2status(info.status), desc="京东订单", fake=f, repository=repo, sale=info.sale)
 				o.save()

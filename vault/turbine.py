@@ -195,4 +195,4 @@ class Turbine:
 		cash = Money.objects.get(name="人民币")
 		a = Account.get(organization, cash.item_ptr, "支出", "微信刷单", None)
 		b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
-		Transaction.add(task, "微信刷单.结算", time, a, bill, b)
+		Transaction.add(task, "刷单.结算", time, a, bill, b)
