@@ -192,3 +192,25 @@ class Order(models.Model):
 			Transaction.add(task, "刷单.结算", when, a, self.sale, b)
 		else:
 			pass #TODO, 更新
+
+	@staticmethod
+	@transaction.atomic
+	def lufeng_fake_migration(task_id):
+			t = Task.objects.get(pk=task_id)
+			o = t.jdorder
+			if o.counterfeit:
+				print "{} {}已经标记为{}刷单".format(o, o.oid, o.counterfeit)
+				return
+
+			#更新刷单平台信息
+			o.counterfeit = Counterfeit.objects.get(name="陆凤")
+			o.save()
+
+			#修改刷单发货记录
+			for i in t.transactions.filter(desc="0.出货.洗衣粉"):
+				i.desc = "刷单.发货"
+				i.save()
+			#修改刷单结算记录
+			for i in t.transactions.filter(desc="陆凤刷单.结算"):
+				i.desc = "刷单.结算.陆凤"
+				i.save()

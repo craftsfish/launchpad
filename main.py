@@ -26,9 +26,17 @@ from vault.order import *
 from django.utils import timezone
 from django.utils import formats
 from datetime import timedelta
+from vault.jdorder import *
 
 def test():
 	pass
+
+def lufeng_fake_migration():
+	with transaction.atomic():
+		l = Jdorder.objects.filter(fake=1)
+
+	for o in l:
+		Order.lufeng_fake_migration(o.task_ptr.id)
 
 def __quit():
 	raise EOFError()
@@ -46,6 +54,7 @@ options = (
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
+	["mlf", "陆凤刷单迁移", lufeng_fake_migration],
 	["mwf", "微信刷单迁移", Order.wechat_fake_migration],
 	["q", "退出系统", __quit],
 	["t", "测试", test],
