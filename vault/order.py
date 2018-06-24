@@ -184,7 +184,7 @@ class Order(models.Model):
 		#刷单.结算.陆凤
 		if self.counterfeit.name != "陆凤":
 			if task.transactions.filter(desc="刷单.结算.陆凤").exists():
-				print "[Error]{}.{} 没有标记为陆凤刷单，有微信刷单结算交易，请确认后手动调整".format(self, self.oid)
+				print "[Error]{}.{} 没有标记为陆凤刷单，有陆凤刷单结算交易，请确认后手动调整".format(self, self.oid)
 
 		#刷单.结算.微信
 		if self.counterfeit.name == "微信":

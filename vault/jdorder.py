@@ -83,17 +83,25 @@ class Jdorder(Order, Task):
 					o.task_ptr.delete_transactions_contains_desc('.出货.')
 					return
 
-				if o.fake != f: #刷单状态变更
-					o.task_ptr.delete_transactions_contains_desc('.出货.')
-					__add_commodity_transaction(o.task_ptr, org, repo, info, f)
-				elif not f and info.status != "等待出库": #正常订单状态迁移
-					if not o.task_ptr.transactions.filter(desc__contains='.出货.').exists():
-						__add_commodity_transaction(o.task_ptr, org, repo, info, f)
+				if info.status == "等待出库":
+					delivered = False
+				else:
+					delivered = True
+				if o.task_ptr.transactions.filter(desc__contains=".出货.").exists():
 					for i in range(len(info.invoices)):
-						Order.invoice_shipment_update_status(o.task_ptr, i+1, True)
+						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivered)
+				else:
+					for i, v in enumerate(info.invoices):
+						commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
+						Order.invoice_shipment_create(o.task_ptr, info.booktime, org, repo, i+1, v.id, commodities, v.number, delivered)
 
 				o.status = Jdorder.str2status(info.status)
-				o.fake = f
+				if o.counterfeit:
+					if f and o.counterfeit.name != "陆凤":
+						print "{} {}刷单状态和备注不一致".format(o, o.oid)
+				else:
+					if f:
+						o.counterfeit = Counterfeit.objects.get(name="陆凤")
 				o.repository = repo
 				o.sale = info.sale
 				o.save()
