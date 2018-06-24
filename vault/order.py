@@ -241,3 +241,6 @@ class Order(models.Model):
 		else:
 			if task.transactions.filter(desc="刷单.结算.微信").exists():
 				print "[Error]{}.{} 没有标记为微信刷单，有微信刷单结算交易，请确认后手动调整".format(self, self.oid)
+
+		#退货
+		#TODO: 根据对应的invoice状态处理

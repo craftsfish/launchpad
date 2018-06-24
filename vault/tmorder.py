@@ -54,43 +54,19 @@ class Tmorder(Order, Task):
 				("资产", "完好", repository), -1, ("支出", "出货", repository))
 
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
-			try: #更新
-				o = Tmorder.objects.get(oid=order_id)
-				if status == "交易关闭":
-					o.task_ptr.delete_transactions_contains_desc('.出货.')
-					return
-				if o.fake != fake:
-					o.task_ptr.delete_transactions_contains_desc('.出货.')
-					if fake:
-						__add_fake_transaction(o.task_ptr, organization, repository, time)
-				elif fake:
-					t = o.task_ptr.transactions.get(desc__startswith='0.出货.')
-					s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
-					original_repository = s.account.repository
-					if original_repository.id != repository.id: #仓库发生变化
-						t.change_repository(original_repository, repository)
-
-				o.status = Tmorder.str2status(status)
-				o.fake = fake
-				o.repository = repository
-				o.sale = sale
-				o.save()
-			except Tmorder.DoesNotExist as e: #新增
-				o = Tmorder(desc="天猫订单", oid=order_id, status=Tmorder.str2status(status), fake=fake, time=time, repository=repository, sale=sale)
-				o.save()
-				if status == "交易关闭":
-					return
-				if fake:
-					__add_fake_transaction(o.task_ptr, organization, repository, time)
-
-			#更新退货的仓库信息
-			for t in o.task_ptr.transactions.filter(desc="退货"):
-				for s in t.splits.all():
-					a = s.account
-					if s.change < 0:
-						if a.repository.id != repository.id:
-							s.account = Account.get_or_create(a.organization, a.item, a.get_category_display(), a.name, repository)
-							s.save()
+			o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
+			if status == "交易关闭":
+				o.task_ptr.delete_transactions_contains_desc('.出货.')
+			o.status = Tmorder.str2status(status)
+			o.repository = repository
+			o.time = time
+			o.sale = sale
+			if fake:
+				if o.counterfeit and o.counterfeit.name != "人气无忧":
+					print "{} {}的刷单状态和备注不一致".format(o, o.oid)
+				else:
+					o.counterfeit = Counterfeit.objects.get(name="人气无忧")
+			o.save()
 
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
 			reader = csv.reader(csv_gb18030_2_utf8(csvfile))
@@ -120,7 +96,7 @@ class Tmorder(Order, Task):
 		@transaction.atomic
 		def __handle_detail(info, organization):
 			o = Tmorder.objects.get(oid=info.oid)
-			if o.fake or o.status == Tmorder.str2status("交易关闭"):
+			if o.status == Tmorder.str2status("交易关闭"):
 				return
 			info.invoices = sorted(info.invoices, key = lambda i: (i.id + str(i.number)))
 
