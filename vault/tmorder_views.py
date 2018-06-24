@@ -82,11 +82,12 @@ class TmorderReturnView(TmorderMixin, TemplateView):
 
 class TmorderWechatFakeView(TmorderMixin, TemplateView):
 	template_name = "{}/tmorder_wechat_fake.html".format(Organization._meta.app_label)
+	sub_form_class = CommoditySendForm
 
 	def formset_item_process(self, time, item, quantity, repository, status, ship):
-		if ship == "收货":
-			Transaction.add_raw(self.task, "微信刷单.收货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
-		else:
-			Transaction.add_raw(self.task, "微信刷单.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
+		o = self.task.tmorder
+		o.counterfeit = Counterfeit.objects.get(name="微信")
+		o.save()
+		Transaction.add_raw(self.task, "刷单.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
 		return super(TmorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status, ship)
 

@@ -70,10 +70,6 @@ class Tmorder(Order, Task):
 					if original_repository.id != repository.id: #仓库发生变化
 						t.change_repository(original_repository, repository)
 
-				if o.task_ptr.transactions.filter(desc__startswith="微信刷单").exists() and not o.task_ptr.transactions.filter(desc="微信刷单.结算").exists():
-					t = o.task_ptr.transactions.filter(desc__startswith="微信刷单").first().time
-					Turbine.wechat_fake_clear(organization, o.task_ptr, t, sale)
-
 				o.status = Tmorder.str2status(status)
 				o.fake = fake
 				o.repository = repository
@@ -129,7 +125,6 @@ class Tmorder(Order, Task):
 			info.invoices = sorted(info.invoices, key = lambda i: (i.id + str(i.number)))
 
 			repository=o.repository
-			original_repository = None
 			for i, v in enumerate(info.invoices):
 				#retrieve existing status
 				s = "{}.出货.".format(i+1)
@@ -139,11 +134,6 @@ class Tmorder(Order, Task):
 							t.delete()
 					else:
 						Order.invoice_shipment_update_status(o.task_ptr, i+1, v.status in ["卖家已发货，等待买家确认", "交易成功"])
-
-						for t in o.task_ptr.transactions.filter(desc__startswith=s):
-							s = t.splits.exclude(account__category=Account.str2category("支出"))[0]
-							original_repository = s.account.repository
-							break
 				else: #add commodity transactions
 					if v.status == "交易关闭":
 						continue
@@ -154,8 +144,7 @@ class Tmorder(Order, Task):
 					commodities = Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time)
 					Order.invoice_shipment_create(o.task_ptr, o.time, organization, repository, i+1, v.id, commodities, v.number, delivered)
 
-			if original_repository and original_repository.id != repository.id: #仓库发生变化
-				Order.delivery_repository_update(o.task_ptr, original_repository, repository)
+			o.update()
 
 		#merge seperate detail information into it's corresponding transaction
 		def __handle_raw(ts, l):
