@@ -51,7 +51,6 @@ class Jdorder(Order, Task):
 		def __handle_transaction(info, org, repo):
 			if info.status == "锁定": return
 			o, created = Jdorder.objects.get_or_create(oid=info.id, desc="京东订单")
-			if created: print "增加京东订单: {}".format(info.id)
 			if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
 				o.task_ptr.delete_transactions_contains_desc('.出货.')
 			else:
@@ -68,7 +67,6 @@ class Jdorder(Order, Task):
 						Order.invoice_shipment_create(o.task_ptr, info.booktime, org, repo, i+1, v.id, commodities, v.number, delivered)
 
 			if re.compile("朱").search(info.remark): #陆凤刷单
-				print "京东订单: {} 被标记为陆凤刷单".format(o.oid)
 				if o.counterfeit and o.counterfeit.name != "陆凤":
 					print "{} {}的刷单状态和备注不一致".format(o, o.oid)
 				else:
