@@ -165,7 +165,6 @@ class Jdorder(Order, Task):
 				print "订单已经结算: {}".format(oid)
 
 		with open('/tmp/jd.fake.csv', 'rb') as csvfile:
-			orgs = Organization.objects.filter(parent=None).exclude(name="个人")
 			reader = csv.reader((csvfile))
 			title = reader.next()
 			columns = ["订单编号", "金额", "佣金"]
