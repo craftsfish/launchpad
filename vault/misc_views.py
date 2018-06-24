@@ -430,9 +430,9 @@ class OperationAccountClearView(FormView):
 		cash = Money.objects.get(name="人民币")
 		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
 		if c < 0:
-			b = Account.get(o, cash.item_ptr, "支出", "其他支出", None)
+			b = Account.get_or_create(o, cash.item_ptr, "支出", "其他支出", None)
 		else:
-			b = Account.get(o, cash.item_ptr, "收入", "其他收入", None)
+			b = Account.get_or_create(o, cash.item_ptr, "收入", "其他收入", None)
 		Transaction.add(self.task, d, timezone.now(), a, c, b)
 		self.wallet = w
 		return super(OperationAccountClearView, self).form_valid(form)
