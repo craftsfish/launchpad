@@ -147,7 +147,7 @@ class Order(models.Model):
 				i.save()
 			#修改刷单结算记录
 			for i in t.transactions.filter(desc="微信刷单.结算"):
-				i.desc = "刷单.结算"
+				i.desc = "刷单.结算.微信"
 				i.save()
 
 		with transaction.atomic():
@@ -168,8 +168,12 @@ class Order(models.Model):
 		#出货
 		Order.delivery_repository_update(task, original_repository, self.repository)
 
+		#刷单处理
+		if not self.counterfeit:
+			return
+
 		#刷单.回收
-		if self.counterfeit and not self.counterfeit.delivery:
+		if not self.counterfeit.delivery:
 			if not task.transactions.filter(desc__contains="刷单.回收").exists():
 				Order.fake_recall_create(task)
 			else:
@@ -177,21 +181,26 @@ class Order(models.Model):
 		else:
 			task.delete_transactions_contains_desc("刷单.回收")
 
-		#刷单.结算
-		if not self.counterfeit:
-			task.delete_transactions_contains_desc("刷单.结算")
-		elif not task.transactions.filter(desc="刷单.结算").exists():
-			fake_deliver = task.transactions.filter(desc="刷单.发货").first()
-			if fake_deliver:
-				when = fake_deliver.time
-			else:
-				when = task.transactions.filter(desc__contains=".出货.").first().time
-			cash = Money.objects.get(name="人民币")
-			a = Account.get(organization, cash.item_ptr, "支出", "{}刷单".format(self.counterfeit), None)
-			b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None) #TODO:取决于具体的情况
-			Transaction.add(task, "刷单.结算", when, a, self.sale, b)
+		#刷单.结算.陆凤
+		if self.counterfeit.name != "陆凤":
+			if task.transactions.filter(desc="刷单.结算.陆凤").exists():
+				print "[Error]{}.{} 没有标记为陆凤刷单，有微信刷单结算交易，请确认后手动调整".format(self, self.oid)
+
+		#刷单.结算.微信
+		if self.counterfeit.name == "微信":
+			if not task.transactions.filter(desc="刷单.结算.微信").exists():
+				fake_deliver = task.transactions.filter(desc="刷单.发货").first()
+				if fake_deliver:
+					when = fake_deliver.time
+				else:
+					when = task.transactions.filter(desc__contains=".出货.").first().time
+				cash = Money.objects.get(name="人民币")
+				a = Account.get(organization, cash.item_ptr, "支出", "{}刷单".format(self.counterfeit), None)
+				b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
+				Transaction.add(task, "刷单.结算.微信", when, a, self.sale, b)
 		else:
-			pass #TODO, 更新
+			if task.transactions.filter(desc="刷单.结算.微信").exists():
+				print "[Error]{}.{} 没有标记为微信刷单，有微信刷单结算交易，请确认后手动调整".format(self, self.oid)
 
 	@staticmethod
 	@transaction.atomic
