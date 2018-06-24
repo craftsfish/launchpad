@@ -178,6 +178,24 @@ class Order(models.Model):
 				i.desc = "刷单.结算.陆凤"
 				i.save()
 
+	@staticmethod
+	@transaction.atomic
+	def rqwy_fake_migration(task_id):
+			t = Task.objects.get(pk=task_id)
+			o = t.tmorder
+			if o.counterfeit:
+				print "{} {}已经标记为{}刷单".format(o, o.oid, o.counterfeit)
+				return
+
+			#更新刷单平台信息
+			o.counterfeit = Counterfeit.objects.get(name="人气无忧")
+			o.save()
+
+			#修改刷单发货记录
+			for i in t.transactions.filter(desc="0.出货.洗衣粉"):
+				i.desc = "刷单.发货"
+				i.save()
+
 	def update(self):
 		task = self.task_ptr
 		first_shipment = task.transactions.filter(desc__startswith="1.出货.").first()
