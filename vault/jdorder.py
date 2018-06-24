@@ -150,9 +150,9 @@ class Jdorder(Order, Task):
 		def __csv_handler(oid, sale, fee):
 			org = Organization.objects.get(name="为绿厨具专营店")
 			o = Jdorder.objects.get(oid=oid)
-			if not o.task_ptr.transactions.filter(desc="陆凤刷单.结算").exists():
-				if o.fake != 1:
-					print "订单未标记为刷单: {}".format(oid)
+			if not o.task_ptr.transactions.filter(desc="刷单.结算.陆凤").exists():
+				if o.counterfeit.name != "陆凤":
+					print "订单未标记为陆凤刷单: {}".format(oid)
 					return
 				if o.sale != sale:
 					print "订单金额不对: {}".format(oid)
@@ -160,7 +160,7 @@ class Jdorder(Order, Task):
 				cash = Money.objects.get(name="人民币")
 				a = Account.get(org.root(), cash.item_ptr, "负债", "陆凤刷单", None)
 				b = Account.get(org, cash.item_ptr, "支出", "陆凤刷单", None)
-				Transaction.add(o.task_ptr, "陆凤刷单.结算", timezone.now(), a, sale+fee, b)
+				Transaction.add(o.task_ptr, "刷单.结算.陆凤", timezone.now(), a, sale+fee, b)
 			else:
 				print "订单已经结算: {}".format(oid)
 
