@@ -62,30 +62,45 @@ class Order(models.Model):
 		abstract = True
 
 	@staticmethod
-	def invoice_shipment_create(task, when, organization, repository, invoice_id, platform_commodity_id, commodities, quantity, delivered): #出货
-		if delivered: #已经出库
+	def invoice_shipment_create(task, when, organization, repository, invoice_id, platform_commodity_id, commodities, quantity, delivery): #出货
+		if delivery == DeliveryStatus.delivered:
 			target = ("资产", "完好", repository)
 			quantity = -quantity
-		else:
+		elif delivery == DeliveryStatus.inbook:
 			target = ("负债", "应发", repository)
+		else:
+			target = ("支出", "出货", repository)
+			quantity = -quantity
+
 		for c in commodities:
 			Transaction.add_raw(task, "{}.出货.{}.{}".format(invoice_id, platform_commodity_id, c.name),
 				when, organization, c.item_ptr,
 				target, quantity, ("支出", "出货", repository))
 
 	@staticmethod
-	def invoice_shipment_update_status(task, invoice_id, delivered):
+	def invoice_shipment_update_status(task, invoice_id, delivery):
 		s = "{}.出货.".format(invoice_id)
 		for i in task.transactions.filter(desc__startswith=s):
-			s = i.splits.exclude(account__category=Account.str2category("支出")).first()
-			if (s.account.category == Account.str2category("资产")) != delivered:
-				a = s.account
-				if delivered:
-					s.account = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
-				else:
-					s.account = Account.get_or_create(a.organization, a.item, "负债", "应发", a.repository)
-				s.change = -s.change
-				s.save()
+			splits = i.splits.order_by("account__category", "-change")
+			a = splits[0].account
+			quantity = splits[1].change
+
+			#generate potential account candidates
+			if delivery == DeliveryStatus.delivered:
+				b = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
+				quantity = -quantity
+			elif delivery == DeliveryStatus.inbook:
+				b = Account.get_or_create(a.organization, a.item, "负债", "应发", a.repository)
+			else:
+				b = Account.get_or_create(a.organization, a.item, "支出", "出货", a.repository)
+				quantity = -quantity
+
+			#apply
+			if a.id == b.id: return
+			s = splits[0]
+			s.account = b
+			s.change = quantity
+			s.save()
 
 	@staticmethod
 	def delivery_repository_update(task, original, current):

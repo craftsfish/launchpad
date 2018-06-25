@@ -109,16 +109,20 @@ class Tmorder(Order, Task):
 						for t in o.task_ptr.transactions.filter(desc__startswith=s):
 							t.delete()
 					else:
-						Order.invoice_shipment_update_status(o.task_ptr, i+1, v.status in ["卖家已发货，等待买家确认", "交易成功"])
+						if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
+							delivery = DeliveryStatus.inbook
+						else:
+							delivery = DeliveryStatus.delivered
+						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivery)
 				else: #add commodity transactions
 					if v.status == "交易关闭":
 						continue
 					if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
-						delivered = False
+						delivery = DeliveryStatus.inbook
 					else:
-						delivered = True
+						delivery = DeliveryStatus.delivered
 					commodities = Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time)
-					Order.invoice_shipment_create(o.task_ptr, o.time, organization, repository, i+1, v.id, commodities, v.number, delivered)
+					Order.invoice_shipment_create(o.task_ptr, o.time, organization, repository, i+1, v.id, commodities, v.number, delivery)
 
 			o.update()
 

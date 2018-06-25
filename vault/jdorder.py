@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import csv
 import re
+from ground import *
 from django.db import models
 from task import *
 from ground import *
@@ -55,16 +56,16 @@ class Jdorder(Order, Task):
 				o.task_ptr.delete_transactions_contains_desc('.出货.')
 			else:
 				if info.status == "等待出库":
-					delivered = False
+					delivery = DeliveryStatus.inbook
 				else:
-					delivered = True
+					delivery = DeliveryStatus.delivered
 				if o.task_ptr.transactions.filter(desc__contains="1.出货.").exists():
 					for i in range(len(info.invoices)):
-						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivered)
+						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivery)
 				else:
 					for i, v in enumerate(info.invoices):
 						commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
-						Order.invoice_shipment_create(o.task_ptr, info.booktime, org, repo, i+1, v.id, commodities, v.number, delivered)
+						Order.invoice_shipment_create(o.task_ptr, info.booktime, org, repo, i+1, v.id, commodities, v.number, delivery)
 
 			if re.compile("朱").search(info.remark): #陆凤刷单
 				if o.counterfeit and o.counterfeit.name != "陆凤":

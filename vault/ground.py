@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 import time
+import enum
 from datetime import datetime
 from django.utils import timezone
 from decimal import *
@@ -53,3 +54,9 @@ class Itemstatus(BaseStatus):
 
 class Shipstatus(BaseStatus):
 	choices = tuple(enumerate(("收货", "发货")))
+
+@enum.unique
+class DeliveryStatus(enum.IntEnum):
+	inbook = 0
+	delivered = 1
+	cancel = 2
