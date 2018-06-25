@@ -62,22 +62,6 @@ class Order(models.Model):
 	class Meta:
 		abstract = True
 
-	@staticmethod
-	def invoice_shipment_create(task, when, organization, repository, invoice_id, platform_commodity_id, commodities, quantity, delivery): #出货
-		if delivery == DeliveryStatus.delivered:
-			target = ("资产", "完好", repository)
-			quantity = -quantity
-		elif delivery == DeliveryStatus.inbook:
-			target = ("负债", "应发", repository)
-		else:
-			target = ("支出", "出货", repository)
-			quantity = -quantity
-
-		for c in commodities:
-			Transaction.add_raw(task, "{}.出货.{}.{}".format(invoice_id, platform_commodity_id, c.name),
-				when, organization, c.item_ptr,
-				target, quantity, ("支出", "出货", repository))
-
 	def create_or_update_invoice_shipment(self, organization, invoice_id, platform_commodity_id, commodities, quantity, delivery):
 		prefix = "{}.出货.".format(invoice_id)
 		task = self.task_ptr
@@ -115,38 +99,6 @@ class Order(models.Model):
 				Transaction.add_raw(task, "{}.出货.{}.{}".format(invoice_id, platform_commodity_id, c.name),
 					self.time, organization, c.item_ptr,
 					source, quantity, dest)
-
-	@staticmethod
-	def invoice_shipment_update_status(task, invoice_id, delivery):
-		s = "{}.出货.".format(invoice_id)
-		for i in task.transactions.filter(desc__startswith=s):
-			splits = i.splits.order_by("account__category", "-change")
-			a = splits[0].account
-			quantity = splits[1].change
-
-			#generate potential account candidates
-			if delivery == DeliveryStatus.delivered:
-				b = Account.get_or_create(a.organization, a.item, "资产", "完好", a.repository)
-				quantity = -quantity
-			elif delivery == DeliveryStatus.inbook:
-				b = Account.get_or_create(a.organization, a.item, "负债", "应发", a.repository)
-			else:
-				b = Account.get_or_create(a.organization, a.item, "支出", "出货", a.repository)
-				quantity = -quantity
-
-			#apply
-			if a.id == b.id: return
-			s = splits[0]
-			s.account = b
-			s.change = quantity
-			s.save()
-
-	@staticmethod
-	def delivery_repository_update(task, original, current):
-		if original.id == current.id:
-			return
-		for i in task.transactions.filter(desc__contains=".出货."):
-			i.change_repository(original, current)
 
 	@staticmethod
 	def fake_recall_create(task): #刷单.回收
@@ -258,9 +210,6 @@ class Order(models.Model):
 		shipout_split = first_shipment.splits.filter(account__category=Account.str2category("支出")).get(change__gt=0)
 		original_repository = shipout_split.account.repository
 		organization = shipout_split.account.organization
-
-		#出货
-		Order.delivery_repository_update(task, original_repository, self.repository)
 
 		#刷单处理
 		if not self.counterfeit:

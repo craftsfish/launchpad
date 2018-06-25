@@ -47,12 +47,6 @@ class Tmorder(Order, Task):
 
 	@staticmethod
 	def Import_List():
-		#增加一条刷单Transaction
-		def __add_fake_transaction(task, organization, repository, time):
-			c = Commodity.objects.get(name="洗衣粉")
-			Transaction.add_raw(task, "0.出货.{}".format(c.name), time, organization, c.item_ptr,
-				("资产", "完好", repository), -1, ("支出", "出货", repository))
-
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
 			o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
 			o.status = Tmorder.str2status(status)
