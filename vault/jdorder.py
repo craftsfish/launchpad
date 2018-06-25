@@ -50,33 +50,30 @@ class Jdorder(Order, Task):
 	@staticmethod
 	def Import():
 		def __handle_transaction(info, org, repo):
-			if info.status == "锁定": return
+			#collect necessary information
 			o, created = Jdorder.objects.get_or_create(oid=info.id, desc="京东订单")
-			if info.status in ["(删除)锁定", "(删除)等待出库", "(删除)等待确认收货"]:
-				o.task_ptr.delete_transactions_contains_desc('.出货.')
-			else:
-				if info.status == "等待出库":
-					delivery = DeliveryStatus.inbook
-				else:
-					delivery = DeliveryStatus.delivered
-				if o.task_ptr.transactions.filter(desc__contains="1.出货.").exists():
-					for i in range(len(info.invoices)):
-						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivery)
-				else:
-					for i, v in enumerate(info.invoices):
-						commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
-						Order.invoice_shipment_create(o.task_ptr, info.booktime, org, repo, i+1, v.id, commodities, v.number, delivery)
-
+			o.status = Jdorder.str2status(info.status)
+			o.repository = repo
+			o.time = info.booktime
+			o.sale = info.sale
 			if re.compile("朱").search(info.remark): #陆凤刷单
 				if o.counterfeit and o.counterfeit.name != "陆凤":
 					print "{} {}的刷单状态和备注不一致".format(o, o.oid)
 				else:
 					o.counterfeit = Counterfeit.objects.get(name="陆凤")
-			o.status = Jdorder.str2status(info.status)
-			o.repository = repo
-			o.sale = info.sale
-			o.save()
+
+			#apply
+			if info.status == "等待出库":
+				delivery = DeliveryStatus.inbook
+			elif info.status in ["等待确认收货", "完成"]:
+				delivery = DeliveryStatus.delivered
+			else:
+				delivery = DeliveryStatus.cancel
+			for i, v in enumerate(info.invoices, 1):
+				commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
+				o.create_or_update_invoice_shipment(org, i, v.id, commodities, v.number, delivery)
 			o.update()
+			o.save()
 
 		#Import
 		ts = []
