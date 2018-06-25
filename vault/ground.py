@@ -43,7 +43,7 @@ def utc_2_datetime(utc):
 
 class BaseStatus:
 	@classmethod
-	def v2s(cls):
+	def v2s(cls, c):
 		for i, v in cls.choices:
 			if i == int(c):
 				return v
