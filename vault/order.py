@@ -78,6 +78,44 @@ class Order(models.Model):
 				when, organization, c.item_ptr,
 				target, quantity, ("支出", "出货", repository))
 
+	def create_or_update_invoice_shipment(self, organization, invoice_id, platform_commodity_id, commodities, quantity, delivery):
+		prefix = "{}.出货.".format(invoice_id)
+		task = self.task_ptr
+		repository = self.repository
+		dest = ("支出", "出货", repository)
+		if delivery == DeliveryStatus.delivered:
+			source = ("资产", "完好", repository)
+			quantity = -quantity
+		elif delivery == DeliveryStatus.inbook:
+			source = ("负债", "应发", repository)
+		else:
+			source = ("支出", "出货", repository)
+			quantity = -quantity
+
+		transaction = task.transactions.filter(desc__startswith=prefix).first()
+		if transaction: #update
+			splits = transaction.splits.order_by("account__category", "change")
+			a = splits[0].account
+			b = Account.get_or_create(organization, a.item, *source)
+			if a.id == b.id:
+				return
+
+			for i in task.transactions.filter(desc__startswith=prefix):
+				splits = i.splits.order_by("account__category", "change")
+				s = splits[0]
+				s.account = Account.get_or_create(organization, s.account.item, *source)
+				s.change = quantity
+				s.save()
+				if a.repository.id != repository.id:
+					s = splits[1]
+					s.account = Account.get_or_create(organization, a.item, *dest)
+					s.save()
+		else: #create
+			for c in commodities:
+				Transaction.add_raw(task, "{}.出货.{}.{}".format(invoice_id, platform_commodity_id, c.name),
+					self.time, organization, c.item_ptr,
+					source, quantity, dest)
+
 	@staticmethod
 	def invoice_shipment_update_status(task, invoice_id, delivery):
 		s = "{}.出货.".format(invoice_id)
