@@ -49,14 +49,7 @@ class BaseStatus:
 		return None
 
 class Itemstatus(BaseStatus):
-	choices = (
-		(0, "完好"),
-		(1, "残缺"),
-		(2, "破损"),
-	)
+	choices = tuple(enumerate(("完好", "残缺", "破损")))
 
 class Shipstatus(BaseStatus):
-	choices = (
-		(0, "收货"),
-		(1, "发货"),
-	)
+	choices = tuple(enumerate(("收货", "发货")))
