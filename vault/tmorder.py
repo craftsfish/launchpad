@@ -55,8 +55,6 @@ class Tmorder(Order, Task):
 
 		def __handle_list(order_id, time, status, sale, fake, organization, repository):
 			o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
-			if status == "交易关闭":
-				o.task_ptr.delete_transactions_contains_desc('.出货.')
 			o.status = Tmorder.str2status(status)
 			o.repository = repository
 			o.time = time
@@ -96,34 +94,16 @@ class Tmorder(Order, Task):
 		@transaction.atomic
 		def __handle_detail(info, organization):
 			o = Tmorder.objects.get(oid=info.oid)
-			if o.status == Tmorder.str2status("交易关闭"):
-				return
 			info.invoices = sorted(info.invoices, key = lambda i: (i.id + str(i.number)))
-
-			repository=o.repository
-			for i, v in enumerate(info.invoices):
-				#retrieve existing status
-				s = "{}.出货.".format(i+1)
-				if o.task_ptr.transactions.filter(desc__startswith=s).exists(): #update commodity transactions
-					if v.status == "交易关闭":
-						for t in o.task_ptr.transactions.filter(desc__startswith=s):
-							t.delete()
-					else:
-						if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
-							delivery = DeliveryStatus.inbook
-						else:
-							delivery = DeliveryStatus.delivered
-						Order.invoice_shipment_update_status(o.task_ptr, i+1, delivery)
-				else: #add commodity transactions
-					if v.status == "交易关闭":
-						continue
-					if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
-						delivery = DeliveryStatus.inbook
-					else:
-						delivery = DeliveryStatus.delivered
-					commodities = Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time)
-					Order.invoice_shipment_create(o.task_ptr, o.time, organization, repository, i+1, v.id, commodities, v.number, delivery)
-
+			for i, v in enumerate(info.invoices, 1):
+				if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
+					delivery = DeliveryStatus.inbook
+				elif v.status in ["卖家已发货，等待买家确认", "交易成功"]:
+					delivery = DeliveryStatus.delivered
+				else:
+					delivery = DeliveryStatus.cancel
+				commodities = Tmcommoditymap.get(Tmcommodity.objects.get(pk=v.id), o.time)
+				o.create_or_update_invoice_shipment(organization, i, v.id, commodities, v.number, delivery)
 			o.update()
 
 		#merge seperate detail information into it's corresponding transaction
