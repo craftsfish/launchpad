@@ -40,29 +40,23 @@ def cst_2_utc(str_time, str_format):
 def utc_2_datetime(utc):
 	return datetime.utcfromtimestamp(utc).replace(tzinfo=timezone.utc)
 
-class Itemstatus:
+class BaseStatus:
+	@classmethod
+	def v2s(cls):
+		for i, v in cls.choices:
+			if i == int(c):
+				return v
+		return None
+
+class Itemstatus(BaseStatus):
 	choices = (
 		(0, "完好"),
 		(1, "残缺"),
 		(2, "破损"),
 	)
 
-	@staticmethod
-	def v2s(c):
-		for i, v in Itemstatus.choices:
-			if i == int(c):
-				return v
-		return None
-
-class Shipstatus:
+class Shipstatus(BaseStatus):
 	choices = (
 		(0, "收货"),
 		(1, "发货"),
 	)
-
-	@staticmethod
-	def v2s(c):
-		for i, v in Shipstatus.choices:
-			if i == int(c):
-				return v
-		return None
