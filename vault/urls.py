@@ -80,6 +80,7 @@ urlpatterns = [
 	url(r'^jdorder/return/$', JdorderReturnView.as_view(), name='jdorder_return'),
 	url(r'^jdorder/wechat/fake/$', JdorderWechatFakeView.as_view(), name='jdorder_wechat_fake'),
 	url(r'^jdorder/(?P<pk>[\d]+)/$', JdorderDetailViewRead.as_view(), name='jdorder_detail_read'),
+	url(r'^jdorder/rebate/$', JdorderRebateView.as_view(), name='jdorder_rebate'),
 
 	#daily
 	url(r'^daily/trans_shipment_in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),

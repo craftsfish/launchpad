@@ -11,8 +11,8 @@ class JdorderDetailViewRead(RedirectView):
 			return reverse('chore_list')
 
 class JdorderForm(forms.Form):
-	jdorder = forms.IntegerField()
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="为绿厨具专营店"))
+	jdorder = forms.IntegerField(label="订单编号")
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="为绿厨具专营店"), label="店铺")
 
 	def clean(self):
 		cleaned_data = super(JdorderForm, self).clean()
@@ -85,3 +85,31 @@ class JdorderWechatFakeView(JdorderMixin, TemplateView):
 		o.save()
 		Transaction.add_raw(self.task, "刷单.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
 		return super(JdorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status, ship)
+
+class JdorderRebateForm(JdorderForm):
+	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='付款账户')
+	paid = forms.DecimalField(initial=0, max_digits=10, decimal_places=2, min_value=0.01, label="付款")
+
+class JdorderRebateView(FormView):
+	template_name = "base_form.html"
+	form_class = JdorderRebateForm
+
+	def form_valid(self, form):
+		o = form.cleaned_data['organization']
+		j = form.cleaned_data['jdorder']
+		j, created = Jdorder.objects.get_or_create(oid=j, desc="京东订单")
+		self.task = j.task_ptr
+		w = form.cleaned_data['wallet']
+		p = form.cleaned_data['paid']
+		cash = Money.objects.get(name="人民币")
+		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
+		b = Account.get_or_create(o, cash.item_ptr, "支出", "其他支出", None)
+		Transaction.add(self.task, "返现", timezone.now(), a, -p, b)
+		return super(JdorderRebateView, self).form_valid(form)
+
+	def get_success_url(self):
+		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+
+	def get_context_data(self, **kwargs):
+		kwargs['title'] = "京东订单返现"
+		return super(JdorderRebateView, self).get_context_data(**kwargs)

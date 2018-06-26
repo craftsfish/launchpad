@@ -1,6 +1,9 @@
 {% extends "base_single.html" %}
 
 {% block content_single %}
+	{% if form.errors %}
+	<div class="alert alert-danger" role="alert">{{form.errors}}</div>
+	{% endif %}
 	<form action="" method="post">
 		{% csrf_token %}
 		{% block form %}{{ form.as_p}}{% endblock %}
