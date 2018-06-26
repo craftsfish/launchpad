@@ -440,3 +440,29 @@ class OperationAccountClearView(FormView):
 			return reverse('task_detail_read', kwargs={'pk': self.task.id})
 		else:
 			return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
+
+class PayWechatRecruitBonusForm(forms.Form):
+	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='付款账户')
+	change = forms.DecimalField(initial=0, max_digits=20, decimal_places=2, min_value=0.01, label="支付金额")
+
+class PayWechatRecruitBonusView(FormView):
+	template_name = "base_form.html"
+	form_class = PayWechatRecruitBonusForm
+
+	def form_valid(self, form):
+		o = Organization.objects.get(name="南京为绿电子科技有限公司")
+		w = form.cleaned_data['wallet']
+		c = form.cleaned_data['change']
+		cash = Money.objects.get(name="人民币")
+		a = Account.get(o, cash.item_ptr, "资产", w.name, None)
+		b = Account.get_or_create(o, cash.item_ptr, "支出", "其他支出", None)
+		Transaction.add(None, "微信拉人", timezone.now(), a, -c, b)
+		self.wallet = w
+		return super(PayWechatRecruitBonusView, self).form_valid(form)
+
+	def get_success_url(self):
+		return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
+
+	def get_context_data(self, **kwargs):
+		kwargs['title'] = "支付微信刷单拉人奖励"
+		return super(PayWechatRecruitBonusView, self).get_context_data(**kwargs)
