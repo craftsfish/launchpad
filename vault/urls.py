@@ -98,7 +98,6 @@ urlpatterns = [
 	url(r'^misc/purchase/kml/$', KmlPurchaseView.as_view(), name='kml_purchase'),
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
 	url(r'^misc/purchase/append/$', AppendPurchaseView.as_view(), name='append_purchase'),
-	url(r'^misc/purchase/trans_shipment/in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),
 
 	url(r'^misc/daily/calibration/$', DailyCalibrationView.as_view(), name='daily_calibration'),
 	url(r'^misc/daily/calibration/match/$', DailyCalibrationMatchView.as_view(), name='daily_calibration_match'),
