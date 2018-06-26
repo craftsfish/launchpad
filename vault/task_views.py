@@ -77,7 +77,7 @@ class TaskDeleteView(RedirectView):
 
 class TaskPreviousView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return reverse('task_detail', kwargs={'pk': self.prev.id})
+		return reverse('task_detail_read', kwargs={'pk': self.prev.id})
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['pk']
@@ -88,7 +88,7 @@ class TaskPreviousView(RedirectView):
 
 class TaskNextView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return reverse('task_detail', kwargs={'pk': self.next.id})
+		return reverse('task_detail_read', kwargs={'pk': self.next.id})
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['pk']

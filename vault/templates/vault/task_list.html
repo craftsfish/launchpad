@@ -1,26 +1,9 @@
-{% extends "navi_base.html" %}
+{% extends "base.html" %}
 
 {% block header %}任务列表{% endblock %}
 
 {% block content %}
 <div class="col-sm-auto">
-	<table cellpadding="4" border="1">
-		<tr>
-			<th>编号</th>
-			<th>开始</th>
-			<th>结束</th>
-			<th>描述</th>
-		</tr>
-	{% for object in object_list %}
-		<tr>
-			<td><a href="{% url 'task_detail' object.id %}">{{object.id}}</a></td>
-			<td>{{object.start | date:"Y-m-d H:i:s" }}</td>
-			<td>{{object.end | date:"Y-m-d H:i:s" }}</td>
-			<td>{{object.desc}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-
 	{% if is_paginated %}
 		<div class="pagination">
 			<span class="step-links">
@@ -38,5 +21,22 @@
 			</span>
 		</div>
 	{%endif %}
+
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>编号</th>
+			<th>开始</th>
+			<th>结束</th>
+			<th>描述</th>
+		</tr>
+	{% for object in object_list %}
+		<tr>
+			<td><a href="{% url 'task_detail_read' object.id %}">{{object.id}}</a></td>
+			<td>{{object.start | date:"Y-m-d H:i:s" }}</td>
+			<td>{{object.end | date:"Y-m-d H:i:s" }}</td>
+			<td>{{object.desc}}</td>
+		</tr>
+	{% endfor %}
+	</table>
 </div>
 {% endblock %}

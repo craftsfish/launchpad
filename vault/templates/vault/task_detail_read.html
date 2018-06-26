@@ -18,6 +18,8 @@
 			{% endif %}
 		</tr>
 		<tr>
+			<td><a href="{% url 'task_previous' object.id %}">前一任务</a></td>
+			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
 			<td>{{object.id}}</td>
 			<td>{{object.desc}}</td>
 			{% if order %}
