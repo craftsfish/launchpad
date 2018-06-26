@@ -44,7 +44,7 @@
 		{% for a, b in uncleared %}
 		<tr>
 			{% if not forloop.counter0 %}
-			<td rowspan={{uncleared | length}}>资金结算</td>
+			<td rowspan={{uncleared | length}}><a href="{% url 'task_clear_bill' object.id %}">货款结算</a></td>
 			{% endif %}
 			<td>{{a.organization}}</td>
 			<td>{{a.item}}</td>

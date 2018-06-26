@@ -66,6 +66,7 @@ urlpatterns = [
 	url(r'^task/(?P<pk>[\d]+)/settle/$', TaskSettleView.as_view(), name='task_settle'),
 	url(r'^task/(?P<pk>[\d]+)/previous/$', TaskPreviousView.as_view(), name='task_previous'),
 	url(r'^task/(?P<pk>[\d]+)/next/$', TaskNextView.as_view(), name='task_next'),
+	url(r'^task/(?P<pk>[\d]+)/clear/bill/$', TaskClearBillView.as_view(), name='task_clear_bill'),
 
 	#tmorder
 	url(r'^tmorder/change/$', TmorderChangeView.as_view(), name='tmorder_change'),

@@ -212,3 +212,29 @@ class TaskSettleView(FfsMixin, TemplateView):
 			a = Account.objects.get(pk=aid)
 			form.label = a.organization.name + " : " + a.item.name + " : " + str(a)
 		return context
+
+class TaskClearBillForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None), label="支付主体")
+	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='付款账户')
+	paid = forms.DecimalField(initial=0, max_digits=10, decimal_places=2, min_value=0.01, label="付款")
+
+class TaskClearBillView(FormView):
+	template_name = "base_form.html"
+	form_class = TaskClearBillForm
+
+	def form_valid(self, form):
+		o = form.cleaned_data['organization']
+		w = form.cleaned_data['wallet']
+		p = form.cleaned_data['paid']
+		cash = Money.objects.get(name="人民币")
+		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
+		b = Account.get_or_create(o, cash.item_ptr, "负债", "应付货款", None)
+		Transaction.add(self.task, "结算", timezone.now(), a, -p, b)
+		return super(TaskClearBillView, self).form_valid(form)
+
+	def get_success_url(self):
+		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+
+	def dispatch(self, request, *args, **kwargs):
+		self.task = Task.objects.get(pk=kwargs['pk'])
+		return super(TaskClearBillView, self).dispatch(request, *args, **kwargs)
