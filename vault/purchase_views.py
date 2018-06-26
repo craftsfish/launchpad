@@ -17,7 +17,7 @@ PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 class PurchaseFilterForm(forms.Form):
 	keyword = forms.CharField()
 
-class PurchaseMixin(FfsMixin):
+class SmartPurchaseMixin(FfsMixin):
 	template_name = "{}/purchase.html".format(Organization._meta.app_label)
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
@@ -31,7 +31,7 @@ class PurchaseMixin(FfsMixin):
 		return r
 
 	def get_context_data(self, **kwargs):
-		context = super(PurchaseMixin, self).get_context_data(**kwargs)
+		context = super(SmartPurchaseMixin, self).get_context_data(**kwargs)
 		for form in context['formset']:
 			cid = form['id'].value()
 			c = Commodity.objects.get(pk=cid)
@@ -63,21 +63,21 @@ class PurchaseMixin(FfsMixin):
 			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
 			cash = Money.objects.get(name="人民币")
 			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
-		return super(PurchaseMixin, self).data_valid(form, formset)
+		return super(SmartPurchaseMixin, self).data_valid(form, formset)
 
-class TfgPurchaseView(PurchaseMixin, TemplateView):
+class TfgPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return Supplier.objects.get(name="泰福高")
 
-class YstPurchaseView(PurchaseMixin, TemplateView):
+class YstPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return Supplier.objects.get(name="原森太")
 
-class KmlPurchaseView(PurchaseMixin, TemplateView):
+class KmlPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return Supplier.objects.get(name="凯曼隆")
 
-class OtherPurchaseView(PurchaseMixin, TemplateView):
+class OtherPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return None
 
