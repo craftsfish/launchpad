@@ -41,21 +41,5 @@ class WalletDetailView(ListView):
 		for s in context["object_list"]:
 			s.balance = balance
 			balance -= s.change
-			tr = s.transaction
-			tsk = tr.task
-			d = ""
-			if tsk:
-				d += tsk.desc
-				o = None
-				if Jdorder.objects.filter(pk=tsk.id).exists():
-					o = Jdorder.objects.get(pk=tsk.id)
-				if Tmorder.objects.filter(pk=tsk.id).exists():
-					o = Tmorder.objects.get(pk=tsk.id)
-				if o:
-					d += "." + str(o.oid)
-				d += "." + tr.desc
-			else:
-				d = tr.desc
-			s.desc = d
 			s.counters = s.transaction.splits.exclude(id=s.id)
 		return context
