@@ -17,29 +17,11 @@ PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 class PurchaseFilterForm(forms.Form):
 	keyword = forms.CharField()
 
-class SmartPurchaseMixin(FfsMixin):
+class PurchaseMixin(FfsMixin):
 	template_name = "{}/purchase.html".format(Organization._meta.app_label)
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
 	sub_form_class = PurchaseFilterForm
-
-	def get_formset_initial(self):
-		r = []
-		for c in Turbine.replenish(self.get_supplier()):
-			for repo, level, refill in c.detail:
-				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False, 'level': int(level)})
-		return r
-
-	def get_context_data(self, **kwargs):
-		context = super(SmartPurchaseMixin, self).get_context_data(**kwargs)
-		for form in context['formset']:
-			cid = form['id'].value()
-			c = Commodity.objects.get(pk=cid)
-			rid = form['repository'].value()
-			r = Repository.objects.get(pk=rid)
-			form.label = c.name
-			form.note = "{}库存天数: {}".format(r.name, form['level'].value())
-		return context
 
 	def data_valid(self, form, formset):
 		self.task = Task(desc="进货")
@@ -63,7 +45,31 @@ class SmartPurchaseMixin(FfsMixin):
 			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
 			cash = Money.objects.get(name="人民币")
 			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
-		return super(SmartPurchaseMixin, self).data_valid(form, formset)
+		return super(PurchaseMixin, self).data_valid(form, formset)
+
+class SmartPurchaseMixin(PurchaseMixin):
+	template_name = "{}/purchase.html".format(Organization._meta.app_label)
+	form_class = PurchaseForm
+	formset_class = PurchaseCommodityFormSet
+	sub_form_class = PurchaseFilterForm
+
+	def get_formset_initial(self):
+		r = []
+		for c in Turbine.replenish(self.get_supplier()):
+			for repo, level, refill in c.detail:
+				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False, 'level': int(level)})
+		return r
+
+	def get_context_data(self, **kwargs):
+		context = super(SmartPurchaseMixin, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			c = Commodity.objects.get(pk=cid)
+			rid = form['repository'].value()
+			r = Repository.objects.get(pk=rid)
+			form.label = c.name
+			form.note = "{}库存天数: {}".format(r.name, form['level'].value())
+		return context
 
 class TfgPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
