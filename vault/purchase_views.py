@@ -91,7 +91,9 @@ class OtherPurchaseView(SmartPurchaseMixin, TemplateView):
 class PurchaseView(PurchaseMixin, TemplateView):
 	pass
 
-class AppendPurchaseForm(PurchaseForm):
+class AppendPurchaseForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None))
+	repository = forms.ModelChoiceField(queryset=Repository.objects)
 	task = forms.IntegerField()
 
 class AppendPurchaseView(PurchaseMixin, TemplateView):
