@@ -3,7 +3,7 @@ from .misc_views import *
 from django.utils import timezone
 
 class PurchaseForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None))
 	repository = forms.ModelChoiceField(queryset=Repository.objects)
 
 class PurchaseCommodityForm(forms.Form):
@@ -86,6 +86,9 @@ class KmlPurchaseView(SmartPurchaseMixin, TemplateView):
 class OtherPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return None
+
+class PurchaseView(PurchaseMixin, TemplateView):
+	pass
 
 class AppendPurchaseForm(forms.Form):
 	task = forms.IntegerField()
