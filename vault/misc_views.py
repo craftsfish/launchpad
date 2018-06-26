@@ -106,9 +106,7 @@ class FfsMixin(ContextMixin):
 		if form.is_valid() and formset.is_valid():
 			return self.data_valid(form, formset)
 		else:
-			print form.errors
-			print formset.errors
-			return self.render_to_response(self.get_context_data(form=form, formset=formset))
+			return self.render_to_response(self.get_context_data(form=form, formset=self.formset_class()))
 
 class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)

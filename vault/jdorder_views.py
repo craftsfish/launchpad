@@ -12,7 +12,13 @@ class JdorderDetailViewRead(RedirectView):
 
 class JdorderForm(forms.Form):
 	jdorder = forms.IntegerField()
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="为绿厨具专营店"))
+
+	def clean(self):
+		cleaned_data = super(JdorderForm, self).clean()
+		order_id = cleaned_data.get("jdorder")
+		if order_id > 100000000000:
+			self.add_error('jdorder', "非法京东订单")
 
 class JdorderMixin(FfsMixin):
 	"""
@@ -28,17 +34,7 @@ class JdorderMixin(FfsMixin):
 	def data_valid(self, form, formset):
 		self.org = form.cleaned_data['organization']
 		j = form.cleaned_data['jdorder']
-		if j > 100000000000:
-			self.error = "非法京东订单"
-			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		if self.org.name.find("为绿厨具专营店") == -1:
-			self.error = "店铺不对"
-			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		try:
-			j = Jdorder.objects.get(oid=j)
-		except Jdorder.DoesNotExist as e:
-			j = Jdorder(oid=j, desc="京东订单")
-			j.save()
+		j, created = Jdorder.objects.get_or_create(oid=j, desc="京东订单")
 		self.task = j.task_ptr
 		t = timezone.now()
 		for f in formset:

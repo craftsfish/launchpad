@@ -4,6 +4,9 @@
 	{% if error %}
 	<div class="alert alert-danger" role="alert">{{error}}</div>
 	{% endif %}
+	{% if form.errors %}
+	<div class="alert alert-danger" role="alert">{{form.errors}}</div>
+	{% endif %}
 	<form action="" method="post">
 		{% csrf_token %}
 		{% block extend_form %}{{ form.as_p }}{% endblock %}
