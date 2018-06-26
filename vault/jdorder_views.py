@@ -2,6 +2,7 @@
 from .misc_views import *
 from django.utils import timezone
 from django.views.generic import RedirectView
+from .turbine import *
 
 class JdorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
@@ -75,29 +76,9 @@ class JdorderReturnView(JdorderMixin, TemplateView):
 		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status, ship)
 
-class JdorderWechatFakeView(JdorderMixin, TemplateView):
+class JdorderWechatFakeView(FakeOrderCandidatesMixin, JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_wechat_fake.html".format(Organization._meta.app_label)
 	sub_form_class = CommoditySendForm
-
-	def get_formset_initial(self):
-		commodities = ["肥皂", "食用盐"]
-		d = []
-		for c in commodities:
-			c = Commodity.objects.get(name=c)
-			r = Repository.objects.get(name="孤山仓")
-			d.append({'id': c.id, 'quantity': 1, 'repository': r, 'status': 0, 'ship': 0})
-		return d
-
-	def get_context_data(self, **kwargs):
-		context = super(JdorderWechatFakeView, self).get_context_data(**kwargs)
-		for form in context['formset']:
-			cid = form['id'].value()
-			c = Commodity.objects.get(pk=cid)
-			form.label_repo = "孤山仓"
-			form.label_ship = "发货"
-			form.label_stat = "完好"
-			form.label_name = c.name
-		return context
 
 	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		o = self.task.jdorder

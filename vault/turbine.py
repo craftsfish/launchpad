@@ -11,6 +11,27 @@ import re
 class EmptyForm(forms.Form):
 	pass
 
+class FakeOrderCandidatesMixin(object):
+	def get_formset_initial(self):
+		l = []
+		commodities = ["肥皂", "食用盐"]
+		for c in commodities:
+			c = Commodity.objects.get(name=c)
+			r = Repository.objects.get(name="孤山仓")
+			l.append({'id': c.id, 'quantity': 1, 'repository': r, 'status': 0, 'ship': 0})
+		return l
+
+	def get_context_data(self, **kwargs):
+		context = super(FakeOrderCandidatesMixin, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			c = Commodity.objects.get(pk=cid)
+			form.label_repo = "孤山仓"
+			form.label_ship = "发货"
+			form.label_stat = "完好"
+			form.label_name = c.name
+		return context
+
 class Turbine:
 	@staticmethod
 	def get_shipping_out_information(commodity, repository, span):
