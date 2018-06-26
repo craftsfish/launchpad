@@ -12,7 +12,13 @@ class TmorderDetailViewRead(RedirectView):
 
 class TmorderForm(forms.Form):
 	tmorder = forms.IntegerField()
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="泰福高腾复专卖店"))
+
+	def clean(self):
+		cleaned_data = super(TmorderForm, self).clean()
+		order_id = cleaned_data.get("tmorder")
+		if order_id < 100000000000000000:
+			self.add_error('tmorder', "非法天猫订单")
 
 class TmorderMixin(FfsMixin):
 	"""
@@ -28,17 +34,7 @@ class TmorderMixin(FfsMixin):
 	def data_valid(self, form, formset):
 		self.org = form.cleaned_data['organization']
 		o = form.cleaned_data['tmorder']
-		if o < 100000000000000000:
-			self.error = "非法天猫订单"
-			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		if self.org.name != "泰福高腾复专卖店":
-			self.error = "店铺不对"
-			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		try:
-			o = Tmorder.objects.get(oid=o)
-		except Tmorder.DoesNotExist as e:
-			o = Tmorder(oid=o, desc="天猫订单")
-			o.save()
+		o, created = Tmorder.objects.get_or_create(oid=o, desc="天猫订单")
 		self.task = o.task_ptr
 		t = timezone.now()
 		for f in formset:
