@@ -11,7 +11,6 @@ from task_views import *
 from misc_views import *
 from jdorder_views import *
 from tmorder_views import *
-from daily_views import *
 from chore_views import *
 from wallet_views import *
 from purchase_views import *
@@ -85,21 +84,22 @@ urlpatterns = [
 	url(r'^jdorder/(?P<pk>[\d]+)/$', JdorderDetailViewRead.as_view(), name='jdorder_detail_read'),
 	url(r'^jdorder/rebate/$', JdorderRebateView.as_view(), name='jdorder_rebate'),
 
-	#daily
-	url(r'^daily/trans_shipment_in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),
-
 	#misc
 	url(r'^misc/daily_task/$', DailyTaskView.as_view(), name='daily_task'),
 	url(r'^misc/retail/$', RetailView.as_view(), name='retail'),
 	url(r'^misc/change/$', ChangeView.as_view(), name='change'),
 	url(r'^misc/commodity/change/repository/$', ChangeRepositoryView.as_view(), name='change_repository'),
 	url(r'^misc/receivable/commodity/$', ReceivableCommodityView.as_view(), name='receivable_commodity'),
+
+	#purchase
 	url(r'^misc/purchase/default/$', PurchaseView.as_view(), name='purchase'),
 	url(r'^misc/purchase/tfg/$', TfgPurchaseView.as_view(), name='tfg_purchase'),
 	url(r'^misc/purchase/yst/$', YstPurchaseView.as_view(), name='yst_purchase'),
 	url(r'^misc/purchase/kml/$', KmlPurchaseView.as_view(), name='kml_purchase'),
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
 	url(r'^misc/purchase/append/$', AppendPurchaseView.as_view(), name='append_purchase'),
+	url(r'^misc/purchase/trans_shipment/in/$', TransShipmentInView.as_view(), name='trans_shipment_in'),
+
 	url(r'^misc/daily/calibration/$', DailyCalibrationView.as_view(), name='daily_calibration'),
 	url(r'^misc/daily/calibration/match/$', DailyCalibrationMatchView.as_view(), name='daily_calibration_match'),
 	url(r'^misc/pay/wechat/recruit/bonus/$', PayWechatRecruitBonusView.as_view(), name='pay_wechat_recruit_bonus'),
