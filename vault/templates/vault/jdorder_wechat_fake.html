@@ -12,10 +12,6 @@
 	<p>组织: {{form.organization}}</p>
 {% endblock %}
 
-{% block usage %}
-	{% include 'vault/include/wechat_fake_instruction.html' %}
-{% endblock %}
-
 {% block formset %}
 	{% for form in formset %}
 	<tr>

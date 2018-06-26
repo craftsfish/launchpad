@@ -1,4 +1,4 @@
-{% extends "base_left_middle_right.html" %}
+{% extends "base_left_right.html" %}
 
 {% block content_left %}
 	{% if error %}
@@ -20,13 +20,7 @@
 		<input type="submit" value="提交"/>
 	</form>
 {% endblock %}
-{% block content_middle %}
+{% block content_right %}
 	<p>交易标的筛选器</p>
 	{% block sub_form %}{{ sub_form.as_p }}{% endblock %}
-{% endblock %}
-{% block content_right %}
-	<div class="alert alert-danger" role="alert">
-	<p>使用说明:</p>
-	{% block usage %}{% endblock %}
-	</div>
 {% endblock %}

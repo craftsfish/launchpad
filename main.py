@@ -29,6 +29,8 @@ from datetime import timedelta
 from vault.jdorder import *
 
 def test():
+	for n in Split.objects.filter(transaction__desc="刷单.发货").values_list('account__item__name', flat=True).distinct():
+		print n
 	pass
 
 def __quit():

@@ -14,7 +14,24 @@ class EmptyForm(forms.Form):
 class FakeOrderCandidatesMixin(object):
 	def get_formset_initial(self):
 		l = []
-		commodities = ["肥皂", "食用盐"]
+		commodities = [
+			"餐具",
+			"食用盐",
+			"肥皂",
+			"硅胶刷绿色",
+			"硅胶刷红色",
+			"硅胶刷橙色",
+			"煎蛋器-爱心",
+			"煎蛋器-圆",
+			"洗衣粉",
+			"无痕钩",
+			"折叠款夹碗器",
+			"打蛋器",
+			"弹簧款夹碗器",
+			"刷单专用的未入账物品",
+			"切沙拉神器",
+			"T4231",
+		]
 		for c in commodities:
 			c = Commodity.objects.get(name=c)
 			r = Repository.objects.get(name="孤山仓")
