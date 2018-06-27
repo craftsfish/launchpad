@@ -29,7 +29,7 @@
 				<table cellpadding="4">
 					{% for c in split.counters %}
 						<tr>
-							<td align="left"><a href="{% url 'account_detail' c.account.id %}">{{c.account}}</a></td>
+							<td align="left"><a href="{% url 'account_detail' c.account.uuid %}">{{c.account}}</a></td>
 							<td align="right">{{c.change}}</td>
 						</tr>
 					{% endfor %}

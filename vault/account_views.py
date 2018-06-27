@@ -35,7 +35,7 @@ class AccountDetailView(ListView):
 	paginate_by = 20
 
 	def __get_object(self):
-		self.object = Account.objects.get(pk=self.kwargs['pk'])
+		self.object = Account.objects.get(uuid=self.kwargs['uuid'])
 
 	def get_template_names(self):
 		return ["%s/account_detail.html" % (Account._meta.app_label)]

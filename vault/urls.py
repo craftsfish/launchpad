@@ -32,8 +32,8 @@ urlpatterns = [
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
-	url(r'^account/(?P<pk>[\d]+)/root/$', AccountDetailView.as_view(), name='account_detail'),
-	url(r'^account/(?P<pk>[\d]+)/$', AccountDetailViewRead.as_view(), name='account_detail_read'),
+	url(r'^account/(?P<uuid>[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})/root/$', AccountDetailView.as_view(), name='account_detail'),
+	url(r'^account/(?P<uuid>[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})/$', AccountDetailViewRead.as_view(), name='account_detail_read'),
 	url(r'^account/fake/wechat/$', AccountDetailViewRead.as_view(), name='account_fake_wechat', kwargs={'pk': 87}),
 
 	#wallet

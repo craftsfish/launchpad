@@ -92,7 +92,7 @@
 		{% if not forloop.counter0 %}
 			<td>{{s.account.item}}</td>
 		{% endif %}
-		<td align="left"><a href="{% url 'account_detail' s.account.id %}">{{s.account}}</a></td>
+		<td align="left"><a href="{% url 'account_detail' s.account.uuid %}">{{s.account}}</a></td>
 		{% if t.is_money %}
 			<td align="right">{{s.change | stringformat:"+.2f"}}</td>
 		{% else %}

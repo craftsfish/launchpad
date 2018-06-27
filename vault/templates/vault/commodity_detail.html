@@ -33,7 +33,7 @@
 		</tr>
 		{% for a in accounts %}
 		<tr>
-			<td align="left"><a href="{% url 'account_detail_read' a.id %}">详情</a></td>
+			<td align="left"><a href="{% url 'account_detail_read' a.uuid %}">详情</a></td>
 			<td>{{a.category_name}}</td>
 			<td>{{a.repository}}</td>
 			<td>{{a.name}}</td>

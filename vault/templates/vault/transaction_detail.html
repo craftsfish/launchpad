@@ -28,7 +28,7 @@
 				<table cellpadding="4">
 					{% for s in splits %}
 						<tr>
-							<td align="left"><a href="{% url 'account_detail' s.account.id %}">{{s.account}}</a></td>
+							<td align="left"><a href="{% url 'account_detail' s.account.uuid %}">{{s.account}}</a></td>
 							<td align="right">{{s.change}}</td>
 						</tr>
 					{% endfor %}
