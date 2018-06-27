@@ -14,15 +14,14 @@
 
 {% block content_left %}
 	<table cellpadding="4" border="1">
-		<tr><td><a class="nav-link active" href="{% url 'organization_list' %}">账本</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'commodity_list' %}">物资</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'wallet_list' %}">钱包</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'transaction_list' %}">交易</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'task_list' %}">任务</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'supplier_list' %}">供应商</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
-		<tr><td><a class="nav-link active" href="{% url 'daily_task' %}">经营调整</a></td></tr>
+		<tr><td><a href="{% url 'organization_list' %}">账本</a></td></tr>
+		<tr><td><a href="{% url 'commodity_list' %}">物资</a></td></tr>
+		<tr><td><a href="{% url 'wallet_list' %}">钱包</a></td></tr>
+		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
+		<tr><td><a href="{% url 'task_list' %}">任务</a></td></tr>
+		<tr><td><a href="{% url 'supplier_list' %}">供应商</a></td></tr>
+		<tr><td><a href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>
+		<tr><td><a href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
 	</table>
 {% endblock %}
 
