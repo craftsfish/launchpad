@@ -93,5 +93,24 @@ class ManualCalibrationCommodityFilterForm(forms.Form):
 class ManualCalibrationView(FfsMixin, TemplateView):
 	template_name = "{}/manual_calibration.html".format(Organization._meta.app_label)
 	form_class = EmptyForm
-	formset_class = ManualCalibrationCommodityForm
+	formset_class = ManualCalibrationCommodityFormSet
 	sub_form_class = ManualCalibrationCommodityFilterForm
+
+	def data_valid(self, form, formset):
+		self.task = None
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			c = Commodity.objects.get(pk=d['id'])
+			q = d['quantity']
+			s = Itemstatus.v2s(d['status'])
+			r = Repository.objects.get(name=d['repository'])
+			self.task = Turbine.calibration_commodity(self.task, c, r, s, q,
+				Organization.objects.filter(parent=None).exclude(name="个人"))
+		return super(ManualCalibrationView, self).data_valid(form, formset)
+
+	def get_success_url(self):
+		if self.task:
+			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		else:
+			return reverse('daily_calibration_match')
