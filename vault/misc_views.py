@@ -349,3 +349,6 @@ class PayWechatRecruitBonusView(FormView):
 	def get_context_data(self, **kwargs):
 		kwargs['title'] = "支付微信刷单拉人奖励"
 		return super(PayWechatRecruitBonusView, self).get_context_data(**kwargs)
+
+class HelpView(TemplateView):
+	template_name = "{}/help.html".format(Organization._meta.app_label)

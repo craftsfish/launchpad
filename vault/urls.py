@@ -103,6 +103,7 @@ urlpatterns = [
 	url(r'^misc/daily/calibration/match/$', DailyCalibrationMatchView.as_view(), name='daily_calibration_match'),
 	url(r'^misc/pay/wechat/recruit/bonus/$', PayWechatRecruitBonusView.as_view(), name='pay_wechat_recruit_bonus'),
 	url(r'^misc/operation/account/clear/$', OperationAccountClearView.as_view(), name='operation_account_clear'),
+	url(r'^misc/help/$', HelpView.as_view(), name='help'),
 
 	#chore
 	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),
