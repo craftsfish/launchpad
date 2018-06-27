@@ -159,6 +159,7 @@ class Turbine:
 	def add_account():
 		info = (
 			("南京为绿电子科技有限公司", "人民币", "资产", None, "应收账款"),
+			("上海腾复日用品有限公司", "人民币", "支出", None, "其他支出"),
 		)
 		for o, i, c, r, n in info:
 			with transaction.atomic():
@@ -228,3 +229,7 @@ class Turbine:
 		)
 		for n, d, r in counterfeits:
 			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
+
+		for a in Account.objects.all():
+			a.uuid = uuid.uuid4()
+			a.save()

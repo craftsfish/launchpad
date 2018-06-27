@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import uuid
 from django.db import models
 from organization import *
 from repository import *
@@ -10,6 +11,7 @@ class Account(models.Model):
 	class Meta:
 		unique_together = ("organization", "item", "category", "repository", "name")
 
+	uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 	name = models.CharField("名称", max_length=30, null=True, blank=True)
 	balance = models.DecimalField("余额", default=0, max_digits=20, decimal_places=2)
 	organization = models.ForeignKey(Organization, verbose_name="组织", related_name="accounts")
