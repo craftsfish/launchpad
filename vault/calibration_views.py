@@ -76,3 +76,22 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 
 class DailyCalibrationMatchView(TemplateView):
 	template_name = "{}/calibration_match.html".format(Organization._meta.app_label)
+
+class ManualCalibrationCommodityForm(forms.Form):
+	check = forms.BooleanField(required=False)
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	quantity = forms.IntegerField()
+	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+ManualCalibrationCommodityFormSet = formset_factory(ManualCalibrationCommodityForm, extra=0)
+
+class ManualCalibrationCommodityFilterForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	status = forms.ChoiceField(choices=Itemstatus.choices)
+	keyword = forms.CharField()
+
+class ManualCalibrationView(FfsMixin, TemplateView):
+	template_name = "{}/manual_calibration.html".format(Organization._meta.app_label)
+	form_class = EmptyForm
+	formset_class = ManualCalibrationCommodityForm
+	sub_form_class = ManualCalibrationCommodityFilterForm

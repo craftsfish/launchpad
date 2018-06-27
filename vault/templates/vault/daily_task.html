@@ -36,6 +36,7 @@
 		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td><td>智能预测进货数据</td></tr>
 		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td><td>智能预测进货数据</td></tr>
 		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。<br/>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
+		<tr><td><a href="{% url 'manual_calibration' %}">单个盘点</a></td><td></td></tr>
 		<tr><td><a href="{% url 'chore_list' %}">运营工作室</a></td><td>京东/天猫的退货，换货，刷单, 返现都用这个链接</td></tr>
 	</table>
 {% endblock %}

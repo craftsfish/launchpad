@@ -13,7 +13,11 @@
 		<table cellpadding="4" border="1">
 			{{ formset.management_form }}
 			<tbody id="item_table">
-				{% block formset %}{{ formset.as_p }}{% endblock %}
+				{% block formset %}
+					{% for form in formset %}
+					{{ form.as_p }}
+					{% endfor %}
+				{% endblock %}
 			</tbody>
 		</table>
 		<br></br>
