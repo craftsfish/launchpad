@@ -1,4 +1,4 @@
-{% extends "navi_base.html" %}
+{% extends "base_left_right.html" %}
 
 {% block header %}管理中心{% endblock %}
 
@@ -12,8 +12,21 @@
 	</script>
 {% endblock %}
 
-{% block content %}
-<div class="col">
+{% block content_left %}
+	<table cellpadding="4" border="1">
+		<tr><td><a class="nav-link active" href="{% url 'organization_list' %}">账本</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'commodity_list' %}">物资</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'wallet_list' %}">钱包</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'transaction_list' %}">交易</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'task_list' %}">任务</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'supplier_list' %}">供应商</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
+		<tr><td><a class="nav-link active" href="{% url 'daily_task' %}">经营调整</a></td></tr>
+	</table>
+{% endblock %}
+
+{% block content_right %}
 	<table cellpadding="4" border="1">
 		<tr><td><a href="javascript:void(0);" onclick ="task_lookup()">查看任务</a></td><td><input type="number" id="id_task" /></td></tr>
 		<tr><td><a href="{% url 'retail' %}">其他销售</a></td><td>非平台(天猫/京东)订单销售</td></tr>
@@ -26,5 +39,4 @@
 		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。<br/>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
 		<tr><td><a href="{% url 'chore_list' %}">运营工作室</a></td><td>京东/天猫的退货，换货，刷单, 返现都用这个链接</td></tr>
 	</table>
-</div>
 {% endblock %}
