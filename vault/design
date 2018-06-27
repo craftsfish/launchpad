@@ -10,3 +10,9 @@
 	如果不区分,账户拥有容器属性和物品属性，隐含要求仓库&钱包基于同一基类，货币&物资基于同一基类.
 	用户创建账户的时候必须小心的选择容器和存放的物品,以防物资存放到钱包里面，货币存放到仓库里面.
 	基于同一基类，split的账户属性定义为该基类，否则需要定义两个不同的split类（资金/物资）.
+
+organization hierarchy
+governor, all
+director, company
+manager, stall
+employee, nothing
