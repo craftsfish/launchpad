@@ -14,6 +14,7 @@ from tmorder_views import *
 from chore_views import *
 from wallet_views import *
 from purchase_views import *
+from calibration_views import *
 
 urlpatterns = [
 	#supplier
