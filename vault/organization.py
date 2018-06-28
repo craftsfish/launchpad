@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-
+import uuid
 from django.db import models
 
 class Organization(models.Model):
+	uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 	name = models.CharField(max_length=30)
 	parent = models.ForeignKey('self', verbose_name="上级", null=True, blank=True, related_name="children")
 

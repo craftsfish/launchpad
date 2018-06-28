@@ -230,6 +230,6 @@ class Turbine:
 		for n, d, r in counterfeits:
 			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
 
-		for a in Account.objects.all():
-			a.uuid = uuid.uuid4()
-			a.save()
+		for o in Organization.objects.all():
+			o.uuid = uuid.uuid4()
+			o.save()
