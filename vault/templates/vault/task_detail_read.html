@@ -2,6 +2,33 @@
 
 {% block header %}任务详情{% endblock %}
 
+{% block extra_script %}
+<script>
+function closePrint () {
+	document.body.removeChild(this.__container__);
+}
+
+function setPrint () {
+	this.contentWindow.__container__ = this;
+	this.contentWindow.onbeforeunload = closePrint;
+	this.contentWindow.onafterprint = closePrint;
+	this.contentWindow.focus(); // Required for IE
+	this.contentWindow.print();
+}
+
+function print_invoice () {
+	var oHiddFrame = document.createElement("iframe");
+	oHiddFrame.onload = setPrint;
+	oHiddFrame.style.visibility = "hidden";
+	oHiddFrame.style.position = "fixed";
+	oHiddFrame.style.right = "0";
+	oHiddFrame.style.bottom = "0";
+	oHiddFrame.src = "{% url 'task_invoice' object.id %}";
+	document.body.appendChild(oHiddFrame);
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
@@ -18,6 +45,7 @@
 			<th>发货仓库</th>
 			<th>销售额</th>
 			<th>备注建议</th>
+			<th></th>
 			{% endif %}
 		</tr>
 		<tr>
@@ -33,6 +61,7 @@
 			<td>{{order.repository}}</td>
 			<td>{{order.sale}}</td>
 			<td>{{remark}}</td>
+			<td><a href="javascript:void(0);" onclick="print_invoice()">打印发货单</a></td>
 			{% endif %}
 		</tr>
 	</table>

@@ -248,3 +248,23 @@ class TaskClearBillView(FormView):
 	def dispatch(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])
 		return super(TaskClearBillView, self).dispatch(request, *args, **kwargs)
+
+class TaskInvoiceView(DetailView):
+	model = Task
+	template_name = "{}/task_invoices.html".format(Organization._meta.app_label)
+
+	def get_context_data(self, **kwargs):
+		context = super(TaskInvoiceView, self).get_context_data(**kwargs)
+		order = None
+		if hasattr(self.object, "jdorder"):
+			order = self.object.jdorder
+		if hasattr(self.object, "tmorder"):
+			order = self.object.tmorder
+		if not order: return context
+
+		context['order'] = order
+		invoices = []
+		for i in order.task_ptr.transactions.filter(desc="刷单.发货").order_by("id"):
+			invoices.append(i.splits.order_by("account__category", "change").last())
+		context['invoices'] = invoices
+		return context

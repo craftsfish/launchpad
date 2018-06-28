@@ -1,0 +1,16 @@
+{% extends "base_single.html" %}
+
+{% block content %}
+	<table cellpadding="4" border="1">
+		<tr>
+			<td>{{object.desc}}</td>
+			<td>{{order.oid}}</td>
+		</tr>
+		{% for split in invoices %}
+			<tr>
+				<td>{{ split.account.item }}</td>
+				<td>{{ split.change | stringformat:"+.0f"}}</td>
+			<tr>
+		{% endfor %}
+	</table>
+{% endblock %}
