@@ -45,7 +45,9 @@ function print_invoice () {
 			<th>发货仓库</th>
 			<th>销售额</th>
 			<th>备注建议</th>
-			<th></th>
+			{% if order.counterfeit %}
+				<th></th>
+			{% endif %}
 			{% endif %}
 		</tr>
 		<tr>
@@ -61,7 +63,9 @@ function print_invoice () {
 			<td>{{order.repository}}</td>
 			<td>{{order.sale}}</td>
 			<td>{{remark}}</td>
-			<td><a href="javascript:void(0);" onclick="print_invoice()">打印发货单</a></td>
+			{% if order.counterfeit %}
+				<td><a href="javascript:void(0);" onclick="print_invoice()">刷单发货明细打印</a></td>
+			{% endif %}
 			{% endif %}
 		</tr>
 	</table>
