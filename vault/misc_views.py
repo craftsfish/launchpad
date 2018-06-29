@@ -17,9 +17,7 @@ class RetailForm(forms.Form):
 class ChangeForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
 
-class CommodityShippingBaseForm(forms.Form):
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	keyword = forms.CharField()
+class CommodityShippingBaseForm(BaseKeywordForm, BaseRepositoryForm): pass
 
 class CommodityShippingForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipStatusForm, BaseRepositoryForm): pass
 
