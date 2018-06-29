@@ -2,10 +2,7 @@
 from .misc_views import *
 from django.utils import timezone
 
-class PurchaseForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None))
-	repository = forms.ModelChoiceField(queryset=Repository.objects)
-	desc = forms.CharField(label='描述')
+class PurchaseForm(BaseDescriptionForm, BaseRepositoryForm, BaseRootOrganizationForm): pass
 
 class PurchaseCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
@@ -15,14 +12,11 @@ class PurchaseCommodityForm(forms.Form):
 	level = forms.IntegerField(required=False, widget=forms.HiddenInput)
 PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 
-class PurchaseFilterForm(forms.Form):
-	keyword = forms.CharField()
-
 class PurchaseMixin(FfsMixin):
 	template_name = "{}/purchase.html".format(Organization._meta.app_label)
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
-	sub_form_class = PurchaseFilterForm
+	sub_form_class = BaseKeywordForm
 
 	def get_task(self, form):
 		self.task = Task(desc="进货.{}".format(form.cleaned_data['desc']))

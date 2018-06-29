@@ -7,6 +7,9 @@ from organization import Organization
 class BaseOrganizationForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects, label="主体")
 
+class BaseRootOrganizationForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None), label="主体")
+
 class BaseIndividualForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="个人"), label="主体")
 
@@ -48,6 +51,9 @@ class BaseShipStatusHiddenForm(forms.Form):
 
 class BaseKeywordForm(forms.Form):
 	keyword = forms.CharField(label="关键字")
+
+class BaseDescriptionForm(forms.Form):
+	desc = forms.CharField(label="描述")
 
 class BaseCommodityDetailForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
