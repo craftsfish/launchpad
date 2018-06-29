@@ -3,6 +3,7 @@ from .misc_views import *
 from django.utils import timezone
 from django.views.generic import RedirectView
 from .turbine import *
+from .base_forms import *
 
 class TmorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
@@ -10,16 +11,6 @@ class TmorderDetailViewRead(RedirectView):
 			return reverse('task_detail_read', kwargs={'pk': Tmorder.objects.get(oid=kwargs['pk']).id})
 		except Tmorder.DoesNotExist as e:
 			return reverse('chore_list')
-
-class TmorderForm(forms.Form):
-	tmorder = forms.IntegerField(label="订单编号")
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="泰福高腾复专卖店"), label="店铺")
-
-	def clean(self):
-		cleaned_data = super(TmorderForm, self).clean()
-		order_id = cleaned_data.get("tmorder")
-		if order_id < 100000000000000000:
-			self.add_error('tmorder', "非法天猫订单")
 
 class TmorderMixin(FfsMixin):
 	"""

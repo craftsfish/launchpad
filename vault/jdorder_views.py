@@ -3,6 +3,7 @@ from .misc_views import *
 from django.utils import timezone
 from django.views.generic import RedirectView
 from .turbine import *
+from .base_forms import *
 
 class JdorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
@@ -10,16 +11,6 @@ class JdorderDetailViewRead(RedirectView):
 			return reverse('task_detail_read', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
 		except Jdorder.DoesNotExist as e:
 			return reverse('chore_list')
-
-class JdorderForm(forms.Form):
-	jdorder = forms.IntegerField(label="订单编号")
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="为绿厨具专营店"), label="店铺")
-
-	def clean(self):
-		cleaned_data = super(JdorderForm, self).clean()
-		order_id = cleaned_data.get("jdorder")
-		if order_id > 100000000000:
-			self.add_error('jdorder', "非法京东订单")
 
 class JdorderMixin(FfsMixin):
 	"""

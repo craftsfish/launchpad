@@ -53,3 +53,23 @@ class BaseCommodityDetailForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	check = forms.BooleanField(required=False)
 	quantity = forms.IntegerField()
+
+class JdorderForm(forms.Form):
+	jdorder = forms.IntegerField(label="订单编号")
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="为绿厨具专营店"), label="店铺")
+
+	def clean(self):
+		cleaned_data = super(JdorderForm, self).clean()
+		order_id = cleaned_data.get("jdorder")
+		if order_id > 100000000000:
+			self.add_error('jdorder', "非法京东订单")
+
+class TmorderForm(forms.Form):
+	tmorder = forms.IntegerField(label="订单编号")
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="泰福高腾复专卖店"), label="店铺")
+
+	def clean(self):
+		cleaned_data = super(TmorderForm, self).clean()
+		order_id = cleaned_data.get("tmorder")
+		if order_id < 100000000000000000:
+			self.add_error('tmorder', "非法天猫订单")
