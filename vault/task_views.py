@@ -224,9 +224,10 @@ class TaskSettleView(FfsMixin, TemplateView):
 		return context
 
 class TaskClearBillForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None), label="支付主体")
-	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='付款账户')
-	paid = forms.DecimalField(initial=0, max_digits=10, decimal_places=2, min_value=0.01, label="付款")
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(parent=None), label="主体")
+	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='账户')
+	status = forms.ChoiceField(choices=ClearStatus.choices, label="收/付款")
+	amount = forms.DecimalField(initial=0, max_digits=10, decimal_places=2, min_value=0.01, label="金额")
 
 class TaskClearBillView(FormView):
 	template_name = "base_form.html"
@@ -235,11 +236,16 @@ class TaskClearBillView(FormView):
 	def form_valid(self, form):
 		o = form.cleaned_data['organization']
 		w = form.cleaned_data['wallet']
-		p = form.cleaned_data['paid']
+		s = form.cleaned_data['status']
+		q = form.cleaned_data['amount']
 		cash = Money.objects.get(name="人民币")
 		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
-		b = Account.get_or_create(o, cash.item_ptr, "负债", "应付货款", None)
-		Transaction.add(self.task, "结算", timezone.now(), a, -p, b)
+		if ClearStatus.v2s(s) == "收款":
+			b = Account.get_or_create(o, cash.item_ptr, "资产", "应收货款", None)
+		else:
+			q = -q
+			b = Account.get_or_create(o, cash.item_ptr, "负债", "应付货款", None)
+		Transaction.add(self.task, "结算", timezone.now(), a, q, b)
 		return super(TaskClearBillView, self).form_valid(form)
 
 	def get_success_url(self):

@@ -55,6 +55,9 @@ class Itemstatus(BaseStatus):
 class Shipstatus(BaseStatus):
 	choices = tuple(enumerate(("收货", "发货")))
 
+class ClearStatus(BaseStatus):
+	choices = tuple(enumerate(("收款", "付款")))
+
 @enum.unique
 class DeliveryStatus(enum.IntEnum):
 	inbook = 0
