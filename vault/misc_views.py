@@ -34,11 +34,7 @@ class CommodityChangeRepositoryForm(forms.Form):
 	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
 	keyword = forms.CharField()
 
-class CommodityDetailBaseForm(forms.Form):
-	id = forms.IntegerField(widget=forms.HiddenInput)
-	quantity = forms.IntegerField()
-	check = forms.BooleanField(required=False)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+class CommodityDetailBaseForm(BaseRepositoryHiddenForm, BaseCommodityDetailForm): pass
 CommodityDetailBaseFormSet = formset_factory(CommodityDetailBaseForm, extra=0)
 
 class CommodityDetailForm(CommodityDetailBaseForm):

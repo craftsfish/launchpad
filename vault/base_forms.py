@@ -9,6 +9,9 @@ class BaseCommodityStatusForm(forms.Form):
 class BaseRepositoryForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 
+class BaseRepositoryHiddenForm(forms.Form):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+
 class BaseShipStatusForm(forms.Form):
 	ship = forms.ChoiceField(choices=Shipstatus.choices)
 
@@ -20,3 +23,8 @@ class BaseShipStatusSendForm(forms.Form):
 
 class BaseKeywordForm(forms.Form):
 	keyword = forms.CharField()
+
+class BaseCommodityDetailForm(forms.Form):
+	id = forms.IntegerField(widget=forms.HiddenInput)
+	check = forms.BooleanField(required=False)
+	quantity = forms.IntegerField()
