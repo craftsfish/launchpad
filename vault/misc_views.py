@@ -11,12 +11,6 @@ from django.http import HttpResponseRedirect
 from django.utils import timezone
 from .base_forms import *
 
-class RetailForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="个人"))
-
-class ChangeForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
-
 class CommodityShippingBaseForm(BaseKeywordForm, BaseRepositoryForm): pass
 
 class CommodityShippingForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipStatusForm, BaseRepositoryForm): pass
@@ -81,7 +75,7 @@ class DailyTaskView(TemplateView):
 
 class RetailView(FfsMixin, TemplateView):
 	template_name = "{}/retail.html".format(Organization._meta.app_label)
-	form_class = RetailForm
+	form_class = BaseIndividualForm
 	formset_class = CommodityDetailBaseFormSet
 	sub_form_class = CommodityShippingBaseForm
 
@@ -103,7 +97,7 @@ class RetailView(FfsMixin, TemplateView):
 
 class ChangeView(FfsMixin, TemplateView):
 	template_name = "{}/change.html".format(Organization._meta.app_label)
-	form_class = ChangeForm
+	form_class = BaseOrganizationForm
 	formset_class = CommodityDetailFormSet
 	sub_form_class = CommodityShippingForm
 
@@ -129,7 +123,7 @@ class ChangeView(FfsMixin, TemplateView):
 
 class ChangeRepositoryView(FfsMixin, TemplateView):
 	template_name = "{}/change_repository.html".format(Organization._meta.app_label)
-	form_class = ChangeForm
+	form_class = BaseOrganizationForm
 	formset_class = CommodityChangeRepositoryDetailFormSet
 	sub_form_class = CommodityChangeRepositoryForm
 

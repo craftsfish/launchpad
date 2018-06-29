@@ -2,15 +2,22 @@
 from django import forms
 from ground import *
 from repository import Repository
+from organization import Organization
+
+class BaseOrganizationForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects, label="主体")
+
+class BaseIndividualForm(forms.Form):
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="个人"), label="主体")
 
 class BaseCommodityStatusForm(forms.Form):
-	status = forms.ChoiceField(choices=Itemstatus.choices[0:3])
+	status = forms.ChoiceField(choices=Itemstatus.choices[0:3], label="状态")
 
 class BaseCommodityStatusHiddenForm(forms.Form):
 	status = forms.ChoiceField(choices=Itemstatus.choices[0:3], widget=forms.HiddenInput)
 
 class BaseRepositoryForm(forms.Form):
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None, label="仓库")
 
 class BaseRepositoryHiddenForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
@@ -28,19 +35,19 @@ class BaseRepositoryChangeHiddenForm(forms.Form):
 	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
 
 class BaseShipStatusForm(forms.Form):
-	ship = forms.ChoiceField(choices=Shipstatus.choices)
+	ship = forms.ChoiceField(choices=Shipstatus.choices, label="收/发")
 
 class BaseShipStatusReceiveForm(forms.Form):
-	ship = forms.ChoiceField(choices=Shipstatus.choices[0:1])
+	ship = forms.ChoiceField(choices=Shipstatus.choices[0:1], label="收/发")
 
 class BaseShipStatusSendForm(forms.Form):
-	ship = forms.ChoiceField(choices=Shipstatus.choices[1:2])
+	ship = forms.ChoiceField(choices=Shipstatus.choices[1:2], label="收/发")
 
 class BaseShipStatusHiddenForm(forms.Form):
 	ship = forms.ChoiceField(choices=Shipstatus.choices, widget=forms.HiddenInput)
 
 class BaseKeywordForm(forms.Form):
-	keyword = forms.CharField()
+	keyword = forms.CharField(label="关键字")
 
 class BaseCommodityDetailForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
