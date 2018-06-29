@@ -10,6 +10,7 @@
 			<th></th>
 			<th>任务编号</th>
 			<th>任务描述</th>
+			<th></th>
 			{% if order %}
 			<th>订单编号</th>
 			<th>订单状态</th>
@@ -25,6 +26,7 @@
 			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
 			<td>{{object.id}}</td>
 			<td>{{object.desc}}</td>
+			<td><a href="{% url 'task_revert' object.id %}">取消任务</a></td>
 			{% if order %}
 			<td>{{order.oid}}</td>
 			<td>{{order.status}}</td>

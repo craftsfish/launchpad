@@ -274,3 +274,17 @@ class TaskInvoiceView(DetailView):
 			invoices.append(i.splits.order_by("account__category", "change").last())
 		context['invoices'] = invoices
 		return context
+
+class TaskRevertView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return reverse('task_detail', kwargs={'pk': self.object.id})
+
+	def get(self, request, *args, **kwargs):
+		self.object = Task.objects.get(pk=kwargs['pk'])
+		for i in self.object.transactions.order_by("id"):
+			args = []
+			for s in i.splits.order_by("id"):
+				args.append(s.account)
+				args.append(-s.change)
+			Transaction.add(self.object, "取消", timezone.now(), *args)
+		return super(TaskRevertView, self).get(request, *args, **kwargs)
