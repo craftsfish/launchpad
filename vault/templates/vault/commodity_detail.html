@@ -15,7 +15,11 @@
 		{% for repo in repos %}
 		<tr>
 			{% for i in repo %}
-			<td>{{i}}</td>
+			{% if forloop.counter0 > 0 and forloop.counter0 < 6 %}
+				<td><a href={{i.url}} %}>{{i.v}}</a></td>
+			{% else %}
+				<td>{{i}}</td>
+			{% endif %}
 			{% endfor %}
 		</tr>
 		{% endfor %}

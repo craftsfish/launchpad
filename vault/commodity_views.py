@@ -10,6 +10,9 @@ from turbine import *
 class CommodityListView(ListView):
 	model = Commodity
 
+class RepositoryDetailInfo:
+	pass
+
 class CommodityDetailView(DetailView):
 	model = Commodity
 
@@ -38,7 +41,10 @@ class CommodityDetailView(DetailView):
 				v = Account.objects.filter(item=self.object).filter(repository=r).filter(name=s).aggregate(Sum('balance'))['balance__sum']
 				if v: v = int(v)
 				else: v = 0
-				l.append(v)
+				i = RepositoryDetailInfo()
+				i.v = v
+				i.url = reverse('repository_detail', kwargs={})
+				l.append(i)
 				if s == "应发":
 					total -= v
 				else:
