@@ -12,5 +12,8 @@ class BaseRepositoryForm(forms.Form):
 class BaseShipStatusForm(forms.Form):
 	ship = forms.ChoiceField(choices=Shipstatus.choices)
 
+class BaseShipStatusReceiveForm(forms.Form):
+	ship = forms.ChoiceField(choices=Shipstatus.choices[0:1])
+
 class BaseKeywordForm(forms.Form):
 	keyword = forms.CharField()

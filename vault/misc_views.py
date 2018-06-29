@@ -23,11 +23,7 @@ class CommodityShippingBaseForm(forms.Form):
 
 class CommodityShippingForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipStatusForm, BaseRepositoryForm): pass
 
-class CommodityReceiveForm(forms.Form):
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	ship = forms.ChoiceField(choices=Shipstatus.choices[:1])
-	status = forms.ChoiceField(choices=Itemstatus.choices)
-	keyword = forms.CharField()
+class CommodityReceiveForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipStatusReceiveForm, BaseRepositoryForm): pass
 
 class CommoditySendForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
