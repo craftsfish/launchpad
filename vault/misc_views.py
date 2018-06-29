@@ -33,14 +33,7 @@ CommodityDetailBaseFormSet = formset_factory(CommodityDetailBaseForm, extra=0)
 class CommodityDetailForm(BaseShipStatusHiddenForm, BaseCommodityStatusHiddenForm, CommodityDetailBaseForm): pass
 CommodityDetailFormSet = formset_factory(CommodityDetailForm, extra=0)
 
-class CommodityChangeRepositoryDetailForm(forms.Form):
-	id = forms.IntegerField(widget=forms.HiddenInput)
-	quantity = forms.IntegerField()
-	check = forms.BooleanField(required=False)
-	repository_f = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
-	repository_t = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+class CommodityChangeRepositoryDetailForm(BaseRepositoryChangeHiddenForm, BaseCommodityDetailForm): pass
 CommodityChangeRepositoryDetailFormSet = formset_factory(CommodityChangeRepositoryDetailForm, extra=0)
 
 class FfsMixin(ContextMixin):

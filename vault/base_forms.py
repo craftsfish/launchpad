@@ -21,6 +21,12 @@ class BaseRepositoryChangeForm(forms.Form):
 	repository_t = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
 
+class BaseRepositoryChangeHiddenForm(forms.Form):
+	repository_f = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+	repository_t = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
+	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+
 class BaseShipStatusForm(forms.Form):
 	ship = forms.ChoiceField(choices=Shipstatus.choices)
 
