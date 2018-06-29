@@ -32,9 +32,7 @@ class CommodityChangeRepositoryForm(BaseKeywordForm, BaseRepositoryChangeForm): 
 class CommodityDetailBaseForm(BaseRepositoryHiddenForm, BaseCommodityDetailForm): pass
 CommodityDetailBaseFormSet = formset_factory(CommodityDetailBaseForm, extra=0)
 
-class CommodityDetailForm(CommodityDetailBaseForm):
-	status = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
-	ship = forms.ChoiceField(choices=Shipstatus.choices, widget=forms.HiddenInput)
+class CommodityDetailForm(BaseShipStatusHiddenForm, BaseCommodityStatusHiddenForm, CommodityDetailBaseForm): pass
 CommodityDetailFormSet = formset_factory(CommodityDetailForm, extra=0)
 
 class CommodityChangeRepositoryDetailForm(forms.Form):

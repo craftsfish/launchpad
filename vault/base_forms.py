@@ -6,6 +6,9 @@ from repository import Repository
 class BaseCommodityStatusForm(forms.Form):
 	status = forms.ChoiceField(choices=Itemstatus.choices[0:3])
 
+class BaseCommodityStatusHiddenForm(forms.Form):
+	status = forms.ChoiceField(choices=Itemstatus.choices[0:3], widget=forms.HiddenInput)
+
 class BaseRepositoryForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 
@@ -26,6 +29,9 @@ class BaseShipStatusReceiveForm(forms.Form):
 
 class BaseShipStatusSendForm(forms.Form):
 	ship = forms.ChoiceField(choices=Shipstatus.choices[1:2])
+
+class BaseShipStatusHiddenForm(forms.Form):
+	ship = forms.ChoiceField(choices=Shipstatus.choices, widget=forms.HiddenInput)
 
 class BaseKeywordForm(forms.Form):
 	keyword = forms.CharField()
