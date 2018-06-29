@@ -27,6 +27,7 @@
 
 {% block content_right %}
 	<table cellpadding="4" border="1">
+		<tr><td><a href="{% url 'repository_detail' %}">测试用</a></td><td></td></tr>
 		<tr><td><a href="javascript:void(0);" onclick ="task_lookup()">查看任务</a></td><td><input type="number" id="id_task" /></td></tr>
 		<tr><td><a href="{% url 'change' %}">其他换货</a></td><td>非平台(天猫/京东)订单换货</td></tr>
 		<tr><td><a href="{% url 'change_repository' %}">换仓</a></td><td>换仓</td></tr>
