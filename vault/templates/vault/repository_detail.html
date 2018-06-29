@@ -1,3 +1,60 @@
 {% extends "base_single.html" %}
 
-{% block header %}仓库: {% endblock %}
+{% block header %}{{repository}}.{{commodity}}.{{status}}{% endblock %}
+
+{% block content_single %}
+	{% if is_paginated %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page={{ page_obj.previous_page_number }}">前一页</a>
+				{% endif %}
+
+				<span class="current">
+					{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+				</span>
+
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">后一页</a>
+				{% endif %}
+			</span>
+		</div>
+	{%endif %}
+
+	<h3>余额:        {{balance}}</h3>
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>时间</th>
+			<th>账户</th>
+			<th>增/减</th>
+			<th>余额</th>
+			<th>任务</th>
+			<th>交易</th>
+			<th>关联信息</th>
+		</tr>
+		{% for split in object_list %}
+			<tr>
+				<td>{{ split.transaction.time | date:"Y-m-d H:i:s"}}</td>
+				<td>{{ split.account }}</td>
+				<td align="right">{{ split.change | stringformat:"+.0f"}}</td>
+				<td align="right">{{ split.balance | stringformat:".0f"}}</td>
+				<td>
+					{% if split.transaction.task %}
+					<a href="{% url 'task_detail_read' split.transaction.task.id %}">{{ split.transaction.task }}</a>
+					{%endif %}
+				</td>
+				<td>{{ split.transaction.desc }}</td>
+				<td>
+				<table cellpadding="4">
+					{% for c in split.counters %}
+						<tr>
+							<td align="left">{{c.account}}</td>
+							<td align="right">{{c.change | stringformat:"+.0f"}}</td>
+						</tr>
+					{% endfor %}
+				</table>
+				</td>
+			<tr>
+		{% endfor %}
+	</table>
+{% endblock %}
