@@ -20,7 +20,6 @@ class CommodityDetailView(DetailView):
 		context['title'] = []
 		for i, s in Itemstatus.choices:
 			context['title'].append(s)
-		context['title'].append("应收")
 
 		context['repos'] = []
 		if self.object.supplier:
@@ -38,7 +37,10 @@ class CommodityDetailView(DetailView):
 				if v: v = int(v)
 				else: v = 0
 				l.append(v)
-				total += v
+				if s == "应发":
+					total -= v
+				else:
+					total += v
 			l.append(total)
 
 			#shipment
@@ -57,9 +59,4 @@ class CommodityDetailView(DetailView):
 		context['title'].append("目标库存天数")
 		context['title'].append("实际库存天数")
 		context['title'].append("补仓数量")
-
-		context['accounts'] = Account.objects.exclude(balance=0).filter(item=self.object).order_by('category', 'repository', 'name', 'organization')
-		for a in context['accounts']:
-			a.category_name = a.get_category_display()
-
 		return context
