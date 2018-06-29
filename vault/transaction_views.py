@@ -97,3 +97,17 @@ class TransactionDeleteView(RedirectView):
 		task = t.task
 		t.delete()
 		return super(TransactionDeleteView, self).get(request, *args, **kwargs)
+
+class TransactionRevertView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		t = Transaction.objects.get(pk=kwargs['pk'])
+		return t.task.get_absolute_url()
+
+	def get(self, request, *args, **kwargs):
+		t = Transaction.objects.get(pk=kwargs['pk'])
+		args = []
+		for s in t.splits.order_by("id"):
+			args.append(s.account)
+			args.append(-s.change)
+		Transaction.add(t.task, "取消", timezone.now(), *args)
+		return super(TransactionRevertView, self).get(request, *args, **kwargs)

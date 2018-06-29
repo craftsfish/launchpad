@@ -26,7 +26,7 @@
 			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
 			<td>{{object.id}}</td>
 			<td>{{object.desc}}</td>
-			<td><a href="{% url 'task_revert' object.id %}">取消任务</a></td>
+			<td><a href="{% url 'task_revert' object.id %}">中和任务</a></td>
 			{% if order %}
 			<td>{{order.oid}}</td>
 			<td>{{order.status}}</td>
@@ -79,6 +79,7 @@
 	<tr>
 		<th></th>
 		<th></th>
+		<th></th>
 		<th>时间</th>
 		<th>概述</th>
 		<th>标的</th>
@@ -87,6 +88,7 @@
 	{% for t in trans %}
 	<tr>
 		<td><a href="{% url 'transaction_delete' t.id t.task.id %}">删除</a></td>
+		<td><a href="{% url 'transaction_revert' t.id %}">中和</a></td>
 		<td><a href="{% url 'transaction_update' t.id %}">编辑</a></td>
 		<td>{{t.time | date:"Y-m-d H:i:s" }}</td>
 		<td>{{t.desc}}</td>

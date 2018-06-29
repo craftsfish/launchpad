@@ -49,6 +49,7 @@ urlpatterns = [
 	url(r'^transaction/(?P<pk>[\d]+)/change/$', TransactionUpdateView.as_view(), name='transaction_update'),
 	url(r'^transaction/(?P<pk>[\d]+)/duplicate/$', TransactionDuplicateView.as_view(), name='transaction_duplicate'),
 	url(r'^transaction/(?P<pk>[\d]+)/delete/from/(?P<task_id>[\d]+)/$', TransactionDeleteView.as_view(), name='transaction_delete'),
+	url(r'^transaction/(?P<pk>[\d]+)/revert/$', TransactionRevertView.as_view(), name='transaction_revert'),
 
 	#jdcommodity
 	url(r'^jdcommodity/$', JdcommodityListView.as_view(), name='jdcommodity_list'),
