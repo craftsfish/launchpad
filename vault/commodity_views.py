@@ -43,7 +43,7 @@ class CommodityDetailView(DetailView):
 				else: v = 0
 				i = RepositoryDetailInfo()
 				i.v = v
-				i.url = reverse('repository_detail', kwargs={})
+				i.url = reverse('repository_detail', kwargs={'repo': r.id, 'commodity': self.object.id, 'status': Itemstatus.s2v(s)})
 				l.append(i)
 				if s == "应发":
 					total -= v

@@ -49,6 +49,13 @@ class BaseStatus:
 				return v
 		return None
 
+	@classmethod
+	def s2v(cls, s):
+		for i, v in cls.choices:
+			if v == s:
+				return i
+		return None
+
 class Itemstatus(BaseStatus):
 	choices = tuple(enumerate(("应收", "完好", "残缺", "破损", "应发")))
 
