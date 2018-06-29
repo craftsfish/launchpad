@@ -11,8 +11,7 @@ from django.http import HttpResponseRedirect
 from django.utils import timezone
 
 class RetailForm(forms.Form):
-	organization = forms.ModelChoiceField(queryset=Organization.objects)
-	sale = forms.DecimalField(initial=0, max_digits=20, decimal_places=2)
+	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="个人"))
 
 class ChangeForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
@@ -120,10 +119,9 @@ class RetailView(FfsMixin, TemplateView):
 	def data_valid(self, form, formset):
 		self.task = Task(desc="销售")
 		self.task.save()
+		cash = Money.objects.get(name="人民币")
 		t = timezone.now()
 		self.org = form.cleaned_data['organization']
-		self.sale = form.cleaned_data['sale']
-		v = 0
 		for f in formset:
 			d = f.cleaned_data
 			if not d['check']: continue
@@ -131,11 +129,7 @@ class RetailView(FfsMixin, TemplateView):
 			q = d['quantity']
 			r = d['repository']
 			Transaction.add_raw(self.task, "出货", t, self.org, c.item_ptr, ("资产", "完好", r), -q, ("支出", "出货", r))
-			v += q * c.value
-		if self.sale == 0:
-			self.sale = v
-		cash = Money.objects.get(name="人民币")
-		Transaction.add_raw(self.task, "货款", t, self.org, cash.item_ptr, ("资产", "应收货款", None), self.sale, ("收入", "销售收入", None))
+			Transaction.add_raw(self.task, "货款", t, self.org, cash.item_ptr, ("资产", "应收货款", None), q * c.value, ("收入", "销售收入", None))
 		return super(RetailView, self).data_valid(form, formset)
 
 class ChangeView(FfsMixin, TemplateView):
