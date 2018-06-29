@@ -4,6 +4,7 @@
 
 {% block content %}
 <div class="col-sm-auto">
+	<p>库存状态:</p>
 	<table border="1" cellpadding="4">
 		<tr>
 			<td></td>
@@ -12,6 +13,25 @@
 			{% endfor %}
 		</tr>
 		{% for repo in repos %}
+		<tr>
+			{% for i in repo %}
+			<td>{{i}}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+
+	<br/>
+
+	<p>分析报告:</p>
+	<table border="1" cellpadding="4">
+		<tr>
+			<td></td>
+			{% for i in statistic_title %}
+			<td>{{i}}</td>
+			{% endfor %}
+		</tr>
+		{% for repo in statistic %}
 		<tr>
 			{% for i in repo %}
 			<td>{{i}}</td>

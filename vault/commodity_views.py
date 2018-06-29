@@ -21,11 +21,13 @@ class CommodityDetailView(DetailView):
 		for i, s in Itemstatus.choices:
 			context['title'].append(s)
 
+		repositories = Account.objects.filter(item=self.object).order_by('repository').values_list('repository', flat=True).distinct()
+
 		context['repos'] = []
 		if self.object.supplier:
 			threshold = self.object.supplier.period
 		threshold += 10
-		for r in Account.objects.exclude(balance=0).filter(item=self.object).order_by('repository').values_list('repository', flat=True).distinct():
+		for r in repositories:
 			r = Repository.objects.get(pk=r)
 
 			#balance
@@ -42,6 +44,14 @@ class CommodityDetailView(DetailView):
 				else:
 					total += v
 			l.append(total)
+		context['title'].append("合计")
+
+		context['statistic_title'] = []
+		context['statistic'] = []
+		for r in repositories:
+			r = Repository.objects.get(pk=r)
+			l = [r]
+			context['statistic'].append(l)
 
 			#shipment
 			l += Turbine.get_shipping_out_information(self.object, r, span)
@@ -51,12 +61,11 @@ class CommodityDetailView(DetailView):
 			l.append(threshold)
 			l += Turbine.get_replenish_information(self.object, r, s, threshold)
 
-		context['title'].append("合计")
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 		for i in range(span):
-			context['title'].append((e-timedelta(i+1)).strftime("%m月%d日"))
-		context['title'].append("出货速度")
-		context['title'].append("目标库存天数")
-		context['title'].append("实际库存天数")
-		context['title'].append("补仓数量")
+			context['statistic_title'].append((e-timedelta(i+1)).strftime("%m月%d日"))
+		context['statistic_title'].append("出货速度")
+		context['statistic_title'].append("目标库存天数")
+		context['statistic_title'].append("实际库存天数")
+		context['statistic_title'].append("补仓数量")
 		return context
