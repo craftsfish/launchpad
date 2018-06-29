@@ -27,12 +27,7 @@ class CommodityReceiveForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipSta
 
 class CommoditySendForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipStatusSendForm, BaseRepositoryForm): pass
 
-class CommodityChangeRepositoryForm(forms.Form):
-	repository_f = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
-	repository_t = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
-	keyword = forms.CharField()
+class CommodityChangeRepositoryForm(BaseKeywordForm, BaseRepositoryChangeForm): pass
 
 class CommodityDetailBaseForm(BaseRepositoryHiddenForm, BaseCommodityDetailForm): pass
 CommodityDetailBaseFormSet = formset_factory(CommodityDetailBaseForm, extra=0)
