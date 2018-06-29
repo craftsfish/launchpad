@@ -9,6 +9,7 @@ from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
 from django.http import HttpResponseRedirect
 from django.utils import timezone
+from .base_forms import *
 
 class RetailForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="个人"))
@@ -20,11 +21,7 @@ class CommodityShippingBaseForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
 	keyword = forms.CharField()
 
-class CommodityShippingForm(forms.Form):
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	ship = forms.ChoiceField(choices=Shipstatus.choices)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
-	keyword = forms.CharField()
+class CommodityShippingForm(BaseKeywordForm, BaseCommodityStatusForm, BaseShipStatusForm, BaseRepositoryForm): pass
 
 class CommodityReceiveForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
