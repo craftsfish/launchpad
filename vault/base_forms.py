@@ -14,10 +14,10 @@ class BaseIndividualForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects.filter(name="个人"), label="主体")
 
 class BaseCommodityStatusForm(forms.Form):
-	status = forms.ChoiceField(choices=Itemstatus.choices[0:3], label="状态")
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:4], label="状态")
 
 class BaseCommodityStatusHiddenForm(forms.Form):
-	status = forms.ChoiceField(choices=Itemstatus.choices[0:3], widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.HiddenInput)
 
 class BaseRepositoryForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None, label="仓库")
@@ -27,15 +27,15 @@ class BaseRepositoryHiddenForm(forms.Form):
 
 class BaseRepositoryChangeForm(forms.Form):
 	repository_f = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
+	status_f = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.RadioSelect, initial=0)
 	repository_t = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.RadioSelect, initial=0)
+	status_t = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.RadioSelect, initial=0)
 
 class BaseRepositoryChangeHiddenForm(forms.Form):
 	repository_f = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status_f = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+	status_f = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.HiddenInput)
 	repository_t = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status_t = forms.ChoiceField(choices=Itemstatus.choices, widget=forms.HiddenInput)
+	status_t = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.HiddenInput)
 
 class BaseShipStatusForm(forms.Form):
 	ship = forms.ChoiceField(choices=Shipstatus.choices, label="收/发")

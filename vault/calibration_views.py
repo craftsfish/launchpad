@@ -82,12 +82,12 @@ class ManualCalibrationCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	quantity = forms.IntegerField()
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:4])
 ManualCalibrationCommodityFormSet = formset_factory(ManualCalibrationCommodityForm, extra=0)
 
 class ManualCalibrationCommodityFilterForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices)
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:4])
 	keyword = forms.CharField()
 
 class ManualCalibrationView(FfsMixin, TemplateView):
