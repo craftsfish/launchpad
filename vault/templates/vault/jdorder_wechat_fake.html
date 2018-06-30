@@ -7,11 +7,6 @@
 	{% include 'vault/script/item_filter.html' %}
 {% endblock %}
 
-{% block extend_form %}
-	<p>京东订单编号: {{form.jdorder}}</p>
-	<p>组织: {{form.organization}}</p>
-{% endblock %}
-
 {% block formset %}
 	{% for form in formset %}
 	<tr>

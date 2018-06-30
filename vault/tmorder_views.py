@@ -20,6 +20,9 @@ class TmorderMixin(FfsMixin):
 	formset_class = CommodityDetailFormSet
 	sub_form_class = CommodityShippingForm
 
+	def form_process(self, form):
+		pass
+
 	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		pass
 
@@ -29,6 +32,7 @@ class TmorderMixin(FfsMixin):
 		o, created = Tmorder.objects.get_or_create(oid=o, desc="天猫订单")
 		self.task = o.task_ptr
 		t = timezone.now()
+		self.form_process(form)
 		for f in formset:
 			d = f.cleaned_data
 			if not d['check']: continue
@@ -68,14 +72,20 @@ class TmorderReturnView(TmorderMixin, TemplateView):
 		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("资产", "完好", repository))
 		return super(TmorderReturnView, self).formset_item_process(time, item, quantity, repository, status, ship)
 
+class TmorderFakeViewForm(TmorderForm):
+	auto_clear = forms.BooleanField(required=False, label='自动结算刷单资金', initial=True)
 class TmorderWechatFakeView(FakeOrderCandidatesMixin, TmorderMixin, TemplateView):
 	template_name = "{}/tmorder_wechat_fake.html".format(Organization._meta.app_label)
+	form_class = TmorderFakeViewForm
 	sub_form_class = CommoditySendForm
 
-	def formset_item_process(self, time, item, quantity, repository, status, ship):
+	def form_process(self, form):
 		o = self.task.tmorder
 		o.counterfeit = Counterfeit.objects.get(name="微信")
+		o.counterfeit_auto_clear = form.cleaned_data['auto_clear']
 		o.save()
+
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		Transaction.add_raw(self.task, "刷单.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
 		return super(TmorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status, ship)
 

@@ -23,12 +23,16 @@ class JdorderMixin(FfsMixin):
 	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		pass
 
+	def form_process(self, form):
+		pass
+
 	def data_valid(self, form, formset):
 		self.org = form.cleaned_data['organization']
 		j = form.cleaned_data['jdorder']
 		j, created = Jdorder.objects.get_or_create(oid=j, desc="京东订单")
 		self.task = j.task_ptr
 		t = timezone.now()
+		self.form_process(form)
 		for f in formset:
 			d = f.cleaned_data
 			if not d['check']: continue
@@ -67,14 +71,20 @@ class JdorderReturnView(JdorderMixin, TemplateView):
 		Transaction.add_raw(self.task, "退货", time, self.org, item, ("资产", status, repository), quantity, ("支出", "出货", repository))
 		return super(JdorderReturnView, self).formset_item_process(time, item, quantity, repository, status, ship)
 
+class JdorderFakeViewForm(JdorderForm):
+	auto_clear = forms.BooleanField(required=False, label='自动结算刷单资金', initial=True)
 class JdorderWechatFakeView(FakeOrderCandidatesMixin, JdorderMixin, TemplateView):
 	template_name = "{}/jdorder_wechat_fake.html".format(Organization._meta.app_label)
+	form_class = JdorderFakeViewForm
 	sub_form_class = CommoditySendForm
 
-	def formset_item_process(self, time, item, quantity, repository, status, ship):
+	def form_process(self, form):
 		o = self.task.jdorder
 		o.counterfeit = Counterfeit.objects.get(name="微信")
+		o.counterfeit_auto_clear = form.cleaned_data['auto_clear']
 		o.save()
+
+	def formset_item_process(self, time, item, quantity, repository, status, ship):
 		Transaction.add_raw(self.task, "刷单.发货", time, self.org, item, ("资产", status, repository), -quantity, ("支出", "出货", repository))
 		return super(JdorderWechatFakeView, self).formset_item_process(time, item, quantity, repository, status, ship)
 

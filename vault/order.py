@@ -54,6 +54,7 @@ class Order(models.Model):
 
 	#以下属于仅适用于刷单
 	counterfeit = models.ForeignKey(Counterfeit, verbose_name="刷单平台", null=True, blank=True)
+	counterfeit_auto_clear = models.BooleanField("刷单自动结算", default=False)
 	delivery = models.BooleanField("真实发货", default=False)
 	recall = models.BooleanField("实物回收", default=False)
 	recall_repository = models.ForeignKey(Repository, null=True, blank=True, related_name="%(app_label)s_%(class)s_recall_order_set", related_query_name="%(app_label)s_%(class)s_recall", verbose_name="刷单回收仓库")
@@ -154,7 +155,7 @@ class Order(models.Model):
 
 		#刷单.结算.微信
 		if self.counterfeit.name == "微信":
-			if not task.transactions.filter(desc="刷单.结算.微信").exists():
+			if self.counterfeit_auto_clear and not task.transactions.filter(desc="刷单.结算.微信").exists():
 				fake_deliver = task.transactions.filter(desc="刷单.发货").first()
 				if fake_deliver:
 					when = fake_deliver.time
