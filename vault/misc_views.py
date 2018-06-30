@@ -73,14 +73,15 @@ class FfsMixin(ContextMixin):
 class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 
+class RetailForm(BaseDescriptionForm, BaseIndividualForm): pass
 class RetailView(FfsMixin, TemplateView):
 	template_name = "{}/retail.html".format(Organization._meta.app_label)
-	form_class = BaseIndividualForm
+	form_class = RetailForm
 	formset_class = CommodityDetailBaseFormSet
 	sub_form_class = CommodityShippingBaseForm
 
 	def data_valid(self, form, formset):
-		self.task = Task(desc="销售")
+		self.task = Task(desc=form.cleaned_data['desc'])
 		self.task.save()
 		cash = Money.objects.get(name="人民币")
 		t = timezone.now()
