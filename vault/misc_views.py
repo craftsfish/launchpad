@@ -240,3 +240,12 @@ class PayWechatRecruitBonusView(FormView):
 
 class HelpView(TemplateView):
 	template_name = "{}/help.html".format(Organization._meta.app_label)
+
+class ReturnToSupplierSubForm(BaseKeywordForm, BaseCommodityStatusForm, BaseRepositoryForm): pass
+class ReturnToSupplierDetailForm(BaseShipStatusHiddenForm, BaseCommodityStatusHiddenForm, CommodityDetailBaseForm): pass
+ReturnToSupplierDetailFormSet = formset_factory(ReturnToSupplierDetailForm, extra=0)
+class ReturnToSupplierView(FfsMixin, TemplateView):
+	template_name = "{}/return_to_supplier.html".format(Organization._meta.app_label)
+	form_class = BaseRootOrganizationForm
+	formset_class = ReturnToSupplierDetailFormSet
+	sub_form_class = ReturnToSupplierSubForm
