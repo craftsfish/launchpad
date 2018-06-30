@@ -35,7 +35,7 @@ class FakeOrderCandidatesMixin(object):
 		for c in commodities:
 			c = Commodity.objects.get(name=c)
 			r = Repository.objects.get(name="孤山仓")
-			l.append({'id': c.id, 'quantity': 1, 'repository': r, 'status': 0, 'ship': 0})
+			l.append({'id': c.id, 'quantity': 1, 'repository': r, 'status': 1, 'ship': 0})
 		return l
 
 	def get_context_data(self, **kwargs):
