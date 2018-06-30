@@ -156,15 +156,10 @@ class Order(models.Model):
 		#刷单.结算.微信
 		if self.counterfeit.name == "微信":
 			if self.counterfeit_auto_clear and not task.transactions.filter(desc="刷单.结算.微信").exists():
-				fake_deliver = task.transactions.filter(desc="刷单.发货").first()
-				if fake_deliver:
-					when = fake_deliver.time
-				else:
-					when = task.transactions.filter(desc__contains=".出货.").first().time
 				cash = Money.objects.get(name="人民币")
 				a = Account.get(organization, cash.item_ptr, "支出", "{}刷单".format(self.counterfeit), None)
 				b = Account.get(organization.root(), cash.item_ptr, "资产", "运营资金.微信", None)
-				Transaction.add(task, "刷单.结算.微信", when, a, self.sale, b)
+				Transaction.add(task, "刷单.结算.微信", timezone.now(), a, self.sale, b)
 		else:
 			if task.transactions.filter(desc="刷单.结算.微信").exists():
 				print "[Error]{}.{} 没有标记为微信刷单，有微信刷单结算交易，请确认后手动调整".format(self, self.oid)
