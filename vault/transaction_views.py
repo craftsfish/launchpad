@@ -90,11 +90,14 @@ class TransactionDuplicateView(RedirectView):
 
 class TransactionDeleteView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return Task.objects.get(pk=kwargs['task_id']).get_absolute_url()
+		if self.task:
+			return self.task.get_absolute_url()
+		else:
+			return reverse('transaction_list')
 
 	def get(self, request, *args, **kwargs):
 		t = Transaction.objects.get(pk=kwargs['pk'])
-		task = t.task
+		self.task = t.task
 		t.delete()
 		return super(TransactionDeleteView, self).get(request, *args, **kwargs)
 

@@ -87,7 +87,8 @@
 	</tr>
 	{% for t in trans %}
 	<tr>
-		<td><a href="{% url 'transaction_delete' t.id t.task.id %}">删除</a></td>
+		<td><a href="{% url 'transaction_duplicate' t.id %}">复制</a></td>
+		<td><a href="{% url 'transaction_delete' t.id %}">删除</a></td>
 		<td><a href="{% url 'transaction_revert' t.id %}">中和</a></td>
 		<td><a href="{% url 'transaction_update' t.id %}">编辑</a></td>
 		<td>{{t.time | date:"Y-m-d H:i:s" }}</td>
