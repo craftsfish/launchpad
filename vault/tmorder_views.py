@@ -106,3 +106,31 @@ class TmorderRebateView(FormView):
 	def get_context_data(self, **kwargs):
 		kwargs['title'] = "天猫订单返现"
 		return super(TmorderRebateView, self).get_context_data(**kwargs)
+
+class TmorderCollectMarginForm(TmorderForm):
+	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='收款账户')
+	amount = forms.DecimalField(initial=0, max_digits=10, decimal_places=2, min_value=0.01, label="收款")
+
+class TmorderCollectMarginView(FormView):
+	template_name = "base_form.html"
+	form_class = TmorderCollectMarginForm
+
+	def form_valid(self, form):
+		o = form.cleaned_data['organization']
+		j = form.cleaned_data['tmorder']
+		j, created = Tmorder.objects.get_or_create(oid=j, desc="天猫订单")
+		self.task = j.task_ptr
+		w = form.cleaned_data['wallet']
+		q = form.cleaned_data['amount']
+		cash = Money.objects.get(name="人民币")
+		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
+		b = Account.get_or_create(o, cash.item_ptr, "收入", "其他收入", None)
+		Transaction.add(self.task, "补差价", timezone.now(), a, q, b)
+		return super(TmorderCollectMarginView, self).form_valid(form)
+
+	def get_success_url(self):
+		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+
+	def get_context_data(self, **kwargs):
+		kwargs['title'] = "天猫订单补差价"
+		return super(TmorderCollectMarginView, self).get_context_data(**kwargs)
