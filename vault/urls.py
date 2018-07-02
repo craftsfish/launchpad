@@ -108,9 +108,13 @@ urlpatterns = [
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
 	url(r'^misc/purchase/append/$', AppendPurchaseView.as_view(), name='append_purchase'),
 
+	#calibration
 	url(r'^misc/daily/calibration/$', DailyCalibrationView.as_view(), name='daily_calibration'),
 	url(r'^misc/manual/calibration/$', ManualCalibrationView.as_view(), name='manual_calibration'),
 	url(r'^misc/daily/calibration/match/$', DailyCalibrationMatchView.as_view(), name='daily_calibration_match'),
+	url(r'^calibration/inferior/$', InferiorCalibrationView.as_view(), name='inferior_calibration'),
+
+	#misc
 	url(r'^misc/pay/wechat/recruit/bonus/$', PayWechatRecruitBonusView.as_view(), name='pay_wechat_recruit_bonus'),
 	url(r'^misc/operation/account/clear/$', OperationAccountClearView.as_view(), name='operation_account_clear'),
 	url(r'^misc/help/$', HelpView.as_view(), name='help'),

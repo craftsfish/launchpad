@@ -121,3 +121,6 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 			return reverse('task_detail_read', kwargs={'pk': self.task.id})
 		else:
 			return reverse('daily_calibration_match')
+
+class InferiorCalibrationView(TemplateView):
+	template_name = "vault/inferior_calibration.html"
