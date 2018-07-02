@@ -6,7 +6,7 @@
 	<script>
 		function calculate(self){
 			p = jQuery(self).parent().parent()
-			dst = jQuery("td:nth-child(3)", p)[0]
+			dst = jQuery("td:nth-child(4)", p)[0]
 			total = 0
 			jQuery("td input[type=\"number\"]", p).val( function(i, origVal) {
 				if (origVal != "")  {
@@ -33,18 +33,20 @@
 		{% csrf_token %}
 		<table cellpadding="4" border="1">
 			{{ formset.management_form }}
-		<tr>
-			<th>品名</th>
-			<th>在帐</th>
-			<th>已盘点</th>
-			<th>盘点1</th>
-			<th>盘点2</th>
-			<th>盘点3</th>
-			<th>盘点4</th>
-		</tr>
+			<tr>
+				<th>品名</th>
+				<th>状态</th>
+				<th>在帐</th>
+				<th>已盘点</th>
+				<th>盘点1</th>
+				<th>盘点2</th>
+				<th>盘点3</th>
+				<th>盘点4</th>
+			</tr>
 			{% for form in formset %}
 			<tr>
-				<td>{{form.label}}</td>
+				<td>{{form.label_name}}</td>
+				<td>{{form.label_status}}</td>
 				<td>{{form.label_in_book}}</td>
 				<td>0</td>
 				<td>{{form.q1}}</td>

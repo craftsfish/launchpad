@@ -1,11 +1,23 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.forms import formset_factory
+from django.views.generic.base import ContextMixin
 from misc_views import FfsMixin
 from django.views.generic import TemplateView
 from organization import *
 from turbine import EmptyForm
 from .models import *
+
+class CalibrationMixin(ContextMixin):
+	def get_context_data(self, **kwargs):
+		context = super(CalibrationMixin, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			s = form['status'].value()
+			form.label_name = Commodity.objects.get(pk=cid).name
+			form.label_status = Itemstatus.v2s(s)
+			form.label_in_book = form['in_book'].value()
+		return context
 
 class StorageCalibarionForm(forms.Form):
 	check = forms.BooleanField()
@@ -20,7 +32,7 @@ class CommodityStorageCalibarionForm(forms.Form):
 	q4 = forms.IntegerField(min_value=0, max_value=9999, required=False)
 CommodityStorageCalibarionFormSet = formset_factory(CommodityStorageCalibarionForm, extra=0)
 
-class DailyCalibrationView(FfsMixin, TemplateView):
+class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	template_name = "{}/daily_calibration.html".format(Organization._meta.app_label)
 	form_class = StorageCalibarionForm
 	formset_class = CommodityStorageCalibarionFormSet
@@ -42,15 +54,6 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			else: v = 0
 			d.append({'id': c.id, 'status': 1, 'in_book': v})
 		return d
-
-	def get_context_data(self, **kwargs):
-		context = super(DailyCalibrationView, self).get_context_data(**kwargs)
-		for form in context['formset']:
-			cid = form['id'].value()
-			c = Commodity.objects.get(pk=cid)
-			form.label = c.name
-			form.label_in_book = form['in_book'].value()
-		return context
 
 	def dispatch(self, request, *args, **kwargs):
 		self.error = None
@@ -123,7 +126,7 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 		else:
 			return reverse('daily_calibration_match')
 
-class InferiorCalibrationView(FfsMixin, TemplateView):
+class InferiorCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	template_name = "vault/inferior_calibration.html"
 	form_class = StorageCalibarionForm
 	formset_class = CommodityStorageCalibarionFormSet
@@ -134,14 +137,3 @@ class InferiorCalibrationView(FfsMixin, TemplateView):
 		for cid, status, quantity in Turbine.get_inferior(r):
 			d.append({'id': cid, 'status': Itemstatus.s2v(status), 'in_book': quantity})
 		return d
-
-	def get_context_data(self, **kwargs):
-		context = super(InferiorCalibrationView, self).get_context_data(**kwargs)
-		for form in context['formset']:
-			cid = form['id'].value()
-			c = Commodity.objects.get(pk=cid)
-			s = form['status'].value()
-			form.label_name = c.name
-			form.label_status = Itemstatus.v2s(s)
-			form.label_in_book = form['in_book'].value()
-		return context
