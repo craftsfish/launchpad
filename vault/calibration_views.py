@@ -129,7 +129,7 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 class InferiorCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	def get_formset_initial(self):
 		d = []
-		r = Repository.objects.get(name="孤山仓")
+		r = Repository.objects.get(pk=self.kwargs['repository'])
 		for cid, status, quantity in Turbine.get_inferior(r):
 			d.append({'id': cid, 'status': Itemstatus.s2v(status), 'in_book': quantity})
 		return d

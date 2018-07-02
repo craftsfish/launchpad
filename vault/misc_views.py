@@ -72,6 +72,11 @@ class FfsMixin(ContextMixin):
 
 class DailyTaskView(TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
+	def get_context_data(self, **kwargs):
+		kwargs['inferior_calibration'] = Repository.objects.all()
+		for r in kwargs['inferior_calibration']:
+			r.url = reverse('inferior_calibration', kwargs={'repository': r.id})
+		return super(DailyTaskView, self).get_context_data(**kwargs)
 
 class RetailForm(BaseDescriptionForm, BaseIndividualForm): pass
 class RetailView(FfsMixin, TemplateView):
