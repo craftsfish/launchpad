@@ -1,6 +1,28 @@
 {% extends "base_single.html" %}
 
-{% block header %}残缺/破损盘点{% endblock %}
+{% block header %}每日库存盘点: 只盘点好的，破损和缺配件的不盘点{% endblock %}
+
+{% block extra_script %}
+	<script>
+		function calculate(self){
+			p = jQuery(self).parent().parent()
+			dst = jQuery("td:nth-child(4)", p)[0]
+			total = 0
+			jQuery("td input[type=\"number\"]", p).val( function(i, origVal) {
+				if (origVal != "")  {
+					total += parseInt(origVal)
+				}
+				return origVal
+			});
+			dst.innerHTML = total
+		}
+		jQuery(document).ready(function(){
+			jQuery("input[type=\"number\"]").on("change paste keyup", function(){
+				calculate(this);
+			});
+		});
+	</script>
+{% endblock %}
 
 {% block content %}
 	<form action="" method="post">

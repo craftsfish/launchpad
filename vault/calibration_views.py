@@ -9,6 +9,7 @@ from turbine import EmptyForm
 from .models import *
 
 class CalibrationMixin(ContextMixin):
+	template_name = "vault/calibration.html"
 	def get_context_data(self, **kwargs):
 		context = super(CalibrationMixin, self).get_context_data(**kwargs)
 		for form in context['formset']:
@@ -33,7 +34,6 @@ class CommodityStorageCalibarionForm(forms.Form):
 CommodityStorageCalibarionFormSet = formset_factory(CommodityStorageCalibarionForm, extra=0)
 
 class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
-	template_name = "{}/daily_calibration.html".format(Organization._meta.app_label)
 	form_class = StorageCalibarionForm
 	formset_class = CommodityStorageCalibarionFormSet
 	sub_form_class = EmptyForm
@@ -127,7 +127,6 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 			return reverse('daily_calibration_match')
 
 class InferiorCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
-	template_name = "vault/inferior_calibration.html"
 	form_class = StorageCalibarionForm
 	formset_class = CommodityStorageCalibarionFormSet
 
