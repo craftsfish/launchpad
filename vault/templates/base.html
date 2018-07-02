@@ -23,6 +23,12 @@
 			</div><!-- row -->
 
 			<div class="row">
+				<div class="col">
+					{% if error %}<div class="alert alert-danger" role="alert">{{error}}</div>{% endif %}
+				</div><!-- col -->
+			</div><!-- row -->
+
+			<div class="row">
 				{% block content %}{% endblock %}
 			</div><!-- row -->
 		</div><!-- container-fluid -->

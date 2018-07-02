@@ -26,9 +26,6 @@
 
 {% block content %}
 <div class="col-sm-auto">
-	{% if error %}
-	<div class="alert alert-danger" role="alert">{{error}}</div>
-	{% endif %}
 	<form action="" method="post">
 		{% csrf_token %}
 		<table cellpadding="4" border="1">
