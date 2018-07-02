@@ -8,18 +8,6 @@ from organization import *
 from turbine import EmptyForm
 from .models import *
 
-class CalibrationMixin(ContextMixin):
-	template_name = "vault/calibration.html"
-	def get_context_data(self, **kwargs):
-		context = super(CalibrationMixin, self).get_context_data(**kwargs)
-		for form in context['formset']:
-			cid = form['id'].value()
-			s = form['status'].value()
-			form.label_name = Commodity.objects.get(pk=cid).name
-			form.label_status = Itemstatus.v2s(s)
-			form.label_in_book = form['in_book'].value()
-		return context
-
 class StorageCalibarionForm(forms.Form):
 	check = forms.BooleanField()
 
@@ -33,11 +21,23 @@ class CommodityStorageCalibarionForm(forms.Form):
 	q4 = forms.IntegerField(min_value=0, max_value=9999, required=False)
 CommodityStorageCalibarionFormSet = formset_factory(CommodityStorageCalibarionForm, extra=0)
 
-class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
+class CalibrationMixin(ContextMixin):
+	template_name = "vault/calibration.html"
 	form_class = StorageCalibarionForm
 	formset_class = CommodityStorageCalibarionFormSet
 	sub_form_class = EmptyForm
 
+	def get_context_data(self, **kwargs):
+		context = super(CalibrationMixin, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			s = form['status'].value()
+			form.label_name = Commodity.objects.get(pk=cid).name
+			form.label_status = Itemstatus.v2s(s)
+			form.label_in_book = form['in_book'].value()
+		return context
+
+class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	def get_formset_initial(self):
 		d = []
 		for c in ["T2005", "CB0066", "CB0060"]:
@@ -127,9 +127,6 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 			return reverse('daily_calibration_match')
 
 class InferiorCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
-	form_class = StorageCalibarionForm
-	formset_class = CommodityStorageCalibarionFormSet
-
 	def get_formset_initial(self):
 		d = []
 		r = Repository.objects.get(name="孤山仓")
