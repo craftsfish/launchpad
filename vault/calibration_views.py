@@ -12,6 +12,7 @@ class StorageCalibarionForm(forms.Form):
 
 class CommodityStorageCalibarionForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.HiddenInput)
 	in_book = forms.IntegerField(widget=forms.HiddenInput)
 	q1 = forms.IntegerField(min_value=0, max_value=9999, required=False)
 	q2 = forms.IntegerField(min_value=0, max_value=9999, required=False)
@@ -33,13 +34,13 @@ class DailyCalibrationView(FfsMixin, TemplateView):
 			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
 			if v: v = int(v)
 			else: v = 0
-			d.append({'id': c.id, 'in_book': v})
+			d.append({'id': c.id, 'status': 1, 'in_book': v})
 		for c in Commodity.objects.order_by("calibration", "supplier", "name")[:10]:
 			r = Repository.objects.get(name="孤山仓")
 			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
 			if v: v = int(v)
 			else: v = 0
-			d.append({'id': c.id, 'in_book': v})
+			d.append({'id': c.id, 'status': 1, 'in_book': v})
 		return d
 
 	def get_context_data(self, **kwargs):
@@ -126,3 +127,21 @@ class InferiorCalibrationView(FfsMixin, TemplateView):
 	template_name = "vault/inferior_calibration.html"
 	form_class = StorageCalibarionForm
 	formset_class = CommodityStorageCalibarionFormSet
+
+	def get_formset_initial(self):
+		d = []
+		r = Repository.objects.get(name="孤山仓")
+		for cid, status, quantity in Turbine.get_inferior(r):
+			d.append({'id': cid, 'status': Itemstatus.s2v(status), 'in_book': quantity})
+		return d
+
+	def get_context_data(self, **kwargs):
+		context = super(InferiorCalibrationView, self).get_context_data(**kwargs)
+		for form in context['formset']:
+			cid = form['id'].value()
+			c = Commodity.objects.get(pk=cid)
+			s = form['status'].value()
+			form.label_name = c.name
+			form.label_status = Itemstatus.v2s(s)
+			form.label_in_book = form['in_book'].value()
+		return context
