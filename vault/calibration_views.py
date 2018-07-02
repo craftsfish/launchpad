@@ -122,5 +122,7 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 		else:
 			return reverse('daily_calibration_match')
 
-class InferiorCalibrationView(TemplateView):
+class InferiorCalibrationView(FfsMixin, TemplateView):
 	template_name = "vault/inferior_calibration.html"
+	form_class = StorageCalibarionForm
+	formset_class = CommodityStorageCalibarionFormSet
