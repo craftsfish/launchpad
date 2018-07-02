@@ -29,6 +29,7 @@ class CalibrationMixin(ContextMixin):
 
 	def get_context_data(self, **kwargs):
 		context = super(CalibrationMixin, self).get_context_data(**kwargs)
+		context["header"] = self.header
 		for form in context['formset']:
 			cid = form['id'].value()
 			s = form['status'].value()
@@ -38,6 +39,7 @@ class CalibrationMixin(ContextMixin):
 		return context
 
 class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
+	header = "每日库存盘点: 只盘点好的，破损和缺配件的不盘点"
 	def get_formset_initial(self):
 		d = []
 		for c in ["T2005", "CB0066", "CB0060"]:
@@ -130,6 +132,7 @@ class InferiorCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	def get_formset_initial(self):
 		d = []
 		r = Repository.objects.get(pk=self.kwargs['repository'])
+		self.header = "{}残次品盘点".format(r)
 		for cid, status, quantity in Turbine.get_inferior(r):
 			d.append({'id': cid, 'status': Itemstatus.s2v(status), 'in_book': quantity})
 		return d
