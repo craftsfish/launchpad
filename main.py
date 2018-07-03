@@ -52,6 +52,7 @@ options = (
 	["q", "退出系统", __quit],
 	["t", "测试", test],
 	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
+	["uocl", "更新废弃商品清单", Turbine.update_obsolete_commodity_list],
 )
 
 def command_handling():

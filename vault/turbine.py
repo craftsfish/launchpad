@@ -258,3 +258,24 @@ class Turbine:
 			if v[1]:
 				result.append([cid, "破损", v[1]])
 		return result
+
+	@staticmethod
+	@transaction.atomic
+	def update_obsolete_commodity_list():
+		for c in Commodity.objects.filter(inproduction=False):
+			if Account.objects.filter(item=c.item_ptr).exclude(balance=0).filter(category__in=[0, 1]).exists():
+				cleared = True
+				for r in Repository.objects.all():
+					for i, s in Itemstatus.choices:
+						v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(repository=r).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
+						if v != 0:
+							cleared = False
+							break
+					if not cleared:
+						break
+				if cleared:
+					c.obsolete = True
+			else:
+				c.obsolete = True
+			if c.obsolete:
+				c.save()

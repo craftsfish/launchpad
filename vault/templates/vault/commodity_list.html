@@ -10,8 +10,8 @@
 			<th>供应商</th>
 			<th>品名</th>
 			<th>价值</th>
-			<th>在售</th>
 			<th>在产</th>
+			<th>废弃</th>
 		</tr>
 		{% for commodity in object_list %}
 		<tr>
@@ -19,15 +19,15 @@
 			<td>{{commodity.supplier}}</td>
 			<td>{{commodity.name}}</td>
 			<td>{{commodity.value }}</td>
-			{% if commodity.onsale %}
-				<td>在售</td>
-			{% else %}
-				<td>下架</td>
-			{% endif %}
 			{% if commodity.inproduction %}
 				<td>在产</td>
 			{% else %}
 				<td>停产</td>
+			{% endif %}
+			{% if commodity.obsolete %}
+				<td>废弃</td>
+			{% else %}
+				<td>活动</td>
 			{% endif %}
 		</tr>
 		{% endfor %}
