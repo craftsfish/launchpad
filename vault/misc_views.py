@@ -252,7 +252,6 @@ class ReturnToSupplierDetailForm(BaseCommodityStatusHiddenForm, CommodityDetailB
 ReturnToSupplierDetailFormSet = formset_factory(ReturnToSupplierDetailForm, extra=0)
 
 class SupplierServiceMixin(FfsMixin):
-	form_class = ReturnToSupplierForm
 	formset_class = ReturnToSupplierDetailFormSet
 	sub_form_class = ReturnToSupplierSubForm
 
@@ -296,6 +295,7 @@ class SupplierServiceMixin(FfsMixin):
 
 class ReturnToSupplierView(SupplierServiceMixin, TemplateView):
 	template_name = "{}/return_to_supplier.html".format(Organization._meta.app_label)
+	form_class = ReturnToSupplierForm
 
 	def data_valid(self, form, formset):
 		self.task = Task(desc="退货回厂家.{}".format(form.cleaned_data['desc']))
@@ -318,5 +318,7 @@ class ReturnToSupplierView(SupplierServiceMixin, TemplateView):
 				Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("资产", "其他供应商占款", None), q*c.value, ("支出", "进货", None))
 		return super(ReturnToSupplierView, self).data_valid(form, formset)
 
+class ChangeWithSupplierForm(BaseRepositoryForm, BaseDescriptionForm, BaseRootOrganizationForm): pass
 class ChangeWithSupplierView(SupplierServiceMixin, TemplateView):
 	template_name = "vault/change_with_supplier.html"
+	form_class = ChangeWithSupplierForm
