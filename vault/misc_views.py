@@ -250,8 +250,8 @@ class ReturnToSupplierForm(BaseDescriptionForm, BaseRootOrganizationForm): pass
 class ReturnToSupplierSubForm(BaseKeywordForm, BaseCommodityStatusForm, BaseRepositoryForm): pass
 class ReturnToSupplierDetailForm(BaseCommodityStatusHiddenForm, CommodityDetailBaseForm): pass
 ReturnToSupplierDetailFormSet = formset_factory(ReturnToSupplierDetailForm, extra=0)
-class ReturnToSupplierView(FfsMixin, TemplateView):
-	template_name = "{}/return_to_supplier.html".format(Organization._meta.app_label)
+
+class SupplierServiceMixin(FfsMixin):
 	form_class = ReturnToSupplierForm
 	formset_class = ReturnToSupplierDetailFormSet
 	sub_form_class = ReturnToSupplierSubForm
@@ -282,7 +282,7 @@ class ReturnToSupplierView(FfsMixin, TemplateView):
 		return result
 
 	def get_context_data(self, **kwargs):
-		context = super(ReturnToSupplierView, self).get_context_data(**kwargs)
+		context = super(SupplierServiceMixin, self).get_context_data(**kwargs)
 		for form in context['formset']:
 			cid = form['id'].value()
 			c = Commodity.objects.get(pk=cid)
@@ -293,6 +293,9 @@ class ReturnToSupplierView(FfsMixin, TemplateView):
 			form.label_commodity = c.name
 			form.label_status = Itemstatus.v2s(s)
 		return context
+
+class ReturnToSupplierView(SupplierServiceMixin, TemplateView):
+	template_name = "{}/return_to_supplier.html".format(Organization._meta.app_label)
 
 	def data_valid(self, form, formset):
 		self.task = Task(desc="退货回厂家.{}".format(form.cleaned_data['desc']))
