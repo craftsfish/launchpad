@@ -16,6 +16,7 @@ from wallet_views import *
 from purchase_views import *
 from calibration_views import *
 from repository_views import *
+from supplier_service_views import *
 
 urlpatterns = [
 	#supplier
