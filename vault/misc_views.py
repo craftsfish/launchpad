@@ -318,7 +318,25 @@ class ReturnToSupplierView(SupplierServiceMixin, TemplateView):
 				Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("资产", "其他供应商占款", None), q*c.value, ("支出", "进货", None))
 		return super(ReturnToSupplierView, self).data_valid(form, formset)
 
-class ChangeWithSupplierForm(BaseRepositoryForm, BaseDescriptionForm, BaseRootOrganizationForm): pass
+class ChangeWithSupplierForm(BaseDescriptionForm, BaseRootOrganizationForm):
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None, label="收货仓库")
 class ChangeWithSupplierView(SupplierServiceMixin, TemplateView):
 	template_name = "vault/change_with_supplier.html"
 	form_class = ChangeWithSupplierForm
+
+	def data_valid(self, form, formset):
+		self.task = Task(desc="回厂家换货.{}".format(form.cleaned_data['desc']))
+		self.task.save()
+		t = timezone.now()
+		o = form.cleaned_data['organization']
+		repo = form.cleaned_data['repository']
+		for f in formset:
+			d = f.cleaned_data
+			if not d['check']: continue
+			q = d['quantity']
+			if not q: continue
+			c = Commodity.objects.get(pk=d['id'])
+			r = d['repository']
+			s = Itemstatus.v2s(d['status'])
+			Transaction.add_raw(self.task, "换货", t, o, c.item_ptr, ("资产", "应收", repo), q, ("资产", s, r))
+		return super(ChangeWithSupplierView, self).data_valid(form, formset)
