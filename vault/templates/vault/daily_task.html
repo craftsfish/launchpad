@@ -37,6 +37,10 @@
 		</tr>
 		{% endfor %}
 		<tr><td><a href="{% url 'manual_calibration' %}">单个盘点</a></td><td></td></tr>
+		<tr><td rowspan=4>进货</td><td><a href="{% url 'tfg_purchase' %}">泰福高进货</a></td></tr>
+		<tr><td><a href="{% url 'yst_purchase' %}">原森太进货</a></td></tr>
+		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td></tr>
+		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td></tr>
 	</table>
 {% endblock %}
 {% block content_right %}
@@ -44,10 +48,6 @@
 		<tr><td><a href="javascript:void(0);" onclick ="task_lookup()">查看任务</a></td><td><input type="number" id="id_task" /></td></tr>
 		<tr><td><a href="{% url 'change' %}">其他换货</a></td><td>非平台(天猫/京东)订单换货</td></tr>
 		<tr><td><a href="{% url 'change_repository' %}">换仓</a></td><td>换仓</td></tr>
-		<tr><td><a href="{% url 'tfg_purchase' %}">泰福高进货</a></td><td>智能预测进货数据</td></tr>
-		<tr><td><a href="{% url 'yst_purchase' %}">原森太进货</a></td><td>智能预测进货数据</td></tr>
-		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td><td>智能预测进货数据</td></tr>
-		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td><td>智能预测进货数据</td></tr>
 		<tr><td><a href="{% url 'return_to_supplier' %}">退货回厂家</a></td><td>退货款</td></tr>
 		<tr><td><a href="{% url 'chore_list' %}">运营工作室</a></td><td>京东/天猫的退货，换货，刷单, 返现都用这个链接</td></tr>
 	</table>
