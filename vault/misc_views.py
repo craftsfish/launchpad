@@ -318,5 +318,5 @@ class ReturnToSupplierView(SupplierServiceMixin, TemplateView):
 				Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("资产", "其他供应商占款", None), q*c.value, ("支出", "进货", None))
 		return super(ReturnToSupplierView, self).data_valid(form, formset)
 
-class ChangeWithSupplierView(TemplateView):
-	template_name = "vault/return_to_supplier.html"
+class ChangeWithSupplierView(SupplierServiceMixin, TemplateView):
+	template_name = "vault/change_with_supplier.html"

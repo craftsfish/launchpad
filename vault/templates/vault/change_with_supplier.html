@@ -1,3 +1,18 @@
 {% extends "vault/item_filter_base.html" %}
 
 {% block header %}回厂家换货{% endblock %}
+
+{% block formset %}
+	{% for form in formset %}
+	<tr>
+		<td>{{form.check}}</td>
+		<td>{{form.label_repo}}</td>
+		<td>{{form.label_status}}</td>
+		<td>{{form.label_commodity}}</td>
+		<td>{{form.quantity}}</td>
+		{% for hidden in form.hidden_fields %}
+		{{ hidden }}
+		{% endfor %}
+	</tr>
+	{% endfor %}
+{% endblock %}
