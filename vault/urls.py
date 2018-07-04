@@ -99,6 +99,7 @@ urlpatterns = [
 	url(r'^misc/commodity/change/repository/$', ChangeRepositoryView.as_view(), name='change_repository'),
 	url(r'^misc/receivable/commodity/$', ReceivableCommodityView.as_view(), name='receivable_commodity'),
 	url(r'^misc/return/to/supplier/$', ReturnToSupplierView.as_view(), name='return_to_supplier'),
+	url(r'^misc/change/with/supplier/$', ChangeWithSupplierView.as_view(), name='change_with_supplier'),
 
 	#purchase
 	url(r'^misc/purchase/default/$', PurchaseView.as_view(), name='purchase'),
