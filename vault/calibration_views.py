@@ -38,6 +38,25 @@ class CalibrationMixin(ContextMixin):
 			form.label_in_book = form['in_book'].value()
 		return context
 
+	def data_valid(self, form, formset):
+		self.task = None
+		for f in formset:
+			d = f.cleaned_data
+			s = Itemstatus.v2s(d['status'])
+			c = Commodity.objects.get(pk=d['id'])
+			t = 0
+			for i in range(4):
+				t += get_int_with_default(d.get("q{}".format(i+1)), 0)
+			self.task = Turbine.calibration_commodity(self.task, c, self.repository, s, t,
+				Organization.objects.filter(parent=None).exclude(name="个人"))
+		return super(CalibrationMixin, self).data_valid(form, formset)
+
+	def get_success_url(self):
+		if self.task:
+			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		else:
+			return reverse('daily_calibration_match')
+
 class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	header = "每日库存盘点: 只盘点好的，破损和缺配件的不盘点"
 	def get_formset_initial(self):
@@ -59,33 +78,19 @@ class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 
 	def dispatch(self, request, *args, **kwargs):
 		self.error = None
+		self.repository = Repository.objects.get(name="孤山仓")
 		c = Commodity.objects.get(name="虚拟物品")
 		if datetime.now(timezone.utc) > c.calibration:
 			self.error = "已过盘点有效时间，请明天盘点"
 			return self.render_to_response(self.get_context_data())
-		return super(FfsMixin, self).dispatch(request, *args, **kwargs)
+		return super(DailyCalibrationView, self).dispatch(request, *args, **kwargs)
 
 	def data_valid(self, form, formset):
 		c = Commodity.objects.get(name="虚拟物品")
 		if datetime.now(timezone.utc) > c.calibration:
 			self.error = "已过盘点有效时间，请明天盘点"
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		self.task = None
-		for f in formset:
-			d = f.cleaned_data
-			c = Commodity.objects.get(pk=d['id'])
-			t = 0
-			for i in range(4):
-				t += get_int_with_default(d.get("q{}".format(i+1)), 0)
-			self.task = Turbine.calibration_commodity(self.task, c, Repository.objects.get(name="孤山仓"), "完好", t,
-				Organization.objects.filter(parent=None).exclude(name="个人"))
 		return super(DailyCalibrationView, self).data_valid(form, formset)
-
-	def get_success_url(self):
-		if self.task:
-			return reverse('task_detail_read', kwargs={'pk': self.task.id})
-		else:
-			return reverse('daily_calibration_match')
 
 class DailyCalibrationMatchView(TemplateView):
 	template_name = "{}/calibration_match.html".format(Organization._meta.app_label)
@@ -129,10 +134,13 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 			return reverse('daily_calibration_match')
 
 class InferiorCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
+	def dispatch(self, request, *args, **kwargs):
+		self.repository = Repository.objects.get(pk=self.kwargs['repository'])
+		return super(InferiorCalibrationView, self).dispatch(request, *args, **kwargs)
+
 	def get_formset_initial(self):
 		d = []
-		r = Repository.objects.get(pk=self.kwargs['repository'])
-		self.header = "{}残次品盘点".format(r)
-		for cid, status, quantity in Turbine.get_inferior(r):
+		self.header = "{}残次品盘点".format(self.repository)
+		for cid, status, quantity in Turbine.get_inferior(self.repository):
 			d.append({'id': cid, 'status': Itemstatus.s2v(status), 'in_book': quantity})
 		return d
