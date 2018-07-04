@@ -1,4 +1,4 @@
-{% extends "base_left_right.html" %}
+{% extends "base_left_middle_right.html" %}
 
 {% block header %}管理中心{% endblock %}
 
@@ -25,6 +25,20 @@
 	</table>
 {% endblock %}
 
+{% block content_middle %}
+	<table cellpadding="4" border="1">
+		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。<br/>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
+		{% for repository in inferior_calibration %}
+		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{inferior_calibration | length}}>残次品盘点</td>
+			{% endif %}
+			<td><a href="{{repository.url}}">{{repository}}</a></td>
+		</tr>
+		{% endfor %}
+		<tr><td><a href="{% url 'manual_calibration' %}">单个盘点</a></td><td></td></tr>
+	</table>
+{% endblock %}
 {% block content_right %}
 	<table cellpadding="4" border="1">
 		<tr><td><a href="javascript:void(0);" onclick ="task_lookup()">查看任务</a></td><td><input type="number" id="id_task" /></td></tr>
@@ -34,14 +48,6 @@
 		<tr><td><a href="{% url 'yst_purchase' %}">原森太进货</a></td><td>智能预测进货数据</td></tr>
 		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td><td>智能预测进货数据</td></tr>
 		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td><td>智能预测进货数据</td></tr>
-		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。<br/>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
-		{% for repository in inferior_calibration %}
-		<tr>
-			<td><a href="{{repository.url}}">残次品盘点</a></td>
-			<td>{{repository}}</td>
-		</tr>
-		{% endfor %}
-		<tr><td><a href="{% url 'manual_calibration' %}">单个盘点</a></td><td></td></tr>
 		<tr><td><a href="{% url 'return_to_supplier' %}">退货回厂家</a></td><td>退货款</td></tr>
 		<tr><td><a href="{% url 'chore_list' %}">运营工作室</a></td><td>京东/天猫的退货，换货，刷单, 返现都用这个链接</td></tr>
 	</table>
