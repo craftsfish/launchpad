@@ -68,7 +68,7 @@ class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 			if v: v = int(v)
 			else: v = 0
 			d.append({'id': c.id, 'status': 1, 'in_book': v})
-		for c in Commodity.objects.order_by("calibration", "supplier", "name")[:10]:
+		for c in Commodity.objects.filter(obsolete=False).order_by("calibration", "supplier", "name")[:10]:
 			r = Repository.objects.get(name="孤山仓")
 			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
 			if v: v = int(v)
