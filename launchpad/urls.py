@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^vault/', include('vault.urls')),
+    url(r'^login/$', auth_views.LoginView.as_view(template_name='base_form.html'), name='login'),
 ]

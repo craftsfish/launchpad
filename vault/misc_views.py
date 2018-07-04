@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from organization import *
 from django import forms
@@ -70,7 +71,8 @@ class FfsMixin(ContextMixin):
 		else:
 			return self.render_to_response(self.get_context_data(form=form, formset=self.formset_class()))
 
-class DailyTaskView(TemplateView):
+class DailyTaskView(LoginRequiredMixin, TemplateView):
+	login_url = '/login/'
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 	def get_context_data(self, **kwargs):
 		kwargs['inferior_calibration'] = Repository.objects.all()
