@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import *
 from organization import *
 from django import forms
@@ -11,6 +10,7 @@ from django.views.generic.base import ContextMixin
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from .base_forms import *
+from .security import *
 
 class CommodityShippingBaseForm(BaseKeywordForm, BaseRepositoryForm): pass
 
@@ -71,8 +71,7 @@ class FfsMixin(ContextMixin):
 		else:
 			return self.render_to_response(self.get_context_data(form=form, formset=self.formset_class()))
 
-class DailyTaskView(LoginRequiredMixin, TemplateView):
-	login_url = '/login/'
+class DailyTaskView(SecurityLoginRequiredMixin, TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
 	def get_context_data(self, **kwargs):
 		kwargs['inferior_calibration'] = Repository.objects.all()
