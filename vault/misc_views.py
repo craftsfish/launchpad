@@ -80,6 +80,10 @@ class DailyTaskView(SecurityLoginRequiredMixin, TemplateView):
 		kwargs['books'] = Organization.objects.filter(parent=None)
 		for o in kwargs['books']:
 			o.url = reverse('book_detail', kwargs={'pk': 1,'org': o.uuid})
+		kwargs['wallets'] = Wallet.objects.all()
+		for w in kwargs['wallets']:
+			w.url = reverse('wallet_detail', kwargs={'pk': w.id})
+			w.balance = get_decimal_with_default(Account.objects.filter(name=w.name).aggregate(Sum('balance'))['balance__sum'], 0)
 		return super(DailyTaskView, self).get_context_data(**kwargs)
 
 class RetailForm(BaseDescriptionForm, BaseIndividualForm): pass

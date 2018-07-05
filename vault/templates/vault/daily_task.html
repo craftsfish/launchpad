@@ -23,12 +23,20 @@
 		</tr>
 		{% endfor %}
 		<tr><td><a href="{% url 'commodity_list' %}">物资</a></td></tr>
-		<tr><td><a href="{% url 'wallet_list' %}">钱包</a></td></tr>
 		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
 		<tr><td><a href="{% url 'task_list' %}">任务</a></td></tr>
 		<tr><td><a href="{% url 'supplier_list' %}">供应商</a></td></tr>
 		<tr><td><a href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>
 		<tr><td><a href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
+		{% for wallet in wallets %}
+		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{wallets | length}}>钱包</td>
+			{% endif %}
+			<td><a href="{{wallet.url}}">{{wallet}}</a></td>
+			<td>{{wallet.balance}}</td>
+		</tr>
+		{% endfor %}
 	</table>
 {% endblock %}
 
