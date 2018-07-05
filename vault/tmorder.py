@@ -29,7 +29,6 @@ class Tmorder(Order, Task):
 		(4, "交易关闭"),
 	)
 	status = models.IntegerField("状态", choices=TM_ORDER_STATUS, null=True, blank=True)
-	fake = models.IntegerField("刷单", default=0) #TODO, remove me and using conterfeit instead
 
 	@staticmethod
 	def statuses():

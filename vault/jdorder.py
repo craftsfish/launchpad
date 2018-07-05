@@ -31,7 +31,6 @@ class Jdorder(Order, Task):
 		(6, "锁定"),
 	)
 	status = models.IntegerField("状态", choices=JD_ORDER_STATUS, null=True, blank=True)
-	fake = models.IntegerField("刷单", default=0) #TODO, remove me and using conterfeit instead
 
 	@staticmethod
 	def statuses():

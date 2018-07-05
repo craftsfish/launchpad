@@ -14,7 +14,6 @@
 			{% if order %}
 			<th>订单编号</th>
 			<th>订单状态</th>
-			<th>旧版刷单状态</th>
 			<th>刷单平台</th>
 			<th>刷单自动结算</th>
 			<th>发货仓库</th>
@@ -31,7 +30,6 @@
 			{% if order %}
 			<td>{{order.oid}}</td>
 			<td>{{order.status}}</td>
-			<td>{{order.fake}}</td>
 			<td>{{order.counterfeit}}</td>
 			<td>{{order.counterfeit_auto_clear}}</td>
 			<td>{{order.repository}}</td>
