@@ -28,7 +28,7 @@ urlpatterns = [
 
 	#item
 	url(r'^item/$', ItemListView.as_view(), name='item_list'),
-	url(r'^item/(?P<pk>[\d]+)/organization/(?P<org>[\d]+)/$', BookDetailView.as_view(), name='book_detail'),
+	url(r'^item/(?P<pk>[\d]+)/organization/(?P<org>[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})/$', BookDetailView.as_view(), name='book_detail'),
 	url(r'^repository/(?P<repo>[\d]+)/(?P<commodity>[\d]+)/(?P<status>[\d]+)/$', RepositoryDetailView.as_view(), name='repository_detail'),
 
 	#commodity

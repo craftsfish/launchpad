@@ -7,7 +7,7 @@ class BookDetailView(DetailView):
 	template_name = "{}/book_detail.html".format(Item._meta.app_label)
 
 	def get(self, request, *args, **kwargs):
-		self.org = Organization.objects.get(pk=kwargs['org'])
+		self.org = Organization.objects.get(uuid=kwargs['org'])
 		return super(BookDetailView, self).get(request, *args, **kwargs)
 
 	def get_context_data(self, **kwargs):

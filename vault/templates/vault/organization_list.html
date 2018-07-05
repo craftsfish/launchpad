@@ -6,7 +6,7 @@
 <div class="col-sm-auto">
 	<ul>
 	{% for object in object_list %}
-		<li><a href="{% url 'book_detail' 1 object.id %}">{{ object }}</a></li>
+		<li><a href="{% url 'book_detail' 1 object.uuid %}">{{ object }}</a></li>
 	{% endfor %}
 	</ul>
 </div>
