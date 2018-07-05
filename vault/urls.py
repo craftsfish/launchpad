@@ -2,6 +2,7 @@ from django.conf.urls import url
 from supplier_views import *
 from organization_views import *
 from item_views import *
+from book_views import *
 from commodity_views import *
 from account_views import *
 from transaction_views import *
