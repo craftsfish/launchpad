@@ -135,6 +135,19 @@ class Order(models.Model):
 		original_repository = shipout_split.account.repository
 		organization = shipout_split.account.organization
 
+		#退货
+		if task.transactions.filter(desc="退货").exists():
+			print "发现退货订单: {}".format(task.id)
+			s = first_shipment.splits.order_by("account__category", "change").first()
+			for i in task.transactions.filter(desc="退货"):
+				dest_split = i.splits.order_by("account__category", "-change").last()
+				a = dest_split.account
+				if s.account.category == 3: #交易取消
+					dest_split.account = Account.get_or_create(a.organization, a.item, "资产", "完好", s.account.repository)
+				else:
+					dest_split.account = Account.get_or_create(a.organization, a.item, "支出", "出货", s.account.repository)
+				dest_split.save()
+
 		#刷单处理
 		if not self.counterfeit:
 			return
@@ -163,6 +176,3 @@ class Order(models.Model):
 		else:
 			if task.transactions.filter(desc="刷单.结算.微信").exists():
 				print "[Error]{}.{} 没有标记为微信刷单，有微信刷单结算交易，请确认后手动调整".format(self, self.oid)
-
-		#退货
-		#TODO: 根据对应的invoice状态处理
