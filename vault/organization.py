@@ -25,3 +25,9 @@ class Organization(models.Model):
 		while r.parent:
 			r = r.parent
 		return r
+
+	def dfs_tree(self):
+		result = [self]
+		for c in self.children.all():
+			result += c.dfs_tree()
+		return result

@@ -1,25 +1,24 @@
-{% extends "base.html" %}
+{% extends "base_single.html" %}
 
-{% block header %}账本-{{object}}: {{org}}{% endblock %}
+{% block header %}{{organization}}: {{object}}账本{% endblock %}
 
 {% block content %}
-<div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<tr>
-			<th></th>
+			<th>组织</th>
 			<th>资产</th>
 			<th>负债</th>
 			<th>收入</th>
 			<th>支出</th>
 			<th>所有者权益</th>
 		</tr>
-		{% if accounts %}
+		{% for o in organizations %}
 		<tr>
-			<td>直属账户</td>
-			{% for j in accounts %}
+			<td>{{o}}</td>
+			{% for accounts in o.accounts_info %}
 			<td>
 				<table cellpadding="4">
-					{% for a in j %}
+					{% for a in accounts %}
 					<tr>
 						<td align="left"><a href="{% url 'account_detail' a.uuid %}">{{a.name}}</a></td>
 						<td align="right">{{a.balance}}</td>
@@ -29,24 +28,7 @@
 			</td>
 			{% endfor %}
 		</tr>
-		{% endif %}
-		{% if orgs %}
-		<tr>
-			<td>下辖组织</td>
-			{% for k in orgs %}
-			<td>
-				<table cellpadding="4">
-					{% for i, o in k.items %}
-					<tr>
-						<td align="left"><a href="{% url 'book_detail' object.id o.0.id %}">{{o.0.name}}</a></td>
-						<td align="right">{{o.1}}</td>
-					</tr>
-					{% endfor %}
-				</table>
-			</td>
-			{% endfor %}
-		</tr>
-		{% endif %}
+		{% endfor %}
 		<tr>
 			<td>合计</td>
 			{% for i in total %}
@@ -54,5 +36,4 @@
 			{% endfor %}
 		</tr>
 	</table>
-</div>
 {% endblock %}
