@@ -128,14 +128,15 @@ class ChangeView(FfsMixin, TemplateView):
 				Transaction.add_raw(self.task, "换货.发货", t, o, c.item_ptr, ("资产", s, r), -q, ("支出", "出货", r))
 		return super(ChangeView, self).data_valid(form, formset)
 
+class ChangeRepositoryForm(BaseDescriptionForm, BaseRootOrganizationForm): pass
 class ChangeRepositoryView(FfsMixin, TemplateView):
 	template_name = "{}/change_repository.html".format(Organization._meta.app_label)
-	form_class = BaseOrganizationForm
+	form_class = ChangeRepositoryForm
 	formset_class = CommodityChangeRepositoryDetailFormSet
 	sub_form_class = CommodityChangeRepositoryForm
 
 	def data_valid(self, form, formset):
-		self.task = Task(desc="换仓")
+		self.task = Task(desc="换仓."+form.cleaned_data['desc'])
 		self.task.save()
 		t = timezone.now()
 		o = form.cleaned_data['organization']
