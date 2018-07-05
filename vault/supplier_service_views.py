@@ -68,7 +68,7 @@ class ReturnToSupplierView(SupplierServiceMixin, TemplateView):
 			Transaction.add_raw(self.task, "退货", t, o, c.item_ptr, ("资产", s, r), -q, ("收入", "进货", r))
 			cash = Money.objects.get(name="人民币")
 			if c.supplier:
-				Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("资产", "{}占款".format(c.supplier), None), q*c.value, ("支出", "进货", None))
+				Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("资产", "{}占款".format(c.supplier), None), q*c.value, ("支出", "进货.{}".format(c.supplier), None))
 			else:
 				Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("资产", "其他供应商占款", None), q*c.value, ("支出", "进货", None))
 		return super(ReturnToSupplierView, self).data_valid(form, formset)

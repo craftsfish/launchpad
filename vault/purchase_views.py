@@ -44,7 +44,10 @@ class PurchaseMixin(FfsMixin):
 			c = Commodity.objects.get(pk=cid)
 			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
 			cash = Money.objects.get(name="人民币")
-			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", "进货", None))
+			name = "进货"
+			if c.supplier:
+				name += "." + c.supplier.name
+			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", name, None))
 		return super(PurchaseMixin, self).data_valid(form, formset)
 
 class SmartPurchaseMixin(PurchaseMixin):
