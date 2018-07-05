@@ -46,7 +46,7 @@ class Tmorder(Order, Task):
 
 	@staticmethod
 	def Import_List():
-		def __handle_list(order_id, time, status, sale, fake, organization, repository):
+		def __handle_list(order_id, time, status, sale, fake, organization, repository, remark):
 			o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
 			o.status = Tmorder.str2status(status)
 			o.repository = repository
@@ -57,6 +57,9 @@ class Tmorder(Order, Task):
 					print "{} {}的刷单状态和备注不一致".format(o, o.oid)
 				else:
 					o.counterfeit = Counterfeit.objects.get(name="人气无忧")
+			if re.compile("刘").search(remark):
+				if not o.counterfeit or o.counterfeit.name != "微信":
+					print "[警告]{}: {}平台备注为微信刷单，没有录入系统".format(o.time.astimezone(timezone.get_current_timezone()), o.oid)
 			o.save()
 
 		with open('/tmp/tm.list.csv', 'rb') as csvfile:
@@ -80,7 +83,7 @@ class Tmorder(Order, Task):
 					if re.compile("南京仓").search(remark):
 						repo = Repository.objects.get(name="南京仓")
 
-					__handle_list(order_id, when, status, sale, f, org, repo)
+					__handle_list(order_id, when, status, sale, f, org, repo, remark)
 
 	@staticmethod
 	def Import_Detail():
