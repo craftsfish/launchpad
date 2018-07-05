@@ -21,7 +21,6 @@ class Commodity(Item):
 
 	supplier = models.ForeignKey(Supplier, verbose_name="供应商", null=True, blank=True)
 	value = models.DecimalField("价值", default=0, max_digits=8, decimal_places=2)
-	onsale = models.BooleanField("在售", default=True) #在售/下架 TODO: remove me
 	inproduction = models.BooleanField("在产", default=True) #在产/停产
 	obsolete = models.BooleanField("废弃", default=False)
 	calibration = models.DateTimeField(default=datetime.now(timezone.get_current_timezone()).replace(2010, 1, 1, 0, 0, 0, 0))
