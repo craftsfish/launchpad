@@ -15,12 +15,7 @@
 {% block content_left %}
 	<table cellpadding="4" border="1">
 		{% for organization in books %}
-		<tr>
-			{% if not forloop.counter0 %}
-			<td rowspan={{books | length}}>账本</td>
-			{% endif %}
-			<td><a href="{{organization.url}}">{{organization}}</a></td>
-		</tr>
+		<tr><td><a href="{{organization.url}}">{{organization}}</a></td></tr>
 		{% endfor %}
 		<tr><td><a href="{% url 'commodity_list' %}">物资</a></td></tr>
 		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
@@ -30,9 +25,6 @@
 		<tr><td><a href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
 		{% for wallet in wallets %}
 		<tr>
-			{% if not forloop.counter0 %}
-			<td rowspan={{wallets | length}}>钱包</td>
-			{% endif %}
 			<td><a href="{{wallet.url}}">{{wallet}}</a></td>
 			<td>{{wallet.balance}}</td>
 		</tr>
