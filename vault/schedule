@@ -1,13 +1,13 @@
+update return status according to shipment status
+verification of wechat fake status
+retrieve accessory from good commodity
+import rqwy clear
+optimize the speed of import various kinds of csv data
+authentication management
+express support
 obsolete RMB account manual clear
 divide purchase expenditure into each supplier
-adjust the display of book
-express support
-verification of wechat fake status
-optimize the speed of import various kinds of csv data
-retrieve accessory from good commodity
 automatically display receit candidate when purchase
-authentication management
-update return status according to shipment status
 import jd clear
 import tm clear
 task profit forecast
