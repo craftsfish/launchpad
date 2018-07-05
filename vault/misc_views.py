@@ -77,6 +77,9 @@ class DailyTaskView(SecurityLoginRequiredMixin, TemplateView):
 		kwargs['inferior_calibration'] = Repository.objects.all()
 		for r in kwargs['inferior_calibration']:
 			r.url = reverse('inferior_calibration', kwargs={'repository': r.id})
+		kwargs['books'] = Organization.objects.filter(parent=None)
+		for o in kwargs['books']:
+			o.url = reverse('book_detail', kwargs={'pk': 1,'org': o.uuid})
 		return super(DailyTaskView, self).get_context_data(**kwargs)
 
 class RetailForm(BaseDescriptionForm, BaseIndividualForm): pass

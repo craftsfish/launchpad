@@ -14,7 +14,14 @@
 
 {% block content_left %}
 	<table cellpadding="4" border="1">
-		<tr><td><a href="{% url 'organization_list' %}">账本</a></td></tr>
+		{% for organization in books %}
+		<tr>
+			{% if not forloop.counter0 %}
+			<td rowspan={{books | length}}>账本</td>
+			{% endif %}
+			<td><a href="{{organization.url}}">{{organization}}</a></td>
+		</tr>
+		{% endfor %}
 		<tr><td><a href="{% url 'commodity_list' %}">物资</a></td></tr>
 		<tr><td><a href="{% url 'wallet_list' %}">钱包</a></td></tr>
 		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
