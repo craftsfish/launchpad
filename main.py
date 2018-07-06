@@ -27,6 +27,7 @@ from django.utils import timezone
 from django.utils import formats
 from datetime import timedelta
 from vault.jdorder import *
+from vault.sync import *
 
 def test():
 	for n in Split.objects.filter(transaction__desc="刷单.发货").values_list('account__item__name', flat=True).distinct():
@@ -46,6 +47,7 @@ options = (
 	["ijdo", "导入京东订单", Jdorder.Import],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
 	["im", "导入货币", Money.Import],
+	["irqwy", "导入人气无忧刷单数据", Sync.rqwy],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
