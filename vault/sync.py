@@ -12,7 +12,6 @@ class Sync(object):
 		def __handler(org, when, status, request, bill, commission, order_id):
 			discount = Decimal(0.7)
 			if order_id == "":
-				pass #TODO: accumulation of frozen money
 				return request + commission*discount
 			order_id = int(order_id)
 			if not Tmorder.objects.filter(oid=order_id).exists():
@@ -29,7 +28,7 @@ class Sync(object):
 				cash = Money.objects.get(name="人民币")
 				a = Account.get(org.root(), cash.item_ptr, "资产", "运营资金.人气无忧", None)
 				b = Account.get(org, cash.item_ptr, "支出", "人气无忧刷单", None)
-				Transaction.add(order.task_ptr, "刷单.结算.人气无忧", when, a, -bill-commission*discount, b)
+				Transaction.add(order.task_ptr, "刷单.结算.人气无忧", when, a, -bill-1-commission*discount, b)
 			return 0
 		organization = Organization.objects.get(name="泰福高腾复专卖店")
 		frozen = 0
@@ -42,4 +41,5 @@ class Sync(object):
 					t = datetime.strptime(when, "%Y-%m-%d %H:%M:%S.%f")
 					when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
 					frozen += __handler(organization, when, status, Decimal(request), Decimal(bill), Decimal(commission), order_id)
-		print "冻结资金: {}".format(frozen)
+		total = get_decimal_with_default(Account.objects.filter(name='运营资金.人气无忧').aggregate(Sum('balance'))['balance__sum'], 0)
+		print "账面剩余资金: {} - 冻结资金: {} = 账户留存资金: {}".format(total, frozen, total - frozen)
