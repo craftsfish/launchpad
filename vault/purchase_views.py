@@ -17,9 +17,13 @@ class PurchaseMixin(FfsMixin):
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
 	sub_form_class = BaseKeywordForm
+	trans_shipment = False
 
 	def get_task(self, form):
-		self.task = Task(desc="进货.{}".format(form.cleaned_data['desc']))
+		if self.trans_shipment:
+			self.task = Task(desc="串货.{}".format(form.cleaned_data['desc']))
+		else:
+			self.task = Task(desc="进货.{}".format(form.cleaned_data['desc']))
 		self.task.save()
 
 	def data_valid(self, form, formset):
@@ -45,7 +49,7 @@ class PurchaseMixin(FfsMixin):
 			Transaction.add_raw(self.task, "进货", t, o, c.item_ptr, ("资产", "应收", r), q, ("收入", "进货", r))
 			cash = Money.objects.get(name="人民币")
 			name = "进货"
-			if c.supplier:
+			if not self.trans_shipment and c.supplier:
 				name += "." + c.supplier.name
 			Transaction.add_raw(self.task, "货款", t, o, cash.item_ptr, ("负债", "应付货款", None), q*c.value, ("支出", name, None))
 		return super(PurchaseMixin, self).data_valid(form, formset)
@@ -87,6 +91,9 @@ class OtherPurchaseView(SmartPurchaseMixin, TemplateView):
 
 class PurchaseView(PurchaseMixin, TemplateView):
 	pass
+
+class TransShipmentView(PurchaseMixin, TemplateView):
+	trans_shipment = True
 
 class AppendPurchaseForm(BaseRepositoryForm, BaseRootOrganizationForm):
 	task = forms.IntegerField()
