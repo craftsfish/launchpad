@@ -43,6 +43,7 @@ options = (
 	["cs", "仓库校准", Turbine.calibration_storage],
 	["ds", "导出库存", Turbine.dump_storage],
 	["ic", "导入物资", Commodity.Import],
+	["iee", "导入现有快递信息", Sync.import_existing_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijde", "导入京东订单快递信息", Sync.import_jd_express],
 	["ijdo", "导入京东订单", Jdorder.Import],
