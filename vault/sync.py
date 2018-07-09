@@ -4,11 +4,13 @@ from ground import *
 from datetime import datetime
 from django.utils import timezone
 from tmorder import *
+from jdorder import *
 from decimal import Decimal
 from express import *
 
 class Sync(object):
 	@staticmethod
+	@transaction.atomic
 	def rqwy():
 		def __handler(org, when, status, request, bill, commission, order_id):
 			discount = Decimal(0.7)
@@ -69,6 +71,7 @@ class Sync(object):
 
 	@staticmethod
 	def import_tm_express():
+		@transaction.atomic
 		def __handler(title, line, *args):
 			e = Sync.__express_creator(title, line, ["物流公司", "物流单号 "])
 			if not e:
@@ -77,3 +80,15 @@ class Sync(object):
 			e.task = Tmorder.objects.get(oid=order_id).task_ptr
 			e.save()
 		csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)
+
+	@staticmethod
+	def import_jd_express():
+		@transaction.atomic
+		def __handler(title, line, *args):
+			e = Sync.__express_creator(title, line, ["快递公司", "快递单号"])
+			if not e:
+				return
+			order_id = int(get_column_value(title, line, "订单号"))
+			e.task = Jdorder.objects.get(oid=order_id).task_ptr
+			e.save()
+		csv_parser('/tmp/jd.express.csv', csv_gb18030_2_utf8, True, __handler)
