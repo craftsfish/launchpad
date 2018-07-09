@@ -254,3 +254,12 @@ class PayWechatRecruitBonusView(FormView):
 
 class HelpView(TemplateView):
 	template_name = "{}/help.html".format(Organization._meta.app_label)
+
+class ChoreListView(TemplateView):
+	template_name = "{}/chore.html".format(Organization._meta.app_label)
+
+	def get_context_data(self, **kwargs):
+		context = super(ChoreListView, self).get_context_data(**kwargs)
+		context['wallet_wechat'] = Wallet.objects.get(name="运营资金.微信")
+		context['wallet_alipay'] = Wallet.objects.get(name="运营资金.支付宝")
+		return context
