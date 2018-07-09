@@ -124,4 +124,5 @@ urlpatterns = [
 
 	#express
 	url(r'^express/(?P<id>[\d]+)/$', ExpressListView.as_view(), name='express_list'),
+	url(r'^express/clear/$', ExpressClearView.as_view(), name='express_clear'),
 ]
