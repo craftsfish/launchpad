@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^vault/', include('vault.urls')),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='base_form.html'), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    url(r'^password/change/$', auth_views.PasswordChangeView.as_view(template_name='base_form.html'), name='password_change'),
+    url(r'^password/change/done/$', auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'), name='password_change_done'),
 ]
