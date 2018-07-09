@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^vault/', include('vault.urls')),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='base_form.html'), name='login'),
+    url(r'^logout/$', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
 ]

@@ -1,0 +1,7 @@
+{% extends "base_single.html" %}
+
+{% block header %}退出{% endblock %}
+
+{% block content_single %}
+	<a href="{% url 'login' %}?next=/vault/chore/">重新登录</a>
+{% endblock %}
