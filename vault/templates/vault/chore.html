@@ -14,6 +14,11 @@
 			if (oid != "")
 				window.location.href = `/vault/tmorder/${oid}/`;
 		}
+		function express_lookup(){
+			eid = jQuery("#id_express").val();
+			if (eid != "")
+				window.location.href = `/vault/express/${eid}/`;
+		}
 	</script>
 {% endblock %}
 
@@ -46,7 +51,7 @@
 {% block content_right %}
 	<table cellpadding="4" border="1">
 		<tr><td align='center' colspan=2>其他</td></tr>
-		<tr><td><a href="{% url 'express_list' %}">快递列表</a></td><td>快递清单</td></tr>
+		<tr><td>快递单号<input type="number" id="id_express" /></td><td><a href="javascript:void(0);" onclick ="express_lookup()">检索</a></td></tr>
 		<tr><td><a href="{% url 'task_list' %}">任务列表</a></td><td>任务清单</td></tr>
 		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
 		<tr><td><a href="{% url 'commodity_list' %}">库存明细</a></td><td>库存明细</td></tr>

@@ -123,5 +123,5 @@ urlpatterns = [
 	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),
 
 	#express
-	url(r'^express/$', ExpressListView.as_view(), name='express_list'),
+	url(r'^express/(?P<id>[\d]+)/$', ExpressListView.as_view(), name='express_list'),
 ]
