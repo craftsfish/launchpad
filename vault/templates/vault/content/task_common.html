@@ -1,0 +1,16 @@
+<table border="1" cellpadding="4">
+	<tr>
+		<th>服务商</th>
+		<th>快递单号</th>
+		<th>费用</th>
+		<th>结算</th>
+	</tr>
+	{% for express in expresses %}
+	<tr>
+		<td>{{ express.supplier }}</td>
+		<td>{{ express.eid }}</td>
+		<td>{{ express.fee }}</td>
+		<td>{{ express.clear }}</td>
+	<tr>
+	{% endfor %}
+</table>

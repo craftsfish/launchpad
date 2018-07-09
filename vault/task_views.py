@@ -29,6 +29,9 @@ class TaskDetailView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
+
+		context['expresses'] = self.object.express_set.all()
+
 		m = [] #for currency accounts
 		c = [] #for commodity accounts
 		for k, v in self.object.uncleared_accounts().items():
