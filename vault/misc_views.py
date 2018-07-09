@@ -255,7 +255,7 @@ class PayWechatRecruitBonusView(FormView):
 class HelpView(TemplateView):
 	template_name = "{}/help.html".format(Organization._meta.app_label)
 
-class ChoreListView(TemplateView):
+class ChoreListView(SecurityLoginRequiredMixin, TemplateView):
 	template_name = "{}/chore.html".format(Organization._meta.app_label)
 
 	def get_context_data(self, **kwargs):
