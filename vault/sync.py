@@ -5,6 +5,7 @@ from datetime import datetime
 from django.utils import timezone
 from tmorder import *
 from decimal import Decimal
+from express import *
 
 class Sync(object):
 	@staticmethod
@@ -43,3 +44,36 @@ class Sync(object):
 					frozen += __handler(organization, when, status, Decimal(request), Decimal(bill), Decimal(commission), order_id)
 		total = get_decimal_with_default(Account.objects.filter(name='运营资金.人气无忧').aggregate(Sum('balance'))['balance__sum'], 0)
 		print "账面剩余资金: {} - 冻结资金: {} = 账户留存资金: {}".format(total, frozen, total - frozen)
+
+	@staticmethod
+	def __express_creator(title, line, columns):
+		supplier, serial = get_column_values(title, line, *columns)
+		serial = re.compile(r"\D+").sub("", serial)
+		if serial == "":
+			return None
+		serial = int(serial)
+		sp = None
+		for s, l in express_supplier_map:
+			ExpressSupplier.objects.get_or_create(name=s)
+			if supplier in l:
+				sp = s
+				break
+		if not sp:
+			print "{} 无法匹配任何现有快递服务商!".format(supplier)
+			return None
+
+		express, created = Express.objects.get_or_create(eid=serial, supplier=ExpressSupplier.objects.get(name=sp))
+		if created:
+			print "增加快递单: {}, {}".format(sp, serial)
+		return express
+
+	@staticmethod
+	def import_tm_express():
+		def __handler(title, line, *args):
+			e = Sync.__express_creator(title, line, ["物流公司", "物流单号 "])
+			if not e:
+				return
+			order_id = int(re.compile(r"\d+").search(get_column_value(title, line, "订单编号")).group())
+			e.task = Tmorder.objects.get(oid=order_id).task_ptr
+			e.save()
+		csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)

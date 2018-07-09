@@ -49,6 +49,7 @@ options = (
 	["im", "导入货币", Money.Import],
 	["irqwy", "导入人气无忧刷单数据", Sync.rqwy],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
+	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
 	["q", "退出系统", __quit],

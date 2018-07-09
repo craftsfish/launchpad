@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 import time
 import enum
+import csv
 from datetime import datetime
 from django.utils import timezone
 from decimal import *
@@ -9,6 +10,18 @@ from decimal import *
 def csv_gb18030_2_utf8(f):
 	for l in f:
 		yield l.decode('gb18030').encode('utf8')
+
+def csv_parser(csv_file, decoder, has_title, handler, *args):
+	with open(csv_file, 'rb') as csvfile:
+		if decoder:
+			reader = csv.reader(decoder(csvfile))
+		else:
+			reader = csv.reader(csvfile)
+		title = None
+		if has_title:
+			title = reader.next()
+		for line in reader:
+			handler(title, line, *args)
 
 #misc
 def get_column_value(table, row, column):
@@ -70,3 +83,12 @@ class DeliveryStatus(enum.IntEnum):
 	inbook = 0
 	delivered = 1
 	cancel = 2
+
+#express supplier mapping
+express_supplier_map = (
+	('中通', ('中通快递')),
+	('邮政', ('EMS经济快递')),
+	('顺丰', ('顺丰速运')),
+	('百世', ('百世快递')),
+	('韵达', ('韵达快递')),
+)
