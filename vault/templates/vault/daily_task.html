@@ -14,10 +14,6 @@
 
 {% block content_left %}
 	<table cellpadding="4" border="1">
-		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
-		<tr><td><a href="{% url 'supplier_list' %}">供应商</a></td></tr>
-		<tr><td><a href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>
-		<tr><td><a href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
 		{% for wallet in wallets %}
 		<tr>
 			<td><a href="{{wallet.url}}">{{wallet}}</a></td>
@@ -29,6 +25,10 @@
 
 {% block content_middle %}
 	<table cellpadding="4" border="1">
+		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
+		<tr><td><a href="{% url 'supplier_list' %}">供应商</a></td></tr>
+		<tr><td><a href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>
+		<tr><td><a href="{% url 'tmcommodity_list' %}">天猫商品</a></td></tr>
 		<tr><td><a href="{% url 'daily_calibration' %}">孤山仓每日盘点</a></td><td>只盘点完好的库存，缺配件或者破损的不清点。<br/>每天早上9点前盘点完毕，超过截至时间系统自动关闭盘点入口。</td></tr>
 		{% for repository in inferior_calibration %}
 		<tr>
