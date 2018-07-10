@@ -115,7 +115,8 @@ urlpatterns = [
 
 	#misc
 	url(r'^misc/pay/wechat/recruit/bonus/$', PayWechatRecruitBonusView.as_view(), name='pay_wechat_recruit_bonus'),
-	url(r'^misc/operation/account/clear/$', OperationAccountClearView.as_view(), name='operation_account_clear'),
+	url(r'^misc/operation/account/pay/$', OperationAccountPayView.as_view(), name='operation_account_pay'),
+	url(r'^misc/operation/account/receive/$', OperationAccountReceiveView.as_view(), name='operation_account_receive'),
 	url(r'^misc/help/$', HelpView.as_view(), name='help'),
 
 	#chore

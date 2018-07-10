@@ -21,4 +21,8 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 			kwargs['nav_items'] = l
 		else:
 			kwargs['nav_items'] += l
+
+		#header
+		if 'header' not in kwargs and hasattr(self, 'header'):
+			kwargs['header'] = self.header
 		return super(SecurityLoginRequiredMixin, self).get_context_data(**kwargs)

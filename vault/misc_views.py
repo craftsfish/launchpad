@@ -190,9 +190,9 @@ class ReceivableCommodityView(TemplateView):
 
 class OperationAccountClearForm(forms.Form):
 	task = forms.IntegerField(required=False, label='(可选)关联到指定任务')
-	organization = forms.ModelChoiceField(queryset=Organization.objects.exclude(name="个人"), label='收支主体')
+	organization = forms.ModelChoiceField(queryset=Organization.objects.exclude(name="个人"), label='主体')
 	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='账户')
-	change = forms.DecimalField(initial=0, max_digits=20, decimal_places=2, label="变动金额")
+	change = forms.DecimalField(initial=0, max_digits=20, decimal_places=2, min_value=0.01, label="金额")
 	desc = forms.CharField(label='描述')
 
 	def clean(self):
@@ -202,9 +202,10 @@ class OperationAccountClearForm(forms.Form):
 			if not Task.objects.filter(id=task_id).exists():
 				raise forms.ValidationError("非法任务编号")
 
-class OperationAccountClearView(FormView):
-	template_name = "{}/operation_account_clear.html".format(Organization._meta.app_label)
+class OperationAccountClearMixin(FormView):
+	template_name = "base_form.html"
 	form_class = OperationAccountClearForm
+	pay = False
 
 	def form_valid(self, form):
 		self.task = None
@@ -217,19 +218,27 @@ class OperationAccountClearView(FormView):
 		d = form.cleaned_data['desc']
 		cash = Money.objects.get(name="人民币")
 		a = Account.get(o.root(), cash.item_ptr, "资产", w.name, None)
-		if c < 0:
+		if self.pay:
 			b = Account.get_or_create(o, cash.item_ptr, "支出", "其他支出", None)
+			c = -c
 		else:
 			b = Account.get_or_create(o, cash.item_ptr, "收入", "其他收入", None)
 		Transaction.add(self.task, d, timezone.now(), a, c, b)
 		self.wallet = w
-		return super(OperationAccountClearView, self).form_valid(form)
+		return super(OperationAccountClearMixin, self).form_valid(form)
 
 	def get_success_url(self):
 		if self.task:
 			return reverse('task_detail_read', kwargs={'pk': self.task.id})
 		else:
 			return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
+
+class OperationAccountPayView(SecurityLoginRequiredMixin, OperationAccountClearMixin):
+	header = "付款"
+	pay = True
+
+class OperationAccountReceiveView(SecurityLoginRequiredMixin, OperationAccountClearMixin):
+	header = "收款"
 
 class PayWechatRecruitBonusForm(forms.Form):
 	wallet = forms.ModelChoiceField(queryset=Wallet.objects.filter(name__startswith="运营资金"), label='付款账户')
