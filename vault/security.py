@@ -2,12 +2,15 @@
 from ground import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from organization import *
 
 class SecurityLoginRequiredMixin(LoginRequiredMixin):
 	login_url = '/login/'
 
 	def get_context_data(self, **kwargs):
+		#common
 		m = (
+			("物资", reverse('commodity_list')),
 			("修改密码", reverse('password_change')),
 			("退出", reverse('logout')),
 			(self.request.user.username, "#"),
@@ -18,6 +21,14 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 			i.name = name
 			i.url = url
 			l.append(i)
+
+		#books
+		if self.request.user.has_perm('is_governor'):
+			for i, o in enumerate(Organization.objects.filter(parent=None)):
+				o.url = reverse('book_detail', kwargs={'pk': 1,'org': o.uuid})
+				l.insert(i, o)
+
+		#assemble
 		if 'nav_items' not in kwargs:
 			kwargs['nav_items'] = l
 		else:

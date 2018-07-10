@@ -14,10 +14,6 @@
 
 {% block content_left %}
 	<table cellpadding="4" border="1">
-		{% for organization in books %}
-		<tr><td><a href="{{organization.url}}">{{organization}}</a></td></tr>
-		{% endfor %}
-		<tr><td><a href="{% url 'commodity_list' %}">物资</a></td></tr>
 		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
 		<tr><td><a href="{% url 'task_list' %}">任务</a></td></tr>
 		<tr><td><a href="{% url 'supplier_list' %}">供应商</a></td></tr>

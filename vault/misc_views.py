@@ -80,9 +80,6 @@ class DailyTaskView(SecurityLoginRequiredMixin, PermissionRequiredMixin, Templat
 		kwargs['inferior_calibration'] = Repository.objects.all()
 		for r in kwargs['inferior_calibration']:
 			r.url = reverse('inferior_calibration', kwargs={'repository': r.id})
-		kwargs['books'] = Organization.objects.filter(parent=None)
-		for o in kwargs['books']:
-			o.url = reverse('book_detail', kwargs={'pk': 1,'org': o.uuid})
 		kwargs['wallets'] = Wallet.objects.order_by("name")
 		for w in kwargs['wallets']:
 			w.url = reverse('wallet_detail', kwargs={'pk': w.id})
