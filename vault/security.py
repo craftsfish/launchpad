@@ -10,6 +10,7 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 		m = (
 			("修改密码", reverse('password_change')),
 			("退出", reverse('logout')),
+			(self.request.user.username, "#"),
 		)
 		l = []
 		for name, url in m:
