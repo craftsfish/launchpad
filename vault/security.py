@@ -30,6 +30,14 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 				o.url = reverse('book_detail', kwargs={'pk': 1,'org': o.uuid})
 				l.insert(i, o)
 
+		#home
+		h = NavItem()
+		h.name = "首页"
+		h.url = reverse('chore_list')
+		if self.request.user.has_perm('is_governor'):
+			h.url = reverse('daily_task')
+		l.insert(0, h)
+
 		#assemble
 		if 'nav_items' not in kwargs:
 			kwargs['nav_items'] = l
