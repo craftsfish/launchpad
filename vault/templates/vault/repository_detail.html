@@ -1,5 +1,4 @@
 {% extends "base_single.html" %}
-
 {% block header %}{{repository}}.{{commodity}}.{{status}}{% endblock %}
 
 {% block content_single %}
@@ -17,6 +16,7 @@
 		{% for split in object_list %}
 			<tr>
 				<td>{{ split.transaction.time | date:"Y-m-d H:i:s"}}</td>
+				<td><a href="{% url 'account_detail_read' split.account.uuid %}">{{ split.account }}</a></td>
 				<td>{{ split.account }}</td>
 				<td align="right">{{ split.change | stringformat:"+.0f"}}</td>
 				<td align="right">{{ split.balance | stringformat:".0f"}}</td>
