@@ -12,6 +12,7 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 		m = (
 			("任务", reverse('task_list')),
 			("物资", reverse('commodity_list')),
+			("应收", reverse('receivable_commodity')),
 			("修改密码", reverse('password_change')),
 			("退出", reverse('logout')),
 			(self.request.user.username, "#"),

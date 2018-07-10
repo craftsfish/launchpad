@@ -52,7 +52,6 @@
 	<table cellpadding="4" border="1">
 		<tr><td align='center' colspan=2>其他</td></tr>
 		<tr><td>快递单号<input type="number" id="id_express" /></td><td><a href="javascript:void(0);" onclick ="express_lookup()">检索</a></td></tr>
-		<tr><td><a href="{% url 'receivable_commodity' %}">应收货物清单</a></td><td>应收货物清单</td></tr>
 		<tr><td><a href="{% url 'wallet_detail' wallet_wechat.id %}">运营资金.微信</a></td><td>账户流水</td></tr>
 		<tr><td><a href="{% url 'wallet_detail' wallet_alipay.id %}">运营资金.支付宝</a></td><td>账户流水</td></tr>
 		<tr><td><a href="{% url 'change_repository' %}">换仓</a></td><td>1)检验出瑕疵品，完好->破损。<br/>2)从好的上面取配件也用这个，完好->残缺</td></tr>
@@ -67,4 +66,3 @@
 		<tr><td><a href="{% url 'help' %}">概念介绍</a></td><td>建设中</td></tr>
 	</table>
 {% endblock %}
-
