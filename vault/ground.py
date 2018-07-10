@@ -97,3 +97,6 @@ express_supplier_map = (
 	('圆通', ('圆通速递', '圆通快递')),
 	('德邦', ('德邦物流')),
 )
+
+class NavItem(object):
+	pass
