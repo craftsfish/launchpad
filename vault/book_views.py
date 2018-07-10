@@ -2,10 +2,12 @@
 from .models import *
 from .security import *
 from django.views.generic import DetailView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
-class BookDetailView(SecurityLoginRequiredMixin, DetailView):
+class BookDetailView(SecurityLoginRequiredMixin, PermissionRequiredMixin, DetailView):
 	model = Item
-	template_name = "{}/book_detail.html".format(Item._meta.app_label)
+	template_name = "vault/book_detail.html"
+	permission_required = ('is_governor')
 
 	def get(self, request, *args, **kwargs):
 		self.org = Organization.objects.get(uuid=kwargs['org'])
