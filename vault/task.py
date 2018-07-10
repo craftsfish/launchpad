@@ -85,7 +85,7 @@ class Transaction(models.Model):
 			Split(account=a, change=change, transaction=tr).save()
 
 		if balance != 0:
-			print "[Error]交易帐目不平!" #TODO: raise exception
+			raise ValueError("交易帐目不平")
 
 	@staticmethod
 	def __legal(*args):
