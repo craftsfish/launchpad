@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from .models import *
+from .security import *
 from django.views.generic import DetailView
 
-class BookDetailView(DetailView):
+class BookDetailView(SecurityLoginRequiredMixin, DetailView):
 	model = Item
 	template_name = "{}/book_detail.html".format(Item._meta.app_label)
 

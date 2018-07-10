@@ -9,8 +9,9 @@ from django.utils import timezone
 from task import *
 from .misc_views import *
 from turbine import *
+from .security import *
 
-class TaskListView(ListView):
+class TaskListView(SecurityLoginRequiredMixin, ListView):
 	model = Task
 	paginate_by = 50
 

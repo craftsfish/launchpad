@@ -10,6 +10,7 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 	def get_context_data(self, **kwargs):
 		#common
 		m = (
+			("任务", reverse('task_list')),
 			("物资", reverse('commodity_list')),
 			("修改密码", reverse('password_change')),
 			("退出", reverse('logout')),
