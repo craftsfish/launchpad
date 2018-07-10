@@ -7,6 +7,8 @@ from .models import *
 from wallet import *
 from counterfeit import *
 import re
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 
 class EmptyForm(forms.Form):
 	pass
@@ -230,6 +232,13 @@ class Turbine:
 		)
 		for n, d, r in counterfeits:
 			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
+
+		content_type = ContentType.objects.get_for_model(Organization)
+		permission = Permission.objects.create(
+			codename='is_governor',
+			name='Is Governor',
+			content_type=content_type,
+		)
 
 	@staticmethod
 	def get_inferior(repository):

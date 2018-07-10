@@ -7,6 +7,7 @@ from turbine import *
 from django.forms import formset_factory
 from django.views.generic import FormView
 from django.views.generic.base import ContextMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from .base_forms import *
@@ -71,14 +72,11 @@ class FfsMixin(ContextMixin):
 		else:
 			return self.render_to_response(self.get_context_data(form=form, formset=self.formset_class()))
 
-class DailyTaskView(SecurityLoginRequiredMixin, TemplateView):
+class DailyTaskView(SecurityLoginRequiredMixin, PermissionRequiredMixin, TemplateView):
 	template_name = "{}/daily_task.html".format(Organization._meta.app_label)
+	permission_required = ('is_governor')
 
 	def get_context_data(self, **kwargs):
-		if not self.request.user.is_superuser:
-			self.template_name = "permission_denied.html"
-			return {}
-
 		kwargs['inferior_calibration'] = Repository.objects.all()
 		for r in kwargs['inferior_calibration']:
 			r.url = reverse('inferior_calibration', kwargs={'repository': r.id})
