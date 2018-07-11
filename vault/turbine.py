@@ -234,7 +234,7 @@ class Turbine:
 			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
 
 		content_type = ContentType.objects.get_for_model(Organization)
-		permission = Permission.objects.create(
+		permission, created = Permission.objects.get_or_create(
 			codename='is_governor',
 			name='Is Governor',
 			content_type=content_type,
