@@ -23,6 +23,12 @@ def csv_parser(csv_file, decoder, has_title, handler, *args):
 		for line in reader:
 			handler(title, line, *args)
 
+def csv_line_2_str(line):
+	result = ""
+	for i in line:
+		result += str(i) + ","
+	return result
+
 #misc
 def get_column_value(table, row, column):
 	for i, v in enumerate(table):

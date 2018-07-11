@@ -107,3 +107,37 @@ class Sync(object):
 				e.clear = True
 				e.save()
 		csv_parser('/tmp/express.csv', None, True, __handler)
+
+	@staticmethod
+	def __express_clear(clear, supplier, column_eid, column_amount, append_expresses):
+		@transaction.atomic
+		def __handler(title, line, *args):
+			nsupplier, neid, namount = args[0][1:4]
+			serial, amount = get_column_values(title, line, neid, namount)
+			serial = int(serial)
+			amount = Decimal(amount)
+			supplier=ExpressSupplier.objects.get(name=nsupplier)
+			if Express.objects.filter(eid=serial).filter(supplier=supplier).exists():
+				e = Express.objects.get(eid=serial, supplier=supplier)
+				if e.clear:
+					print "{} 已经结算".format(csv_line_2_str(line))
+					return
+				args[0][0] += amount
+				if clear:
+					e.clear = True
+					e.fee = amount
+					e.save()
+			else:
+				if serial in args[1]: #add forcefully
+					if clear:
+						Express(eid=serial, supplier=supplier, clear=True, fee=amount).save()
+					args[0][0] += amount
+				else:
+					print "{} 不存在".format(csv_line_2_str(line))
+		misc = [0, supplier, column_eid, column_amount]
+		csv_parser('/tmp/express.csv', None, True, __handler, misc, append_expresses)
+		print "有效订单合计: {}".format(misc[0])
+
+	@staticmethod
+	def import_zt_express():
+		Sync.__express_clear(False, '中通', "运单编号", "金额", [])

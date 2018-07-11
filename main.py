@@ -54,6 +54,7 @@ options = (
 	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
 	["itmd", "导入天猫订单详情", Tmorder.Import_Detail],
+	["izte", "导入中通快递结算信息", Sync.import_zt_express],
 	["q", "退出系统", __quit],
 	["t", "测试", test],
 	["ucw", "更新盘库有效截至日期", Turbine.update_calibration_window],
