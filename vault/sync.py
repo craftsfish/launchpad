@@ -7,6 +7,7 @@ from tmorder import *
 from jdorder import *
 from decimal import Decimal
 from express import *
+from .models import *
 
 class Sync(object):
 	@staticmethod
@@ -141,3 +142,55 @@ class Sync(object):
 	@staticmethod
 	def import_zt_express():
 		Sync.__express_clear(False, '中通', "运单编号", "金额", [])
+
+	@staticmethod
+	def import_tm_clear():
+		__map = (
+			#账务类型, 备注, 账户类型, 账户名称, 关联到订单, 从备注获取订单编号
+			(r'^交易$', r'^花呗交易号\[\d*\]$', '收入', '天猫营收', '销售额', True, False),
+			(r'^交易$', r'^\s*$', '收入', '天猫营收', '销售额', True, False),
+			(r'^交易退款$', r'^售后退款-\d*-T200P\d*$', '收入', '天猫营收', '销售额', True, False),
+			(r'^代扣款-普通账户转账$', r'^代扣返点积分\d{18,}$', '支出', '订单积分', '积分', True, False),
+			(r'^代扣款-普通账户转账$', r'^天猫佣金（类目）\{\d{18,}\}扣款$', '支出', '平台佣金', '平台佣金', True, False),
+			(r'^交易分账$', r'^淘宝客佣金代扣款\[\d*\]$', '支出', '淘宝客佣金', '淘宝客佣金', True, False),
+			(r'^交易分账$', r'^分销分账，.*$', '支出', '分销分账', '分销分账', True, False),
+			(r'^\s*$', r'^保险承保-卖家版运费险保费收取:淘宝订单号\d{18,}$', '支出', '运费险', '运费险', True, True),
+			(r'^服务费$', r'^花呗支付服务费\[\d*\]$', '支出', '服务费', '服务费', True, False),
+			(r'^服务费$', r'^信用卡支付服务费\[\d*\]$', '支出', '服务费', '服务费', True, False),
+			(r'^提现$', r'^余利宝自动转入$', '资产', '余利宝', '余利宝自动转入', False, False),
+			(r'^\s*$', r'^余利宝-基金赎回，转账到支付宝$', '资产', '余利宝', '余利宝赎回', False, False),
+			(r'^代扣款-普通账户转账$', r'^代扣款（扣款用途：直通车自动充值-\d*-\d*）$', '资产', '直通车', '直通车自动充值', False, False),
+			(r'^提现$', r'^\s*$', '资产', '支付宝.手动周转', '手动周转', False, False),
+		)
+		@transaction.atomic
+		def __handler(title, line, *args):
+			org = args[0]
+			when, pid, oid, category, receive, pay, remark  = get_column_values(title, line, "入账时间", "支付宝流水号", "商户订单号", "账务类型", "收入（+元）", "支出（-元）", "备注")
+			if Tmclear.objects.filter(pid=pid).exists(): return #handled
+			t = datetime.strptime(when, "%Y-%m-%d %H:%M:%S")
+			when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
+			if receive != " ": change = Decimal(receive)
+			if pay != " ": change = -Decimal(pay)
+			handled = False
+			for __category, __remark, __account_category, __account_name, __desc, __attach, __retrieve_order_from_remark in __map:
+				if not re.compile(__category).match(category): continue
+				if not re.compile(__remark).match(remark): continue
+				task = None
+				if __attach:
+					if __retrieve_order_from_remark:
+						oid = int(re.compile(r"\d{18,}").search(remark).group())
+					else:
+						oid = int(re.compile(r"\d{18,}").search(oid).group())
+					order = Tmorder.objects.get(oid=oid)
+					task = order.task_ptr
+				cash = Money.objects.get(name="人民币")
+				a = Account.get_or_create(org, cash.item_ptr, "资产", "支付宝.自动结算", None)
+				b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
+				tr = Transaction.add(task, "结算."+__desc, when, a, change, b)
+				Tmclear(pid=pid, transaction=tr).save()
+				print "已处理交易: {}".format(csv_line_2_str(line))
+				handled=True
+				break
+			if not handled:
+				print "发现未知结算: {}".format(csv_line_2_str(line))
+		csv_parser('/tmp/tm.clear.csv', csv_gb18030_2_utf8, True, __handler, Organization.objects.get(name="泰福高腾复专卖店"))

@@ -20,3 +20,9 @@ from tmorder import *
 from counterfeit import *
 from wallet import *
 from express import *
+
+class Tmclear(models.Model):
+	pid = models.CharField(max_length=30, primary_key=True, verbose_name="支付宝流水号")
+	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
+	def __str__(self):
+		return self.pid

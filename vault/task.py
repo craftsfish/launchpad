@@ -86,6 +86,7 @@ class Transaction(models.Model):
 
 		if balance != 0:
 			raise ValueError("交易帐目不平")
+		return tr
 
 	@staticmethod
 	def __legal(*args):
@@ -122,14 +123,14 @@ class Transaction(models.Model):
 	@staticmethod
 	def add(task, desc, time, *args):
 		args = Transaction.__legal(*args)
-		if not args: return False
+		if not args: return None
 		tr = Transaction(desc=desc, task=task, time=time)
 		tr.save()
 		i = 0
 		while i < len(args):
 			Split(account=args[i], change=args[i+1], transaction=tr).save()
 			i += 2
-		return True
+		return tr
 
 class Split(models.Model):
 	account = models.ForeignKey(Account)

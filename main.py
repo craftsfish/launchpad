@@ -50,6 +50,7 @@ options = (
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
 	["im", "导入货币", Money.Import],
 	["irqwy", "导入人气无忧刷单数据", Sync.rqwy],
+	["itmc", "导入天猫结算信息", Sync.import_tm_clear],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
 	["itml", "导入天猫订单列表", Tmorder.Import_List],
