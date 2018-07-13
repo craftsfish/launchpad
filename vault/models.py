@@ -32,3 +32,9 @@ class Jdorderclear(models.Model):
 	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.pid
+
+class Jdwalletclear(models.Model):
+	pid = models.CharField(max_length=40, primary_key=True, verbose_name="商户订单号")
+	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
+	def __str__(self):
+		return self.pid

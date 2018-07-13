@@ -48,6 +48,7 @@ options = (
 	["ijde", "导入京东订单快递信息", Sync.import_jd_express],
 	["ijdo", "导入京东订单", Jdorder.Import],
 	["ijdoc", "导入京东订单结算信息", Sync.import_jd_order_clear],
+	["ijdwc", "导入京东钱包结算信息", Sync.import_jd_wallet_clear],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
 	["im", "导入货币", Money.Import],
 	["irqwy", "导入人气无忧刷单数据", Sync.rqwy],

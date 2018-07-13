@@ -234,3 +234,41 @@ class Sync(object):
 			if not handled:
 				print "发现未知结算: {}".format(csv_line_2_str(line))
 		csv_parser('/tmp/jd.clear.order.csv', csv_gb18030_2_utf8, True, __handler, Organization.objects.get(name="为绿厨具专营店"))
+
+	@staticmethod
+	def import_jd_wallet_clear():
+		__map = (
+			#交易备注, 商户订单号, 账户名称, 描述
+			(r'^="projectId:\d*_\d*/projectName:POP运费险"$', r'^.*$', '支出', '运费险', '运费险'),
+			(r'^="联盟结算 - \(JDDORS_.*\)\d*@广告联盟\(pc\)"$', r'^.*$', '支出', '广告联盟', '广告联盟'),
+			(r'^="京东支付货款"$', r'^.*$', '资产', '订单自动结算', '转账'),
+			(r'^="京东支付费项"$', r'^.*$', '资产', '订单自动结算', '转账'),
+			(r'^="退货金额"$', r'^.*$', '资产', '订单自动结算', '转账'),
+			(r'^="其他支付方式费项"$', r'^.*$', '资产', '订单自动结算', '转账'),
+			(r'^="其他支付方式货款"$', r'^.*$', '资产', '订单自动结算', '转账'),
+		)
+		@transaction.atomic
+		def __handler(title, line, *args):
+			org, when, pid, receive, pay, remark  = get_column_values(title, line, "账户名称", "日期", "商户订单号", "收入金额", "支出金额", "交易备注")
+			if Jdwalletclear.objects.filter(pid=pid).exists(): return #handled
+			org = org[2:]
+			org = Organization.objects.get(name=org[:-1])
+			t = datetime.strptime(when, '="%Y-%m-%d %H:%M:%S"')
+			when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
+			if receive != "--": change = Decimal(receive)
+			if pay != "--": change = -Decimal(pay)
+			handled = False
+			for __remark, __pid, __account_category, __account_name, __desc in __map:
+				if not re.compile(__remark).match(remark): continue
+				if not re.compile(__pid).match(pid): continue
+				cash = Money.objects.get(name="人民币")
+				a = Account.get_or_create(org, cash.item_ptr, "资产", "钱包自动结算", None)
+				b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
+				tr = Transaction.add(None, "结算."+__desc, when, a, change, b)
+				Jdwalletclear(pid=pid, transaction=tr).save()
+				print "已处理交易: {}".format(csv_line_2_str(line))
+				handled=True
+				break
+			if not handled:
+				print "发现未知结算: {}".format(csv_line_2_str(line))
+		csv_parser('/tmp/jd.clear.wallet.csv', csv_gb18030_2_utf8, True, __handler)
