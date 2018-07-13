@@ -26,3 +26,9 @@ class Tmclear(models.Model):
 	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.pid
+
+class Jdorderclear(models.Model):
+	pid = models.CharField(max_length=30, primary_key=True, verbose_name="单据编号")
+	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
+	def __str__(self):
+		return self.pid
