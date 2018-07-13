@@ -8,8 +8,7 @@ class PurchaseCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	quantity = forms.IntegerField()
 	check = forms.BooleanField(required=False)
-	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput, required=False)
-	level = forms.IntegerField(required=False, widget=forms.HiddenInput)
+	desc = forms.CharField(required=False, widget=forms.HiddenInput)
 PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 
 class PurchaseMixin(FfsMixin):
@@ -58,8 +57,8 @@ class SmartPurchaseMixin(PurchaseMixin):
 	def get_formset_initial(self):
 		r = []
 		for c in Turbine.replenish(self.get_supplier()):
-			for repo, level, refill in c.detail:
-				r.append({'id': c.id, 'quantity': int(refill), 'repository': repo, 'check': False, 'level': int(level)})
+			for repo, inventory, speed, level, refill in c.detail:
+				r.append({'id': c.id, 'quantity': int(refill), 'check': False, 'desc': "{}, 库存:{}, 速度:{}, 可售天数{}".format(repo, inventory, speed, level)})
 		return r
 
 	def get_context_data(self, **kwargs):
@@ -67,10 +66,8 @@ class SmartPurchaseMixin(PurchaseMixin):
 		for form in context['formset']:
 			cid = form['id'].value()
 			c = Commodity.objects.get(pk=cid)
-			rid = form['repository'].value()
-			r = Repository.objects.get(pk=rid)
 			form.label = c.name
-			form.note = "{}库存天数: {}".format(r.name, form['level'].value())
+			form.note = form['desc'].value()
 		return context
 
 class TfgPurchaseView(SmartPurchaseMixin, TemplateView):

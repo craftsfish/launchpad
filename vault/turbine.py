@@ -79,9 +79,9 @@ class Turbine:
 		if inventory: inventory = int(inventory)
 		else: inventory = 0
 		if speed <= 0:
-			return [8888, -inventory]
+			return [inventory, 8888, -inventory]
 		else:
-			return [inventory/speed, speed * threshold - inventory]
+			return [inventory, inventory/speed, speed * threshold - inventory]
 
 	@staticmethod
 	def replenish(supplier):
@@ -96,14 +96,19 @@ class Turbine:
 				threshold += 10
 				c.detail = []
 				need_refill = False
+				a = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name__in=["应收", "完好"]).aggregate(Sum('balance'))['balance__sum'], 0)
+				b = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name__in=["应发"]).aggregate(Sum('balance'))['balance__sum'], 0)
+				storage = a - b
+				if storage < 12:
+					need_refill = True
 				for r in Repository.objects.order_by("id"):
 					shipping = Turbine.get_shipping_out_information(c, r, 10)
 					speed = shipping[len(shipping)-1]
-					level, refill = Turbine.get_replenish_information(c, r, speed, threshold)
+					inventory, level, refill = Turbine.get_replenish_information(c, r, speed, threshold)
 					if refill > 0:
 						need_refill = True
 					if refill != 0:
-						c.detail.append([r, level, refill])
+						c.detail.append([r, inventory, speed, level, refill])
 				if need_refill:
 					l.append(c)
 		def __key(c):
@@ -111,11 +116,7 @@ class Turbine:
 				return "{}-{}".format(c.supplier.id, c.name)
 			else:
 				return "None-{}".format(c.name)
-		l = sorted(l, key=__key)
-		for c in l:
-			for repo, level, refill in c.detail:
-				print "{}: {} | 库存天数: {} | 补仓数量: {}".format(c, repo, level, refill)
-		return l
+		return sorted(l, key=__key)
 
 	@staticmethod
 	def calibration_commodity(task, commodity, repository, status, quantity, organizations):

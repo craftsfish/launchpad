@@ -66,7 +66,7 @@ class CommodityDetailView(DetailView):
 			#storage
 			s = l[len(l)-1]
 			l.append(threshold)
-			l += Turbine.get_replenish_information(self.object, r, s, threshold)
+			l += Turbine.get_replenish_information(self.object, r, s, threshold)[1:]
 
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 		for i in range(span):
