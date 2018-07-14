@@ -79,8 +79,9 @@ class Sync(object):
 			if not e:
 				return
 			order_id = int(re.compile(r"\d+").search(get_column_value(title, line, "订单编号")).group())
-			e.task = Tmorder.objects.get(oid=order_id).task_ptr
-			e.save()
+			if Tmorder.objects.filter(oid=order_id).exists(): #TODO, remove me
+				e.task = Tmorder.objects.get(oid=order_id).task_ptr
+				e.save()
 		csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)
 
 	@staticmethod
