@@ -96,6 +96,15 @@ class Sync(object):
 		csv_parser('/tmp/jd.express.csv', csv_gb18030_2_utf8, True, __handler)
 
 	@staticmethod
+	def import_cm_express():
+		@transaction.atomic
+		def __handler(title, line, *args):
+			e = Sync.__express_creator(title, line, ["快递公司", "运单号"])
+			if not e:
+				return
+		csv_parser('/tmp/cm.express.csv', None, True, __handler)
+
+	@staticmethod
 	def import_existing_express():
 		@transaction.atomic
 		def __handler(title, line, *args):
@@ -142,6 +151,10 @@ class Sync(object):
 	@staticmethod
 	def import_zt_express():
 		Sync.__express_clear(False, '中通', "运单编号", "金额", [])
+
+	@staticmethod
+	def import_yz_express():
+		Sync.__express_clear(False, '邮政', "邮件号", "邮资", [])
 
 	@staticmethod
 	def import_tm_clear():
