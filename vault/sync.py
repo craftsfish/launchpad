@@ -252,14 +252,20 @@ class Sync(object):
 	@staticmethod
 	def import_jd_wallet_clear():
 		__map = (
-			#交易备注, 商户订单号, 账户名称, 描述
-			(r'^="projectId:\d*_\d*/projectName:POP运费险"$', r'^.*$', '支出', '运费险', '运费险'),
-			(r'^="联盟结算 - \(JDDORS_.*\)\d*@广告联盟\(pc\)"$', r'^.*$', '支出', '广告联盟', '广告联盟'),
-			(r'^="京东支付货款"$', r'^.*$', '资产', '订单自动结算', '转账'),
-			(r'^="京东支付费项"$', r'^.*$', '资产', '订单自动结算', '转账'),
-			(r'^="退货金额"$', r'^.*$', '资产', '订单自动结算', '转账'),
-			(r'^="其他支付方式费项"$', r'^.*$', '资产', '订单自动结算', '转账'),
-			(r'^="其他支付方式货款"$', r'^.*$', '资产', '订单自动结算', '转账'),
+			#交易备注, 商户订单号, 账户名称, 描述, 追加金额到商户订单号
+			(r'^="projectId:\d*_\d*/projectName:POP运费险"$', r'^.*$', '支出', '运费险', '运费险', False),
+			(r'^="联盟结算 - \(JDDORS_.*\)\d*@广告联盟\(pc\)"$', r'^.*$', '支出', '广告联盟', '广告联盟', False),
+			(r'^="物流结算 - \(JDDORS_.*\)\d*@B商家结算\(新\)"$', r'^.*$', '支出', '物流结算', '物流结算', False),
+			(r'^="京东支付货款"$', r'^.*$', '资产', '订单自动结算', '转账', False),
+			(r'^="其他支付方式货款"$', r'^.*$', '资产', '订单自动结算', '转账', False),
+			(r'^="京东支付费项"$', r'^.*$', '资产', '订单自动结算', '转账', False),
+			(r'^="退货金额"$', r'^.*$', '资产', '订单自动结算', '转账', False),
+			(r'^="其他支付方式费项"$', r'^.*$', '资产', '订单自动结算', '转账', False),
+			(r'^="技术服务费"$', r'^.*$', '资产', '京东快车', '转账', False),
+			(r'^="代收付服务费"$', r'^.*$', '支出', '代收付服务费', '代收付服务费', False),
+			(r'^="退货抵扣款退回"$', r'^.*$', '支出', '退货抵扣款退回', '退货抵扣款退回', False),
+			(r'^.*$', r'^="200000\d{6,6}"$', '资产', '京东钱包', '转账', True), #钱包付款，同一个商户订单号分转账和手续费两条记录，增加金额来区分
+			(r'^.*$', r'^="201\d{13,13}"$', '资产', '京东钱包', '转账', False)
 		)
 		@transaction.atomic
 		def __handler(title, line, *args):
@@ -272,12 +278,18 @@ class Sync(object):
 			if receive != "--": change = Decimal(receive)
 			if pay != "--": change = -Decimal(pay)
 			handled = False
-			for __remark, __pid, __account_category, __account_name, __desc in __map:
+			for __remark, __pid, __account_category, __account_name, __desc, __new_pid in __map:
 				if not re.compile(__remark).match(remark): continue
 				if not re.compile(__pid).match(pid): continue
+				if __new_pid:
+					pid += "|" + str(change)
+					if Jdwalletclear.objects.filter(pid=pid).exists(): return #handled
 				cash = Money.objects.get(name="人民币")
 				a = Account.get_or_create(org, cash.item_ptr, "资产", "钱包自动结算", None)
-				b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
+				if __new_pid and change > -50.0:
+					b = Account.get_or_create(org, cash.item_ptr, "支出", "付款手续费", None)
+				else:
+					b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
 				tr = Transaction.add(None, "结算."+__desc, when, a, change, b)
 				Jdwalletclear(pid=pid, transaction=tr).save()
 				print "已处理交易: {}".format(csv_line_2_str(line))
