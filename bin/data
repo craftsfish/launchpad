@@ -1,13 +1,14 @@
 #!/bin/bash
+dir="/tmp"
 today=$(date +%Y%m%d)
-for f in $(ls *.csv); do
+for f in $(ls ${dir}/*.csv); do
 	r=$(echo $f | grep "^ExportOrderList${today}.*$")
 	if [[ $r != "" ]] ; then
-		mv $r tm.list.csv
+		mv $r ${dir}/tm.list.csv
 	fi
 
 	r=$(echo $f | grep "^ExportOrderDetailList${today}.*$")
 	if [[ $r != "" ]] ; then
-		mv $r tm.detail.csv
+		mv $r ${dir}/tm.detail.csv
 	fi
 done
