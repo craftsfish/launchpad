@@ -1,0 +1,13 @@
+#!/bin/bash
+today=$(date +%Y%m%d)
+for f in $(ls *.csv); do
+	r=$(echo $f | grep "^ExportOrderList${today}.*$")
+	if [[ $r != "" ]] ; then
+		mv $r tm.list.csv
+	fi
+
+	r=$(echo $f | grep "^ExportOrderDetailList${today}.*$")
+	if [[ $r != "" ]] ; then
+		mv $r tm.detail.csv
+	fi
+done
