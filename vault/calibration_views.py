@@ -60,8 +60,9 @@ class CalibrationMixin(ContextMixin):
 class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	header = "每日库存盘点: 只盘点好的，破损和缺配件的不盘点"
 	def get_formset_initial(self):
+		const_candidates = ["T0700"]
 		d = []
-		for c in ["T2005", "CB0066", "CB0060"]:
+		for c in const_candidates:
 			c = Commodity.objects.get(name=c)
 			r = Repository.objects.get(name="孤山仓")
 			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
@@ -69,6 +70,7 @@ class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 			else: v = 0
 			d.append({'id': c.id, 'status': 1, 'in_book': v})
 		for c in Commodity.objects.filter(obsolete=False).order_by("calibration", "supplier", "name")[:10]:
+			if c.name in const_candidates: continue
 			r = Repository.objects.get(name="孤山仓")
 			v = Account.objects.filter(item=c).filter(repository=r).filter(name="完好").aggregate(Sum('balance'))['balance__sum']
 			if v: v = int(v)
