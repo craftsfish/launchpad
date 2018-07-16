@@ -17,4 +17,4 @@ director, company
 manager, stall
 employee, nothing
 
-模块划分: infra, model, turbine, platform, view, synchronization
+模块划分: infra, model, turbine, platform, view, synchronization, analysis, report, visualization

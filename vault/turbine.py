@@ -6,6 +6,7 @@ from django import forms
 from .models import *
 from wallet import *
 from counterfeit import *
+import csv
 import re
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
