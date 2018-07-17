@@ -23,6 +23,7 @@ from vault.tmcommodity import *
 from vault.tmorder import *
 from vault.turbine import *
 from vault.order import *
+from vault.jdorder_sync import import_jd_order
 from django.utils import timezone
 from django.utils import formats
 from datetime import timedelta
@@ -47,7 +48,7 @@ options = (
 	["iee", "导入现有快递信息", Sync.import_existing_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijde", "导入京东订单快递信息", Sync.import_jd_express],
-	["ijdo", "导入京东订单", Jdorder.Import],
+	["ijdo", "导入京东订单", import_jd_order],
 	["ijdoc", "导入京东订单结算信息", Sync.import_jd_order_clear],
 	["ijdwc", "导入京东钱包结算信息", Sync.import_jd_wallet_clear],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
