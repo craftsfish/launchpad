@@ -60,7 +60,7 @@ class CalibrationMixin(ContextMixin):
 class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
 	header = "每日库存盘点: 只盘点好的，破损和缺配件的不盘点"
 	def get_formset_initial(self):
-		const_candidates = ["T0700"]
+		const_candidates = []
 		d = []
 		for c in const_candidates:
 			c = Commodity.objects.get(name=c)

@@ -8,6 +8,13 @@ from jdorder import *
 from decimal import Decimal
 from express import *
 from .models import *
+from jdorder_sync import import_jd_order
+from tmorder_sync import import_tm_order_list, import_tm_order_detail
+
+def import_order():
+	import_jd_order()
+	import_tm_order_list()
+	import_tm_order_detail()
 
 class Sync(object):
 	@staticmethod

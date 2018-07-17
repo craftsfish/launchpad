@@ -137,7 +137,6 @@ class Order(models.Model):
 
 		#退货
 		if task.transactions.filter(desc="退货").exists():
-			print "发现退货订单: {}".format(task.id)
 			s = first_shipment.splits.order_by("account__category", "change").first()
 			for i in task.transactions.filter(desc="退货"):
 				dest_split = i.splits.order_by("account__category", "-change").last()

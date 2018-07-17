@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from ground import *
 from jdorder import *
-from django.db import transaction as db_transaction
+from django.db import transaction
 
 class Jdtransaction:
 	pass
@@ -42,7 +42,7 @@ def import_jd_order():
 
 	def __handler_transaction_raw(info):
 		if info and not info.bad:
-			with db_transaction.atomic():
+			with transaction.atomic():
 				org = Organization.objects.get(name="为绿厨具专营店")
 				info.invoices = sorted(info.invoices, key = lambda i: (i.id * 100000 + i.number))
 				repo = Repository.objects.get(name="孤山仓")
@@ -76,7 +76,7 @@ def import_jd_order():
 
 		#add Jdcommodity
 		jdcid = int(get_column_value(title, line, "商品ID"))
-		with db_transaction.atomic():
+		with transaction.atomic():
 			jdc, created = Jdcommodity.objects.get_or_create(id=jdcid)
 			jdc.name=get_column_value(title, line, "商品名称")
 			jdc.save()

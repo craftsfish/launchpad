@@ -23,8 +23,6 @@ from vault.tmcommodity import *
 from vault.tmorder import *
 from vault.turbine import *
 from vault.order import *
-from vault.jdorder_sync import import_jd_order
-from vault.tmorder_sync import import_tm_order_list, import_tm_order_detail
 from django.utils import timezone
 from django.utils import formats
 from datetime import timedelta
@@ -49,17 +47,15 @@ options = (
 	["iee", "导入现有快递信息", Sync.import_existing_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijde", "导入京东订单快递信息", Sync.import_jd_express],
-	["ijdo", "导入京东订单", import_jd_order],
 	["ijdoc", "导入京东订单结算信息", Sync.import_jd_order_clear],
 	["ijdwc", "导入京东钱包结算信息", Sync.import_jd_wallet_clear],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
 	["im", "导入货币", Money.Import],
+	["io", "导入京东&天猫订单", import_order],
 	["irqwy", "导入人气无忧刷单数据", Sync.rqwy],
 	["itmc", "导入天猫结算信息", Sync.import_tm_clear],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
-	["itml", "导入天猫订单列表", import_tm_order_list],
-	["itmd", "导入天猫订单详情", import_tm_order_detail],
 	["iyze", "导入邮政快递结算信息", Sync.import_yz_express],
 	["izte", "导入中通快递结算信息", Sync.import_zt_express],
 	["q", "退出系统", __quit],
