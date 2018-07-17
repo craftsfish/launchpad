@@ -24,7 +24,7 @@ from vault.tmorder import *
 from vault.turbine import *
 from vault.order import *
 from vault.jdorder_sync import import_jd_order
-from vault.tmorder_sync import import_tm_order_detail
+from vault.tmorder_sync import import_tm_order_list, import_tm_order_detail
 from django.utils import timezone
 from django.utils import formats
 from datetime import timedelta
@@ -58,7 +58,7 @@ options = (
 	["itmc", "导入天猫结算信息", Sync.import_tm_clear],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
-	["itml", "导入天猫订单列表", Tmorder.Import_List],
+	["itml", "导入天猫订单列表", import_tm_order_list],
 	["itmd", "导入天猫订单详情", import_tm_order_detail],
 	["iyze", "导入邮政快递结算信息", Sync.import_yz_express],
 	["izte", "导入中通快递结算信息", Sync.import_zt_express],

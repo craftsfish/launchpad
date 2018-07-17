@@ -3,6 +3,43 @@ from django.db import transaction
 from ground import *
 from tmorder import *
 
+def import_tm_order_list():
+	def __handle_list(order_id, time, status, sale, fake, organization, repository, remark):
+		o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
+		o.status = Tmorder.str2status(status)
+		o.repository = repository
+		o.time = time
+		o.sale = sale
+		if fake:
+			if o.counterfeit and o.counterfeit.name != "人气无忧":
+				print "{} {}的刷单状态和备注不一致".format(o, o.oid)
+			else:
+				o.counterfeit = Counterfeit.objects.get(name="人气无忧")
+		if re.compile("刘").search(remark):
+			if not o.counterfeit or o.counterfeit.name != "微信":
+				print "[警告]{}: {}平台备注为微信刷单，没有录入系统".format(o.time.astimezone(timezone.get_current_timezone()), o.oid)
+		o.save()
+
+	def __handler(title, line, *args):
+		status = get_column_value(title, line, "订单状态")
+		if status not in Tmorder.statuses():
+			print "[天猫]未知订单状态: {}".format(status)
+			return
+		order_id = int(re.compile(r"\d+").search(get_column_value(title, line, "订单编号")).group())
+		when = utc_2_datetime(cst_2_utc(get_column_value(title, line, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
+		sale = Decimal(get_column_value(title, line, "买家应付货款"))
+		remark = get_column_value(title, line, "订单备注")
+		f = 0
+		if remark.find("朱") != -1:
+			f = 1
+		with transaction.atomic():
+			org = Organization.objects.get(name="泰福高腾复专卖店")
+			repo = Repository.objects.get(name="孤山仓")
+			if re.compile("南京仓").search(remark):
+				repo = Repository.objects.get(name="南京仓")
+			__handle_list(order_id, when, status, sale, f, org, repo, remark)
+	csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)
+
 class Tmtransaction:
 	pass
 class Tminvoice:
