@@ -3,6 +3,14 @@ from django.db import transaction
 from ground import *
 from tmorder import *
 
+def cancel_shipping_transaction(task):
+	for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):
+		splits = i.splits.order_by("account__category", "change")
+		s = splits[0]
+		s.account = Account.get_or_create(s.account.organization, s.account.item, "支出", "出货", s.account.repository)
+		s.change = -splits[1].change
+		s.save()
+
 def import_tm_order_list():
 	def __handle_list(order_id, time, status, sale, fake, organization, repository, remark):
 		o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
@@ -19,6 +27,8 @@ def import_tm_order_list():
 			if not o.counterfeit or o.counterfeit.name != "微信":
 				print "[警告]{}: {}平台备注为微信刷单，没有录入系统".format(o.time.astimezone(timezone.get_current_timezone()), o.oid)
 		o.save()
+		if status == "交易关闭": #商品明细有可能不出现在详情表中
+			cancel_shipping_transaction(o.task_ptr)
 
 	def __handler(title, line, *args):
 		status = get_column_value(title, line, "订单状态")
