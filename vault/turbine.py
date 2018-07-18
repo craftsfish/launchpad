@@ -18,8 +18,8 @@ class FakeOrderCandidatesMixin(object):
 	def get_formset_initial(self):
 		l = []
 		commodities = [
-			"餐具",
-			"食用盐",
+			"食用盐500g",
+			"食用盐400g",
 			"肥皂",
 			"硅胶刷绿色",
 			"硅胶刷红色",

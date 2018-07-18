@@ -83,7 +83,7 @@ def import_jd_order():
 
 		#jdcommodity mapping validation
 		if not Jdcommoditymap.get(jdc, booktime):
-			print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, l, "商品名称"))
+			print "{}) {}:{} 缺乏商品信息".format(booktime.astimezone(timezone.get_current_timezone()), jdc.id, get_column_value(title, line, "商品名称"))
 			cur_transaction.bad = True
 
 		#add invoice
