@@ -28,6 +28,8 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 		if self.request.user.has_perm('is_governor'):
 			for i, o in enumerate(Organization.objects.filter(parent=None)):
 				o.url = reverse('book_detail', kwargs={'pk': 1,'org': o.uuid})
+				if len(o.name) > 2: #TODO, this algorithm is a quick solution
+					o.name = o.name[2:4]
 				l.insert(i, o)
 
 		#home
