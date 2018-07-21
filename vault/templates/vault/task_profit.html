@@ -1,0 +1,25 @@
+{% extends "base_single.html" %}
+{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
+{% block header %}任务损益计算{% endblock %}
+
+{% block content %}
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>账户</th>
+			<th>标的</th>
+			<th>变动</th>
+			<th>价值</th>
+			<th>净损益</th>
+		</tr>
+		{% for s in splits %}
+		<tr>
+			<td>{{s.account}}</td>
+			<td>{{s.account.item}}</td>
+			<td>{{s.change}}</td>
+			<td>{{s.change_value}}</td>
+			<td>{{s.balance}}</td>
+		</tr>
+		{% endfor %}
+		<tr><th colspan=5>{{evaluation}}</th></tr>
+	</table>
+{% endblock %}

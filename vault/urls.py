@@ -69,6 +69,7 @@ urlpatterns = [
 	url(r'^task/(?P<pk>[\d]+)/next/$', TaskNextView.as_view(), name='task_next'),
 	url(r'^task/(?P<pk>[\d]+)/clear/bill/$', TaskClearBillView.as_view(), name='task_clear_bill'),
 	url(r'^task/(?P<pk>[\d]+)/invoice/$', TaskInvoiceView.as_view(), name='task_invoice'),
+	url(r'^task/(?P<pk>[\d]+)/profit/$', TaskProfitView.as_view(), name='task_profit'),
 
 	#tmorder
 	url(r'^tmorder/change/$', TmorderChangeView.as_view(), name='tmorder_change'),

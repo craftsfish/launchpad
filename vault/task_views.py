@@ -39,6 +39,7 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 		if self.request.user.has_perm('is_governor'):
 			private.governor = (
 				("中和任务", reverse('task_revert', kwargs={'pk': self.object.id})),
+				("利润分析", reverse('task_profit', kwargs={'pk': self.object.id})),
 			)
 			private.clear_url = reverse('task_clear', kwargs={'pk': self.object.id})
 			private.settle_url = reverse('task_settle', kwargs={'pk': self.object.id})
@@ -292,3 +293,27 @@ class TaskRevertView(RedirectView):
 				args.append(-s.change)
 			Transaction.add(self.object, "取消", timezone.now(), *args)
 		return super(TaskRevertView, self).get(request, *args, **kwargs)
+
+class TaskProfitView(SecurityLoginRequiredMixin, DetailView):
+	template_name = "vault/task_profit.html"
+	model = Task
+
+	def get_context_data(self, **kwargs):
+		context = super(TaskProfitView, self).get_context_data(**kwargs)
+		balance = 0
+		splits = []
+		for t in self.object.transactions.all():
+			for s in t.splits.all():
+				if s.account.category not in [2, 3]:
+					continue
+				if hasattr(s.account.item, 'commodity'):
+					s.change_value = s.change * s.account.item.commodity.value * -s.account.sign()
+				else:
+					s.change_value = s.change * -s.account.sign()
+				balance += s.change_value
+				s.balance = balance
+				splits.append(s)
+		context['splits'] = splits
+		fee = 8
+		context['evaluation'] = "毛利:{} - 运费包装人工:{} = 净利润:{}".format(balance, fee, balance-fee)
+		return context
