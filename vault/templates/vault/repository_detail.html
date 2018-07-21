@@ -21,7 +21,7 @@
 				<td align="right">{{ split.balance | stringformat:".0f"}}</td>
 				<td>
 					{% if split.transaction.task %}
-					<a href="{% url 'task_detail_read' split.transaction.task.id %}">{{ split.transaction.task }}</a>
+					<a href="{% url 'task_detail' split.transaction.task.id %}">{{ split.transaction.task }}</a>
 					{%endif %}
 				</td>
 				<td>{{ split.transaction.desc }}</td>

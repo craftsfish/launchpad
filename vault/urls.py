@@ -60,8 +60,7 @@ urlpatterns = [
 
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
-	url(r'^task/(?P<pk>[\d]+)/root/$', TaskDetailView.as_view(), name='task_detail'),
-	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailViewRead.as_view(), name='task_detail_read'),
+	url(r'^task/(?P<pk>[\d]+)/$', TaskDetailView.as_view(), name='task_detail'),
 	url(r'^task/(?P<pk>[\d]+)/delete/$', TaskDeleteView.as_view(), name='task_delete'),
 	url(r'^task/(?P<pk>[\d]+)/revert/$', TaskRevertView.as_view(), name='task_revert'),
 	url(r'^task/(?P<pk>[\d]+)/clear/$', TaskClearView.as_view(), name='task_clear'),

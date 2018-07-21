@@ -53,7 +53,7 @@ class CalibrationMixin(ContextMixin):
 
 	def get_success_url(self):
 		if self.task:
-			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+			return reverse('task_detail', kwargs={'pk': self.task.id})
 		else:
 			return reverse('daily_calibration_match')
 
@@ -131,7 +131,7 @@ class ManualCalibrationView(FfsMixin, TemplateView):
 
 	def get_success_url(self):
 		if self.task:
-			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+			return reverse('task_detail', kwargs={'pk': self.task.id})
 		else:
 			return reverse('daily_calibration_match')
 

@@ -8,7 +8,7 @@ from .base_forms import *
 class TmorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		try:
-			return reverse('task_detail_read', kwargs={'pk': Tmorder.objects.get(oid=kwargs['pk']).id})
+			return reverse('task_detail', kwargs={'pk': Tmorder.objects.get(oid=kwargs['pk']).id})
 		except Tmorder.DoesNotExist as e:
 			return reverse('chore_list')
 
@@ -111,7 +111,7 @@ class TmorderRebateView(FormView):
 		return super(TmorderRebateView, self).form_valid(form)
 
 	def get_success_url(self):
-		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		return reverse('task_detail', kwargs={'pk': self.task.id})
 
 	def get_context_data(self, **kwargs):
 		kwargs['title'] = "天猫订单返现"
@@ -139,7 +139,7 @@ class TmorderCollectMarginView(FormView):
 		return super(TmorderCollectMarginView, self).form_valid(form)
 
 	def get_success_url(self):
-		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		return reverse('task_detail', kwargs={'pk': self.task.id})
 
 	def get_context_data(self, **kwargs):
 		kwargs['title'] = "天猫订单补差价"

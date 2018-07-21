@@ -59,7 +59,7 @@ class FfsMixin(ContextMixin):
 		return super(FfsMixin, self).get_context_data(**kwargs)
 
 	def get_success_url(self):
-		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		return reverse('task_detail', kwargs={'pk': self.task.id})
 
 	def data_valid(self, form, formset):
 		return HttpResponseRedirect(self.get_success_url())
@@ -224,7 +224,7 @@ class OperationAccountClearMixin(FormView):
 
 	def get_success_url(self):
 		if self.task:
-			return reverse('task_detail_read', kwargs={'pk': self.task.id})
+			return reverse('task_detail', kwargs={'pk': self.task.id})
 		else:
 			return reverse('wallet_detail', kwargs={'pk': self.wallet.id})
 

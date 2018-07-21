@@ -81,9 +81,6 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 
 		return context
 
-class TaskDetailViewRead(TaskDetailView):
-	template_name = "{}/task_detail_read.html".format(Organization._meta.app_label)
-
 class TaskDeleteView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		return reverse('task_list')
@@ -94,7 +91,7 @@ class TaskDeleteView(RedirectView):
 
 class TaskPreviousView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return reverse('task_detail_read', kwargs={'pk': self.prev.id})
+		return reverse('task_detail', kwargs={'pk': self.prev.id})
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['pk']
@@ -105,7 +102,7 @@ class TaskPreviousView(RedirectView):
 
 class TaskNextView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return reverse('task_detail_read', kwargs={'pk': self.next.id})
+		return reverse('task_detail', kwargs={'pk': self.next.id})
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['pk']
@@ -256,7 +253,7 @@ class TaskClearBillView(FormView):
 		return super(TaskClearBillView, self).form_valid(form)
 
 	def get_success_url(self):
-		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		return reverse('task_detail', kwargs={'pk': self.task.id})
 
 	def dispatch(self, request, *args, **kwargs):
 		self.task = Task.objects.get(pk=kwargs['pk'])

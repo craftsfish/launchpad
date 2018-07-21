@@ -18,7 +18,7 @@
 			<td>{{ express.fee }}</td>
 			<td>{{ express.clear }}</td>
 			{% if express.task %}
-			<td><a href="{% url 'task_detail_read' express.task.id %}">{{ express.task }}</a></td>
+			<td><a href="{% url 'task_detail' express.task.id %}">{{ express.task }}</a></td>
 			{% else %}
 			<td>{{ express.task }}</td>
 			{% endif %}

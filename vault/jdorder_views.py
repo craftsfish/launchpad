@@ -8,7 +8,7 @@ from .base_forms import *
 class JdorderDetailViewRead(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		try:
-			return reverse('task_detail_read', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
+			return reverse('task_detail', kwargs={'pk': Jdorder.objects.get(oid=kwargs['pk']).id})
 		except Jdorder.DoesNotExist as e:
 			return reverse('chore_list')
 
@@ -110,7 +110,7 @@ class JdorderRebateView(FormView):
 		return super(JdorderRebateView, self).form_valid(form)
 
 	def get_success_url(self):
-		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		return reverse('task_detail', kwargs={'pk': self.task.id})
 
 	def get_context_data(self, **kwargs):
 		kwargs['title'] = "京东订单返现"
@@ -138,7 +138,7 @@ class JdorderCollectMarginView(FormView):
 		return super(JdorderCollectMarginView, self).form_valid(form)
 
 	def get_success_url(self):
-		return reverse('task_detail_read', kwargs={'pk': self.task.id})
+		return reverse('task_detail', kwargs={'pk': self.task.id})
 
 	def get_context_data(self, **kwargs):
 		kwargs['title'] = "京东订单补差价"
