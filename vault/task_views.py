@@ -67,14 +67,7 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 		if hasattr(self.object, "tmorder"):
 			order = Tmorder.objects.get(pk=self.object.id)
 		if order:
-			remark = ""
-			for i in order.task_ptr.transactions.filter(desc="刷单.发货").order_by("id"):
-				split = i.splits.order_by("account__category", "change").last()
-				if remark != "":
-					remark += ", "
-				remark += "{}: {:+.0f}".format(split.account.item.name, split.change)
 			context['order'] = order
-			context['remark'] = "邓丽君: {" + remark + "}"
 
 		return context
 
