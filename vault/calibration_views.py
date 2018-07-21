@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from organization import *
 from turbine import EmptyForm
 from .models import *
+from .security import *
 
 class StorageCalibarionForm(forms.Form):
 	check = forms.BooleanField()
@@ -57,7 +58,7 @@ class CalibrationMixin(ContextMixin):
 		else:
 			return reverse('daily_calibration_match')
 
-class DailyCalibrationView(CalibrationMixin, FfsMixin, TemplateView):
+class DailyCalibrationView(SecurityLoginRequiredMixin, CalibrationMixin, FfsMixin, TemplateView):
 	header = "每日库存盘点: 只盘点好的，破损和缺配件的不盘点"
 	def get_formset_initial(self):
 		const_candidates = []
