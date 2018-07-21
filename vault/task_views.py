@@ -25,7 +25,7 @@ class TaskListView(SecurityLoginRequiredMixin, ListView):
 			t.end = t.transactions.order_by("time").values_list('time', flat=True).last()
 		return context
 
-class TaskDetailView(DetailView):
+class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 	model = Task
 
 	def get_context_data(self, **kwargs):
