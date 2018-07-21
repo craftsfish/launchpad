@@ -10,11 +10,13 @@ from express import *
 from .models import *
 from jdorder_sync import import_jd_order
 from tmorder_sync import import_tm_order_list, import_tm_order_detail
+from turbine import *
 
 def import_order():
 	import_jd_order()
 	import_tm_order_list()
 	import_tm_order_detail()
+	Turbine.update_calibration_window()
 
 @transaction.atomic
 def import_rqwy():

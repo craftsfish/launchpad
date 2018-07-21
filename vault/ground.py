@@ -15,6 +15,7 @@ def csv_gb18030_2_utf8(f):
 def csv_parser(csv_file, decoder, has_title, handler, *args):
 	if not os.path.isfile(csv_file):
 		print "csv文件{}不存在".format(csv_file)
+		return
 	print "正在导入{}...".format(csv_file)
 	with open(csv_file, 'rb') as csvfile:
 		if decoder:
