@@ -81,10 +81,12 @@
 
 	<table cellpadding="4" border="1">
 	<tr>
+		{% if private.governor %}
 		<th></th>
 		<th></th>
 		<th></th>
 		<th></th>
+		{% endif %}
 		<th>时间</th>
 		<th>概述</th>
 		<th>标的</th>
@@ -92,17 +94,23 @@
 	</tr>
 	{% for t in trans %}
 	<tr>
+		{% if private.governor %}
 		<td><a href="{% url 'transaction_duplicate' t.id %}">复制</a></td>
 		<td><a href="{% url 'transaction_delete' t.id %}">删除</a></td>
 		<td><a href="{% url 'transaction_revert' t.id %}">中和</a></td>
 		<td><a href="{% url 'transaction_update' t.id %}">编辑</a></td>
+		{% endif %}
 		<td>{{t.time | date:"Y-m-d H:i:s" }}</td>
 		<td>{{t.desc}}</td>
 		{% for s in t.ss %}
 		{% if not forloop.counter0 %}
 			<td>{{s.account.item}}</td>
 		{% endif %}
+		{% if private.governor %}
 		<td align="left"><a href="{% url 'account_detail' s.account.uuid %}">{{s.account}}</a></td>
+		{% else %}
+		<td align="left">{{s.account}}</td>
+		{% endif %}
 		{% if t.is_money %}
 			<td align="right">{{s.change | stringformat:"+.2f"}}</td>
 		{% else %}
