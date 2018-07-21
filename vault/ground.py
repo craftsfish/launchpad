@@ -110,3 +110,6 @@ express_supplier_map = (
 
 class NavItem(object):
 	pass
+
+class Container(object):
+	pass

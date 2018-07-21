@@ -32,6 +32,16 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 		context = super(TaskDetailView, self).get_context_data(**kwargs)
 
 		context['expresses'] = self.object.express_set.all()
+		private = Container()
+		context['private'] = private
+		private.clear_url = reverse('task_clear_bill', kwargs={'pk': self.object.id})
+		private.settle_url = '#'
+		if self.request.user.has_perm('is_governor'):
+			private.governor = (
+				("中和任务", reverse('task_revert', kwargs={'pk': self.object.id})),
+			)
+			private.clear_url = reverse('task_clear', kwargs={'pk': self.object.id})
+			private.settle_url = reverse('task_settle', kwargs={'pk': self.object.id})
 
 		m = [] #for currency accounts
 		c = [] #for commodity accounts
