@@ -39,7 +39,8 @@
 		</tr>
 		{% endfor %}
 		<tr><td><a href="{% url 'manual_calibration' %}">单个盘点</a></td><td></td></tr>
-		<tr><td rowspan=4>进货</td><td><a href="{% url 'tfg_purchase' %}">泰福高进货</a></td></tr>
+		<tr><td rowspan=5>进货</td><td><a href="{% url 'tfg_purchase' %}">泰福高进货</a></td></tr>
+		<tr><td><a href="{% url 'tfg_low_inventory' %}">泰福高低库存清单</a></td></tr>
 		<tr><td><a href="{% url 'yst_purchase' %}">原森太进货</a></td></tr>
 		<tr><td><a href="{% url 'kml_purchase' %}">凯曼隆进货</a></td></tr>
 		<tr><td><a href="{% url 'other_purchase' %}">其他进货</a></td></tr>

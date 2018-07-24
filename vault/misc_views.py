@@ -272,3 +272,24 @@ class ChoreListView(SecurityLoginRequiredMixin, TemplateView):
 		context['wallet_wechat'] = Wallet.objects.get(name="运营资金.微信")
 		context['wallet_alipay'] = Wallet.objects.get(name="运营资金.支付宝")
 		return context
+
+class TfgLowInventoryListView(SecurityLoginRequiredMixin, TemplateView):
+	template_name = "vault/low_inventory.html"
+
+	def get_context_data(self, **kwargs):
+		context = super(TfgLowInventoryListView, self).get_context_data(**kwargs)
+		candidates = []
+		for c in Commodity.objects.filter(supplier=Supplier.objects.get(name="泰福高")).filter(inproduction=True).order_by('name'):
+			a = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name__in=["应收", "完好"]).aggregate(Sum('balance'))['balance__sum'], 0)
+			b = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name__in=["应发"]).aggregate(Sum('balance'))['balance__sum'], 0)
+			storage = a - b
+			if storage >= 12: continue
+			candidates.append(c)
+			c.storage = storage
+			c.speed = 0
+			for r in Repository.objects.order_by("id"):
+				shipping = Turbine.get_shipping_out_information(c, r, 10)
+				speed = shipping[len(shipping)-1]
+				c.speed += speed
+		context['candidates'] = candidates
+		return context

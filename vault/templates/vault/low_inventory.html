@@ -1,0 +1,20 @@
+{% extends "base_single.html" %}
+{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
+{% block header %}低库存列表{% endblock %}
+
+{% block content %}
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>品名</th>
+			<th>库存</th>
+			<th>出货速度</th>
+		</tr>
+		{% for commodity in candidates %}
+		<tr>
+			<td><a href="{% url 'commodity_detail' commodity.id %}">{{commodity.name}}</a></td>
+			<td>{{commodity.storage }}</td>
+			<td>{{commodity.speed }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

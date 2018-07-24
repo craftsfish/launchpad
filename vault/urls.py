@@ -101,6 +101,7 @@ urlpatterns = [
 	#purchase
 	url(r'^misc/purchase/default/$', PurchaseView.as_view(), name='purchase'),
 	url(r'^misc/purchase/tfg/$', TfgPurchaseView.as_view(), name='tfg_purchase'),
+	url(r'^misc/purchase/tfg/low/inventory/$', TfgLowInventoryListView.as_view(), name='tfg_low_inventory'),
 	url(r'^misc/purchase/yst/$', YstPurchaseView.as_view(), name='yst_purchase'),
 	url(r'^misc/purchase/kml/$', KmlPurchaseView.as_view(), name='kml_purchase'),
 	url(r'^misc/purchase/other/$', OtherPurchaseView.as_view(), name='other_purchase'),
