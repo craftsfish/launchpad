@@ -97,11 +97,6 @@ class Turbine:
 				threshold += 10
 				c.detail = []
 				need_refill = False
-				a = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name__in=["应收", "完好"]).aggregate(Sum('balance'))['balance__sum'], 0)
-				b = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name__in=["应发"]).aggregate(Sum('balance'))['balance__sum'], 0)
-				storage = a - b
-				if storage < 12:
-					need_refill = True
 				for r in Repository.objects.order_by("id"):
 					shipping = Turbine.get_shipping_out_information(c, r, 10)
 					speed = shipping[len(shipping)-1]
