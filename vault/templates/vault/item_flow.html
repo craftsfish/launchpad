@@ -5,15 +5,25 @@
 {% block content %}
 	<table border="1" cellpadding="4">
 		<tr>
-			<th>品名</th>
-			<th>库存</th>
-			<th>出货速度</th>
+			<td></td>
+			{% for span in spans %}
+			<td align='center' colspan=3>{{span}}天</td>
+			{% endfor %}
 		</tr>
-		{% for commodity in candidates %}
 		<tr>
-			<td><a href="{% url 'commodity_detail' commodity.id %}">{{commodity.name}}</a></td>
-			<td>{{commodity.storage }}</td>
-			<td>{{commodity.speed }}</td>
+			<th>品名</th>
+			{% for span in spans %}
+			<th>收入</th>
+			<th>支出</th>
+			<th>净收支</th>
+			{% endfor %}
+		</tr>
+		{% for item in candidates %}
+		<tr>
+			<td>{{item}}</td>
+			{% for data in item.data %}
+			<td>{{data}}</td>
+			{% endfor %}
 		</tr>
 		{% endfor %}
 	</table>

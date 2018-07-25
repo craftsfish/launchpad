@@ -282,3 +282,10 @@ class Turbine:
 				c.obsolete = True
 			if c.obsolete:
 				c.save()
+
+def item_flow_report(item, span, end):
+	q = Split.objects.filter(account__item=item).exclude(account__organization=Organization.objects.get(name='个人'))
+	q = q.filter(transaction__time__gte=(end-timedelta(span))).filter(transaction__time__lt=end)
+	income = float(get_decimal_with_default(q.filter(account__category=2).aggregate(Sum('change'))['change__sum'], 0))
+	expenditure = float(get_decimal_with_default(q.filter(account__category=3).aggregate(Sum('change'))['change__sum'], 0))
+	return [income, expenditure, income-expenditure]
