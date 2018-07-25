@@ -271,6 +271,7 @@ class ChoreListView(SecurityLoginRequiredMixin, TemplateView):
 		context = super(ChoreListView, self).get_context_data(**kwargs)
 		context['wallet_wechat'] = Wallet.objects.get(name="运营资金.微信")
 		context['wallet_alipay'] = Wallet.objects.get(name="运营资金.支付宝")
+		context['wallet_rqwy'] = Wallet.objects.get(name="运营资金.人气无忧")
 		return context
 
 class TfgLowInventoryListView(SecurityLoginRequiredMixin, TemplateView):
