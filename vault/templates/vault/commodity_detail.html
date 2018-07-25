@@ -26,7 +26,6 @@
 	</table>
 
 	<br/>
-
 	<p>分析报告:</p>
 	<table border="1" cellpadding="4">
 		<tr>
@@ -39,6 +38,24 @@
 		<tr>
 			{% for i in repo %}
 			<td>{{i}}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+
+	<br/>
+	<p>收支报告:</p>
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>天数</th>
+			<th>收入</th>
+			<th>支出</th>
+			<th>净收支</th>
+		</tr>
+		{% for i in flow %}
+		<tr>
+			{% for j in i %}
+			<td>{{j}}</td>
 			{% endfor %}
 		</tr>
 		{% endfor %}

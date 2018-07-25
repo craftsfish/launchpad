@@ -75,4 +75,11 @@ class CommodityDetailView(DetailView):
 		context['statistic_title'].append("目标库存天数")
 		context['statistic_title'].append("实际库存天数")
 		context['statistic_title'].append("补仓数量")
+
+		spans = [1,2,3,7,15,30,90,180,365]
+		context['flow'] = []
+		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
+		item = self.object
+		for span in spans:
+			context['flow'].append([span] + item_flow_report(item, span, e))
 		return context
