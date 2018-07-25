@@ -23,13 +23,10 @@ class ItemFlowView(SecurityLoginRequiredMixin, PermissionRequiredMixin, Template
 	permission_required = ('is_governor')
 
 	def get_context_data(self, **kwargs):
-		kwargs['candidates'] = []
 		spans = [1,2,3,7,15,30,90,180,365]
+		kwargs['data'] = []
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
-		for item in Commodity.objects.order_by('supplier', 'name'):
-			item.data = []
-			for span in spans:
-				item.data += item_flow_report(item, span, e)
-			kwargs['candidates'].append(item)
-			kwargs['spans'] = spans
+		item = Money.objects.get(name='人民币')
+		for span in spans:
+			kwargs['data'].append([span] + item_flow_report(item, span, e))
 		return super(ItemFlowView, self).get_context_data(**kwargs)

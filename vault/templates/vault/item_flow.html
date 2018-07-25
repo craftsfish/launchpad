@@ -1,28 +1,19 @@
 {% extends "base_single.html" %}
 {% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
-{% block header %}收支报告{% endblock %}
+{% block header %}现金流{% endblock %}
 
 {% block content %}
 	<table border="1" cellpadding="4">
 		<tr>
-			<td></td>
-			{% for span in spans %}
-			<td align='center' colspan=3>{{span}}天</td>
-			{% endfor %}
-		</tr>
-		<tr>
-			<th>品名</th>
-			{% for span in spans %}
+			<th>天数</th>
 			<th>收入</th>
 			<th>支出</th>
 			<th>净收支</th>
-			{% endfor %}
 		</tr>
-		{% for item in candidates %}
+		{% for i in data %}
 		<tr>
-			<td>{{item}}</td>
-			{% for data in item.data %}
-			<td>{{data}}</td>
+			{% for j in i %}
+			<td>{{j}}</td>
 			{% endfor %}
 		</tr>
 		{% endfor %}
