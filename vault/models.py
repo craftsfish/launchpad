@@ -38,3 +38,9 @@ class Jdwalletclear(models.Model):
 	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.pid
+
+class Jdadvertiseclear(models.Model):
+	pid = models.IntegerField("序号", primary_key=True)
+	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
+	def __str__(self):
+		return self.pid

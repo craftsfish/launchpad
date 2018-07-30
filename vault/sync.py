@@ -317,3 +317,22 @@ class Sync(object):
 			if not handled:
 				print "发现未知结算: {}".format(csv_line_2_str(line))
 		csv_parser('/tmp/jd.clear.wallet.csv', csv_gb18030_2_utf8, True, __handler)
+
+	@staticmethod
+	def import_jd_advertise_clear():
+		@transaction.atomic
+		def __handler(title, line, *args):
+			pid, when, amount = get_column_values(title, line, "序号", "投放日期", "支出（元）")
+			pid = int(pid)
+			if Jdadvertiseclear.objects.filter(pid=pid).exists(): return #handled
+			t = datetime.strptime(when, '%Y-%m-%d')
+			when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
+			amount = Decimal(amount)
+			cash = Money.objects.get(name="人民币")
+			org = Organization.objects.get(name="为绿厨具专营店")
+			a = Account.get_or_create(org, cash.item_ptr, "资产", "京东快车", None)
+			b = Account.get_or_create(org, cash.item_ptr, "支出", "京东快车", None)
+			tr = Transaction.add(None, "结算.京东快车", when, a, -amount, b)
+			Jdadvertiseclear(pid=pid, transaction=tr).save()
+			print "已处理交易: {}".format(csv_line_2_str(line))
+		csv_parser('/tmp/jd.clear.advertise.csv', None, True, __handler)

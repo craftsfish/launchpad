@@ -47,6 +47,7 @@ options = (
 	["iee", "导入现有快递信息", Sync.import_existing_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijde", "导入京东订单快递信息", Sync.import_jd_express],
+	["ijdac", "导入京东推广结算信息", Sync.import_jd_advertise_clear],
 	["ijdoc", "导入京东订单结算信息", Sync.import_jd_order_clear],
 	["ijdwc", "导入京东钱包结算信息", Sync.import_jd_wallet_clear],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
