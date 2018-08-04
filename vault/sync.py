@@ -238,6 +238,7 @@ class Sync(object):
 			(r'^代收配送费$', '收入', '运费', '运费'),
 			(r'^随单送的京豆$', '支出', '京豆', '京豆'),
 			(r'^佣金$', '支出', '佣金', '佣金'),
+			(r'^技术服务费$', '支出', '技术服务费', '技术服务费'),
 		)
 		@transaction.atomic
 		def __handler(title, line, *args):
@@ -245,24 +246,28 @@ class Sync(object):
 			oid, pid, when, category, change  = get_column_values(title, line, "订单编号", "单据编号", "费用结算时间", "费用项", "金额")
 			oid = int(re.compile(r"\d+").search(oid).group())
 			pid = int(re.compile(r"\d+").search(pid).group())
-			if when == '': return #not cleared
-			if not Jdorder.objects.filter(oid=oid).exists(): return #order not imported
 			if Jdorderclear.objects.filter(pid=pid).exists(): return #handled
-			t = datetime.strptime(when, "%Y-%m-%d %H:%M:%S")
+			if when == '':
+				t = datetime.strptime(get_column_value(title, line, '账单日期'), '%Y%m%d') + timedelta(1)
+			else:
+				t = datetime.strptime(when, "%Y-%m-%d %H:%M:%S")
 			when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
 			change = Decimal(change)
 			handled = False
 			for __category, __account_category, __account_name, __desc in __map:
 				if not re.compile(__category).match(category): continue
-				order = Jdorder.objects.get(oid=oid)
-				task = order.task_ptr
+				handled=True
+				if not Jdorder.objects.filter(oid=oid).exists():
+					task = None
+				else:
+					order = Jdorder.objects.get(oid=oid)
+					task = order.task_ptr
 				cash = Money.objects.get(name="人民币")
 				a = Account.get_or_create(org, cash.item_ptr, "资产", "订单自动结算", None)
 				b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
 				tr = Transaction.add(task, "结算."+__desc, when, a, change, b)
 				Jdorderclear(pid=pid, transaction=tr).save()
 				print "已处理交易: {}".format(csv_line_2_str(line))
-				handled=True
 				break
 			if not handled:
 				print "发现未知结算: {}".format(csv_line_2_str(line))
@@ -292,7 +297,8 @@ class Sync(object):
 			if Jdwalletclear.objects.filter(pid=pid).exists(): return #handled
 			org = org[2:]
 			org = Organization.objects.get(name=org[:-1])
-			t = datetime.strptime(when, '="%Y-%m-%d %H:%M:%S"')
+			when = re.compile(r"\d{4,4}-\d{2,2}-\d{2,2} \d{2,2}:\d{2,2}:\d{2,2}").search(when).group()
+			t = datetime.strptime(when, '%Y-%m-%d %H:%M:%S')
 			when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
 			if receive != "--": change = Decimal(receive)
 			if pay != "--": change = -Decimal(pay)
