@@ -196,6 +196,7 @@ class Sync(object):
 			(r'^\s*$', r'^余利宝-基金赎回，转账到支付宝$', '资产', '余利宝', '余利宝赎回', False, False),
 			(r'^代扣款-普通账户转账$', r'^代扣款（扣款用途：直通车自动充值-\d*-\d*）$', '资产', '直通车', '直通车自动充值', False, False),
 			(r'^提现$', r'^\s*$', '资产', '支付宝.手动周转', '手动周转', False, False),
+			(r'^\s*$', r'^天猫保证金-支付-天猫保证金-支付-积分发票违约金$', '支出', '积分发票违约金', '积分发票违约金', False, False),
 		)
 		@transaction.atomic
 		def __handler(title, line, *args):
@@ -216,6 +217,9 @@ class Sync(object):
 						oid = int(re.compile(r"\d{18,}").search(remark).group())
 					else:
 						oid = int(re.compile(r"\d{18,}").search(oid).group())
+					if not Tmorder.objects.filter(oid=oid).exists():
+						print "订单不存在: {}".format(csv_line_2_str(line))
+						break
 					order = Tmorder.objects.get(oid=oid)
 					task = order.task_ptr
 				cash = Money.objects.get(name="人民币")
@@ -223,7 +227,7 @@ class Sync(object):
 				b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
 				tr = Transaction.add(task, "结算."+__desc, when, a, change, b)
 				Tmclear(pid=pid, transaction=tr).save()
-				print "已处理交易: {}".format(csv_line_2_str(line))
+				#print "已处理交易: {}".format(csv_line_2_str(line))
 				handled=True
 				break
 			if not handled:
