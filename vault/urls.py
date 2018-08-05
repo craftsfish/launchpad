@@ -119,7 +119,6 @@ urlpatterns = [
 	url(r'^misc/operation/account/pay/$', OperationAccountPayView.as_view(), name='operation_account_pay'),
 	url(r'^misc/operation/account/receive/$', OperationAccountReceiveView.as_view(), name='operation_account_receive'),
 	url(r'^misc/help/$', HelpView.as_view(), name='help'),
-	url(r'^misc/item/flow/$', ItemFlowView.as_view(), name='item_flow'),
 
 	#chore
 	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),
