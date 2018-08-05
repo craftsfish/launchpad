@@ -43,4 +43,4 @@ def dump_stagnation():
 				v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
 				q += v
 			if q != 0:
-				print (c, q)
+				print (c, q, q*c.value)
