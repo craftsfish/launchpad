@@ -31,3 +31,16 @@ def dump_profit():
 		for r in result:
 			writer.writerow(r)
 	os.system("soffice /tmp/profit.csv")
+
+def dump_stagnation():
+		e = begin_of_day()
+		candidates = Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(90))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct()
+		for c in Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).filter(inproduction=True):
+			if c.id in candidates: continue
+			c = Commodity.objects.get(pk=c)
+			q = 0
+			for s in ['完好', '残缺', '破损']:
+				v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
+				q += v
+			if q != 0:
+				print (c, q)
