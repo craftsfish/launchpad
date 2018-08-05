@@ -33,14 +33,23 @@ def dump_profit():
 	os.system("soffice /tmp/profit.csv")
 
 def dump_stagnation():
-		e = begin_of_day()
-		candidates = Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(90))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct()
-		for c in Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).filter(inproduction=True):
-			if c.id in candidates: continue
-			c = Commodity.objects.get(pk=c)
-			q = 0
-			for s in ['完好', '残缺', '破损']:
-				v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
-				q += v
-			if q != 0:
-				print (c, q, q*c.value)
+	result = []
+	e = begin_of_day()
+	candidates = Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(90))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct()
+	for c in Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).order_by('inproduction', 'supplier', 'name'):
+		if c.id in candidates: continue
+		c = Commodity.objects.get(pk=c)
+		q = 0
+		for s in ['完好', '残缺', '破损']:
+			v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
+			q += v
+		if q != 0:
+			result.append((c.inproduction, c, q, q*c.value))
+			print "{}, {}, {}, {}".format(c.inproduction, c, float(q), float(q*c.value))
+
+	with open("/tmp/stagnation.csv", "wb") as csvfile:
+		writer = csv.writer(csvfile)
+		writer.writerow(["停产", "品名", "数量", "价值"])
+		for r in result:
+			writer.writerow(r)
+	os.system("soffice /tmp/stagnation.csv")
