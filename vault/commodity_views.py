@@ -11,6 +11,13 @@ from .security import *
 class CommodityListView(SecurityLoginRequiredMixin, ListView):
 	model = Commodity
 
+class CommodityStagnationListView(SecurityLoginRequiredMixin, ListView):
+	model = Commodity
+	def get_queryset(self):
+		e = begin_of_day()
+		candidates = Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(90))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct()
+		return Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).exclude(id__in=candidates).exclude(obsolete=True).order_by('inproduction', 'supplier', 'name')
+
 class RepositoryDetailInfo:
 	pass
 

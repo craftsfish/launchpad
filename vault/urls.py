@@ -29,6 +29,7 @@ urlpatterns = [
 
 	#commodity
 	url(r'^commodity/$', CommodityListView.as_view(), name='commodity_list'),
+	url(r'^commodity/stagnation/$', CommodityStagnationListView.as_view(), name='commodity_stagnation_list'),
 	url(r'^commodity/(?P<pk>[\d]+)/$', CommodityDetailView.as_view(), name='commodity_detail'),
 
 	#account
