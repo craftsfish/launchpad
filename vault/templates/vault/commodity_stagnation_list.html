@@ -1,0 +1,32 @@
+{% extends "base_single.html" %}
+{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
+{% block header %}滞销列表{% endblock %}
+
+{% block content %}
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>商品编号</th>
+			<th>在产</th>
+			<th>供应商</th>
+			<th>品名</th>
+			<th>数量</th>
+			<th>单价</th>
+			<th>总价值</th>
+		</tr>
+		{% for commodity in object_list %}
+		<tr>
+			<td><a href="{% url 'commodity_detail' commodity.id %}">{{commodity.id}}</a></td>
+			{% if commodity.inproduction %}
+				<td>在产</td>
+			{% else %}
+				<td>停产</td>
+			{% endif %}
+			<td>{{commodity.supplier}}</td>
+			<td>{{commodity.name}}</td>
+			<td>{{commodity.quantity}}</td>
+			<td>{{commodity.value}}</td>
+			<td>{{commodity.total}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

@@ -2,6 +2,7 @@
 from .models import *
 from django.views.generic import ListView
 from django.views.generic import DetailView
+from django.views.generic import TemplateView
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import timedelta
@@ -11,12 +12,25 @@ from .security import *
 class CommodityListView(SecurityLoginRequiredMixin, ListView):
 	model = Commodity
 
-class CommodityStagnationListView(SecurityLoginRequiredMixin, ListView):
-	model = Commodity
-	def get_queryset(self):
+class CommodityStagnationListView(SecurityLoginRequiredMixin, TemplateView):
+	template_name = "vault/commodity_stagnation_list.html"
+	def get_context_data(self, **kwargs):
+		result = []
 		e = begin_of_day()
 		candidates = Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(90))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct()
-		return Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).exclude(id__in=candidates).exclude(obsolete=True).order_by('inproduction', 'supplier', 'name')
+		for c in Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).order_by('inproduction', 'supplier', 'name'):
+			if c.id in candidates: continue
+			c = Commodity.objects.get(pk=c)
+			q = 0
+			for s in ['完好', '残缺', '破损']:
+				v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
+				q += v
+			if q != 0:
+				c.quantity = q
+				c.total = q * c.value
+				result.append(c)
+		kwargs['object_list'] = result
+		return super(CommodityStagnationListView, self).get_context_data(**kwargs)
 
 class RepositoryDetailInfo:
 	pass
