@@ -42,7 +42,6 @@ options = (
 	["aa", "增加账户", Turbine.add_account],
 	["b", "构造系统使用环境", Turbine.build],
 	["cs", "仓库校准", Turbine.calibration_storage],
-	["dc", "导出滞销品", dump_stagnation],
 	["dp", "导出利润报告", dump_profit],
 	["ds", "导出库存", Turbine.dump_storage],
 	["ic", "导入物资", Commodity.Import],

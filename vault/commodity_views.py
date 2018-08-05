@@ -18,7 +18,7 @@ class CommodityStagnationListView(SecurityLoginRequiredMixin, TemplateView):
 		result = []
 		e = begin_of_day()
 		candidates = Split.objects.filter(account__name="出货").filter(transaction__time__gte=(e-timedelta(90))).filter(transaction__time__lt=e).values_list('account__item', flat=True).distinct()
-		for c in Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).order_by('inproduction', 'supplier', 'name'):
+		for c in Commodity.objects.exclude(supplier=Supplier.objects.get(name='耗材')).order_by('-inproduction', 'supplier', 'name'):
 			if c.id in candidates: continue
 			c = Commodity.objects.get(pk=c)
 			q = 0
