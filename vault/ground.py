@@ -114,3 +114,18 @@ class NavItem(object):
 
 class Container(object):
 	pass
+
+def begin_of_month():
+	return timezone.now().astimezone(timezone.get_current_timezone()).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+def nth_previous_month(d, n):
+	if d.month > n:
+		return d.replace(d.year, d.month-n)
+	else:
+		return d.replace(d.year-1, d.month+12-n)
+
+def next_month(d):
+	if d.month == 12:
+		return d.replace(d.year+1, 1)
+	else:
+		return d.replace(d.year, d.month+1)
