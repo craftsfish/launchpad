@@ -115,6 +115,9 @@ class NavItem(object):
 class Container(object):
 	pass
 
+def now():
+	return timezone.now().astimezone(timezone.get_current_timezone())
+
 def begin_of_day():
 	return timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 
