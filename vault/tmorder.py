@@ -21,6 +21,7 @@ class Tmorder(Order, Task):
 		(2, "卖家已发货，等待买家确认"),
 		(3, "交易成功"),
 		(4, "交易关闭"),
+		(5, "卖家部分发货"),
 	)
 	status = models.IntegerField("状态", choices=TM_ORDER_STATUS, null=True, blank=True)
 

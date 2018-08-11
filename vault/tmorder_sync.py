@@ -61,7 +61,7 @@ def import_tm_order_detail():
 		o = Tmorder.objects.get(oid=info.oid)
 		info.invoices = sorted(info.invoices, key = lambda i: (i.id + str(i.number)))
 		for i, v in enumerate(info.invoices, 1):
-			if v.status in ["等待买家付款", "买家已付款，等待卖家发货"]:
+			if v.status in ["等待买家付款", "买家已付款，等待卖家发货", "卖家部分发货"]:
 				delivery = DeliveryStatus.inbook
 			elif v.status in ["卖家已发货，等待买家确认", "交易成功"]:
 				delivery = DeliveryStatus.delivered
