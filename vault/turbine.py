@@ -157,9 +157,8 @@ class Turbine:
 	@staticmethod
 	def add_account():
 		info = (
-			("南京为绿电子科技有限公司", "人民币", "资产", None, "应收账款"),
+			("南京为绿电子科技有限公司", "人民币", "支出", None, "运费"),
 			("上海腾复日用品有限公司", "人民币", "支出", None, "其他支出"),
-			("个人", "人民币", "资产", None, "冻结.运营资金.微信"),
 		)
 		for o, i, c, r, n in info:
 			with transaction.atomic():
