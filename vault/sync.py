@@ -20,6 +20,9 @@ def import_order():
 
 @transaction.atomic
 def import_rqwy():
+	__map = ( #pid, order_id
+		('9625116', '200309265892436478'),
+	)
 	def __handler(title, line, *args):
 		latest_orders = args[0]
 		pid, when, status, request, bill, commission, order_id = get_column_values(title, line, "订单ID", "接单时间", "订单状态", "垫付金额", "用户支付金额", "任务佣金", "用户提交订单ID")
@@ -32,6 +35,9 @@ def import_rqwy():
 		if order_id == "":
 			latest_orders.append([when, request+1 + commission*discount, "冻结", pid])
 			return
+		for p, o in __map:
+			if pid == p:
+				order_id = o
 		order_id = int(order_id)
 		if not Tmorder.objects.filter(oid=order_id).exists():
 			if when > datetime.now(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0):
