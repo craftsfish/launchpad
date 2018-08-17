@@ -104,7 +104,11 @@
 		<td>{{t.desc}}</td>
 		{% for s in t.ss %}
 		{% if not forloop.counter0 %}
+			{% if t.is_money %}
 			<td>{{s.account.item}}</td>
+			{% else %}
+			<td><a href="{% url 'commodity_detail' s.account.item.id %}">{{s.account.item}}</a></td>
+			{% endif %}
 		{% endif %}
 		{% if private.governor %}
 		<td align="left"><a href="{% url 'account_detail' s.account.uuid %}">{{s.account}}</a></td>
