@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.views.generic import RedirectView
 from .models import *
 from account import *
 from django.views.generic import ListView
@@ -49,6 +50,9 @@ class AccountDetailView(ListView):
 
 		#object
 		context['object'] = self.object
+		self.object.lock = False
+		if Split.objects.filter(account=self.object).exists():
+			self.object.lock = True
 
 		#balance
 		balance = self.object.balance
@@ -84,3 +88,13 @@ class AccountDetailView(ListView):
 class AccountDetailViewRead(AccountDetailView):
 	def get_template_names(self):
 		return ["%s/account_detail_read.html" % (Account._meta.app_label)]
+
+class AccountDeleteView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return reverse('chore_list')
+
+	def get(self, request, *args, **kwargs):
+		a = Account.objects.get(uuid=kwargs['uuid'])
+		if not Split.objects.filter(account=a).exists():
+			a.delete()
+		return super(AccountDeleteView, self).get(request, *args, **kwargs)
