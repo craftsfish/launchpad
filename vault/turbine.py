@@ -240,14 +240,10 @@ class Turbine:
 	def get_inferior(repository):
 		result = []
 		d = {}
-		for a in Account.objects.filter(name__in=["残缺", "破损"]).exclude(balance=0).filter(repository=repository):
+		for a in Account.objects.filter(name='破损').exclude(balance=0).filter(repository=repository):
 			if d.get(a.item.id) == None:
-				d[a.item.id] = [0, 0]
-			if a.name == "残缺":
-				d[a.item.id][0] += a.balance
-			else:
-				d[a.item.id][1] += a.balance
-
+				d[a.item.id] = 0
+			d[a.item.id] += a.balance
 		def __key(x):
 			c = Commodity.objects.get(id=x[0])
 			if c.supplier:
@@ -255,10 +251,8 @@ class Turbine:
 			else:
 				return "None" + c.name
 		for cid, v in sorted(d.items(), key=__key):
-			if v[0]:
-				result.append([cid, "残缺", v[0]])
-			if v[1]:
-				result.append([cid, "破损", v[1]])
+			if v:
+				result.append([cid, "破损", int(v)])
 		return result
 
 	@staticmethod

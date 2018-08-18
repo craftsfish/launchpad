@@ -13,20 +13,8 @@ class SupplierServiceMixin(FfsMixin):
 	def get_formset_initial(self):
 		result = []
 		for repo in Repository.objects.all():
-			r = {}
-			for a in Account.objects.filter(name="破损").exclude(balance=0).filter(repository=repo):
-				if r.get(a.item.id) == None:
-					r[a.item.id] = 0
-				r[a.item.id] += a.balance
-			def __key(x):
-				c = Commodity.objects.get(id=x[0])
-				if c.supplier:
-					return c.supplier.name + c.name
-				else:
-					return "None" + c.name
-			for cid, v in sorted(r.items(), key=__key):
-				if v:
-					result.append({'id': cid, 'quantity': int(v), 'repository': repo, 'check': False, 'status': Itemstatus.s2v("破损")})
+			for cid, status, quantity in Turbine.get_inferior(repo):
+				result.append({'id': cid, 'quantity': quantity, 'repository': repo, 'check': False, 'status': Itemstatus.s2v(status)})
 		return result
 
 	def get_context_data(self, **kwargs):
