@@ -60,5 +60,20 @@
 		</tr>
 		{% endfor %}
 	</table>
+
+	<br/>
+	<p>账户清单:</p>
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>账户</th>
+			<th>余额</th>
+		</tr>
+		{% for a in accounts %}
+		<tr>
+			<td><a href="{% url 'account_detail' a.uuid %}">{{a}}</a></td>
+			<td>{{a.balance}}</td>
+		</tr>
+		{% endfor %}
+	</table>
 </div>
 {% endblock %}

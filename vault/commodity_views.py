@@ -48,6 +48,7 @@ class CommodityDetailView(DetailView):
 
 		repositories = Account.objects.filter(item=self.object).order_by('repository').values_list('repository', flat=True).distinct()
 
+		context['accounts'] = Account.objects.filter(item=self.object).order_by('organization', 'category', 'repository', 'name')
 		context['repos'] = []
 		if self.object.supplier:
 			threshold = self.object.supplier.period
