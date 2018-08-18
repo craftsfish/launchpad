@@ -31,9 +31,9 @@ from vault.sync import *
 from vault.report import *
 
 def test():
-	for n in Split.objects.filter(transaction__desc="刷单.发货").values_list('account__item__name', flat=True).distinct():
-		print n
-	pass
+	for a in Account.objects.filter(name="残缺"):
+		b, created = Account.objects.get_or_create(organization=a.organization, item=a.item, category=a.category, repository=a.repository, name='破损')
+		if created: print "[账户]增加<{}>账户: {}".format(b.item, b)
 
 def __quit():
 	raise EOFError()
