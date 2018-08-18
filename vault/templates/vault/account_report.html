@@ -1,0 +1,21 @@
+{% extends "base_single.html" %}
+{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
+{% block header %}账户: {{object.item}}.{{object}}{% endblock %}
+
+{% block content %}
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>周期</th>
+			<th>收入</th>
+			<th>支出</th>
+			<th>净收支</th>
+		</tr>
+		{% for r in reports %}
+		<tr>
+			{% for i in r %}
+			<td>{{i}}</td>
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

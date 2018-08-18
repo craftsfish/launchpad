@@ -9,6 +9,7 @@
 		<a href="{% url 'account_delete' object.uuid %}">删除</a>
 		{%endif %}
 		余额:        ({{object.balance}})
+		<a href="{% url 'account_report' object.uuid %}">分析</a>
 	</h3>
 	<table border="1" cellpadding="4">
 		<tr>

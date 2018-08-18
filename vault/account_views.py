@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.views.generic import RedirectView
+from django.views.generic import DetailView
 from .models import *
 from account import *
 from django.views.generic import ListView
@@ -10,6 +11,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 import json
 from django.utils import timezone
+from .security import *
 
 class AccountListView(View):
 	def post(self, request, *args, **kwargs):
@@ -98,3 +100,11 @@ class AccountDeleteView(RedirectView):
 		if not Split.objects.filter(account=a).exists():
 			a.delete()
 		return super(AccountDeleteView, self).get(request, *args, **kwargs)
+
+class AccountReportView(SecurityLoginRequiredMixin, DetailView):
+	model = Account
+	slug_field = 'uuid'
+	slug_url_kwarg = 'uuid'
+
+	def get_template_names(self):
+		return ['vault/account_report.html']
