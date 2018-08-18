@@ -5,15 +5,19 @@
 {% block content %}
 	<table border="1" cellpadding="4">
 		<tr>
-			<th>周期</th>
-			<th>收入</th>
-			<th>支出</th>
-			<th>净收支</th>
+			<th>时间</th>
+			<th>增加</th>
+			<th>减少</th>
+			<th>净变化</th>
 		</tr>
 		{% for r in reports %}
 		<tr>
 			{% for i in r %}
+			{% if not forloop.counter0 %}
+			<td>{{i | date:"Y-m-d H:i:s"}}</td>
+			{% else %}
 			<td>{{i}}</td>
+			{% endif %}
 			{% endfor %}
 		</tr>
 		{% endfor %}

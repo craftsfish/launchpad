@@ -108,3 +108,24 @@ class AccountReportView(SecurityLoginRequiredMixin, DetailView):
 
 	def get_template_names(self):
 		return ['vault/account_report.html']
+
+	def get_context_data(self, **kwargs):
+		context = super(AccountReportView, self).get_context_data(**kwargs)
+
+		result = []
+		e = begin_of_month()
+		b = nth_previous_month(e, 3)
+		while True:
+			_e = next_month(b)
+			if _e > e:
+				break
+			q = Split.objects.filter(account=self.object)
+			q = q.filter(transaction__time__gte=(b)).filter(transaction__time__lt=_e)
+			income = float(get_decimal_with_default(q.filter(change__gte=0).aggregate(Sum('change'))['change__sum'], 0))
+			expenditure = float(get_decimal_with_default(q.filter(change__lte=0).aggregate(Sum('change'))['change__sum'], 0))
+			net = income + expenditure
+			result.insert(0, [b, income, expenditure, net])
+			b = _e
+		context['reports'] = result
+
+		return context
