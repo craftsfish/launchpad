@@ -170,7 +170,7 @@ class TaskClearView(FfsMixin, TemplateView):
 class TaskSettleForm(forms.Form):
 	organization = forms.ModelChoiceField(queryset=Organization.objects)
 	repository = forms.ModelChoiceField(queryset=Repository.objects)
-	status = forms.ChoiceField(choices=Itemstatus.choices[1:4])
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:3])
 	ship = forms.ChoiceField(choices=Shipstatus.choices)
 
 class TaskSettleAccountForm(forms.Form):

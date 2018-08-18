@@ -22,7 +22,7 @@ class CommodityStagnationListView(SecurityLoginRequiredMixin, TemplateView):
 			if c.id in candidates: continue
 			c = Commodity.objects.get(pk=c)
 			q = 0
-			for i, s in Itemstatus.choices[1:4]:
+			for i, s in Itemstatus.choices[1:3]:
 				v = get_int_with_default(Account.objects.filter(item=c.item_ptr).filter(name=s).aggregate(Sum('balance'))['balance__sum'], 0)
 				q += v
 			if q != 0:

@@ -183,7 +183,7 @@ class Turbine:
 
 		result = []
 		for r in repositories:
-			for i, s in Itemstatus.choices[1:4]:
+			for i, s in Itemstatus.choices[1:3]:
 				for c in commodities:
 					__handler(result, r, s, c)
 

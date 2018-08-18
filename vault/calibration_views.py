@@ -14,7 +14,7 @@ class StorageCalibarionForm(forms.Form):
 
 class CommodityStorageCalibarionForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
-	status = forms.ChoiceField(choices=Itemstatus.choices[1:4], widget=forms.HiddenInput)
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:3], widget=forms.HiddenInput)
 	in_book = forms.IntegerField(widget=forms.HiddenInput)
 	q1 = forms.IntegerField(min_value=0, max_value=9999, required=False)
 	q2 = forms.IntegerField(min_value=0, max_value=9999, required=False)
@@ -103,12 +103,12 @@ class ManualCalibrationCommodityForm(forms.Form):
 	id = forms.IntegerField(widget=forms.HiddenInput)
 	quantity = forms.IntegerField()
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
-	status = forms.ChoiceField(choices=Itemstatus.choices[1:4])
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:3])
 ManualCalibrationCommodityFormSet = formset_factory(ManualCalibrationCommodityForm, extra=0)
 
 class ManualCalibrationCommodityFilterForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None)
-	status = forms.ChoiceField(choices=Itemstatus.choices[1:4])
+	status = forms.ChoiceField(choices=Itemstatus.choices[1:3])
 	keyword = forms.CharField()
 
 class ManualCalibrationView(FfsMixin, TemplateView):
