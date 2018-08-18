@@ -38,6 +38,8 @@ def test():
 		for s in Split.objects.filter(account=a):
 			s.account = b
 			s.save()
+	for a in Account.objects.filter(name="残缺").filter(balance=0):
+		a.delete()
 
 def __quit():
 	raise EOFError()
