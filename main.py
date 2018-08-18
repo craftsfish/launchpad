@@ -49,6 +49,7 @@ options = (
 	["b", "构造系统使用环境", Turbine.build],
 	["cs", "仓库校准", Turbine.calibration_storage],
 	["dp", "导出利润报告", dump_profit],
+	["djdp", "导出京东利润报告", dump_jd_profit],
 	["ds", "导出库存", Turbine.dump_storage],
 	["ic", "导入物资", Commodity.Import],
 	["icme", "导入传美打印快递信息", Sync.import_cm_express],
