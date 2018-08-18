@@ -30,10 +30,14 @@ from vault.jdorder import *
 from vault.sync import *
 from vault.report import *
 
+@transaction.atomic
 def test():
 	for a in Account.objects.filter(name="残缺"):
 		b, created = Account.objects.get_or_create(organization=a.organization, item=a.item, category=a.category, repository=a.repository, name='破损')
 		if created: print "[账户]增加<{}>账户: {}".format(b.item, b)
+		for s in Split.objects.filter(account=a):
+			s.account = b
+			s.save()
 
 def __quit():
 	raise EOFError()
