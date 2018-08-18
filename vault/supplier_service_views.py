@@ -12,16 +12,12 @@ class SupplierServiceMixin(FfsMixin):
 
 	def get_formset_initial(self):
 		result = []
-		repositories = Account.objects.filter(name__in=["残缺", "破损"]).exclude(balance=0).order_by('repository').values_list('repository', flat=True).distinct()
-		for repo in repositories:
+		for repo in Repository.objects.all():
 			r = {}
-			for a in Account.objects.filter(name__in=["残缺", "破损"]).exclude(balance=0).filter(repository=repo):
+			for a in Account.objects.filter(name="破损").exclude(balance=0).filter(repository=repo):
 				if r.get(a.item.id) == None:
-					r[a.item.id] = [0, 0]
-				if a.name == "残缺":
-					r[a.item.id][0] += a.balance
-				else:
-					r[a.item.id][1] += a.balance
+					r[a.item.id] = 0
+				r[a.item.id] += a.balance
 			def __key(x):
 				c = Commodity.objects.get(id=x[0])
 				if c.supplier:
@@ -29,10 +25,8 @@ class SupplierServiceMixin(FfsMixin):
 				else:
 					return "None" + c.name
 			for cid, v in sorted(r.items(), key=__key):
-				if v[0]:
-					result.append({'id': cid, 'quantity': int(v[0]), 'repository': repo, 'check': False, 'status': Itemstatus.s2v("残缺")})
-				if v[1]:
-					result.append({'id': cid, 'quantity': int(v[1]), 'repository': repo, 'check': False, 'status': Itemstatus.s2v("破损")})
+				if v:
+					result.append({'id': cid, 'quantity': int(v), 'repository': repo, 'check': False, 'status': Itemstatus.s2v("破损")})
 		return result
 
 	def get_context_data(self, **kwargs):
