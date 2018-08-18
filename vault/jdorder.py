@@ -45,6 +45,9 @@ class Jdorder(Order, Task):
 		@transaction.atomic
 		def __csv_handler(oid, sale, fee):
 			org = Organization.objects.get(name="为绿厨具专营店")
+			if not Jdorder.objects.filter(oid=oid).exists():
+				print "订单未导入: {}".format(oid)
+				return
 			o = Jdorder.objects.get(oid=oid)
 			if not o.task_ptr.transactions.filter(desc="刷单.结算.陆凤").exists():
 				if o.counterfeit.name != "陆凤":
