@@ -377,5 +377,8 @@ def import_zbq_express():
 	with open("/tmp/report.zbq.csv", "wb") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow(["地址", "供应商", "单号", "费用"])
+		total = 0
 		for l in result:
 			writer.writerow(l)
+			total += l[3]
+		print total
