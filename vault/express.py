@@ -13,6 +13,7 @@ class Express(models.Model):
 	fee = models.DecimalField("运费", default=0, max_digits=8, decimal_places=2)
 	clear = models.BooleanField("已结算", default=False)
 	task = models.ForeignKey(Task, null=True, blank=True)
+	proxy = models.BooleanField("代发", default=False)
 	class Meta:
 		unique_together = ("supplier", "eid")
 	def __str__(self):

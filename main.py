@@ -67,6 +67,7 @@ options = (
 	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
 	["iyze", "导入邮政快递结算信息", Sync.import_yz_express],
 	["izte", "导入中通快递结算信息", Sync.import_zt_express],
+	["izbq", "导入zbq快递结算信息", import_zbq_express],
 	["q", "退出系统", __quit],
 	["r", "例行操作", import_order],
 	["t", "测试", test],

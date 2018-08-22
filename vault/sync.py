@@ -354,3 +354,28 @@ class Sync(object):
 			Jdadvertiseclear(pid=pid, transaction=tr).save()
 			print "已处理交易: {}".format(csv_line_2_str(line))
 		csv_parser('/tmp/jd.clear.advertise.csv', None, True, __handler)
+
+def import_zbq_express():
+	@transaction.atomic
+	def __handler(title, line, *args):
+		result = args[0]
+		eid = re.compile(r"\d+").search(line[10]).group()
+		handled = False
+		if Express.objects.filter(eid=eid).exists():
+			e = Express.objects.get(eid=eid)
+			if e.clear:
+				if not e.proxy:
+					result.append([line[0], e.supplier, e.eid, e.fee])
+					e.proxy = True
+					e.save()
+				handled = True
+		if not handled:
+			print "未结算快递费: {}".format(eid)
+	result = []
+	csv_parser('/tmp/zbq.csv', None, True, __handler, result)
+
+	with open("/tmp/report.zbq.csv", "wb") as csvfile:
+		writer = csv.writer(csvfile)
+		writer.writerow(["地址", "供应商", "单号", "费用"])
+		for l in result:
+			writer.writerow(l)
