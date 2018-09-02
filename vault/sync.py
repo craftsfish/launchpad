@@ -292,6 +292,7 @@ class Sync(object):
 			#交易备注, 商户订单号, 账户名称, 描述, 追加金额到商户订单号
 			(r'^="projectId:\d*_\d*/projectName:POP运费险"$', r'^.*$', '支出', '运费险', '运费险', False),
 			(r'^="联盟结算 - \(JDDORS_.*\)\d*@广告联盟\(pc\)"$', r'^.*$', '支出', '广告联盟', '广告联盟', False),
+			(r'^="\d*@广告联盟\(pc\)"$', r'^.*$', '支出', '广告联盟', '广告联盟', False),
 			(r'^="物流结算 - \(JDDORS_.*\)\d*@B商家结算\(新\)"$', r'^.*$', '支出', '物流结算', '物流结算', False),
 			(r'^="京东支付货款"$', r'^.*$', '资产', '订单自动结算', '转账', False),
 			(r'^="其他支付方式货款"$', r'^.*$', '资产', '订单自动结算', '转账', False),
@@ -330,7 +331,7 @@ class Sync(object):
 					b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
 				tr = Transaction.add(None, "结算."+__desc, when, a, change, b)
 				Jdwalletclear(pid=pid, transaction=tr).save()
-				print "已处理交易: {}".format(csv_line_2_str(line))
+				#print "已处理交易: {}".format(csv_line_2_str(line))
 				handled=True
 				break
 			if not handled:
