@@ -156,11 +156,12 @@ class Split(models.Model):
 		account = Account.objects.get(pk=self.account.id)
 		account.balance += self.change
 		account.save()
-		logger.error('{} | Account: {}, {} + ({}) = {}'.format(now(), account, account.balance-self.change, self.change, account.balance))
+		#logger.error('{} | Account: {}, {} + ({}) = {}'.format(now(), account, account.balance-self.change, self.change, account.balance))
 		super(Split, self).save(*args, **kwargs)
 
 	def delete(self, *args, **kwargs):
-		self.account.balance -= self.change
-		self.account.save()
-		logger.error('{} | Account: {}, {} + ({}) = {}'.format(now(), self.account, self.account.balance+self.change, -self.change, self.account.balance))
+		orig = Split.objects.get(pk=self.id)
+		orig.account.balance -= orig.change
+		orig.account.save()
+		#logger.error('{} | Account: {}, {} + ({}) = {}'.format(now(), self.account, self.account.balance+self.change, -self.change, self.account.balance))
 		super(Split, self).delete(*args, **kwargs)
