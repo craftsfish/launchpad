@@ -15,10 +15,10 @@
 		{% for a in c.accounts %}
 		<tr>
 			{% if not forloop.counter0 %}
-			<td rowspan={{c.accounts | length}}>{{c}}</td>
+			<td rowspan={{c.accounts | length}}><a href="{% url 'commodity_detail' c.id %}">{{c}}</a></td>
 			<td rowspan={{c.accounts | length}}>{{c.total | stringformat:".0f"}}</td>
 			{% endif %}
-			<td>{{a}}</td>
+			<td><a href="{% url 'account_detail' a.uuid %}">{{a}}</a></td>
 			<td>{{a.balance | stringformat:".0f"}}</td>
 		</tr>
 		{% endfor %}
