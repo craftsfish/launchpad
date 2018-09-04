@@ -37,6 +37,7 @@ def dump_profit():
 def dump_jd_profit():
 	result = {}
 	e = begin_of_month()
+	e = nth_previous_month(e, 1)
 	b = nth_previous_month(e, 1)
 	q = Transaction.objects.filter(desc__startswith='1.出货.').filter(time__gte=b).filter(time__lt=e).filter(task__desc='京东订单')
 	for task_id in q.values_list('task', flat=True).distinct():

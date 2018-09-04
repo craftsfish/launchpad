@@ -3,7 +3,11 @@
 {% block header %}{{object}}{% endblock %}
 
 {% block content %}
+
 <div class="col-sm-auto">
+	<p>包装说明: {{object.wrap}}</p>
+	<br/>
+
 	<p>库存状态:</p>
 	<table border="1" cellpadding="4">
 		<tr>

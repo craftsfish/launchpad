@@ -12,6 +12,8 @@
 			<th>价值</th>
 			<th>在产</th>
 			<th>废弃</th>
+			<th>分销</th>
+			<th>箱规</th>
 		</tr>
 		{% for commodity in object_list %}
 		<tr>
@@ -29,6 +31,12 @@
 			{% else %}
 				<td>活动</td>
 			{% endif %}
+			{% if commodity.proxy %}
+				<td>是</td>
+			{% else %}
+				<td>否</td>
+			{% endif %}
+			<td>{{commodity.package }}</td>
 		</tr>
 		{% endfor %}
 	</table>
