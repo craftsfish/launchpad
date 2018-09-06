@@ -117,7 +117,11 @@ class Order(models.Model):
 			p = re.compile(r"\d*").match(i.desc).end()
 			a = i.desc[:p]
 			b = i.desc[p+4:]
-			j = task.transactions.get(desc="{}.刷单.回收.{}".format(a, b))
+			j = None
+			for k in task.transactions.filter(desc="{}.刷单.回收.{}".format(a, b)):
+				if k.splits.all()[0].account.item.id == i.splits.all()[0].account.item.id:
+					j = k
+					break
 			f = j.splits.order_by("account__category", "-change")
 			t = i.splits.order_by("account__category", "-change")
 			for k, s in enumerate(f):
