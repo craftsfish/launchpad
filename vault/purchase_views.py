@@ -120,3 +120,17 @@ class JdorderPurchaseView(PurchaseMixin, TemplateView):
 
 class JdorderTransShipmentView(JdorderPurchaseView):
 	trans_shipment = True
+
+class TmorderPurchaseForm(BaseRepositoryForm, TmorderForm):
+	pass
+
+class TmorderPurchaseView(PurchaseMixin, TemplateView):
+	form_class = TmorderPurchaseForm
+
+	def get_task(self, form):
+		j = form.cleaned_data['tmorder']
+		j, created = Tmorder.objects.get_or_create(oid=j, desc="天猫订单")
+		self.task = j.task_ptr
+
+class TmorderTransShipmentView(TmorderPurchaseView):
+	trans_shipment = True
