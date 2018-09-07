@@ -111,6 +111,7 @@ urlpatterns = [
 	url(r'^misc/purchase/append/$', AppendPurchaseView.as_view(), name='append_purchase'),
 	url(r'^misc/purchase/trans/shipment/$', TransShipmentView.as_view(), name='trans_shipment'),
 	url(r'^purchase/jdorder/$', JdorderPurchaseView.as_view(), name='jdorder_purchase'),
+	url(r'^purchase/jdorder/trans/shipment/$', JdorderTransShipmentView.as_view(), name='jdorder_trans_shipment'),
 
 	#calibration
 	url(r'^misc/daily/calibration/$', DailyCalibrationView.as_view(), name='daily_calibration'),

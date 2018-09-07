@@ -117,3 +117,6 @@ class JdorderPurchaseView(PurchaseMixin, TemplateView):
 		j = form.cleaned_data['jdorder']
 		j, created = Jdorder.objects.get_or_create(oid=j, desc="京东订单")
 		self.task = j.task_ptr
+
+class JdorderTransShipmentView(JdorderPurchaseView):
+	trans_shipment = True
