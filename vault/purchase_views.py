@@ -29,7 +29,7 @@ class PurchaseMixin(FfsMixin):
 		self.get_task(form)
 		if not self.task:
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
-		t = timezone.now()
+		t = timezone.now().replace(microsecond=0)
 		o = form.cleaned_data['organization']
 		r = form.cleaned_data['repository']
 		merged = {}
