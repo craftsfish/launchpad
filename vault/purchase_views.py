@@ -12,7 +12,7 @@ class PurchaseCommodityForm(forms.Form):
 PurchaseCommodityFormSet = formset_factory(PurchaseCommodityForm, extra=0)
 
 class PurchaseMixin(FfsMixin):
-	template_name = "{}/purchase.html".format(Organization._meta.app_label)
+	template_name = "vault/purchase.html"
 	form_class = PurchaseForm
 	formset_class = PurchaseCommodityFormSet
 	sub_form_class = BaseKeywordForm
@@ -31,6 +31,7 @@ class PurchaseMixin(FfsMixin):
 			return self.render_to_response(self.get_context_data(form=form, formset=formset))
 		t = timezone.now().replace(microsecond=0)
 		o = form.cleaned_data['organization']
+		o = o.root()
 		r = form.cleaned_data['repository']
 		merged = {}
 		for f in formset:
@@ -105,3 +106,14 @@ class AppendPurchaseView(PurchaseMixin, TemplateView):
 		except Task.DoesNotExist as e:
 			self.task = None
 			self.error = "任务不存在!"
+
+class JdorderPurchaseForm(BaseRepositoryForm, JdorderForm):
+	pass
+
+class JdorderPurchaseView(PurchaseMixin, TemplateView):
+	form_class = JdorderPurchaseForm
+
+	def get_task(self, form):
+		j = form.cleaned_data['jdorder']
+		j, created = Jdorder.objects.get_or_create(oid=j, desc="京东订单")
+		self.task = j.task_ptr
