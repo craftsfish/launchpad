@@ -218,7 +218,14 @@ class TaskSettleView(FfsMixin, TemplateView):
 			i = a.item
 			if Commodity.objects.filter(pk=i.id).exists():
 				r.append({'id': aid, 'quantity': balance, 'check': False})
-		return r
+		def __key(d):
+			a = Account.objects.get(id=d['id'])
+			c = Commodity.objects.get(id=a.item.id)
+			if c.supplier:
+				return "{}-{}".format(c.supplier.id, c.name)
+			else:
+				return "None-{}".format(c.name)
+		return sorted(r, key=__key)
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskSettleView, self).get_context_data(**kwargs)
