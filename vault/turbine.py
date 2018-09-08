@@ -62,7 +62,7 @@ class Turbine:
 		decay = 0.7
 		e = timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 		for i in range(span):
-			q = Split.objects.filter(account__item=commodity).filter(account__repository=repository).filter(account__name="出货")
+			q = Split.objects.filter(account__item=commodity).filter(account__repository=repository).filter(account__name="出货").filter(change__lt=5)
 			q = q.filter(transaction__time__gte=(e-timedelta(1))).filter(transaction__time__lt=e)
 			v = q.aggregate(Sum('change'))['change__sum']
 			if v: v = int(v)

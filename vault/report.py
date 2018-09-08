@@ -8,7 +8,7 @@ def dump_profit():
 	result = []
 	balance = Decimal(0)
 	e = begin_of_month()
-	b = nth_previous_month(e, 1)
+	b = nth_previous_month(e, 2)
 	while True:
 		_e = next_month(b)
 		if _e > e:
