@@ -288,7 +288,7 @@ def item_flow_report(item, span, end):
 	return [income, expenditure, income-expenditure]
 
 def task_profit(task):
-	splits = []
+	detail = []
 	contribution = {}
 	balance = 0
 
@@ -303,8 +303,26 @@ def task_profit(task):
 				s.change_value = s.change * -s.account.sign()
 			balance += s.change_value
 			s.balance = balance
-			splits.append(s)
+			detail.append(s)
 	express_fee = get_decimal_with_default(Express.objects.filter(task=task).aggregate(Sum('fee'))['fee__sum'], 0)
+	profit = balance - express_fee - 3
+
+	#profit distribution
+	cost = 0
+	for i in task.transactions.filter(desc__contains=".出货."):
+		splits = i.splits.order_by("account__category", "change")
+		c = Commodity.objects.get(id=splits[1].account.item.id)
+		if c.supplier == Supplier.objects.get(name='耗材'):
+			continue
+		quantity = splits[1].change
+		if contribution.get(c.id) == None:
+			contribution[c.id] = [0, 0, 0]
+		contribution[c.id][0] += quantity
+		contribution[c.id][1] += c.value * quantity
+		cost += c.value * quantity
+	if cost != 0:
+		for cid, v in contribution.items():
+			v[2] = profit / cost * v[1]
 
 	#done
-	return (splits, balance, express_fee, contribution)
+	return (detail, balance, express_fee, contribution)

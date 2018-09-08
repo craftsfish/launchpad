@@ -35,36 +35,24 @@ def dump_profit():
 
 @transaction.atomic
 def dump_jd_profit():
+	total = 0
 	result = {}
 	e = begin_of_month()
 	e = nth_previous_month(e, 1)
 	b = nth_previous_month(e, 1)
 	q = Transaction.objects.filter(desc__startswith='1.出货.').filter(time__gte=b).filter(time__lt=e).filter(task__desc='京东订单')
-	for task_id in q.values_list('task', flat=True).distinct():
+	for task_id in set(q.values_list('task', flat=True)):
 		task = Task.objects.get(id=task_id)
-
-		#利润计算
 		splits, balance, express_fee, contribution = task_profit(task)
-		profit = balance - express_fee - 3 #包装人工预估每单3元
-
-		#利润分配
-		cost = 0
-		candidates = []
-		for i in task.transactions.filter(desc__contains=".出货."):
-			splits = i.splits.order_by("account__category", "change")
-			commodity = Commodity.objects.get(id=splits[1].account.item.id)
-			if commodity.supplier == Supplier.objects.get(name='耗材'):
-				continue
-			quantity = splits[1].change
-			cost += commodity.value * quantity
-			candidates.append([commodity, quantity])
-		if cost == 0:
-			continue
-		for c, q in candidates:
+		for k, v in contribution.items():
+			c = Commodity.objects.get(id=k)
 			if result.get(c.id) == None:
 				result[c.id] = [c, 0]
-			result[c.id][1] += profit / cost * c.value * q
-		#print "任务: {} | 利润: {} | 成本: {}".format(task_id, profit, cost)
+			result[c.id][1] += v[2]
+			total += v[2]
+			#if k == 78: #2005
+				#print "{},{}".format(task_id, v[2])
+	print "毛利: {}".format(total)
 	with open("/tmp/profit.jd.csv", "wb") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow(["品名", "利润"])
