@@ -91,6 +91,8 @@ abstract:Order(Task) {
 	time = models.DateTimeField(default=timezone.now)
 	repository
 	sale
+}
+abstract:FakeOrder {
 	counterfeit
 	counterfeit_auto_clear
 	delivery
@@ -101,7 +103,13 @@ JdOrder(Order) {
 	oid
 	status
 }
+JdFakeOrder(JdOrder, FakeOrder) {
+	pass
+}
 TmOrder(Order) {
 	oid
 	status
+}
+TmFakeOrder(TmOrder, FakeOrder) {
+	pass
 }
