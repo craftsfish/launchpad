@@ -20,4 +20,88 @@ employee, nothing
 模块划分: infra, model, turbine, platform, view, synchronization, analysis, report, visualization
 
 primary key用uuid来标识，避免了int的数量限制，规避了id hacking的风险，适用于account, organization
-有价物(Merchandise) = 货币(Money) + 物资(Commodity)
+物资(Article) = 资金(Currency) + 货物(Commodity)
+变动采用整型，资金精确到分
+时间采用utc存储，便于比较
+
+Supplier {
+	uuid
+	name
+	peroid
+}
+Wallet {
+	uuid
+	name
+}
+Repository {
+	uuid
+	name
+}
+Article {
+	uuid
+	name
+}
+Commodity {
+	supplier
+	value
+	inproduction
+	obsolete
+	calibration
+	wrap
+	proxy
+	package
+}
+Currency {
+}
+Account {
+	uuid
+	name
+	category
+	balance
+	organization
+}
+CurrencyAccount(Account) {
+	currency
+	wallet
+	unique_together = ("organization", "currency", "category", "wallet", "name")
+}
+CommodityAccount(Account) {
+	commodity
+	repository
+	unique_together = ("organization", "commodity", "category", "repository", "name")
+}
+Task {
+	desc
+}
+Transaction {
+	desc
+	task
+	time
+}
+ShipTransaction(Transaction) {
+	invoice #发货清单编号
+	pid #平台编号
+}
+Split {
+	account
+	change
+	transaction
+}
+abstract:Order(Task) {
+	time = models.DateTimeField(default=timezone.now)
+	repository
+	sale
+	counterfeit
+	counterfeit_auto_clear
+	delivery
+	recall
+	recall_repository
+}
+JdOrder(Order) {
+	oid
+	status
+}
+TmOrder(Order) {
+	oid
+	status
+}
