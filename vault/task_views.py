@@ -310,4 +310,9 @@ class TaskProfitView(SecurityLoginRequiredMixin, DetailView):
 		splits, balance, express_fee, contribution = task_profit(self.object)
 		context['splits'] = splits
 		context['evaluation'] = "毛利:{} - 运费:{} - 包装人工:3 = 净利润:{}".format(balance, express_fee, balance-express_fee-3)
+		context['contribution'] = []
+		for k, v in contribution.items():
+			c = Commodity.objects.get(id=k)
+			c.contribution = v[2]
+			context['contribution'].append(c)
 		return context

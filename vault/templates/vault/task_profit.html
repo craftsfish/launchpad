@@ -2,7 +2,8 @@
 {% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
 {% block header %}任务损益计算{% endblock %}
 
-{% block content %}
+{% block content_single %}
+	<p>流水:</p>
 	<table cellpadding="4" border="1">
 		<tr>
 			<th>账户</th>
@@ -21,5 +22,21 @@
 		</tr>
 		{% endfor %}
 		<tr><th colspan=5>{{evaluation}}</th></tr>
+	</table>
+
+	<br/>
+
+	<p>损益来源:</p>
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>标的</th>
+			<th>损益</th>
+		</tr>
+		{% for i in contribution %}
+		<tr>
+			<td>{{i}}</td>
+			<td>{{i.contribution}}</td>
+		</tr>
+		{% endfor %}
 	</table>
 {% endblock %}
