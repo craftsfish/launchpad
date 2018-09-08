@@ -4,7 +4,7 @@ from .models import *
 import os
 
 @transaction.atomic
-def dump_profit():
+def dump_value_flow():
 	result = []
 	balance = Decimal(0)
 	e = begin_of_month()
