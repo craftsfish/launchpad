@@ -44,17 +44,7 @@ def dump_jd_profit():
 		task = Task.objects.get(id=task_id)
 
 		#利润计算
-		balance = 0
-		for t in task.transactions.all():
-			for s in t.splits.all():
-				if s.account.category not in [2, 3]:
-					continue
-				if hasattr(s.account.item, 'commodity'):
-					s.change_value = s.change * s.account.item.commodity.value * -s.account.sign()
-				else:
-					s.change_value = s.change * -s.account.sign()
-				balance += s.change_value
-		express_fee = get_decimal_with_default(Express.objects.filter(task=task_id).aggregate(Sum('fee'))['fee__sum'], 0)
+		splits, balance, express_fee, contribution = task_profit(task)
 		profit = balance - express_fee - 3 #包装人工预估每单3元
 
 		#利润分配
