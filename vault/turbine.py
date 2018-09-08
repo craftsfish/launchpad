@@ -326,3 +326,8 @@ def task_profit(task):
 
 	#done
 	return (detail, balance, express_fee, contribution)
+
+def calibration_reset():
+	for c in Commodity.objects.all():
+		c.calibration = timezone.now()
+		c.save()

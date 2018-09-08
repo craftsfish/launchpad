@@ -47,6 +47,7 @@ def __quit():
 options = (
 	["aa", "增加账户", Turbine.add_account],
 	["b", "构造系统使用环境", Turbine.build],
+	["cr", "仓库盘点时间校准", calibration_reset],
 	["cs", "仓库校准", Turbine.calibration_storage],
 	["dp", "导出利润报告", dump_profit],
 	["dvf", "导出价值(现金+物资)流", dump_value_flow],
