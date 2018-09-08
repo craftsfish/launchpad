@@ -34,13 +34,13 @@ def dump_value_flow():
 	os.system("soffice /tmp/profit.csv")
 
 @transaction.atomic
-def dump_jd_profit():
+def __dump_profit(desc, abbrev):
 	total = 0
 	result = {}
 	e = begin_of_month()
 	e = nth_previous_month(e, 1)
 	b = nth_previous_month(e, 1)
-	q = Transaction.objects.filter(desc__startswith='1.出货.').filter(time__gte=b).filter(time__lt=e).filter(task__desc='京东订单')
+	q = Transaction.objects.filter(desc__startswith='1.出货.').filter(time__gte=b).filter(time__lt=e).filter(task__desc=desc)
 	for task_id in set(q.values_list('task', flat=True)):
 		task = Task.objects.get(id=task_id)
 		splits, balance, express_fee, contribution = task_profit(task)
@@ -52,8 +52,9 @@ def dump_jd_profit():
 			total += v[2]
 			#if k == 78: #2005
 				#print "{},{}".format(task_id, v[2])
-	print "毛利: {}".format(total)
-	with open("/tmp/profit.jd.csv", "wb") as csvfile:
+	csv_file_path = "/tmp/profit.{}.csv".format(abbrev)
+	print "[{}]{}: {} | 详情: {}".format(desc, b, total, csv_file_path)
+	with open(csv_file_path, "wb") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow(["品名", "利润"])
 		def __key(v):
@@ -61,4 +62,8 @@ def dump_jd_profit():
 			return vs[1]
 		for c, vs in sorted(result.items(), key=__key, reverse=True):
 			writer.writerow(vs)
-	os.system("soffice /tmp/profit.jd.csv")
+	#os.system("soffice /tmp/profit.jd.csv")
+
+def dump_profit():
+	for desc, abbrev in (('京东订单', 'jd'), ('天猫订单', 'tm')):
+		__dump_profit(desc, abbrev)
