@@ -307,20 +307,7 @@ class TaskProfitView(SecurityLoginRequiredMixin, DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super(TaskProfitView, self).get_context_data(**kwargs)
-		balance = 0
-		splits = []
-		for t in self.object.transactions.all():
-			for s in t.splits.all():
-				if s.account.category not in [2, 3]:
-					continue
-				if hasattr(s.account.item, 'commodity'):
-					s.change_value = s.change * s.account.item.commodity.value * -s.account.sign()
-				else:
-					s.change_value = s.change * -s.account.sign()
-				balance += s.change_value
-				s.balance = balance
-				splits.append(s)
+		splits, balance, express_fee, contribution = task_profit(self.object)
 		context['splits'] = splits
-		fee = 8
-		context['evaluation'] = "毛利:{} - 运费包装人工:{} = 净利润:{}".format(balance, fee, balance-fee)
+		context['evaluation'] = "毛利:{} - 运费:{} - 包装人工:3 = 净利润:{}".format(balance, express_fee, balance-express_fee-3)
 		return context

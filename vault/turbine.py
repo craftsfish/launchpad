@@ -10,6 +10,7 @@ import csv
 import re
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from express import *
 
 class EmptyForm(forms.Form):
 	pass
@@ -285,3 +286,25 @@ def item_flow_report(item, span, end):
 		income = int(income)
 		expenditure = int(expenditure)
 	return [income, expenditure, income-expenditure]
+
+def task_profit(task):
+	splits = []
+	contribution = {}
+	balance = 0
+
+	#calculation of profit & express fee
+	for t in task.transactions.all():
+		for s in t.splits.all():
+			if s.account.category not in [2, 3]:
+				continue
+			if hasattr(s.account.item, 'commodity'):
+				s.change_value = s.change * s.account.item.commodity.value * -s.account.sign()
+			else:
+				s.change_value = s.change * -s.account.sign()
+			balance += s.change_value
+			s.balance = balance
+			splits.append(s)
+	express_fee = get_decimal_with_default(Express.objects.filter(task=task).aggregate(Sum('fee'))['fee__sum'], 0)
+
+	#done
+	return (splits, balance, express_fee, contribution)
