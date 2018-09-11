@@ -160,6 +160,7 @@ class Turbine:
 		info = (
 			("南京为绿电子科技有限公司", "人民币", "支出", None, "运费"),
 			("上海腾复日用品有限公司", "人民币", "支出", None, "其他支出"),
+			("个人", "人民币", "收入", None, "陆小兴"),
 		)
 		for o, i, c, r, n in info:
 			with transaction.atomic():
