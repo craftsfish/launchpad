@@ -6,18 +6,18 @@
 <div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<tr>
-			<th>编号</th>
-			<th>平台链接</th>
 			<th>名称</th>
 			<th colspan="2">映射</th>
+			<th>编号</th>
+			<th>平台链接</th>
 		</tr>
 		{% for jdcommodity in object_list %}
 			<tr>
-				<td><a href="{% url 'jdcommodity_detail' jdcommodity.id %}">{{jdcommodity.id}}</a></td>
-				<td><a href="{{jdcommodity.url}}">详情页</a></td>
 				<td>{{jdcommodity.name}}</td>
 				<td><a href="{% url 'jdcommoditymap_create' jdcommodity.id%}">+</a></td>
 				<td class="text-monospace">{{ jdcommodity.map }}</td>
+				<td><a href="{% url 'jdcommodity_detail' jdcommodity.id %}">{{jdcommodity.id}}</a></td>
+				<td><a href="{{jdcommodity.url}}">详情页</a></td>
 			<tr>
 		{% endfor %}
 	</table>
