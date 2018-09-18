@@ -29,6 +29,7 @@ class JdcommodityDetailView(DetailView):
 		for m in context['maps']:
 			m.t = m.str_time()
 			m.d = m.str_commodities()
+			m.invoice = m.commodities.all()
 		return context
 
 class JdcommoditymapForm(forms.ModelForm):

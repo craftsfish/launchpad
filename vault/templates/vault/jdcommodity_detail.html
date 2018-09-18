@@ -13,7 +13,9 @@
 			{% for m in maps %}
 			<tr class="text-monospace">
 				<td>{{m.t}}</td>
-				<td>{{m.d}}</td>
+				{% for i in m.invoice %}
+					<td><a href="{% url 'commodity_detail' i.id %}">{{i.name}}</a></td>
+				{% endfor %}
 			</tr>
 			{% endfor %}
 		</table>
