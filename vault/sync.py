@@ -22,6 +22,7 @@ def import_order():
 def import_rqwy():
 	__map = ( #pid, order_id
 		('9625116', '200309265892436478'),
+		('43098302', '224882862734385402'),
 	)
 	def __handler(title, line, *args):
 		latest_orders = args[0]
