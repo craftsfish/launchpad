@@ -43,6 +43,8 @@ def import_rqwy():
 		if not Tmorder.objects.filter(oid=order_id).exists():
 			if when > datetime.now(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0):
 				latest_orders.append([when, bill+1 + commission*discount, "订单未导入", pid])
+			else:
+				print "{} 订单ID:{}, 非法订单:{}".format(when, pid, order_id)
 			return
 		if when > datetime.now(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0):
 			latest_orders.append([when, bill+1 + commission*discount, "已结算", pid])
@@ -207,6 +209,7 @@ class Sync(object):
 			(r'^提现$', r'^\s*$', '资产', '支付宝.手动周转', '手动周转', False, False),
 			(r'^\s*$', r'^天猫保证金-支付-天猫保证金-支付-积分发票违约金$', '支出', '积分发票违约金', '积分发票违约金', False, False),
 			(r'^\s*$', r'^企业红包-淘宝现金红包提现$', '收入', '其他收入', '淘宝现金红包提现', False, False),
+			(r'^\s*$', r'^保险承保-老板用工保$', '支出', '其他支出', '保险', False, False),
 		)
 		@transaction.atomic
 		def __handler(title, line, *args):
