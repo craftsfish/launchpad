@@ -113,11 +113,11 @@ class AccountReportView(SecurityLoginRequiredMixin, DetailView):
 		context = super(AccountReportView, self).get_context_data(**kwargs)
 
 		result = []
-		e = begin_of_month()
-		b = nth_previous_month(e, 3)
+		e = now()
+		b = nth_previous_month(begin_of_month(), 12)
 		while True:
 			_e = next_month(b)
-			if _e > e:
+			if b > e:
 				break
 			q = Split.objects.filter(account=self.object)
 			q = q.filter(transaction__time__gte=(b)).filter(transaction__time__lt=_e)
