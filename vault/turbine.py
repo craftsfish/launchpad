@@ -227,6 +227,7 @@ class Turbine:
 			("微信", False, False),
 			("人气无忧", False, False),
 			("买家秀", True, True),
+			("威客圈", False, False),
 		)
 		for n, d, r in counterfeits:
 			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
