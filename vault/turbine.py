@@ -208,7 +208,7 @@ class Turbine:
 	@staticmethod
 	@transaction.atomic
 	def build():
-		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "借记卡-民生7158", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573", "运营资金.人气无忧", "运营资金.买家秀"]
+		wallets = ["借记卡-交行0400", "借记卡-华夏3536", "借记卡-建行6394", "借记卡-招行6482", "借记卡-民生7158", "运营资金.微信", "运营资金.支付宝", "信用卡-建行9662", "信用卡-招行3573", "运营资金.人气无忧", "运营资金.买家秀", "运营资金.威客圈", "运营资金.搜货网"]
 		cash = Money.objects.get(name="人民币")
 		for w in wallets:
 			Wallet.objects.get_or_create(name=w)
@@ -228,6 +228,7 @@ class Turbine:
 			("人气无忧", False, False),
 			("买家秀", True, True),
 			("威客圈", False, False),
+			("搜货网", True, False),
 		)
 		for n, d, r in counterfeits:
 			Counterfeit.objects.get_or_create(name=n, delivery=d, recall=r)
