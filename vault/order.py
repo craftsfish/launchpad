@@ -155,7 +155,7 @@ class Order(models.Model):
 			return
 
 		#刷单.回收
-		if not self.counterfeit.delivery:
+		if not self.counterfeit.delivery: #TODO, should be self.delivery???
 			if not task.transactions.filter(desc__contains="刷单.回收").exists():
 				Order.fake_recall_create(task)
 			else:

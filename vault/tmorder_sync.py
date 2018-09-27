@@ -12,20 +12,35 @@ def cancel_shipping_transaction(task):
 		s.save()
 
 def import_tm_order_list():
-	def __handle_list(order_id, time, status, sale, fake, organization, repository, remark):
+	def __handle_list(order_id, time, status, sale, organization, repository, remark):
+		#preparation
 		o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
 		o.status = Tmorder.str2status(status)
 		o.repository = repository
 		o.time = time
 		o.sale = sale
-		if fake:
-			if o.counterfeit and o.counterfeit.name != "人气无忧":
-				print "{} {}的刷单状态和备注不一致".format(o, o.oid)
-			else:
-				o.counterfeit = Counterfeit.objects.get(name="人气无忧")
-		if re.compile("刘").search(remark):
-			if not o.counterfeit or o.counterfeit.name != "微信":
-				print "[警告]{}: {}平台备注为微信刷单，没有录入系统".format(o.time.astimezone(timezone.get_current_timezone()), o.oid)
+
+		#counterfeit handling
+		__mapping = (
+			#platform, filter, add(True) or verify counterfeit info
+			("人气无忧", re.compile("^'朱"), True),
+			("威客圈", re.compile("^'伟"), True),
+			("微信", re.compile("^'刘"), False),
+		)
+		for mark_as, criteria, add in __mapping:
+			if criteria.search(remark):
+				if add:
+					if o.counterfeit and o.counterfeit.name != mark_as:
+						print "[警告!!!]天猫订单{}: 备注为{}刷单，当前为{}刷单".format(o.oid, mark_as, o.counterfeit.name)
+					elif not o.counterfeit:
+						print "天猫订单{}: 备注为{}刷单".format(o.oid, mark_as)
+						o.counterfeit = Counterfeit.objects.get(name=mark_as)
+				else:
+					if not o.counterfeit or o.counterfeit.name != mark_as:
+						print "[警告!!!]天猫订单{}: 备注为{}刷单，系统未标记".format(o.oid, mark_as)
+				break
+
+		#save
 		o.save()
 		if status == "交易关闭": #商品明细有可能不出现在详情表中
 			cancel_shipping_transaction(o.task_ptr)
@@ -39,15 +54,12 @@ def import_tm_order_list():
 		when = utc_2_datetime(cst_2_utc(get_column_value(title, line, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
 		sale = Decimal(get_column_value(title, line, "买家应付货款"))
 		remark = get_column_value(title, line, "订单备注")
-		f = 0
-		if remark.find("朱") != -1:
-			f = 1
 		with transaction.atomic():
 			org = Organization.objects.get(name="泰福高腾复专卖店")
 			repo = Repository.objects.get(name="孤山仓")
 			if re.compile("南京仓").search(remark):
 				repo = Repository.objects.get(name="南京仓")
-			__handle_list(order_id, when, status, sale, f, org, repo, remark)
+			__handle_list(order_id, when, status, sale, org, repo, remark)
 	csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)
 
 class Tmtransaction:
