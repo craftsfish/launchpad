@@ -424,7 +424,7 @@ def import_wkq_transfer():
 @transaction.atomic
 def import_wkq_detail():
 	def __handler(title, line, *args):
-		pid, kind, amount_1, amount_2, when = get_column_values(title, line, '消费ID', '类型', '消费存款', '消费发布点', '操作时间')
+		pid, kind, amount_1, amount_2, when, desc = get_column_values(title, line, '消费ID', '类型', '消费存款', '消费发布点', '操作时间', '备注')
 		if kind in ['购买发布点', '充值']:
 			return
 		t = datetime.strptime(when, "%Y/%m/%d %H:%M:%S")
@@ -437,6 +437,7 @@ def import_wkq_detail():
 			a = Account.get(org.root(), cash.item_ptr, "资产", "运营资金.威客圈", None)
 			b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
 			Transaction.add(None, pid, when, a, amount_1+amount_2, b)
+			print "增加威客圈流水记录: {} | {}, {}, {}".format(when, pid, kind, desc)
 
 	#main
 	csv_parser('/tmp/wkq.detail.csv', None, True, __handler)
