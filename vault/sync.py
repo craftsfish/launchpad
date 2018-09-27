@@ -420,3 +420,23 @@ def import_wkq_transfer():
 
 	#main
 	csv_parser('/tmp/wkq.transfer.csv', None, True, __handler)
+
+@transaction.atomic
+def import_wkq_detail():
+	def __handler(title, line, *args):
+		pid, kind, amount_1, amount_2, when = get_column_values(title, line, '消费ID', '类型', '消费存款', '消费发布点', '操作时间')
+		if kind in ['购买发布点', '充值']:
+			return
+		t = datetime.strptime(when, "%Y/%m/%d %H:%M:%S")
+		when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
+		amount_1 = Decimal(amount_1)
+		amount_2 = Decimal(amount_2)
+		if not Transaction.objects.filter(desc=pid).filter(time=when).exists():
+			org = Organization.objects.get(name="泰福高腾复专卖店")
+			cash = Money.objects.get(name="人民币")
+			a = Account.get(org.root(), cash.item_ptr, "资产", "运营资金.威客圈", None)
+			b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
+			Transaction.add(None, pid, when, a, amount_1+amount_2, b)
+
+	#main
+	csv_parser('/tmp/wkq.detail.csv', None, True, __handler)
