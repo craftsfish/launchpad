@@ -390,3 +390,33 @@ def import_zbq_express():
 			writer.writerow(l)
 			total += l[3]
 		print total
+
+@transaction.atomic
+def import_wkq_transfer():
+	def __handler(title, line, *args):
+		oid, amount, status, when = get_column_values(title, line, "订单编号", "转账金额", '转账状态', '转账时间')
+		if status != '转账成功':
+			return
+		t = datetime.strptime(when, "%Y/%m/%d %H:%M:%S")
+		when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
+		amount = Decimal(amount)
+		order_id = int(oid)
+		if not Tmorder.objects.filter(oid=order_id).exists():
+			print "[警告!!!]天猫订单{}: 未导入".format(order_id)
+			return
+		order = Tmorder.objects.get(oid=order_id)
+		if not order.counterfeit or order.counterfeit.name != "威客圈":
+			print "[警告!!!]天猫订单{}: 未标记为威客圈刷单".format(order_id)
+			return
+		if order.sale != amount:
+			print "[警告!!!]天猫订单{}: 订单金额与威客圈付款金额不一致".format(order_id)
+		if not order.task_ptr.transactions.filter(desc="刷单.结算.威客圈").exists():
+			org = Organization.objects.get(name="泰福高腾复专卖店")
+			cash = Money.objects.get(name="人民币")
+			a = Account.get(org.root(), cash.item_ptr, "资产", "借记卡-招行6482", None)
+			b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
+			Transaction.add(order.task_ptr, "刷单.结算.威客圈", when, a, -amount, b)
+			print "[警告!!!]天猫订单{}: 增加威客圈转账记录".format(order_id)
+
+	#main
+	csv_parser('/tmp/wkq.transfer.csv', None, True, __handler)
