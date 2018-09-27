@@ -4,7 +4,6 @@ from supplier import *
 import csv
 from ground import *
 from django.utils import timezone
-from datetime import datetime
 
 class Item(models.Model):
 	class Meta:
@@ -23,7 +22,7 @@ class Commodity(Item):
 	value = models.DecimalField("价值", default=0, max_digits=8, decimal_places=2)
 	inproduction = models.BooleanField("在产", default=True) #在产/停产
 	obsolete = models.BooleanField("废弃", default=False)
-	calibration = models.DateTimeField(default=datetime.now(timezone.get_current_timezone()))
+	calibration = models.DateTimeField(default=timezone.now)
 	wrap = models.CharField("包装", max_length=1024, blank=True)
 	proxy = models.BooleanField("分销", default=False) #直接由厂家发货，无库存
 	package = models.IntegerField('箱规', default=1)
