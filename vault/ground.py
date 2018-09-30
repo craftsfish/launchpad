@@ -38,7 +38,10 @@ def csv_line_2_str(line):
 def get_column_value(table, row, column):
 	for i, v in enumerate(table):
 		if v == column:
-			return row[i]
+			if row[i] and row[i][0] == '\t':
+				return row[i][1:]
+			else:
+				return row[i]
 	return None
 
 def get_column_values(table, row, *columns):
