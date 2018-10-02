@@ -8,7 +8,7 @@ def dump_value_flow():
 	result = []
 	balance = Decimal(0)
 	e = begin_of_month()
-	b = nth_previous_month(e, 2)
+	b = nth_previous_month(e, 12)
 	while True:
 		_e = next_month(b)
 		if _e > e:
@@ -52,7 +52,7 @@ def __dump_profit(desc, abbrev):
 			total += v[2]
 			#if k == 78: #2005
 				#print "{},{}".format(task_id, v[2])
-	csv_file_path = "/tmp/profit.{}.csv".format(abbrev)
+	csv_file_path = "/tmp/profit.{}.{}月.csv".format(abbrev, b.month)
 	print "[{}]{}: {} | 详情: {}".format(desc, b, total, csv_file_path)
 	with open(csv_file_path, "wb") as csvfile:
 		writer = csv.writer(csvfile)
@@ -65,5 +65,5 @@ def __dump_profit(desc, abbrev):
 	#os.system("soffice /tmp/profit.jd.csv")
 
 def dump_profit():
-	for desc, abbrev in (('京东订单', 'jd'), ('天猫订单', 'tm')):
+	for desc, abbrev in (('京东订单', '京东'), ('天猫订单', '天猫')):
 		__dump_profit(desc, abbrev)
