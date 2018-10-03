@@ -58,8 +58,8 @@ urlpatterns = [
 
 	#tmcommodity
 	url(r'^tmcommodity/$', TmcommodityListView.as_view(), name='tmcommodity_list'),
-	url(r'^tmcommodity/(?P<pk>[\w]+)/$', TmcommodityDetailView.as_view(), name='tmcommodity_detail'),
-	url(r'^tmcommodity/(?P<pk>[\w]+)/map/create/$', TmcommoditymapCreateView.as_view(), name='tmcommoditymap_create'),
+	url(r'^tmcommodity/(?P<pk>[\w\+]+)/$', TmcommodityDetailView.as_view(), name='tmcommodity_detail'),
+	url(r'^tmcommodity/(?P<pk>[\w\+]+)/map/create/$', TmcommoditymapCreateView.as_view(), name='tmcommoditymap_create'),
 
 	#task
 	url(r'^task/$', TaskListView.as_view(), name='task_list'),
