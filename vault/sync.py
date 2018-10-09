@@ -469,6 +469,8 @@ def import_wkq_request():
 		('', '杭州银行'),
 	)
 	def __handler(title, line, *args):
+		jd_script = args[0]
+		zh_script = args[1]
 		account, name, amount, remark, bank = get_column_values(title, line, '收款账户列', '收款户名列', '转账金额列', '备注列', '收款银行列')
 		#print "[威客圈][等待转账][处理中...] {}, {}, {}, {}, {}".format(bank, account, name, amount, remark)
 		using_jd_wallet = False
@@ -478,7 +480,23 @@ def import_wkq_request():
 				bank = jd_bank
 				break
 		if not using_jd_wallet:
+			if not len(zh_script):
+				zh_script.append(title)
+			zh_script.append(line)
 			print "京东钱包当前不支持 {} 转账".format(bank)
+		else:
+			jd_script.append([len(jd_script)+1, account, bank, name, amount, '对私', '借记卡', '', '', '', '', remark, '', ''])
 
 	#main
-	csv_parser('/tmp/wkq.request.csv', None, True, __handler)
+	jd_script = []
+	zh_script = []
+	csv_parser('/tmp/wkq.request.csv', None, True, __handler, jd_script, zh_script)
+	with open("/tmp/jd_wallet_{}.csv".format(timezone.now()), "wb") as csvfile:
+		writer = csv.writer(csvfile)
+		writer.writerow(['单笔序号','收款方银行账号','银行类型','真实姓名','付款金额(元)','账户属性','账户类型','开户地区','开户城市','支行名称','联行号','付款说明','收款人手机号','所属机构'])
+		for l in jd_script:
+			writer.writerow(l)
+	with open("/tmp/zh_transfer.csv", "wb") as csvfile:
+		writer = csv.writer(csvfile)
+		for l in zh_script:
+			writer.writerow(l)
