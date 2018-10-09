@@ -445,9 +445,40 @@ def import_wkq_detail():
 
 @transaction.atomic
 def import_wkq_request():
+	__bank_mapping = (
+		#威客圈银行名称, 京东银行名称
+		('中国工商银行', '中国工商银行'),
+		('', '中国农业银行'),
+		('', '中国银行'),
+		('中国建设银行', '中国建设银行'),
+		('', '中国邮政储蓄银行'),
+		('', '广东发展银行'),
+		('', '中国光大银行'),
+		('', '交通银行'),
+		('', '招商银行'),
+		('', '兴业银行'),
+		('', '平安银行（深发展）'),
+		('', '中信银行'),
+		('', '中国民生银行'),
+		('', '上海浦东发展银行'),
+		('', '华夏银行'),
+		('', '北京银行'),
+		('', '上海银行'),
+		('', '宁波银行'),
+		('', '广州银行'),
+		('', '杭州银行'),
+	)
 	def __handler(title, line, *args):
 		account, name, amount, remark, bank = get_column_values(title, line, '收款账户列', '收款户名列', '转账金额列', '备注列', '收款银行列')
-		print "[威客圈][等待转账][处理中...] {}, {}, {}, {}, {}".format(bank, account, name, amount, remark)
+		#print "[威客圈][等待转账][处理中...] {}, {}, {}, {}, {}".format(bank, account, name, amount, remark)
+		using_jd_wallet = False
+		for wkq_bank, jd_bank in __bank_mapping:
+			if wkq_bank == bank:
+				using_jd_wallet = True
+				bank = jd_bank
+				break
+		if not using_jd_wallet:
+			print "京东钱包当前不支持 {} 转账".format(bank)
 
 	#main
 	csv_parser('/tmp/wkq.request.csv', None, True, __handler)
