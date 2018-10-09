@@ -442,3 +442,12 @@ def import_wkq_detail():
 
 	#main
 	csv_parser('/tmp/wkq.detail.csv', None, True, __handler)
+
+@transaction.atomic
+def import_wkq_request():
+	def __handler(title, line, *args):
+		account, name, amount, remark, bank = get_column_values(title, line, '收款账户列', '收款户名列', '转账金额列', '备注列', '收款银行列')
+		print "[威客圈][等待转账][处理中...] {}, {}, {}, {}, {}".format(bank, account, name, amount, remark)
+
+	#main
+	csv_parser('/tmp/wkq.request.csv', None, True, __handler)
