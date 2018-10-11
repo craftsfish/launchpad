@@ -151,7 +151,7 @@ class Split(models.Model):
 			orig = Split.objects.get(pk=self.id)
 			orig.account.balance -= orig.change
 			orig.account.save()
-			logger.error('{} | Account: {}, {} + ({}) = {}'.format(now(), orig.account, orig.account.balance+orig.change, -orig.change, orig.account.balance))
+			#logger.error('{} | Account: {}, {} + ({}) = {}'.format(now(), orig.account, orig.account.balance+orig.change, -orig.change, orig.account.balance))
 		#reload account to reflect changes made in previous instructions
 		account = Account.objects.get(pk=self.account.id)
 		account.balance += self.change
