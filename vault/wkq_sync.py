@@ -118,7 +118,25 @@ def import_wkq_request():
 		jd_script = args[0]
 		zh_script = args[1]
 		account, name, amount, remark, bank = get_column_values(title, line, '收款账户列', '收款户名列', '转账金额列', '备注列', '收款银行列')
-		#print "[威客圈][等待转账][处理中...] {}, {}, {}, {}, {}".format(bank, account, name, amount, remark)
+		order_id = int(remark)
+
+		manager = None
+		if is_tm_order(remark):
+			manager = Tmorder
+		if is_jd_order(remark):
+			manager = Jdorder
+		if not manager:
+			print "[警告!!!]订单{}: 无法识别所属平台".format(remark)
+			return
+		if manager.objects.filter(oid=order_id).exists():
+			order = manager.objects.get(oid=order_id)
+			if order.task_ptr.transactions.filter(desc="刷单.结算.威客圈").exists():
+				print "[警告!!!]订单{}: 已存在结算记录".format(order_id)
+				return
+		if Transaction.objects.filter(desc="威客圈转账.{}".format(remark)).exists():
+			print "[警告!!!]订单{}: 已存在转账记录".format(order_id)
+			return
+
 		using_jd_wallet = False
 		for wkq_bank, jd_bank in __bank_mapping:
 			if wkq_bank == bank:
