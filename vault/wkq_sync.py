@@ -2,6 +2,7 @@
 import csv
 from ground import *
 from django.db import transaction
+from .models import *
 
 @transaction.atomic
 def import_wkq_transfer():
@@ -98,11 +99,20 @@ def import_wkq_request():
 		else:
 			jd_script.append([len(jd_script)+1, account, bank, name, amount, '对私', '借记卡', '', '', '', '', remark, '', ''])
 
+		org = Organization.objects.get(name="为绿厨具专营店")
+		account_name = '京东钱包'
+		if not using_jd_wallet:
+			account_name = '借记卡-招行6482'
+		cash = Money.objects.get(name="人民币")
+		a = Account.get_or_create(org, cash.item_ptr, "资产", account_name, None)
+		b = Account.get_or_create(org, cash.item_ptr, "支出", "威客圈刷单", None)
+		Transaction.add(None, "威客圈转账.{}".format(remark), now(), a, -Decimal(amount), b)
+
 	#main
 	jd_script = []
 	zh_script = []
 	csv_parser('/tmp/wkq.request.csv', None, True, __handler, jd_script, zh_script)
-	with open("/tmp/jd_wallet_{}.csv".format(timezone.now()), "wb") as csvfile:
+	with open("/tmp/jd_wallet_{}.csv".format(now()), "wb") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow(['单笔序号','收款方银行账号','银行类型','真实姓名','付款金额(元)','账户属性','账户类型','开户地区','开户城市','支行名称','联行号','付款说明','收款人手机号','所属机构'])
 		for l in jd_script:
