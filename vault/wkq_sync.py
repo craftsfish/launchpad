@@ -164,7 +164,7 @@ def import_wkq_request():
 	jd_script = []
 	zh_script = []
 	csv_parser('/tmp/wkq.request.csv', None, True, __handler, jd_script, zh_script)
-	with open("/tmp/jd_wallet_{}.csv".format(now()), "wb") as csvfile:
+	with open("/tmp/jd_wallet_{}.csv".format(now().strftime('%Y%m%d%H%M%S')), "wb") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow(['单笔序号','收款方银行账号','银行类型','真实姓名','付款金额(元)','账户属性','账户类型','开户地区','开户城市','支行名称','联行号','付款说明','收款人手机号','所属机构'])
 		for l in jd_script:
