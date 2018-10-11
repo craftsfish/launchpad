@@ -45,8 +45,8 @@ def import_wkq_transfer():
 				t.save()
 				print "[警告!!!]订单{}: 增加威客圈关联任务记录".format(order_id)
 		else: #没有原始转账记录的订单，默认从招行支付, TODO: 移除，RULE: 先添加交易记录，后关联到订单
-			a = Account.get(org, cash.item_ptr, "资产", "借记卡-招行6482", None)
-			b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
+			a = Account.get_or_create(org, cash.item_ptr, "资产", "借记卡-招行6482", None)
+			b = Account.get_or_create(org, cash.item_ptr, "支出", "威客圈刷单", None)
 			Transaction.add(order.task_ptr, "刷单.结算.威客圈", when, a, -amount, b)
 			print "[警告!!!]天猫订单{}: 增加威客圈转账记录".format(order_id)
 

@@ -21,11 +21,25 @@ def import_jd_order():
 		o.repository = repo
 		o.time = info.booktime
 		o.sale = info.sale
-		if re.compile("朱").search(info.remark): #陆凤刷单
-			if o.counterfeit and o.counterfeit.name != "陆凤":
-				print "{} {}的刷单状态和备注不一致".format(o, o.oid)
-			else:
-				o.counterfeit = Counterfeit.objects.get(name="陆凤")
+
+		#counterfeit handling
+		__mapping = (
+			#platform, filter, add(True) or verify counterfeit info
+			("陆凤", re.compile("^朱"), True),
+			("威客圈", re.compile("^伟"), True),
+		)
+		for mark_as, criteria, add in __mapping:
+			if criteria.search(info.remark):
+				if add:
+					if o.counterfeit and o.counterfeit.name != mark_as:
+						print "[警告!!!]京东订单{}: 备注为{}刷单，当前为{}刷单".format(o.oid, mark_as, o.counterfeit.name)
+					elif not o.counterfeit:
+						print "京东订单{}: 备注为{}刷单".format(o.oid, mark_as)
+						o.counterfeit = Counterfeit.objects.get(name=mark_as)
+				else:
+					if not o.counterfeit or o.counterfeit.name != mark_as:
+						print "[警告!!!]京东订单{}: 备注为{}刷单，系统未标记".format(o.oid, mark_as)
+				break
 
 		#apply
 		if info.status == "等待出库":
