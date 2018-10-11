@@ -67,7 +67,7 @@ class JdorderForm(forms.Form):
 	def clean(self):
 		cleaned_data = super(JdorderForm, self).clean()
 		order_id = cleaned_data.get("jdorder")
-		if order_id > 100000000000:
+		if not is_jd_order(str(order_id)):
 			self.add_error('jdorder', "非法京东订单")
 
 class TmorderForm(forms.Form):
@@ -77,5 +77,5 @@ class TmorderForm(forms.Form):
 	def clean(self):
 		cleaned_data = super(TmorderForm, self).clean()
 		order_id = cleaned_data.get("tmorder")
-		if order_id < 100000000000000000:
+		if not is_tm_order(str(order_id)):
 			self.add_error('tmorder', "非法天猫订单")

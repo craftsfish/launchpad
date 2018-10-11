@@ -2,6 +2,7 @@
 import time
 import enum
 import csv
+import re
 import os
 from datetime import datetime
 from django.utils import timezone
@@ -138,3 +139,11 @@ def next_month(d):
 		return d.replace(d.year+1, 1)
 	else:
 		return d.replace(d.year, d.month+1)
+
+def is_tm_order(s):
+	criteria = r'^\d{18,19}$'
+	return re.compile(criteria).match(s)
+
+def is_jd_order(s):
+	criteria = r'^\d{11,11}$'
+	return re.compile(criteria).match(s)
