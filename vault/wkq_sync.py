@@ -29,16 +29,28 @@ def import_wkq_transfer():
 			t = Transaction.objects.get(desc="威客圈转账.{}".format(order_id))
 			splits = t.splits.order_by("account__category")
 			if splits[0].account.organization != org:
-				t.desc = "转账"
-				t.task = order.task_ptr
-				t.save()
-				s = splits[1]
-				s.account = Account.get_or_create(splits[1].account.organization, cash.item_ptr, "资产", "应收账款.{}".format(org), None)
-				s.save()
-				a = Account.get_or_create(org, cash.item_ptr, "负债", "应付账款.{}".format(splits[1].account.organization), None)
-				b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
-				Transaction.add(order.task_ptr, "刷单.结算.威客圈", when, a, amount, b)
-				print "[警告!!!]订单{}: 增加威客圈换主体记录".format(order_id)
+				if splits[0].account.name == '借记卡-招行6482':
+					t.desc = "刷单.结算.威客圈"
+					t.task = order.task_ptr
+					t.save()
+					s = splits[0]
+					s.account = Account.get_or_create(org, cash.item_ptr, "资产", s.account.name, None)
+					s.save()
+					s = splits[1]
+					s.account = Account.get_or_create(org, cash.item_ptr, "支出", s.account.name, None)
+					s.save()
+					print "[警告!!!]订单{}: 增加威客圈换账户记录".format(order_id)
+				else:
+					t.desc = "转账"
+					t.task = order.task_ptr
+					t.save()
+					s = splits[1]
+					s.account = Account.get_or_create(splits[1].account.organization, cash.item_ptr, "资产", "应收账款.{}".format(org), None)
+					s.save()
+					a = Account.get_or_create(org, cash.item_ptr, "负债", "应付账款.{}".format(splits[1].account.organization), None)
+					b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
+					Transaction.add(order.task_ptr, "刷单.结算.威客圈", when, a, amount, b)
+					print "[警告!!!]订单{}: 增加威客圈换主体记录".format(order_id)
 			else:
 				t.desc = "刷单.结算.威客圈"
 				t.task = order.task_ptr
