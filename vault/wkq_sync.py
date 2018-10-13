@@ -169,21 +169,35 @@ def import_wkq_request():
 
 @transaction.atomic
 def import_wkq_detail():
+	__map = (
+		#消费ID, 类型, 备注, 记账
+		(r'^.*$', r'^购买发布点$', '^会员购买发布点$', False),
+		(r'^.*$', r'^充值$', '^支付宝转账充值.*$', False),
+		(r'^V9261\d{6,6}$', r'^取消评价$', '^取消好评$', True),
+	)
 	def __handler(title, line, *args):
 		pid, kind, amount_1, amount_2, when, desc = get_column_values(title, line, '消费ID', '类型', '消费存款', '消费发布点', '操作时间', '备注')
-		if kind in ['购买发布点', '充值']:
-			return
-		t = datetime.strptime(when, "%Y/%m/%d %H:%M:%S")
-		when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
-		amount_1 = Decimal(amount_1)
-		amount_2 = Decimal(amount_2)
-		if not Transaction.objects.filter(desc=pid).filter(time=when).exists():
-			org = Organization.objects.get(name="泰福高腾复专卖店")
-			cash = Money.objects.get(name="人民币")
-			a = Account.get(org.root(), cash.item_ptr, "资产", "运营资金.威客圈", None)
-			b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
-			Transaction.add(None, pid, when, a, amount_1+amount_2, b)
-			print "增加威客圈流水记录: {} | {}, {}, {}".format(when, pid, kind, desc)
+		handled = False
+		for __consumpe_id, __consume_type, __remark, __book in __map:
+			if not re.compile(__consumpe_id).match(pid): continue
+			if not re.compile(__consume_type).match(kind): continue
+			if not re.compile(__remark).match(desc): continue
+			handled = True
+			if __book:
+				t = datetime.strptime(when, "%Y/%m/%d %H:%M:%S")
+				when = datetime.now(timezone.get_current_timezone()).replace(*(t.timetuple()[0:6])).replace(microsecond=0)
+				amount_1 = Decimal(amount_1)
+				amount_2 = Decimal(amount_2)
+				if not Transaction.objects.filter(desc=pid).filter(time=when).exists():
+					org = Organization.objects.get(name="泰福高腾复专卖店")
+					cash = Money.objects.get(name="人民币")
+					a = Account.get_or_create(org, cash.item_ptr, "资产", "运营资金.威客圈", None)
+					b = Account.get_or_create(org, cash.item_ptr, "支出", "威客圈刷单", None)
+					Transaction.add(None, pid, when, a, amount_1+amount_2, b)
+			break
+		if not handled:
+			pass
+			print "发现未知结算: {}".format(csv_line_2_str(line))
 
 	#main
 	csv_parser('/tmp/wkq.detail.csv', None, True, __handler)
