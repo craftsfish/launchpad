@@ -174,6 +174,14 @@ def import_wkq_detail():
 		(r'^.*$', r'^购买发布点$', '^会员购买发布点$', False),
 		(r'^.*$', r'^充值$', '^支付宝转账充值.*$', False),
 		(r'^V9261\d{6,6}$', r'^取消评价$', '^取消好评$', True),
+		(r'^泰福高腾复专卖店$', r'^购买智能助手基础版$', '^购买智能助手【收费版一个月】$', True),
+		(r'^V9261\d{6,6}$', r'^发布任务$', '^发布任务【自行转账】$', True),
+		(r'^V9261\d{6,6}$', r'^取消任务$', '^取消任务$', True),
+		(r'^泰福高腾复专卖店$', r'^财务扣$', '^30单/天，补收增加发布数量费用$', True),
+		(r'^V9261\d{6,6}$', r'^任务处罚$', '^使用信用卡/花呗支付,扣除成交金额的1.00%（抓取淘宝的付款金额）返还到商家的账户中$', True),
+		(r'^V9261\d{6,6}$', r'^购买评价$', '^购买好评$', True),
+		(r'^S9261\d{6,6}$', r'^发布流量任务$', '^发布流量任务$', True),
+		(r'^S9261\d{6,6}$', r'^取消流量任务$', '^取消流量任务$', True),
 	)
 	def __handler(title, line, *args):
 		pid, kind, amount_1, amount_2, when, desc = get_column_values(title, line, '消费ID', '类型', '消费存款', '消费发布点', '操作时间', '备注')
@@ -194,6 +202,7 @@ def import_wkq_detail():
 					a = Account.get_or_create(org, cash.item_ptr, "资产", "运营资金.威客圈", None)
 					b = Account.get_or_create(org, cash.item_ptr, "支出", "威客圈刷单", None)
 					Transaction.add(None, pid, when, a, amount_1+amount_2, b)
+					#print "增加结算: {}".format(csv_line_2_str(line))
 			break
 		if not handled:
 			pass
