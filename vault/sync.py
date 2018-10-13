@@ -332,7 +332,7 @@ class Sync(object):
 					if Jdwalletclear.objects.filter(pid=pid).exists(): return #handled
 				cash = Money.objects.get(name="人民币")
 				a = Account.get_or_create(org, cash.item_ptr, "资产", "钱包自动结算", None)
-				if __new_pid and change > -50.0:
+				if __new_pid and change > -20.0:
 					b = Account.get_or_create(org, cash.item_ptr, "支出", "付款手续费", None)
 				else:
 					b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)

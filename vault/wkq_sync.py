@@ -98,7 +98,7 @@ def import_wkq_request():
 		('中国银行', '中国银行'),
 		('中国建设银行', '中国建设银行'),
 		('中国邮政储蓄银行', '中国邮政储蓄银行'),
-		('', '广东发展银行'),
+		('广发银行', '广东发展银行'),
 		('', '中国光大银行'),
 		('交通银行', '交通银行'),
 		('', '招商银行'),
@@ -143,11 +143,13 @@ def import_wkq_request():
 				using_jd_wallet = True
 				bank = jd_bank
 				break
+		if float(amount) < 20.0:
+			using_jd_wallet = False
 		if not using_jd_wallet:
 			if not len(zh_script):
 				zh_script.append(title)
 			zh_script.append(line)
-			print "京东钱包当前不支持 {} 转账".format(bank)
+			print "京东钱包当前不支持 {}  {} 转账".format(bank, amount)
 		else:
 			jd_script.append([len(jd_script)+1, account, bank, name, amount, '对私', '借记卡', '', '', '', '', remark, '', ''])
 
