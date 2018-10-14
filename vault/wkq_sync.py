@@ -92,11 +92,11 @@ def import_wkq_request():
 		('广发银行', '广东发展银行'),
 		('', '中国光大银行'),
 		('交通银行', '交通银行'),
-		('', '招商银行'),
+		('招商银行', '招商银行'),
 		('兴业银行', '兴业银行'),
 		('平安银行', '平安银行（深发展）'),
 		('中信银行', '中信银行'),
-		('', '中国民生银行'),
+		('民生银行', '中国民生银行'),
 		('上海浦东发展银行', '上海浦东发展银行'),
 		('华夏银行', '华夏银行'),
 		('', '北京银行'),
@@ -157,7 +157,7 @@ def import_wkq_request():
 	jd_script = []
 	zh_script = []
 	csv_parser('/tmp/wkq.request.csv', None, True, __handler, jd_script, zh_script)
-	with open("/tmp/jd_wallet_{}.csv".format(now().strftime('%Y%m%d%H%M%S')), "wb") as csvfile:
+	with open("/tmp/jd_wallet_{}.txt".format(now().strftime('%Y%m%d%H%M%S')), "wb") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow(['单笔序号','收款方银行账号','银行类型','真实姓名','付款金额(元)','账户属性','账户类型','开户地区','开户城市','支行名称','联行号','付款说明','收款人手机号','所属机构'])
 		for l in jd_script:
