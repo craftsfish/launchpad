@@ -184,7 +184,7 @@ class Sync(object):
 
 	@staticmethod
 	def import_yz_express():
-		Sync.__express_clear(False, '邮政', "邮件号", "邮资", [])
+		Sync.__express_clear(False, '邮政', "邮件号", "总邮资", [])
 
 	@staticmethod
 	def import_tm_clear():
