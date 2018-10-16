@@ -69,6 +69,7 @@ options = (
 	["iwkqd", "导入威客圈流水", import_wkq_detail],
 	["iwkqr", "导入威客圈转账申请", import_wkq_request],
 	["iwkqt", "导入威客圈转账信息", import_wkq_transfer],
+	["iyde", "导入韵达快递结算信息", Sync.import_yd_express],
 	["iyze", "导入邮政快递结算信息", Sync.import_yz_express],
 	["izte", "导入中通快递结算信息", Sync.import_zt_express],
 	["izbq", "导入zbq快递结算信息", import_zbq_express],
