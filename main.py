@@ -55,7 +55,6 @@ options = (
 	["ds", "导出库存", Turbine.dump_storage],
 	["ic", "导入物资", Commodity.Import],
 	["icme", "导入传美打印快递信息", Sync.import_cm_express],
-	["iee", "导入现有快递信息", Sync.import_existing_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
 	["ijde", "导入京东订单快递信息", Sync.import_jd_express],
 	["ijdac", "导入京东推广结算信息", Sync.import_jd_advertise_clear],

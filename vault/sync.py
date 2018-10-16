@@ -135,20 +135,6 @@ class Sync(object):
 		csv_parser('/tmp/cm.express.csv', None, True, __handler)
 
 	@staticmethod
-	def import_existing_express():
-		@transaction.atomic
-		def __handler(title, line, *args):
-			e = Sync.__express_creator(title, line, ["服务商", "快递单号"])
-			if not e:
-				return
-			c = get_column_value(title, line, "结算")
-			if c == "1" and not e.clear:
-				print "{} 标记为已结算".format(e)
-				e.clear = True
-				e.save()
-		csv_parser('/tmp/express.csv', None, True, __handler)
-
-	@staticmethod
 	def __express_clear(clear, supplier, column_eid, column_amount, append_expresses):
 		@transaction.atomic
 		def __handler(title, line, *args):
