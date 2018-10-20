@@ -218,11 +218,11 @@ def import_wkq_order_sale():
 		elif is_jd_order(oid):
 			manager = Jdorder
 		else:
-			#print "[警告!!!]订单{}: 无法识别所属平台".format(order_id)
+			print "[警告!!!]订单{}: 无法识别所属平台".format(order_id)
 			return
 
 		if not manager.objects.filter(oid=order_id).exists():
-			#print "[警告!!!]订单{}: 未导入".format(order_id)
+			print "[警告!!!]订单{}: 未导入".format(order_id)
 			return
 		order = manager.objects.get(oid=order_id)
 		org = Organization.objects.get(name=org)
@@ -239,7 +239,6 @@ def import_wkq_order_sale():
 				s = splits[1]
 				s.account = s.account.derive_with_new_organization(org)
 				s.save()
-				print "{} 完成主体转换".format(oid)
 
 	#main
 	csv_parser('/tmp/wkq.order.sale.csv', None, True, __handler)
