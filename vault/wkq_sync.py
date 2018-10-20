@@ -247,3 +247,21 @@ def import_wkq_order_sale():
 
 	#main
 	csv_parser('/tmp/wkq.order.sale.csv', None, True, __handler)
+
+@transaction.atomic
+def import_wkq_order_browse():
+	def __handler(title, line, *args):
+		pid, org = get_column_values(title, line, '任务号', '掌柜号')
+		org = Organization.objects.get(name=org)
+		for t in Transaction.objects.filter(desc=pid):
+			splits = t.splits.order_by("account__category")
+			if splits[0].account.organization != org:
+				s = splits[0]
+				s.account = s.account.derive_with_new_organization(org)
+				s.save()
+				s = splits[1]
+				s.account = s.account.derive_with_new_organization(org)
+				s.save()
+
+	#main
+	csv_parser('/tmp/wkq.order.browse.csv', None, True, __handler)

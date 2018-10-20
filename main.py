@@ -67,6 +67,7 @@ options = (
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],
 	["itme", "导入天猫订单快递信息", Sync.import_tm_express],
 	["iwkqd", "导入威客圈流水", import_wkq_detail],
+	["iwkqob", "导入威客圈流量任务详情", import_wkq_order_browse],
 	["iwkqos", "导入威客圈销量任务详情", import_wkq_order_sale],
 	["iwkqr", "导入威客圈转账申请", import_wkq_request],
 	["iwkqt", "导入威客圈转账信息", import_wkq_transfer],
