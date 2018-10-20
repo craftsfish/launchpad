@@ -210,3 +210,26 @@ def import_wkq_detail():
 
 	#main
 	csv_parser('/tmp/wkq.detail.csv', None, True, __handler)
+
+@transaction.atomic
+def import_wkq_order_sale():
+	def __handler(title, line, *args):
+		pid, oid, org = get_column_values(title, line, '任务号', "订单编号", '掌柜号')
+		order_id = int(oid)
+		if is_tm_order(oid):
+			manager = Tmorder
+		elif is_jd_order(oid):
+			manager = Jdorder
+		else:
+			print "[警告!!!]订单{}: 无法识别所属平台".format(order_id)
+			return
+
+		if not manager.objects.filter(oid=order_id).exists():
+			print "[警告!!!]订单{}: 未导入".format(order_id)
+			return
+		order = manager.objects.get(oid=order_id)
+
+		print "{}, {}, {}".format(pid, order.task_ptr.id, org)
+
+	#main
+	csv_parser('/tmp/wkq.order.sale.csv', None, True, __handler)
