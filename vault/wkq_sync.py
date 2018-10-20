@@ -4,6 +4,21 @@ from ground import *
 from django.db import transaction
 from .models import *
 
+def hybrid_order_get(order_id_s):
+	if is_tm_order(order_id_s):
+		manager = Tmorder
+	elif is_jd_order(order_id_s):
+		manager = Jdorder
+	else:
+		print "订单{}: 无法识别所属平台".format(order_id_s)
+		return None
+
+	order_id_i = int(order_id_s)
+	if not manager.objects.filter(oid=order_id_i).exists():
+		print "订单{}: 未导入".format(order_id_s)
+		return None
+	return manager.objects.get(oid=order_id_i)
+
 @transaction.atomic
 def import_wkq_transfer():
 	def __order_handler(order_id, amount, when, manager, org):
@@ -212,22 +227,12 @@ def import_wkq_detail():
 def import_wkq_order_sale():
 	def __handler(title, line, *args):
 		pid, oid, org = get_column_values(title, line, '任务号', "订单编号", '掌柜号')
-		order_id = int(oid)
-		if is_tm_order(oid):
-			manager = Tmorder
-		elif is_jd_order(oid):
-			manager = Jdorder
-		else:
-			print "[警告!!!]订单{}: 无法识别所属平台".format(order_id)
+		order = hybrid_order_get(oid)
+		if not order:
+			print "无法结算: {}".format(csv_line_2_str(line))
 			return
 
-		if not manager.objects.filter(oid=order_id).exists():
-			print "[警告!!!]订单{}: 未导入".format(order_id)
-			return
-		order = manager.objects.get(oid=order_id)
 		org = Organization.objects.get(name=org)
-		cash = Money.objects.get(name="人民币")
-
 		for t in Transaction.objects.filter(desc=pid):
 			t.task = order.task_ptr
 			t.save()
