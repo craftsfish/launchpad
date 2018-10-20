@@ -29,7 +29,7 @@ from datetime import timedelta
 from vault.jdorder import *
 from vault.sync import *
 from vault.report import *
-from vault.wkq_sync import *
+from vault.synchronization.wkq import *
 
 @transaction.atomic
 def test():
