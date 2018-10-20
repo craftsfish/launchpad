@@ -221,15 +221,28 @@ def import_wkq_order_sale():
 		elif is_jd_order(oid):
 			manager = Jdorder
 		else:
-			print "[警告!!!]订单{}: 无法识别所属平台".format(order_id)
+			#print "[警告!!!]订单{}: 无法识别所属平台".format(order_id)
 			return
 
 		if not manager.objects.filter(oid=order_id).exists():
-			print "[警告!!!]订单{}: 未导入".format(order_id)
+			#print "[警告!!!]订单{}: 未导入".format(order_id)
 			return
 		order = manager.objects.get(oid=order_id)
+		org = Organization.objects.get(name=org)
+		cash = Money.objects.get(name="人民币")
 
-		print "{}, {}, {}".format(pid, order.task_ptr.id, org)
+		for t in Transaction.objects.filter(desc=pid):
+			t.task = order.task_ptr
+			t.save()
+			splits = t.splits.order_by("account__category")
+			if splits[0].account.organization != org:
+				s = splits[0]
+				s.account = Account.get_or_create(org, cash.item_ptr, "资产", s.account.name, None)
+				s.save()
+				s = splits[1]
+				s.account = Account.get_or_create(org, cash.item_ptr, "支出", s.account.name, None)
+				s.save()
+				print "{} 完成主体转换".format(oid)
 
 	#main
 	csv_parser('/tmp/wkq.order.sale.csv', None, True, __handler)
