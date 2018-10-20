@@ -36,6 +36,9 @@ class Account(models.Model):
 		signs = [1, -1, -1, 1, -1]
 		return signs[self.category]
 
+	def derive_with_new_organization(self, organization):
+		return Account.objects.get_or_create(organization, item=self.item, category=self.item, repository=self.repository, name=self.name)[0]
+
 	@staticmethod
 	def str2category(s):
 		for i, v in Account.ACCOUNT_CATEGORY_CHOICES:

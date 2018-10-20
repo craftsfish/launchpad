@@ -237,10 +237,10 @@ def import_wkq_order_sale():
 			splits = t.splits.order_by("account__category")
 			if splits[0].account.organization != org:
 				s = splits[0]
-				s.account = Account.get_or_create(org, cash.item_ptr, "资产", s.account.name, None)
+				s.account = s.account.derive_with_new_organization(org)
 				s.save()
 				s = splits[1]
-				s.account = Account.get_or_create(org, cash.item_ptr, "支出", s.account.name, None)
+				s.account = s.account.derive_with_new_organization(org)
 				s.save()
 				print "{} 完成主体转换".format(oid)
 
