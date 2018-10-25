@@ -54,7 +54,6 @@ def import_wkq_transfer():
 					s = splits[1]
 					s.account = Account.get_or_create(org, cash.item_ptr, "支出", s.account.name, None)
 					s.save()
-					print "[警告!!!]订单{}: 增加威客圈换账户记录".format(order_id)
 				else:
 					t.desc = "转账"
 					t.task = order.task_ptr
@@ -65,12 +64,10 @@ def import_wkq_transfer():
 					a = Account.get_or_create(org, cash.item_ptr, "负债", "应付账款.{}".format(splits[1].account.organization), None)
 					b = Account.get(org, cash.item_ptr, "支出", "威客圈刷单", None)
 					Transaction.add(order.task_ptr, "刷单.结算.威客圈", when, a, amount, b)
-					print "[警告!!!]订单{}: 增加威客圈换主体记录".format(order_id)
 			else:
 				t.desc = "刷单.结算.威客圈"
 				t.task = order.task_ptr
 				t.save()
-				print "[警告!!!]订单{}: 增加威客圈关联任务记录".format(order_id)
 		else:
 			print "[警告!!!]订单{}: 没有原始转账记录".format(order_id)
 
