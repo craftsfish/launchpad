@@ -1,15 +1,15 @@
 #!/bin/bash
-dir="/tmp"
+dir="/media/sf_Downloads"
 cd $dir
 today=$(date +%Y%m%d)
 for f in $(ls *.csv); do
 	r=$(echo $f | grep "^ExportOrderList${today}.*$")
 	if [[ $r != "" ]] ; then
-		mv $r tm.list.csv
+		mv $r /tmp/tm.list.csv
 	fi
 
 	r=$(echo $f | grep "^ExportOrderDetailList${today}.*$")
 	if [[ $r != "" ]] ; then
-		mv $r tm.detail.csv
+		mv $r /tmp/tm.detail.csv
 	fi
 done
