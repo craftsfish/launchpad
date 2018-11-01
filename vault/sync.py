@@ -253,6 +253,7 @@ class Sync(object):
 			(r'^随单送的京豆$', '支出', '京豆', '京豆'),
 			(r'^佣金$', '支出', '佣金', '佣金'),
 			(r'^技术服务费$', '支出', '技术服务费', '技术服务费'),
+			(r'^代收服务市场服务费$', '支出', '代收付服务费', '代收付服务费'),
 			(r'^代收京麦市场服务费$', '支出', '代收付服务费', '代收付服务费'),
 		)
 		@transaction.atomic
@@ -286,7 +287,7 @@ class Sync(object):
 				break
 			if not handled:
 				print "发现未知结算: {}".format(csv_line_2_str(line))
-		csv_parser('/tmp/jd.clear.order.csv', csv_gb18030_2_utf8, True, __handler, Organization.objects.get(name="为绿厨具专营店"))
+		csv_parser('/tmp/jd.clear.order.csv', None, True, __handler, Organization.objects.get(name="为绿厨具专营店"))
 
 	@staticmethod
 	def import_jd_wallet_clear():
