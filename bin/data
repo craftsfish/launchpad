@@ -1,5 +1,5 @@
 #!/bin/bash
-dir="/media/sf_Downloads"
+dir="$HOME/Downloads"
 cd $dir
 today=$(date +%Y%m%d)
 for f in $(ls *.csv); do
