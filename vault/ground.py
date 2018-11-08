@@ -122,6 +122,9 @@ class Container(object):
 def now():
 	return timezone.now().astimezone(timezone.get_current_timezone())
 
+def now_as_seconds():
+	return int(time.time())
+
 def begin_of_day():
 	return timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)
 

@@ -11,6 +11,7 @@ import re
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from express import *
+from calibration_history import *
 
 class EmptyForm(forms.Form):
 	pass
@@ -117,6 +118,7 @@ class Turbine:
 
 	@staticmethod
 	def calibration_commodity(task, commodity, repository, status, quantity, organizations):
+		CalibrationHistory(commodity=commodity, repository=repository, status=status, quantity=quantity, utc=now_as_seconds()).save()
 		v = Account.objects.filter(item=commodity).filter(repository=repository).filter(name=status).aggregate(Sum('balance'))['balance__sum']
 		if v: v = int(v)
 		else: v = 0
