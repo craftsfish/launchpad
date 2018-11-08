@@ -55,9 +55,6 @@ def import_jd_order():
 		o.save()
 
 	def __handler_transaction_raw(info):
-		if info and re.compile("^伟").search(info.remark): #威客圈刷单地址收集
-			if info.status == '等待出库':
-				print "{},{},,{},{}".format(info.id, info.customer, info.phone, info.address)
 		if info and not info.bad:
 			with transaction.atomic():
 				org = Organization.objects.get(name="为绿厨具专营店")
@@ -84,9 +81,6 @@ def import_jd_order():
 			t.remark = get_column_value(title, line, "商家备注")
 			t.booktime = booktime
 			t.status = status
-			t.customer = get_column_value(title, line, '客户姓名')
-			t.address = get_column_value(title, line, '客户地址')
-			t.phone = get_column_value(title, line, '联系电话')
 			t.invoices = []
 			cur_transaction = t
 
