@@ -13,7 +13,7 @@
 		</tr>
 		{% for o in object_list %}
 			<tr>
-				<td>{{o.utc}}</td>
+				<td>{{o.utc_human | date:"Y-m-d H:i:s" }}</td>
 				<td>{{o.repository}}</td>
 				<td>{{o.commodity}}</td>
 				<td>{{o.status}}</td>
