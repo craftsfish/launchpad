@@ -25,6 +25,7 @@
 
 {% block content_middle %}
 	<table cellpadding="4" border="1">
+		<tr><td><a href="{% url 'calibration_history_list' %}">盘库历史</a></td></tr>
 		<tr><td><a href="{% url 'transaction_list' %}">交易</a></td></tr>
 		<tr><td><a href="{% url 'supplier_list' %}">供应商</a></td></tr>
 		<tr><td><a href="{% url 'jdcommodity_list' %}">京东商品</a></td></tr>

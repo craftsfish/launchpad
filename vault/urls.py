@@ -17,6 +17,7 @@ from calibration_views import *
 from repository_views import *
 from supplier_service_views import *
 from express_views import *
+from calibration_history_views import *
 
 urlpatterns = [
 	#supplier
@@ -133,4 +134,7 @@ urlpatterns = [
 	#express
 	url(r'^express/(?P<id>[\d]+)/$', ExpressListView.as_view(), name='express_list'),
 	url(r'^express/clear/$', ExpressClearView.as_view(), name='express_clear'),
+
+	#calibration_history
+	url(r'^calibration_history/$', CalibrationHistoryListView.as_view(), name='calibration_history_list'),
 ]

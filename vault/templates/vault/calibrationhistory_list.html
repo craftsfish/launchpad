@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block header %}盘库列表{% endblock %}
+
+{% block content %}
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>时间</th>
+			<th>仓库</th>
+			<th>物资</th>
+			<th>状态</th>
+			<th>数量</th>
+		</tr>
+		{% for o in object_list %}
+			<tr>
+				<td>{{o.utc}}</td>
+				<td>{{o.repository}}</td>
+				<td>{{o.commodity}}</td>
+				<td>{{o.status}}</td>
+				<td>{{o.quantity}}</td>
+			<tr>
+		{% endfor %}
+	</table>
+{% endblock %}
