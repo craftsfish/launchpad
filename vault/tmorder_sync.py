@@ -111,7 +111,9 @@ def import_tm_order_detail():
 		parameters = args[0]
 		prev_transaction = parameters[0]
 
-		order_id = int(re.compile(r"\d+").search(get_column_value(title, line, "订单编号")).group())
+		exp = re.compile(r"\d+").search(get_column_value(title, line, "订单编号"))
+		if not exp: return
+		order_id = int(exp.group())
 		if prev_transaction and prev_transaction.oid == order_id: #same order, merge with previous line
 			cur_transaction = prev_transaction
 		else:
