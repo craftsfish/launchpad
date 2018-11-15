@@ -16,7 +16,7 @@ class TransactionForm(forms.ModelForm):
 		fields = ['desc', 'time', 'task']
 		widgets = {
 			'time': forms.TextInput(attrs={"class": "form-control datetimepicker-input", "data-target": "#datetimepicker1", "data-toggle": "datetimepicker"}),
-			'task': forms.HiddenInput(),
+			'task': forms.NumberInput(),
 		}
 
 class TransactionMixin(object):

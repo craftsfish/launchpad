@@ -69,6 +69,11 @@
 				{{ hidden }}
 			{% endfor %}
 			<div class="fieldWrapper">
+				{{ form.task.errors }}
+				{{ form.task.label_tag }}
+				{{ form.task }}
+			</div>
+			<div class="fieldWrapper">
 				{{ form.desc.errors }}
 				{{ form.desc.label_tag }}
 				{{ form.desc }}
