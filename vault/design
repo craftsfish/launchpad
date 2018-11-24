@@ -113,3 +113,10 @@ TmOrder(Order) {
 TmFakeOrder(TmOrder, FakeOrder) {
 	pass
 }
+
+Roles {
+supplier
+distributor
+retailer
+customer
+}
