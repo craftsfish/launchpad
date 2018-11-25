@@ -10,10 +10,17 @@ def title_handler(l):
 
 elements = [] #原始标题中的词根
 improved_elements = [] #剔除冗余，无效词之后的词根
+removed_elements_cluster = []
+previous_added_elements_cluster = ['烧','罐']
+added_elements_cluster = []
 performance = []
 candidates = []
 is_candidate = False
 with open('/tmp/input.csv', 'rb') as csvfile:
+	reader = csv.reader(csvfile)
+	reader.next()
+	reader.next()
+	reader.next()
 	for l in csv.reader(csvfile):
 		#check the end index of current line
 		end = 0
@@ -48,7 +55,7 @@ for c in elements:
 		improved_elements.append(c)
 		total_length += len(c['element'].decode('utf-8'))
 	else:
-		print "[剔除][{}]没有成交".format(c['element'])
+		removed_elements_cluster.append(c['element'])
 
 if total_length == 30:
 	print "[剔除][xxx]成交效果最差!"
@@ -66,10 +73,20 @@ for c in candidates:
 			extra_length += len(e.decode('utf-8'))
 			extra_elements.append(e)
 	if extra_length and total_length + extra_length <= 30:
-		for e in extra_elements:
-			print "[增加][{}]来源于: {}".format(e, c['criteria'])
+		added_elements_cluster += extra_elements
 		result += extra_elements
 		total_length += extra_length
+
+removed_elements_cluster_str = ""
+for i in removed_elements_cluster:
+	removed_elements_cluster_str += i + "\t"
+print "本期剔除词根: {}".format(removed_elements_cluster_str)
+
+added_elements_cluster_str = ""
+for i in added_elements_cluster:
+	added_elements_cluster_str += i + "\t"
+print "本期增加词根: {}".format(added_elements_cluster_str)
+
 
 result_array_str = ""
 result_str = ""
@@ -77,5 +94,4 @@ for i in result:
 	result_array_str += i + " "
 	result_str += i
 print result_array_str
-print result_str
-print "长度: {}".format(total_length)
+print "长度: {}, 标题: {}".format(total_length, result_str)
