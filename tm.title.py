@@ -96,27 +96,34 @@ previous_added_elements_cluster_str = ""
 added_order = 0
 for i in previous_added_elements_cluster:
 	previous_added_elements_cluster_str += i + '\t'
+print "上期增加搜索词: {"
 for c in criterias_of_elements(previous_added_elements_cluster, performance):
+	print "\t{}".format(c)
 	for p in performance:
 		if c == p['criteria']:
 			added_order += p['order']
+print "}"
 print "上期增加词根: {}, 占总成交比例: {:.2f}%".format(previous_added_elements_cluster_str, float(added_order)*100/total_order)
+print "========================================================================"
 
 removed_elements_cluster_str = ""
 removed_order = 0
 for i in removed_elements_cluster:
 	removed_elements_cluster_str += i + "\t"
+print "本期剔除搜索词: {"
 for c in criterias_of_elements(removed_elements_cluster, performance):
+	print "\t{}".format(c)
 	for p in performance:
 		if c == p['criteria']:
 			removed_order += p['order']
+print "}"
 print "本期剔除词根: {}, 占总成交比例: {:.2f}%".format(removed_elements_cluster_str, float(removed_order)*100/total_order)
 
 added_elements_cluster_str = ""
 for i in added_elements_cluster:
 	added_elements_cluster_str += i + "\t"
 print "本期增加词根: {}".format(added_elements_cluster_str)
-
+print "========================================================================"
 
 result_array_str = ""
 result_str = ""
