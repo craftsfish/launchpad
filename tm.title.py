@@ -16,6 +16,7 @@ added_elements_cluster = []
 performance = []
 candidates = []
 is_candidate = False
+total_order = 0
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
 	reader.next()
@@ -38,11 +39,12 @@ with open('/tmp/input.csv', 'rb') as csvfile:
 			title_handler(l)
 		elif l[0] == '搜索词':
 			is_candidate = True
-		elif is_candidate:
+		elif is_candidate: #备选搜索词
 			candidates.append({'criteria': l[7], 'elements': l[8:end]})
-		else:
+		else: #最近一周成交数据
 			i = len(performance)
 			performance.append({'criteria': l[0], 'order': int(l[2]), 'elements': l[5:end]})
+			total_order += int(l[2])
 
 #剔除无效关键词
 total_length = 0
@@ -77,10 +79,24 @@ for c in candidates:
 		result += extra_elements
 		total_length += extra_length
 
+#汇总报告
+previous_added_elements_cluster_str = ""
+added_order = 0
+for i in previous_added_elements_cluster:
+	previous_added_elements_cluster_str += i + '\t'
+	for p in performance:
+		if i in p['elements']:
+			added_order += p['order']
+print "上期增加词根: {}, 占总成交比例: {:.2f}%".format(previous_added_elements_cluster_str, float(added_order)*100/total_order)
+
 removed_elements_cluster_str = ""
+removed_order = 0
 for i in removed_elements_cluster:
 	removed_elements_cluster_str += i + "\t"
-print "本期剔除词根: {}".format(removed_elements_cluster_str)
+	for p in performance:
+		if i in p['elements']:
+			removed_order += p['order']
+print "本期剔除词根: {}, 占总成交比例: {:.2f}%".format(removed_elements_cluster_str, float(removed_order)*100/total_order)
 
 added_elements_cluster_str = ""
 for i in added_elements_cluster:
@@ -93,5 +109,5 @@ result_str = ""
 for i in result:
 	result_array_str += i + " "
 	result_str += i
-print result_array_str
+print "词根: {}".format(result_array_str)
 print "长度: {}, 标题: {}".format(total_length, result_str)
