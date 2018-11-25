@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 import csv
+from sets import Set
+
+#element: 词根
+#criteria: 搜索词
+
+def criterias_of_elements(elements, performance):
+	criterias = Set()
+	for e in elements:
+		for p in performance:
+			if e in p['elements']:
+				criterias.add(p['criteria'])
+	return criterias
 
 def title_handler(l):
 	total_length = 0
@@ -84,8 +96,9 @@ previous_added_elements_cluster_str = ""
 added_order = 0
 for i in previous_added_elements_cluster:
 	previous_added_elements_cluster_str += i + '\t'
+for c in criterias_of_elements(previous_added_elements_cluster, performance):
 	for p in performance:
-		if i in p['elements']:
+		if c == p['criteria']:
 			added_order += p['order']
 print "上期增加词根: {}, 占总成交比例: {:.2f}%".format(previous_added_elements_cluster_str, float(added_order)*100/total_order)
 
@@ -93,8 +106,9 @@ removed_elements_cluster_str = ""
 removed_order = 0
 for i in removed_elements_cluster:
 	removed_elements_cluster_str += i + "\t"
+for c in criterias_of_elements(removed_elements_cluster, performance):
 	for p in performance:
-		if i in p['elements']:
+		if c == p['criteria']:
 			removed_order += p['order']
 print "本期剔除词根: {}, 占总成交比例: {:.2f}%".format(removed_elements_cluster_str, float(removed_order)*100/total_order)
 
