@@ -34,6 +34,8 @@ with open('/tmp/input.csv', 'rb') as csvfile:
 	reader.next()
 	reader.next()
 	reader.next()
+	reader.next()
+	reader.next()
 	for l in csv.reader(csvfile):
 		#check the end index of current line
 		end = 0
@@ -128,7 +130,7 @@ print "========================================================================"
 result_array_str = ""
 result_str = ""
 for i in result:
-	result_array_str += i + " "
+	result_array_str += i + "\t"
 	result_str += i
 print "词根: {}".format(result_array_str)
 print "长度: {}, 标题: {}".format(total_length, result_str)
