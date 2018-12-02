@@ -65,7 +65,7 @@ def delete_useless_elements(retained_criterias, retained_elements, removed_crite
 			if e['element'] in c['elements']:
 				in_use = True
 				break
-		if not in_use:
+		if not in_use and e['element'] not in const_elements:
 			#print "[Info]词根: {} 不存在于保留搜索词中，剔除".format(e['element'])
 			total_deleted_len += e['len']
 			removed_elements.append(retained_elements.pop(i))
@@ -76,14 +76,17 @@ def delete_useless_elements(retained_criterias, retained_elements, removed_crite
 # remove it's corresponding criterias
 ################################################################################
 def delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements):
-	e = retained_elements.pop(0)
-	removed_elements.append(e)
-	for i in range(len(retained_criterias)-1, -1, -1):
-		c = retained_criterias[i]
-		if e['element'] in c['elements']:
-			removed_criterias.append(retained_criterias.pop(i))
-	return e['len']
+	for j in range(len(retained_elements)):
+		if retained_elements[j]['element'] not in const_elements:
+			e = retained_elements.pop(0)
+			removed_elements.append(e)
+			for i in range(len(retained_criterias)-1, -1, -1):
+				c = retained_criterias[i]
+				if e['element'] in c['elements']:
+					removed_criterias.append(retained_criterias.pop(i))
+			return e['len']
 
+const_elements = ['日本', '泰福高']
 candidates = []
 is_candidate = False
 total_order = 0
@@ -94,10 +97,10 @@ removed_criterias = []
 removed_elements = []
 original_raw_elements = []
 added_raw_elements = []
-previously_added_raw_elements = ['便当', '盒', '便携']
+previously_added_raw_elements = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
-	for i in range(5):
+	for i in range(3):
 		reader.next()
 	for l in csv.reader(csvfile):
 		#check the end index of current line
@@ -209,4 +212,4 @@ result_str = ""
 for i in result:
 	result_array_str += i + ","
 	result_str += i
-print ",,新标题,长度:{},{},{}".format(total_len, result_str, result_array_str)
+print "新标题,长度,{},,{},{}".format(total_len, result_str, result_array_str)
