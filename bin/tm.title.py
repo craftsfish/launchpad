@@ -104,7 +104,6 @@ def criteria_handler(l, end, retained_elements, retained_criterias, candidate_cr
 	for e in l[5:end]:
 		if e not in elements_2_raw(retained_elements):
 			is_criteria = False
-			print "[Info]搜索词: {} 不属于当前标题".format(l[0])
 	if is_criteria:
 		retained_criterias.append(Criteria(l[0], int(l[2]), l[5:end]))
 		return int(l[2])
@@ -114,6 +113,7 @@ def criteria_handler(l, end, retained_elements, retained_criterias, candidate_cr
 			if re.compile(e).search(l[0]):
 				illegal = True
 		if not illegal:
+			print "[Info]搜索词: {} 不属于当前标题,加入候选搜索词!".format(l[0])
 			candidate_criterias.append(Criteria(l[0], int(l[2]), l[5:end]))
 		return 0
 
@@ -170,13 +170,3 @@ candidate_criterias = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
 	total_order = input_parser(reader, retained_elements)
-print total_order
-print "================================="
-for e in retained_elements:
-	print e.text
-print "================================="
-for c in retained_criterias:
-	print c.text
-print "================================="
-for c in candidate_criterias:
-	print c.text
