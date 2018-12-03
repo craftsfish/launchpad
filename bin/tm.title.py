@@ -4,30 +4,27 @@ import csv
 import re
 from sets import Set
 
-class Element:
-	def __init__(self, text):
-		self.text = text
-		self.len = len(text.decode('utf-8'))
-		self.order = 0
-
-class Criteria:
-	def __init__(self, text, order, elements):
-		self.text = text
-		self.order = order
-		self.elements = elements
-
 ################################################################################
-#1.构造保留搜索词集合
-#2.构造保留词根集合
+#1.构造保留词根集合
+#2.构造保留搜索词集合
 #3.剔除保留词根中的无效词根
 #4.保留词根空缺符合要求，结束
 #5.从保留词根中剔除价值最低的一个
 #6.从保留搜索词中剔除该词根对应的搜索词
 #7.跳转到3
 ################################################################################
-#element: 词根
-#criteria: 搜索词
-################################################################################
+
+class Element: #词根
+	def __init__(self, text):
+		self.text = text
+		self.len = len(text.decode('utf-8'))
+		self.order = 0
+
+class Criteria: #搜索词
+	def __init__(self, text, order, elements):
+		self.text = text
+		self.order = order
+		self.elements = elements
 
 def elements_2_raw(elements):
 	result = []
@@ -35,21 +32,24 @@ def elements_2_raw(elements):
 		result.append(e.text)
 	return result
 
-#打印原始词根数据
-def dump_elements(elements):
+def criterias_of_elements(elements, criterias):
+	result = Set()
 	for e in elements:
-		print "词根: {}, 长度: {}, 成交人数: {}".format(e['element'], e['len'], e['order'])
-		for d in e['detail']:
-			print "\t关联搜索词: {}, 成交人数: {}".format(d['criteria'], d['order'])
+		for c in criterias:
+			if e in c.elements:
+				result.add(c.text)
+	return result
 
-#词根集合对应的搜索词集合
-def criterias_of_elements(elements, performance):
-	criterias = Set()
-	for e in elements:
-		for p in performance:
-			if e in p['elements']:
-				criterias.add(p['criteria'])
-	return criterias
+def orders_of_criterias(criterias_raw, criterias):
+	orders = 0
+	for cr in criterias_raw:
+		for c in criterias:
+			if cr == c.text:
+				orders += c.order
+	return orders
+
+def orders_of_elements(elements, criterias):
+	return orders_of_criterias(criterias_of_elements(elements, criterias), criterias)
 
 def calc_element_statics(elements, criteria):
 	for e in elements:
@@ -108,6 +108,34 @@ def eliminate_elements(retained_criterias, retained_elements, removed_criterias,
 		elements_len -= deleted_len
 	return elements_len
 
+def add_elements(candidate_criterias, retained_elements, removed_elements):
+	added_raw_elements = []
+
+	elements_len = 0
+	for e in retained_elements:
+		elements_len += e.len
+
+	for c in candidate_criterias:
+		extra_length = 0
+		extra_elements = []
+		for e in c.elements:
+			if e not in added_raw_elements + elements_2_raw(retained_elements):
+				extra_length += len(e.decode('utf-8'))
+				extra_elements.append(e)
+	
+		is_removed = True
+		for e in extra_elements:
+			if e not in elements_2_raw(removed_elements):
+				is_removed = False
+				break
+		if is_removed:
+			continue
+	
+		if extra_length and elements_len + extra_length <= 30:
+			added_raw_elements += extra_elements
+			elements_len += extra_length
+	return elements_len, added_raw_elements
+
 def criteria_handler(l, end, retained_elements, retained_criterias, candidate_criterias, illegal_elements):
 	if l[0] == '其他':
 		return 0
@@ -147,26 +175,34 @@ def input_parser(reader, retained_elements):
 			continue
 
 		if l[0] == '原标题':
+			output.append(l)
 			for i in range(3, end):
 				retained_elements.append(Element(l[i]))
 		elif l[0] == '保留词根':
+			output.append(l)
 			for i in range(1, end):
 				const_elements.append(l[i])
 		elif l[0] == '非法词根':
+			output.append(l)
 			for i in range(1, end):
 				illegal_elements.append(l[i])
 		elif l[0] == '最大词根留存长度':
+			output.append(l)
 			max_retained_elements_len = int(l[1])
 		elif l[0] == '上期加入词根':
 			for i in range(1, end):
 				previously_added_elements.append(l[i])
 		elif l[0] == '流量来源':
+			output.append(l)
 			input_context = 'criteria'
 		elif l[0] == '搜索词':
+			output.append(l)
 			input_context = 'candidate'
 		elif input_context == 'criteria':
+			output.append(l)
 			n_orders += criteria_handler(l, end, retained_elements, retained_criterias, candidate_criterias, illegal_elements)
 		elif input_context == 'candidate':
+			output.append(l)
 			candidate_criterias.append(Criteria(l[7], 0, l[8:end]))
 	return n_orders, max_retained_elements_len
 
@@ -183,8 +219,24 @@ retained_criterias = [] #保留搜索词
 candidate_criterias = [] #候选搜索词
 removed_criterias = [] #剔除搜索词
 removed_elements = [] #剔除词根
-added_raw_elements = []
+output = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
 	total_order, max_retained_elements_len = input_parser(reader, retained_elements)
-print eliminate_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+eliminate_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+total_len, added_raw_elements = add_elements(candidate_criterias, retained_elements, removed_elements)
+with open("/tmp/out.csv", "wb") as csvfile:
+	writer = csv.writer(csvfile)
+	t = orders_of_elements(previously_added_elements, retained_criterias+removed_criterias)
+	t = '{:.2f}%'.format(t*100.0/total_order)
+	writer.writerow(['上期加入词根', t] + previously_added_elements)
+	t = orders_of_elements(elements_2_raw(removed_elements), retained_criterias+removed_criterias)
+	t = '{:.2f}%'.format(t*100.0/total_order)
+	writer.writerow(['本期剔除词根', t] + elements_2_raw(removed_elements))
+	t = ''
+	for i in elements_2_raw(retained_elements) + added_raw_elements:
+		t += i
+	writer.writerow(['本期加入词根'] + added_raw_elements)
+	writer.writerow(['新标题', total_len, t] + elements_2_raw(retained_elements) + added_raw_elements)
+	for l in output:
+		writer.writerow(l)
