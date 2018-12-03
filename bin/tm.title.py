@@ -7,6 +7,7 @@ from sets import Set
 class Element:
 	def __init__(self, text):
 		self.text = text
+		self.len = len(text.decode('utf-8'))
 
 class Criteria:
 	def __init__(self, text, order, elements):
@@ -33,20 +34,6 @@ def elements_2_raw(elements):
 		result.append(e.text)
 	return result
 
-#计算每个词根对应的成交人数
-def calc_element_statics(elements, performance):
-	total_len = 0
-	for e in elements:
-		e['len'] = len(e['element'].decode('utf-8'))
-		total_len += e['len']
-		e['order'] = 0
-		e['detail'] = []
-		for p in performance:
-			if e['element'] in p['elements']:
-				e['order'] += p['order']
-				e['detail'].append(p)
-	return total_len
-
 #打印原始词根数据
 def dump_elements(elements):
 	for e in elements:
@@ -63,39 +50,44 @@ def criterias_of_elements(elements, performance):
 				criterias.add(p['criteria'])
 	return criterias
 
-################################################################################
-# for elements not exist in retained_criterias
-# it should be moved from retained set to removed set
-################################################################################
-def delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements):
+def calc_element_statics(elements, criteria):
+	for e in elements:
+		e.order = 0
+		e.detail = []
+		for c in criteria:
+			if e.text in c.elements:
+				e.order += c.order
+				e.detail.append(c)
+
+def delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements):
+	calc_element_statics(retained_elements, retained_criterias)
+	retained_elements = sorted(retained_elements, key = lambda e: e.order)
+	for j in range(len(retained_elements)):
+		if retained_elements[j].text not in const_elements:
+			e = retained_elements.pop(j)
+			removed_elements.append(e)
+			print "[Info]词根: {} 当前效果最差，剔除".format(e.text)
+			for i in range(len(retained_criterias)-1, -1, -1):
+				c = retained_criterias[i]
+				if e.text in c.elements:
+					removed_criterias.append(retained_criterias.pop(i))
+			return e.len
+	return 0
+
+def delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements):
 	total_deleted_len = 0
 	for i in range(len(retained_elements)-1, -1, -1):
 		e = retained_elements[i]
 		in_use = False
 		for c in retained_criterias:
-			if e['element'] in c['elements']:
+			if e.text in c.elements:
 				in_use = True
 				break
-		if not in_use and e['element'] not in const_elements:
-			#print "[Info]词根: {} 不存在于保留搜索词中，剔除".format(e['element'])
-			total_deleted_len += e['len']
+		if not in_use and e.text not in const_elements:
+			print "[Info]词根: {} 不存在于保留搜索词中，剔除".format(e.text)
+			total_deleted_len += e.len
 			removed_elements.append(retained_elements.pop(i))
 	return total_deleted_len
-
-################################################################################
-# remove least important element
-# remove it's corresponding criterias
-################################################################################
-def delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements):
-	for j in range(len(retained_elements)):
-		if retained_elements[j]['element'] not in const_elements:
-			e = retained_elements.pop(0)
-			removed_elements.append(e)
-			for i in range(len(retained_criterias)-1, -1, -1):
-				c = retained_criterias[i]
-				if e['element'] in c['elements']:
-					removed_criterias.append(retained_criterias.pop(i))
-			return e['len']
 
 def criteria_handler(l, end, retained_elements, retained_criterias, candidate_criterias, illegal_elements):
 	if l[0] == '其他':
@@ -154,11 +146,9 @@ def input_parser(reader, retained_elements):
 			candidate_criterias.append(Criteria(l[7], 0, l[8:end]))
 	return n_orders
 
-is_candidate = False
 total_order = 0
+total_len = 0
 previously_added_order = 0
-removed_criterias = []
-removed_elements = []
 added_raw_elements = []
 previously_added_raw_elements = []
 
@@ -167,6 +157,17 @@ illegal_elements = []
 retained_elements = []
 retained_criterias = []
 candidate_criterias = []
+removed_criterias = []
+removed_elements = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
 	total_order = input_parser(reader, retained_elements)
+
+#剔除词根
+for e in retained_elements:
+	total_len += e.len
+while True:
+	total_len -= delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+	if total_len <= 2:
+		break
+	total_len -= delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
