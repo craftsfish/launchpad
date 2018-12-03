@@ -124,7 +124,7 @@ def end_index_of_csv_line(l):
 		end = e + 1
 	return end
 
-def input_parser(reader, retained_elements):
+def input_parser(reader, input_context, retained_elements):
 	n_orders = 0
 	for l in csv.reader(csvfile):
 		end = end_index_of_csv_line(l)
@@ -169,7 +169,7 @@ input_context = None #输入处理标记
 added_raw_elements = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
-	total_order, max_retained_elements_len = input_parser(reader, retained_elements)
+	total_order, max_retained_elements_len = input_parser(reader, input_context, retained_elements)
 
 #剔除词根
 for e in retained_elements:
