@@ -8,6 +8,7 @@ class Element:
 	def __init__(self, text):
 		self.text = text
 		self.len = len(text.decode('utf-8'))
+		self.order = 0
 
 class Criteria:
 	def __init__(self, text, order, elements):
@@ -61,18 +62,22 @@ def calc_element_statics(elements, criteria):
 
 def delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements):
 	calc_element_statics(retained_elements, retained_criterias)
-	retained_elements = sorted(retained_elements, key = lambda e: e.order)
-	for j in range(len(retained_elements)):
-		if retained_elements[j].text not in const_elements:
-			e = retained_elements.pop(j)
-			removed_elements.append(e)
-			print "[Info]词根: {} 当前效果最差，剔除".format(e.text)
-			for i in range(len(retained_criterias)-1, -1, -1):
-				c = retained_criterias[i]
-				if e.text in c.elements:
-					removed_criterias.append(retained_criterias.pop(i))
-			return e.len
-	return 0
+	p = -1
+	for i, e in enumerate(retained_elements):
+		if e.text not in const_elements:
+			if (p == -1) or (e.order < retained_elements[p].order):
+				p = i
+	if p == -1:
+		return False, 0
+	else:
+		e = retained_elements.pop(p)
+		removed_elements.append(e)
+		print "[Info]词根: {} 当前效果最差，剔除".format(e.text)
+		for i in range(len(retained_criterias)-1, -1, -1):
+			c = retained_criterias[i]
+			if e.text in c.elements:
+				removed_criterias.append(retained_criterias.pop(i))
+		return True, e.len
 
 def delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements):
 	total_deleted_len = 0
@@ -119,7 +124,6 @@ def end_index_of_csv_line(l):
 		end = e + 1
 	return end
 
-input_context = None
 def input_parser(reader, retained_elements):
 	n_orders = 0
 	for l in csv.reader(csvfile):
@@ -136,6 +140,8 @@ def input_parser(reader, retained_elements):
 		elif l[0] == '非法词根':
 			for i in range(1, end):
 				illegal_elements.append(l[i])
+		elif l[0] == '最大词根留存长度':
+			max_retained_elements_len = int(l[1])
 		elif l[0] == '流量来源':
 			input_context = 'criteria'
 		elif l[0] == '搜索词':
@@ -144,30 +150,35 @@ def input_parser(reader, retained_elements):
 			n_orders += criteria_handler(l, end, retained_elements, retained_criterias, candidate_criterias, illegal_elements)
 		elif input_context == 'candidate':
 			candidate_criterias.append(Criteria(l[7], 0, l[8:end]))
-	return n_orders
+	return n_orders, max_retained_elements_len
 
+#main
+previously_added_order = 0
+previously_added_raw_elements = []
 total_order = 0
 total_len = 0
-previously_added_order = 0
+const_elements = [] #常驻词根
+illegal_elements = [] #非法词
+max_retained_elements_len = 0
+retained_elements = [] #保留词根
+retained_criterias = [] #保留搜索词
+candidate_criterias = [] #候选搜索词
+removed_criterias = [] #剔除搜索词
+removed_elements = [] #剔除词根
+input_context = None #输入处理标记
 added_raw_elements = []
-previously_added_raw_elements = []
-
-const_elements = []
-illegal_elements = []
-retained_elements = []
-retained_criterias = []
-candidate_criterias = []
-removed_criterias = []
-removed_elements = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
-	total_order = input_parser(reader, retained_elements)
+	total_order, max_retained_elements_len = input_parser(reader, retained_elements)
 
 #剔除词根
 for e in retained_elements:
 	total_len += e.len
 while True:
 	total_len -= delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
-	if total_len <= 2:
+	if total_len <= max_retained_elements_len:
 		break
-	total_len -= delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+	success, deleted_len = delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+	if not success:
+		break
+	total_len -= deleted_len
