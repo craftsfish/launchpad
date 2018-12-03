@@ -94,6 +94,20 @@ def delete_useless_elements(retained_criterias, retained_elements, removed_crite
 			removed_elements.append(retained_elements.pop(i))
 	return total_deleted_len
 
+def eliminate_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements):
+	elements_len = 0
+	for e in retained_elements:
+		elements_len += e.len
+	while True:
+		elements_len -= delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+		if elements_len <= max_retained_elements_len:
+			break
+		success, deleted_len = delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
+		if not success:
+			break
+		elements_len -= deleted_len
+	return elements_len
+
 def criteria_handler(l, end, retained_elements, retained_criterias, candidate_criterias, illegal_elements):
 	if l[0] == '其他':
 		return 0
@@ -143,6 +157,9 @@ def input_parser(reader, retained_elements):
 				illegal_elements.append(l[i])
 		elif l[0] == '最大词根留存长度':
 			max_retained_elements_len = int(l[1])
+		elif l[0] == '上期加入词根':
+			for i in range(1, end):
+				previously_added_elements.append(l[i])
 		elif l[0] == '流量来源':
 			input_context = 'criteria'
 		elif l[0] == '搜索词':
@@ -155,7 +172,7 @@ def input_parser(reader, retained_elements):
 
 #main
 previously_added_order = 0
-previously_added_raw_elements = []
+previously_added_elements = []
 total_order = 0
 total_len = 0
 const_elements = [] #常驻词根
@@ -170,15 +187,4 @@ added_raw_elements = []
 with open('/tmp/input.csv', 'rb') as csvfile:
 	reader = csv.reader(csvfile)
 	total_order, max_retained_elements_len = input_parser(reader, retained_elements)
-
-#剔除词根
-for e in retained_elements:
-	total_len += e.len
-while True:
-	total_len -= delete_useless_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
-	if total_len <= max_retained_elements_len:
-		break
-	success, deleted_len = delete_least_important_element(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
-	if not success:
-		break
-	total_len -= deleted_len
+print eliminate_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
