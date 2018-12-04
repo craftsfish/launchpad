@@ -162,8 +162,6 @@ def end_index_of_csv_line(l):
 		if v == '': # re.compile("^\s*$").search(v)
 			end = e
 			break
-	if end == 0:
-		end = e + 1
 	return end
 
 def input_parser(reader, retained_elements):
@@ -171,8 +169,9 @@ def input_parser(reader, retained_elements):
 	n_orders = 0
 	for l in csv.reader(csvfile):
 		end = end_index_of_csv_line(l)
-		if end == 1: #empty line
+		if end == 0: #empty line
 			continue
+		end += 1
 
 		if l[0] == '原标题':
 			output.append(l)
@@ -203,7 +202,7 @@ def input_parser(reader, retained_elements):
 			n_orders += criteria_handler(l, end, retained_elements, retained_criterias, candidate_criterias, illegal_elements)
 		elif input_context == 'candidate':
 			output.append(l)
-			candidate_criterias.append(Criteria(l[7], 0, l[8:end]))
+			candidate_criterias.append(Criteria(l[0], 0, l[1:end]))
 	return n_orders, max_retained_elements_len
 
 #main
