@@ -36,28 +36,39 @@ class Criteria: #搜索词
 		self.order = order
 		self.elements = elements
 
-	def dump(self):
-		print '搜索词: {} | 成交人数: {} | 词根: {}'.format(self.text, self.order, list_2_str(self.elements))
+	def dump(self, prefix=''):
+		print '{}{} | 成交人数: {} | 词根: {}'.format(prefix, self.text, self.order, list_2_str(self.elements))
 
 class Collection: #收集到的数据
 	def __init__(self):
 		self.residual_advertising_criterias = []
 		self.residual_elements = []
 		self.illegal_elements = []
+		self.previously_add_elements = []
+		self.previously_recommended_advertising_criterias = []
+		self.previously_recommended_fake_criterias = []
 
 	def dump(self):
 		print '[常驻推广词]'
 		for i in self.residual_advertising_criterias:
-			i.dump()
-		print '[常驻词根] {}'.format(list_2_str(self.residual_elements))
-		print '[非法词根] {}'.format(list_2_str(self.illegal_elements))
+			i.dump('\t')
+		print '常驻词根: {}'.format(list_2_str(self.residual_elements))
+		print '非法词根: {}'.format(list_2_str(self.illegal_elements))
 		print '最大词根留存长度: {}'.format(self.max_retained_elements_len)
 		print '推广词推荐数量: {}'.format(self.advertising_criterias_num)
 		print '刷单词推荐数量: {}'.format(self.fake_criterias_num)
+		print '上期加入词根: {}'.format(list_2_str(self.previously_add_elements))
+		print '[上期直通车推荐词]'
+		for i in self.previously_recommended_advertising_criterias:
+			i.dump('\t')
+		print '[上期刷单推荐词]'
+		for i in self.previously_recommended_fake_criterias:
+			i.dump('\t')
+		self.original_title.dump('原标题: ')
 
 def input_parser(input_file, collection):
 	def __residual_advertising_criteria(line, end, collection):
-		collection.residual_advertising_criterias.append(Criteria(line[1], 0, line[2:end]))
+		collection.residual_advertising_criterias.append(Criteria(line[1], None, line[2:end]))
 
 	def __residual_elements(line, end, collection):
 		collection.residual_elements += line[1:end]
@@ -74,6 +85,18 @@ def input_parser(input_file, collection):
 	def __fake_criterias_num(line, end, collection):
 		collection.fake_criterias_num = int(line[1])
 
+	def __previously_add_elements(line, end, collection):
+		collection.previously_add_elements = line[1:end]
+
+	def __previously_recommended_advertising_criteria(line, end, collection):
+		collection.previously_recommended_advertising_criterias.append(Criteria(line[1], None, line[2:end]))
+
+	def __previously_recommended_fake_criteria(line, end, collection):
+		collection.previously_recommended_fake_criterias.append(Criteria(line[1], None, line[2:end]))
+
+	def __original_title(line, end, collection):
+		collection.original_title = Criteria(line[2], None, line[3:end])
+
 	input_handlers = (
 		('常驻推广词', __residual_advertising_criteria),
 		('常驻词根', __residual_elements),
@@ -81,6 +104,10 @@ def input_parser(input_file, collection):
 		('最大词根留存长度', __max_retained_elements_len),
 		('推广词推荐数量', __advertising_criterias_num),
 		('刷单词推荐数量', __fake_criterias_num),
+		('上期加入词根', __previously_add_elements),
+		('上期直通车推荐词', __previously_recommended_advertising_criteria),
+		('上期刷单推荐词', __previously_recommended_fake_criteria),
+		('原标题', __original_title),
 	)
 	with open(input_file, 'rb') as csvfile:
 		reader = csv.reader(csvfile)
