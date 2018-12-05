@@ -4,6 +4,26 @@ import csv
 import re
 from sets import Set
 
+def list_2_str(l):
+	s = ''
+	for i in l:
+		if s != '':
+			s += ', '
+		s += i
+	return s
+
+def len_of_csv_line(line):
+	if len(line) == 0:
+		return 0
+	l = 0
+	for e,v in enumerate(line):
+		if v == '': # re.compile('^\s*$').search(v)
+			l = e
+			break
+	if l == 0:
+		l = e + 1
+	return l
+
 class Element: #词根
 	def __init__(self, text):
 		self.text = text
@@ -17,37 +37,50 @@ class Criteria: #搜索词
 		self.elements = elements
 
 	def dump(self):
-		s = ''
-		for i in self.elements:
-			if s != '':
-				s += ', '
-			s += i
-		print "搜索词: {} | 成交人数: {} | 词根: {}".format(self.text, self.order, s)
+		print '搜索词: {} | 成交人数: {} | 词根: {}'.format(self.text, self.order, list_2_str(self.elements))
 
 class Collection: #收集到的数据
 	def __init__(self):
-		self.residing_advertising_criteria = []
+		self.residual_advertising_criterias = []
+		self.residual_elements = []
+		self.illegal_elements = []
 
 	def dump(self):
-		print "[常驻推广词]"
-		for i in self.residing_advertising_criteria:
+		print '[常驻推广词]'
+		for i in self.residual_advertising_criterias:
 			i.dump()
-
-def end_index_of_csv_line(line):
-	end = 0
-	for e,v in enumerate(line):
-		if v == '': # re.compile("^\s*$").search(v)
-			end = e
-			break
-	return end
+		print '[常驻词根] {}'.format(list_2_str(self.residual_elements))
+		print '[非法词根] {}'.format(list_2_str(self.illegal_elements))
+		print '最大词根留存长度: {}'.format(self.max_retained_elements_len)
+		print '推广词推荐数量: {}'.format(self.advertising_criterias_num)
+		print '刷单词推荐数量: {}'.format(self.fake_criterias_num)
 
 def input_parser(input_file, collection):
-	def __residing_advertising_criteria(line, collection):
-		end = end_index_of_csv_line(line)
-		collection.residing_advertising_criteria.append(Criteria(line[1], 0, line[2:end]))
+	def __residual_advertising_criteria(line, end, collection):
+		collection.residual_advertising_criterias.append(Criteria(line[1], 0, line[2:end]))
+
+	def __residual_elements(line, end, collection):
+		collection.residual_elements += line[1:end]
+
+	def __illegal_elements(line, end, collection):
+		collection.illegal_elements += line[1:end]
+
+	def __max_retained_elements_len(line, end, collection):
+		collection.max_retained_elements_len = int(line[1])
+
+	def __advertising_criterias_num(line, end, collection):
+		collection.advertising_criterias_num = int(line[1])
+
+	def __fake_criterias_num(line, end, collection):
+		collection.fake_criterias_num = int(line[1])
 
 	input_handlers = (
-		('常驻推广词', __residing_advertising_criteria),
+		('常驻推广词', __residual_advertising_criteria),
+		('常驻词根', __residual_elements),
+		('非法词根', __illegal_elements),
+		('最大词根留存长度', __max_retained_elements_len),
+		('推广词推荐数量', __advertising_criterias_num),
+		('刷单词推荐数量', __fake_criterias_num),
 	)
 	with open(input_file, 'rb') as csvfile:
 		reader = csv.reader(csvfile)
@@ -56,7 +89,7 @@ def input_parser(input_file, collection):
 				continue
 			for k, h in input_handlers:
 				if l[0] == k:
-					h(l, collection)
+					h(l, len_of_csv_line(l), collection)
 
 collection = Collection()
 input_parser('/tmp/input.csv', collection)
@@ -117,7 +150,7 @@ collection.dump()
 #	else:
 #		e = retained_elements.pop(p)
 #		removed_elements.append(e)
-#		print "[Info]词根: {} 当前效果最差，剔除".format(e.text)
+#		print '[Info]词根: {} 当前效果最差，剔除'.format(e.text)
 #		for i in range(len(retained_criterias)-1, -1, -1):
 #			c = retained_criterias[i]
 #			if e.text in c.elements:
@@ -134,7 +167,7 @@ collection.dump()
 #				in_use = True
 #				break
 #		if not in_use and e.text not in const_elements:
-#			print "[Info]词根: {} 不存在于保留搜索词中，剔除".format(e.text)
+#			print '[Info]词根: {} 不存在于保留搜索词中，剔除'.format(e.text)
 #			total_deleted_len += e.len
 #			removed_elements.append(retained_elements.pop(i))
 #	return total_deleted_len
@@ -197,7 +230,7 @@ collection.dump()
 #			if re.compile(e).search(l[0]):
 #				illegal = True
 #		if not illegal:
-#			print "[Info]搜索词: {} 不属于当前标题,加入候选搜索词!".format(l[0])
+#			print '[Info]搜索词: {} 不属于当前标题,加入候选搜索词!'.format(l[0])
 #			candidate_criterias.append(Criteria(l[0], int(l[2]), l[5:end]))
 #		return 0
 #
@@ -205,7 +238,7 @@ collection.dump()
 #	input_context = None #输入处理标记
 #	n_orders = 0
 #	for l in csv.reader(csvfile):
-#		end = end_index_of_csv_line(l)
+#		end = len_of_csv_line(l)
 #		if end == 0: #empty line
 #			continue
 #		end += 1
@@ -261,7 +294,7 @@ collection.dump()
 #	total_order, max_retained_elements_len = input_parser(reader, retained_elements)
 #eliminate_elements(retained_criterias, retained_elements, removed_criterias, removed_elements, const_elements)
 #total_len, added_raw_elements = add_elements(candidate_criterias, retained_elements, removed_elements)
-#with open("/tmp/out.csv", "wb") as csvfile:
+#with open('/tmp/out.csv', 'wb') as csvfile:
 #	writer = csv.writer(csvfile)
 #	t = orders_of_elements(previously_added_elements, retained_criterias+removed_criterias)
 #	t = '{:.2f}%'.format(t*100.0/total_order)
