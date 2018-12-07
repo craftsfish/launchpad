@@ -100,6 +100,7 @@ class Report:
 		self.removed_criterias = []
 		self.added_elements = []
 		self.recommended_criterias = []
+		self.added_criterias = []
 
 	def dump(self):
 		print '常驻词根: {}'.format(list_2_str(self.residual_elements))
@@ -112,6 +113,9 @@ class Report:
 		for i in self.removed_criterias:
 			i.dump('\t')
 		print '加入词根: {}'.format(list_2_str(self.added_elements))
+		print '[本期加入搜索词]'
+		for i in self.added_criterias:
+			i.dump('\t')
 		print '[本期刷单推荐词]'
 		for i in self.recommended_fake_criterias:
 			i.dump('\t')
@@ -323,18 +327,21 @@ def add_elements(report):
 		if extra_length and elements_len + extra_length <= 30:
 			report.added_elements += extra_elements
 			elements_len += extra_length
+			report.added_criterias.append(c)
 	return elements_len
 
 def process(collection, report):
 	for i in collection.original_title.elements:
 		report.retained_elements.append(Element(i))
-	for i in collection.contribution_criterias:
-		if not set(i.elements).issubset(collection.original_title.elements):
-			report.candidate_criterias.append(i)
-		else:
-			report.retained_criterias.append(i)
 	for i in collection.candidate_criterias:
 		report.candidate_criterias.append(i)
+	j = 0
+	for i in collection.contribution_criterias:
+		if not set(i.elements).issubset(collection.original_title.elements):
+			report.candidate_criterias.insert(j*3+1, i)
+			j += 1
+		else:
+			report.retained_criterias.append(i)
 	for i in collection.residual_advertising_criterias:
 		report.residual_elements.update(i.elements)
 	report.residual_elements.update(collection.residual_elements)
