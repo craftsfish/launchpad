@@ -15,7 +15,7 @@ class Candidate:
 
 
 	def dump(self):
-		print '展现指数: {:8} | 市场平均出价: {:4.2f} | 竞争指数: {:8} | 点击率: {:5.2f}% | 点击转化率: {:5.2f}% | 平均份额: {:8.2f} | 出价成交指数: {:8.2f} | {}'.format(self.prospect, self.price, self.competition, self.click_rate, self.conversion_rate, self.quota, self.doi, self.text)
+		print '市场平均出价: {:4.2f} | 竞争指数: {:8} | 点击率: {:5.2f}% | 点击转化率: {:5.2f}% | 平均份额: {:8.2f} | 出价成交指数: {:8.2f} | 展现指数: {:8} | {}'.format(self.price, self.competition, self.click_rate, self.conversion_rate, self.quota, self.doi, self.prospect, self.text)
 
 def as_csv(candidates):
 	with open('/tmp/candidate.output.csv', 'wb') as csvfile:
@@ -23,7 +23,7 @@ def as_csv(candidates):
 		writer.writerow(['搜索词', '平均份额', '展现指数', '市场平均出价', '竞争指数', '点击率', '点击转化率', '出价成交指数'])
 		for i in sorted(candidates, reverse=True, key=lambda x: x.quota):
 			writer.writerow([i.text, i.quota, i.prospect, i.price, i.competition, i.click_rate, i.conversion_rate, i.doi])
-		for i in sorted(candidates, key=lambda x: x.doi):
+		for i in sorted(sorted(candidates, key=lambda x: x.doi)[-15:], key=lambda x: x.prospect):
 			i.dump()
 
 candidates = []
