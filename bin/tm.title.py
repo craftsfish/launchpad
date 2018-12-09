@@ -342,6 +342,11 @@ def process(collection, report):
 			j += 1
 		else:
 			report.retained_criterias.append(i)
+	for i in reversed(range(len(report.candidate_criterias))):
+		c  = report.candidate_criterias[i]
+		for j in collection.illegal_words:
+			if c.text.find(j) != -1:
+				report.candidate_criterias.pop(i)
 	for i in collection.residual_advertising_criterias:
 		report.residual_elements.update(i.elements)
 	report.residual_elements.update(collection.residual_elements)
