@@ -164,6 +164,8 @@ def as_csv(out_file, collection, report):
 		total_order = 0
 		for i in report.retained_criterias+report.removed_criterias:
 			total_order += i.order
+		if total_order == 0:
+			total_order = 1
 		t = orders_of_elements(collection.previously_add_elements, report.retained_criterias+report.removed_criterias)
 		t = '{:.2f}%'.format(t*100.0/total_order)
 		writer.writerow(['上期加入词根', t] + collection.previously_add_elements)
