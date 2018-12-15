@@ -51,31 +51,17 @@ class Criteria: #搜索词
 
 class Collection: #收集到的数据
 	def __init__(self):
-		self.residual_advertising_criterias = []
 		self.residual_elements = []
 		self.illegal_words = []
 		self.previously_add_elements = []
-		self.previously_recommended_advertising_criterias = []
-		self.previously_recommended_fake_criterias = []
 		self.contribution_criterias = []
 		self.candidate_criterias = []
 
 	def dump(self):
-		print '[常驻推广词]'
-		for i in self.residual_advertising_criterias:
-			i.dump('\t')
 		print '常驻词根: {}'.format(list_2_str(self.residual_elements))
 		print '非法词: {}'.format(list_2_str(self.illegal_words))
 		print '最大词根留存长度: {}'.format(self.max_retained_elements_len)
-		print '推广词推荐数量: {}'.format(self.advertising_criterias_num)
-		print '刷单词推荐数量: {}'.format(self.fake_criterias_num)
 		print '上期加入词根: {}'.format(list_2_str(self.previously_add_elements))
-		print '[上期直通车推荐词]'
-		for i in self.previously_recommended_advertising_criterias:
-			i.dump('\t')
-		print '[上期刷单推荐词]'
-		for i in self.previously_recommended_fake_criterias:
-			i.dump('\t')
 		self.original_title.dump('原标题: ')
 		print '[成交词]'
 		for i in self.contribution_criterias:
@@ -116,12 +102,6 @@ class Report:
 		print '[本期加入搜索词]'
 		for i in self.added_criterias:
 			i.dump('\t')
-		print '[本期刷单推荐词]'
-		for i in self.recommended_fake_criterias:
-			i.dump('\t')
-		print '[本期直通车推荐词]'
-		for i in self.recommended_advertising_criterias:
-			i.dump('\t')
 		print '[候选词]'
 		for i in self.candidate_criterias:
 			i.dump('\t')
@@ -148,19 +128,9 @@ def orders_of_elements(elements, criterias):
 def as_csv(out_file, collection, report):
 	with open(out_file, 'wb') as csvfile:
 		writer = csv.writer(csvfile)
-		for i in collection.residual_advertising_criterias:
-			writer.writerow(['常驻推广词', i.text] + i.elements)
 		writer.writerow(['常驻词根'] + collection.residual_elements)
 		writer.writerow(['非法词'] + collection.illegal_words)
 		writer.writerow(['最大词根留存长度', collection.max_retained_elements_len])
-		writer.writerow(['推广词推荐数量', collection.advertising_criterias_num])
-		writer.writerow(['刷单词推荐数量', collection.fake_criterias_num])
-		for i in collection.previously_recommended_advertising_criterias:
-			writer.writerow(['上期直通车推荐词', i.text] + i.elements)
-		for i in collection.previously_recommended_fake_criterias:
-			writer.writerow(['上期刷单推荐词', i.text] + i.elements)
-		#('成交词', __contribution_criteria),
-		#('候选词', __candidate_criteria),
 		total_order = 0
 		for i in report.retained_criterias+report.removed_criterias:
 			total_order += i.order
@@ -181,19 +151,12 @@ def as_csv(out_file, collection, report):
 		t = '{:.2f}%'.format(t*100.0/total_order)
 		writer.writerow(['本期剔除词根', t] + elements_2_raw(report.removed_elements))
 		writer.writerow(['本期加入词根'] + report.added_elements)
-		for i in report.recommended_advertising_criterias:
-			writer.writerow(['本期直通车推荐词', i.text] + i.elements)
-		for i in report.recommended_fake_criterias:
-			writer.writerow(['本期刷单推荐词', i.text] + i.elements)
 		for i in collection.contribution_criterias:
 			writer.writerow(['成交词', i.text, i.prospect, i.order, '{:.2f}%'.format(i.order * 100.0 / i.prospect), i.text] + i.elements)
 		for i in collection.candidate_criterias:
 			writer.writerow(['候选词', i.text] + i.elements)
 
 def input_parser(input_file, collection):
-	def __residual_advertising_criteria(line, end, collection):
-		collection.residual_advertising_criterias.append(Criteria(line[1], line[2:end]))
-
 	def __residual_elements(line, end, collection):
 		collection.residual_elements += line[1:end]
 
@@ -203,20 +166,8 @@ def input_parser(input_file, collection):
 	def __max_retained_elements_len(line, end, collection):
 		collection.max_retained_elements_len = int(line[1])
 
-	def __advertising_criterias_num(line, end, collection):
-		collection.advertising_criterias_num = int(line[1])
-
-	def __fake_criterias_num(line, end, collection):
-		collection.fake_criterias_num = int(line[1])
-
 	def __previously_add_elements(line, end, collection):
 		collection.previously_add_elements = line[2:end]
-
-	def __previously_recommended_advertising_criteria(line, end, collection):
-		collection.previously_recommended_advertising_criterias.append(Criteria(line[1], line[2:end]))
-
-	def __previously_recommended_fake_criteria(line, end, collection):
-		collection.previously_recommended_fake_criterias.append(Criteria(line[1], line[2:end]))
 
 	def __original_title(line, end, collection):
 		collection.original_title = Criteria(line[2], line[3:end])
@@ -228,15 +179,10 @@ def input_parser(input_file, collection):
 		collection.candidate_criterias.append(Criteria(line[1], line[2:end]))
 
 	input_handlers = (
-		('常驻推广词', __residual_advertising_criteria),
 		('常驻词根', __residual_elements),
 		('非法词', __illegal_words),
 		('最大词根留存长度', __max_retained_elements_len),
-		('推广词推荐数量', __advertising_criterias_num),
-		('刷单词推荐数量', __fake_criterias_num),
 		('上期加入词根', __previously_add_elements),
-		('上期直通车推荐词', __previously_recommended_advertising_criteria),
-		('上期刷单推荐词', __previously_recommended_fake_criteria),
 		('原标题', __original_title),
 		('成交词', __contribution_criteria),
 		('候选词', __candidate_criteria),
@@ -349,26 +295,9 @@ def process(collection, report):
 		for j in collection.illegal_words:
 			if c.text.find(j) != -1:
 				report.candidate_criterias.pop(i)
-	for i in collection.residual_advertising_criterias:
-		report.residual_elements.update(i.elements)
 	report.residual_elements.update(collection.residual_elements)
 	eliminate_elements(collection, report)
 	add_elements(report)
-	recommended_criterias = []
-	for i in report.retained_criterias:
-		exclude = False
-		for j in collection.residual_advertising_criterias + collection.previously_recommended_fake_criterias:
-			if i.text == j.text:
-				exclude = True
-				break
-		if not exclude:
-			recommended_criterias.append(i)
-	recommended_criterias = sorted(recommended_criterias, key = lambda x: x.order)
-	n = collection.advertising_criterias_num + collection.fake_criterias_num
-	recommended_criterias = recommended_criterias[:n]
-	recommended_criterias = sorted(recommended_criterias, key = lambda x: x.order * (10 ** 20) / x.prospect)
-	report.recommended_fake_criterias = recommended_criterias[:collection.fake_criterias_num]
-	report.recommended_advertising_criterias = recommended_criterias[len(report.recommended_fake_criterias):]
 
 collection = Collection()
 report = Report()
