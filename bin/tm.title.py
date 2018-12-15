@@ -33,10 +33,13 @@ def len_of_csv_line(line):
 		l = e + 1
 	return l
 
+def len_of_element(text):
+	return len(text.decode('utf-8').encode('gb18030'))
+
 class Element: #词根
 	def __init__(self, text):
 		self.text = text
-		self.len = len(text.decode('utf-8'))
+		self.len = len_of_element(text)
 		self.order = 0
 
 class Criteria: #搜索词
@@ -139,10 +142,10 @@ def as_csv(out_file, collection, report):
 		t = orders_of_elements(collection.previously_add_elements, report.retained_criterias+report.removed_criterias)
 		t = '{:.2f}%'.format(t*100.0/total_order)
 		writer.writerow(['上期加入词根', t] + collection.previously_add_elements)
-		writer.writerow(['原标题', len(collection.original_title.text.decode('utf-8')), collection.original_title.text] + collection.original_title.elements)
+		writer.writerow(['原标题', len_of_element(collection.original_title.text), collection.original_title.text] + collection.original_title.elements)
 		total_len = 0
 		for i in elements_2_raw(report.retained_elements) + report.added_elements:
-			total_len += len(i.decode('utf-8'))
+			total_len += len_of_element(i)
 		t = ''
 		for i in elements_2_raw(report.retained_elements) + report.added_elements:
 			t += i
@@ -261,7 +264,7 @@ def add_elements(report):
 		extra_elements = []
 		for e in c.elements:
 			if e not in report.added_elements + elements_2_raw(report.retained_elements):
-				extra_length += len(e.decode('utf-8'))
+				extra_length += len_of_element(e)
 				extra_elements.append(e)
 
 		is_removed = True
@@ -272,7 +275,7 @@ def add_elements(report):
 		if is_removed:
 			continue
 
-		if extra_length and elements_len + extra_length <= 30:
+		if extra_length and elements_len + extra_length <= 60:
 			report.added_elements += extra_elements
 			elements_len += extra_length
 			report.added_criterias.append(c)
