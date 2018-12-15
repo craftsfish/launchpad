@@ -84,15 +84,12 @@ class Report:
 		self.retained_elements = []
 		self.retained_criterias = []
 		self.candidate_criterias = []
-		self.residual_elements = set()
 		self.removed_elements = []
 		self.removed_criterias = []
 		self.added_elements = []
-		self.recommended_criterias = []
 		self.added_criterias = []
 
 	def dump(self):
-		print '常驻词根: {}'.format(list_2_str(self.residual_elements))
 		print '保留词根: {}'.format(list_2_str(elements_2_raw(self.retained_elements)))
 		print '[保留成交词]'
 		for i in self.retained_criterias:
@@ -199,7 +196,7 @@ def input_parser(input_file, collection):
 				if l[0] == k:
 					h(l, len_of_csv_line(l), collection)
 
-def delete_useless_elements(report):
+def delete_useless_elements(collection, report):
 	total_deleted_len = 0
 	for i in reversed(range(len(report.retained_elements))):
 		e = report.retained_elements[i]
@@ -208,7 +205,7 @@ def delete_useless_elements(report):
 			if e.text in c.elements:
 				in_use = True
 				break
-		if not in_use and e.text not in report.residual_elements:
+		if not in_use and e.text not in collection.residual_elements:
 			print '[Info]词根: {} 不存在于保留成交词中，剔除'.format(e.text)
 			total_deleted_len += e.len
 			report.removed_elements.append(report.retained_elements.pop(i))
@@ -221,11 +218,11 @@ def calc_element_statics(report):
 			if e.text in c.elements:
 				e.order += c.order
 
-def delete_least_important_element(report):
+def delete_least_important_element(collection, report):
 	calc_element_statics(report)
 	p = -1
 	for i, e in enumerate(report.retained_elements):
-		if e.text not in report.residual_elements:
+		if e.text not in collection.residual_elements:
 			if (p == -1) or (e.order < report.retained_elements[p].order):
 				p = i
 	if p == -1:
@@ -245,10 +242,10 @@ def eliminate_elements(collection, report):
 	for e in report.retained_elements:
 		elements_len += e.len
 	while True:
-		elements_len -= delete_useless_elements(report)
+		elements_len -= delete_useless_elements(collection, report)
 		if elements_len <= collection.max_retained_elements_len:
 			break
-		success, deleted_len = delete_least_important_element(report)
+		success, deleted_len = delete_least_important_element(collection, report)
 		if not success:
 			break
 		elements_len -= deleted_len
@@ -298,7 +295,6 @@ def process(collection, report):
 		for j in collection.illegal_words:
 			if c.text.find(j) != -1:
 				report.candidate_criterias.pop(i)
-	report.residual_elements.update(collection.residual_elements)
 	eliminate_elements(collection, report)
 	add_elements(report)
 
