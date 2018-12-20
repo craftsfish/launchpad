@@ -44,3 +44,13 @@ class Jdadvertiseclear(models.Model):
 	transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.pid
+
+class CompoundCommodity(models.Model):
+	name = models.CharField(max_length=30, verbose_name="组合名称")
+	commodities = models.ManyToManyField(Commodity, verbose_name="商品")
+
+	def __str__(self):
+		s = self.name
+		for i in self.commodities.all():
+			s += ', ' + i.name
+		return s
