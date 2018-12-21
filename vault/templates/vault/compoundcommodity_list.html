@@ -6,11 +6,14 @@
 <div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<tr>
+			<th>编号</th>
 			<th>名称</th>
 		</tr>
 		{% for i in object_list %}
 		<tr>
-			<td>{{i}}</td>
+			<td>{{i.id}}</td>
+			<td>{{i.name}}</td>
+			<td><a href="{% url 'compound_commodity_detail' i.id %}">{{i}}</a></td>
 		</tr>
 		{% endfor %}
 	</table>

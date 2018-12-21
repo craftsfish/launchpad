@@ -11,3 +11,10 @@ from .security import *
 
 class CompoundCommodityListView(SecurityLoginRequiredMixin, ListView):
 	model = CompoundCommodity
+
+class CompoundCommodityDetailView(DetailView):
+	model = CompoundCommodity
+
+	def get_context_data(self, **kwargs):
+		context = super(CompoundCommodityDetailView, self).get_context_data(**kwargs)
+		return context

@@ -36,6 +36,7 @@ urlpatterns = [
 
 	#compound commodity
 	url(r'^compoundcommodity/$', CompoundCommodityListView.as_view(), name='compound_commodity_list'),
+	url(r'^compoundcommodity/(?P<pk>[\d]+)/$', CompoundCommodityDetailView.as_view(), name='compound_commodity_detail'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),

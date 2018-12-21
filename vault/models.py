@@ -50,7 +50,9 @@ class CompoundCommodity(models.Model):
 	commodities = models.ManyToManyField(Commodity, verbose_name="商品")
 
 	def __str__(self):
-		s = self.name
+		s = ''
 		for i in self.commodities.all():
-			s += ', ' + i.name
+			if s != '':
+				s += ', '
+			s += i.name
 		return s
