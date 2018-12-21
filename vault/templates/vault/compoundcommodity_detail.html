@@ -16,7 +16,7 @@
 		<tr>
 			{% for j in i %}
 			{% if not forloop.counter0 %}
-			<td>{{j | date:"Y-m-d H:i:s"}}</td>
+			<td>{{j | date:"Y-m-d"}}</td>
 			{% else %}
 			<td>{{j}}</td>
 			{% endif %}
