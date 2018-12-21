@@ -1,10 +1,29 @@
 {% extends "base.html" %}
 {% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
 
-{% block header %}{{object}}{% endblock %}
+{% block header %}{{object.name}}{% endblock %}
 
 {% block content %}
 
 <div class="col-sm-auto">
+	<table border="1" cellpadding="4">
+		<tr>
+			<td>日期</td>
+			<td>实发</td>
+			<td>刷单</td>
+		</tr>
+		{% for i in info %}
+		<tr>
+			{% for j in i %}
+			{% if not forloop.counter0 %}
+			<td>{{j | date:"Y-m-d H:i:s"}}</td>
+			{% else %}
+			<td>{{j}}</td>
+			{% endif %}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+
 </div>
 {% endblock %}
