@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
+{% block header %}物品组合清单{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<table border="1" cellpadding="4">
+		<tr>
+			<th>名称</th>
+		</tr>
+		{% for i in object_list %}
+		<tr>
+			<td>{{i}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}

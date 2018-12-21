@@ -18,6 +18,7 @@ from repository_views import *
 from supplier_service_views import *
 from express_views import *
 from calibration_history_views import *
+from compound_commodity_views import *
 
 urlpatterns = [
 	#supplier
@@ -32,6 +33,9 @@ urlpatterns = [
 	url(r'^commodity/$', CommodityListView.as_view(), name='commodity_list'),
 	url(r'^commodity/stagnation/$', CommodityStagnationListView.as_view(), name='commodity_stagnation_list'),
 	url(r'^commodity/(?P<pk>[\d]+)/$', CommodityDetailView.as_view(), name='commodity_detail'),
+
+	#compound commodity
+	url(r'^compoundcommodity/$', CompoundCommodityListView.as_view(), name='compound_commodity_list'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
