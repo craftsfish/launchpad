@@ -321,7 +321,7 @@
 <input id="region-582" name="city" type="checkbox" value="582">黔东南
 <input id="region-583" name="city" type="checkbox" value="583">黔南
 <input id="region-584" name="city" type="checkbox" value="584">黔西南
-<input id="region-463" name="province" type="checkbox" value="463">西藏自治区
+<input id="region-463" name="province" type="checkbox" value="463">西藏
 <input id="region-464" name="city" type="checkbox" value="464">阿里
 <input id="region-465" name="city" type="checkbox" value="465">昌都
 <input id="region-466" name="city" type="checkbox" value="466">拉萨
@@ -365,13 +365,13 @@
 <input id="region-594" name="city" type="checkbox" value="594">黄南
 <input id="region-595" name="city" type="checkbox" value="595">果洛
 <input id="region-596" name="city" type="checkbox" value="596">海西
-<input id="region-351" name="province" type="checkbox" value="351">宁夏回族自治区
+<input id="region-351" name="province" type="checkbox" value="351">宁夏
 <input id="region-352" name="city" type="checkbox" value="352">固原
 <input id="region-353" name="city" type="checkbox" value="353">石嘴山
 <input id="region-354" name="city" type="checkbox" value="354">吴忠
 <input id="region-356" name="city" type="checkbox" value="356">银川
 <input id="region-591" name="city" type="checkbox" value="591">中卫
-<input id="region-471" name="province" type="checkbox" value="471">新疆维吾尔自治区
+<input id="region-471" name="province" type="checkbox" value="471">新疆
 <input id="region-472" name="city" type="checkbox" value="472">阿克苏
 <input id="region-473" name="city" type="checkbox" value="473">阿勒泰
 <input id="region-476" name="city" type="checkbox" value="476">昌吉

@@ -2,6 +2,7 @@
 from ground import *
 from jdorder import *
 from django.db import transaction
+from models import Address
 
 class Jdtransaction:
 	pass
@@ -53,8 +54,10 @@ def import_jd_order():
 			o.create_or_update_invoice_shipment(org, i, v.id, commodities, v.number, delivery)
 		o.update()
 
-		if info.booktime < begin_of_day() - timedelta(28):
-			print "{}: {}, {}, {}".format(info.name, info.phone, info.address, info.booktime)
+		if info.booktime < begin_of_day() - timedelta(1):
+			if o.address == None and o.counterfeit == None:
+				Address.add(info.address)
+				#print "{}: {}, {}, {}".format(info.name, info.phone, info.address, info.booktime)
 		o.save()
 
 	def __handler_transaction_raw(info):

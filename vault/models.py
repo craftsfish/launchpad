@@ -77,3 +77,30 @@ class Address(models.Model):
 
 	def __str__(self):
 		return self.name
+
+	@staticmethod
+	def add(address):
+		parent = None
+		areas = Address.objects.filter(parent=None)
+		provinces = Address.objects.filter(parent__in=areas)
+		for i in provinces:
+			#print "{}: {} {} {} {}".format(i.name, len(i.name), type(i.name.encode('utf-8')), address, type(address))
+			idx = address.find(i.name)
+			if idx == 0:
+				parent = i
+				address = address[idx+len(i.name.encode('utf-8')):]
+				break
+		if parent == None:
+			print address
+			return
+		for i in Address.objects.filter(parent=parent):
+			idx = address.find(i.name)
+			if idx != -1 and idx < 30:
+				parent = i
+				address = address[idx+len(i.name.encode('utf-8')):]
+				break
+		if parent == None:
+			print address
+			return
+		#print "{} {} {}".format(parent.parent, parent, address)
+		#Address(name=address, parent=parent).save()
