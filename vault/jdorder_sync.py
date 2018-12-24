@@ -52,6 +52,9 @@ def import_jd_order():
 			commodities = Jdcommoditymap.get(Jdcommodity.objects.get(pk=v.id), info.booktime)
 			o.create_or_update_invoice_shipment(org, i, v.id, commodities, v.number, delivery)
 		o.update()
+
+		if info.booktime < begin_of_day() - timedelta(28):
+			print "{}: {}, {}, {}".format(info.name, info.phone, info.address, info.booktime)
 		o.save()
 
 	def __handler_transaction_raw(info):
@@ -80,6 +83,9 @@ def import_jd_order():
 			t.sale = Decimal(get_column_value(title, line, "应付金额"))
 			t.remark = get_column_value(title, line, "商家备注")
 			t.booktime = booktime
+			t.address = get_column_value(title, line, "客户地址")
+			t.phone = get_column_value(title, line, "联系电话")
+			t.name = get_column_value(title, line, "客户姓名")
 			t.status = status
 			t.invoices = []
 			cur_transaction = t
