@@ -56,3 +56,21 @@ class CompoundCommodity(models.Model):
 				s += ', '
 			s += i.name
 		return s
+
+class Customer(models.Model):
+	uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+	name = models.CharField(max_length=30)
+
+	def __str__(self):
+		return self.name
+
+class Contact(models.Model):
+	phone = models.IntegerField('电话', primary_key=True)
+	customer = models.ForeignKey(Customer)
+
+	def __str__(self):
+		return self.customer.name + ': ' + self.phone
+
+class Address(models.Model):
+	name = models.CharField(max_length=120)
+	parent = models.ForeignKey('self', verbose_name="上级", null=True, blank=True, related_name="children")

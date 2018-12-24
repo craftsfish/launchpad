@@ -50,6 +50,8 @@ class Order(models.Model):
 	time = models.DateTimeField(default=timezone.now)
 	repository = models.ForeignKey(Repository, null=True, blank=True, related_name="%(app_label)s_%(class)s_order_set", related_query_name="%(app_label)s_%(class)s", verbose_name="发货仓库")
 	sale = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+	address = models.ForeignKey('Address', null=True, blank=True, verbose_name="收货地址")
+	contact = models.ForeignKey('Contact', null=True, blank=True, verbose_name="联系信息")
 
 	#以下属于仅适用于刷单
 	counterfeit = models.ForeignKey(Counterfeit, verbose_name="刷单平台", null=True, blank=True)
