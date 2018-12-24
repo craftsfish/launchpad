@@ -113,7 +113,7 @@ class Address(models.Model):
 		parent = city
 		if parent == None:
 			parent = province
-		a = Address(name=address, parent=parent)
+		a, created = Address.objects.get_or_create(name=address, parent=parent)
 		#print "{} {} {}".format(parent.parent, parent, address)
 		a.save()
 		return a
