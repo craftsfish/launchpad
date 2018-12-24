@@ -1,395 +1,395 @@
-<input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 华北地区                    content-script-tm.js:8:5
-<input id="region-19" name="province" type="checkbox" value="19"> 北京 content-script-tm.js:8:5
-<input id="region-461" name="province" type="checkbox" value="461"> 天津 content-script-tm.js:8:5
-<input id="region-125" name="province" type="checkbox" value="125"> 河北 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-126" name="city" type="checkbox" value="126"> 保定 content-script-tm.js:8:5
-<input id="region-129" name="city" type="checkbox" value="129"> 沧州 content-script-tm.js:8:5
-<input id="region-132" name="city" type="checkbox" value="132"> 承德 content-script-tm.js:8:5
-<input id="region-133" name="city" type="checkbox" value="133"> 邯郸 content-script-tm.js:8:5
-<input id="region-134" name="city" type="checkbox" value="134"> 衡水 content-script-tm.js:8:5
-<input id="region-135" name="city" type="checkbox" value="135"> 廊坊 content-script-tm.js:8:5
-<input id="region-137" name="city" type="checkbox" value="137"> 秦皇岛 content-script-tm.js:8:5
-<input id="region-138" name="city" type="checkbox" value="138"> 石家庄 content-script-tm.js:8:5
-<input id="region-140" name="city" type="checkbox" value="140"> 唐山 content-script-tm.js:8:5
-<input id="region-141" name="city" type="checkbox" value="141"> 邢台 content-script-tm.js:8:5
-<input id="region-144" name="city" type="checkbox" value="144"> 张家口 content-script-tm.js:8:5
-<input id="region-393" name="province" type="checkbox" value="393"> 山西 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-394" name="city" type="checkbox" value="394"> 长治 content-script-tm.js:8:5
-<input id="region-395" name="city" type="checkbox" value="395"> 大同 content-script-tm.js:8:5
-<input id="region-396" name="city" type="checkbox" value="396"> 晋城 content-script-tm.js:8:5
-<input id="region-398" name="city" type="checkbox" value="398"> 临汾 content-script-tm.js:8:5
-<input id="region-401" name="city" type="checkbox" value="401"> 朔州 content-script-tm.js:8:5
-<input id="region-402" name="city" type="checkbox" value="402"> 太原 content-script-tm.js:8:5
-<input id="region-403" name="city" type="checkbox" value="403"> 忻州 content-script-tm.js:8:5
-<input id="region-404" name="city" type="checkbox" value="404"> 阳泉 content-script-tm.js:8:5
-<input id="region-405" name="city" type="checkbox" value="405"> 运城 content-script-tm.js:8:5
-<input id="region-597" name="city" type="checkbox" value="597"> 晋中 content-script-tm.js:8:5
-<input id="region-598" name="city" type="checkbox" value="598"> 吕梁 content-script-tm.js:8:5
-<input id="region-333" name="province" type="checkbox" value="333"> 内蒙古 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-321" name="city" type="checkbox" value="321"> 呼伦贝尔 content-script-tm.js:8:5
-<input id="region-328" name="city" type="checkbox" value="328"> 阿拉善 content-script-tm.js:8:5
-<input id="region-336" name="city" type="checkbox" value="336"> 包头 content-script-tm.js:8:5
-<input id="region-337" name="city" type="checkbox" value="337"> 赤峰 content-script-tm.js:8:5
-<input id="region-339" name="city" type="checkbox" value="339"> 呼和浩特 content-script-tm.js:8:5
-<input id="region-344" name="city" type="checkbox" value="344"> 通辽 content-script-tm.js:8:5
-<input id="region-346" name="city" type="checkbox" value="346"> 乌海 content-script-tm.js:8:5
-<input id="region-586" name="city" type="checkbox" value="586"> 鄂尔多斯 content-script-tm.js:8:5
-<input id="region-587" name="city" type="checkbox" value="587"> 乌兰察布 content-script-tm.js:8:5
-<input id="region-588" name="city" type="checkbox" value="588"> 巴彦淖尔 content-script-tm.js:8:5
-<input id="region-589" name="city" type="checkbox" value="589"> 兴安盟 content-script-tm.js:8:5
-<input id="region-590" name="city" type="checkbox" value="590"> 锡林郭勒 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 东北地区                    content-script-tm.js:8:5
-<input id="region-294" name="province" type="checkbox" value="294"> 辽宁 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-295" name="city" type="checkbox" value="295"> 鞍山 content-script-tm.js:8:5
-<input id="region-297" name="city" type="checkbox" value="297"> 本溪 content-script-tm.js:8:5
-<input id="region-298" name="city" type="checkbox" value="298"> 朝阳 content-script-tm.js:8:5
-<input id="region-300" name="city" type="checkbox" value="300"> 大连 content-script-tm.js:8:5
-<input id="region-303" name="city" type="checkbox" value="303"> 丹东 content-script-tm.js:8:5
-<input id="region-304" name="city" type="checkbox" value="304"> 抚顺 content-script-tm.js:8:5
-<input id="region-305" name="city" type="checkbox" value="305"> 阜新 content-script-tm.js:8:5
-<input id="region-306" name="city" type="checkbox" value="306"> 葫芦岛 content-script-tm.js:8:5
-<input id="region-308" name="city" type="checkbox" value="308"> 锦州 content-script-tm.js:8:5
-<input id="region-309" name="city" type="checkbox" value="309"> 辽阳 content-script-tm.js:8:5
-<input id="region-310" name="city" type="checkbox" value="310"> 盘锦 content-script-tm.js:8:5
-<input id="region-311" name="city" type="checkbox" value="311"> 沈阳 content-script-tm.js:8:5
-<input id="region-312" name="city" type="checkbox" value="312"> 铁岭 content-script-tm.js:8:5
-<input id="region-314" name="city" type="checkbox" value="314"> 营口 content-script-tm.js:8:5
-<input id="region-234" name="province" type="checkbox" value="234"> 吉林 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-235" name="city" type="checkbox" value="235"> 白城 content-script-tm.js:8:5
-<input id="region-237" name="city" type="checkbox" value="237"> 白山 content-script-tm.js:8:5
-<input id="region-238" name="city" type="checkbox" value="238"> 长春 content-script-tm.js:8:5
-<input id="region-239" name="city" type="checkbox" value="239"> 吉林 content-script-tm.js:8:5
-<input id="region-241" name="city" type="checkbox" value="241"> 辽源 content-script-tm.js:8:5
-<input id="region-242" name="city" type="checkbox" value="242"> 四平 content-script-tm.js:8:5
-<input id="region-244" name="city" type="checkbox" value="244"> 松原 content-script-tm.js:8:5
-<input id="region-246" name="city" type="checkbox" value="246"> 通化 content-script-tm.js:8:5
-<input id="region-249" name="city" type="checkbox" value="249"> 延边朝鲜族自治州 content-script-tm.js:8:5
-<input id="region-165" name="province" type="checkbox" value="165"> 黑龙江 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-166" name="city" type="checkbox" value="166"> 大庆 content-script-tm.js:8:5
-<input id="region-167" name="city" type="checkbox" value="167"> 哈尔滨 content-script-tm.js:8:5
-<input id="region-169" name="city" type="checkbox" value="169"> 鹤岗 content-script-tm.js:8:5
-<input id="region-170" name="city" type="checkbox" value="170"> 黑河 content-script-tm.js:8:5
-<input id="region-173" name="city" type="checkbox" value="173"> 鸡西 content-script-tm.js:8:5
-<input id="region-174" name="city" type="checkbox" value="174"> 佳木斯 content-script-tm.js:8:5
-<input id="region-176" name="city" type="checkbox" value="176"> 牡丹江 content-script-tm.js:8:5
-<input id="region-178" name="city" type="checkbox" value="178"> 七台河 content-script-tm.js:8:5
-<input id="region-179" name="city" type="checkbox" value="179"> 齐齐哈尔 content-script-tm.js:8:5
-<input id="region-180" name="city" type="checkbox" value="180"> 双鸭山 content-script-tm.js:8:5
-<input id="region-181" name="city" type="checkbox" value="181"> 绥化 content-script-tm.js:8:5
-<input id="region-183" name="city" type="checkbox" value="183"> 伊春 content-script-tm.js:8:5
-<input id="region-622" name="city" type="checkbox" value="622"> 大兴安岭 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 华东地区                    content-script-tm.js:8:5
-<input id="region-417" name="province" type="checkbox" value="417"> 上海 content-script-tm.js:8:5
-<input id="region-255" name="province" type="checkbox" value="255"> 江苏 <span class="selected-count fb">(13)</span> content-script-tm.js:8:5
-<input id="region-256" name="city" type="checkbox" value="256"> 常州 content-script-tm.js:8:5
-<input id="region-257" name="city" type="checkbox" value="257"> 淮安 content-script-tm.js:8:5
-<input id="region-259" name="city" type="checkbox" value="259"> 连云港 content-script-tm.js:8:5
-<input id="region-260" name="city" type="checkbox" value="260"> 南京 content-script-tm.js:8:5
-<input id="region-261" name="city" type="checkbox" value="261"> 南通 content-script-tm.js:8:5
-<input id="region-262" name="city" type="checkbox" value="262"> 苏州 content-script-tm.js:8:5
-<input id="region-265" name="city" type="checkbox" value="265"> 宿迁 content-script-tm.js:8:5
-<input id="region-266" name="city" type="checkbox" value="266"> 泰州 content-script-tm.js:8:5
-<input id="region-269" name="city" type="checkbox" value="269"> 无锡 content-script-tm.js:8:5
-<input id="region-272" name="city" type="checkbox" value="272"> 徐州 content-script-tm.js:8:5
-<input id="region-273" name="city" type="checkbox" value="273"> 盐城 content-script-tm.js:8:5
-<input id="region-275" name="city" type="checkbox" value="275"> 扬州 content-script-tm.js:8:5
-<input id="region-277" name="city" type="checkbox" value="277"> 镇江 content-script-tm.js:8:5
-<input id="region-508" name="province" type="checkbox" value="508"> 浙江 <span class="selected-count fb">(11)</span> content-script-tm.js:8:5
-<input id="region-509" name="city" type="checkbox" value="509"> 杭州 content-script-tm.js:8:5
-<input id="region-511" name="city" type="checkbox" value="511"> 湖州 content-script-tm.js:8:5
-<input id="region-512" name="city" type="checkbox" value="512"> 嘉兴 content-script-tm.js:8:5
-<input id="region-514" name="city" type="checkbox" value="514"> 金华 content-script-tm.js:8:5
-<input id="region-518" name="city" type="checkbox" value="518"> 丽水 content-script-tm.js:8:5
-<input id="region-519" name="city" type="checkbox" value="519"> 宁波 content-script-tm.js:8:5
-<input id="region-522" name="city" type="checkbox" value="522"> 绍兴 content-script-tm.js:8:5
-<input id="region-523" name="city" type="checkbox" value="523"> 台州 content-script-tm.js:8:5
-<input id="region-526" name="city" type="checkbox" value="526"> 温州 content-script-tm.js:8:5
-<input id="region-528" name="city" type="checkbox" value="528"> 舟山 content-script-tm.js:8:5
-<input id="region-529" name="city" type="checkbox" value="529"> 衢州 content-script-tm.js:8:5
-<input id="region-39" name="province" type="checkbox" value="39"> 福建 <span class="selected-count fb">(9)</span> content-script-tm.js:8:5
-<input id="region-40" name="city" type="checkbox" value="40"> 福州 content-script-tm.js:8:5
-<input id="region-41" name="city" type="checkbox" value="41"> 龙岩 content-script-tm.js:8:5
-<input id="region-42" name="city" type="checkbox" value="42"> 南平 content-script-tm.js:8:5
-<input id="region-44" name="city" type="checkbox" value="44"> 宁德 content-script-tm.js:8:5
-<input id="region-45" name="city" type="checkbox" value="45"> 莆田 content-script-tm.js:8:5
-<input id="region-46" name="city" type="checkbox" value="46"> 泉州 content-script-tm.js:8:5
-<input id="region-48" name="city" type="checkbox" value="48"> 三明 content-script-tm.js:8:5
-<input id="region-50" name="city" type="checkbox" value="50"> 厦门 content-script-tm.js:8:5
-<input id="region-51" name="city" type="checkbox" value="51"> 漳州 content-script-tm.js:8:5
-<input id="region-1" name="province" type="checkbox" value="1"> 安徽 <span class="selected-count fb">(17)</span> content-script-tm.js:8:5
-<input id="region-2" name="city" type="checkbox" value="2"> 安庆 content-script-tm.js:8:5
-<input id="region-3" name="city" type="checkbox" value="3"> 蚌埠 content-script-tm.js:8:5
-<input id="region-4" name="city" type="checkbox" value="4"> 巢湖 content-script-tm.js:8:5
-<input id="region-5" name="city" type="checkbox" value="5"> 池州 content-script-tm.js:8:5
-<input id="region-6" name="city" type="checkbox" value="6"> 滁州 content-script-tm.js:8:5
-<input id="region-7" name="city" type="checkbox" value="7"> 阜阳 content-script-tm.js:8:5
-<input id="region-8" name="city" type="checkbox" value="8"> 合肥 content-script-tm.js:8:5
-<input id="region-9" name="city" type="checkbox" value="9"> 淮北 content-script-tm.js:8:5
-<input id="region-10" name="city" type="checkbox" value="10"> 淮南 content-script-tm.js:8:5
-<input id="region-11" name="city" type="checkbox" value="11"> 黄山 content-script-tm.js:8:5
-<input id="region-12" name="city" type="checkbox" value="12"> 六安 content-script-tm.js:8:5
-<input id="region-13" name="city" type="checkbox" value="13"> 马鞍山 content-script-tm.js:8:5
-<input id="region-14" name="city" type="checkbox" value="14"> 宿州 content-script-tm.js:8:5
-<input id="region-15" name="city" type="checkbox" value="15"> 铜陵 content-script-tm.js:8:5
-<input id="region-16" name="city" type="checkbox" value="16"> 芜湖 content-script-tm.js:8:5
-<input id="region-17" name="city" type="checkbox" value="17"> 宣城 content-script-tm.js:8:5
-<input id="region-18" name="city" type="checkbox" value="18"> 亳州 content-script-tm.js:8:5
-<input id="region-368" name="province" type="checkbox" value="368"> 山东 <span class="selected-count fb">(17)</span> content-script-tm.js:8:5
-<input id="region-369" name="city" type="checkbox" value="369"> 滨州 content-script-tm.js:8:5
-<input id="region-370" name="city" type="checkbox" value="370"> 德州 content-script-tm.js:8:5
-<input id="region-371" name="city" type="checkbox" value="371"> 东营 content-script-tm.js:8:5
-<input id="region-372" name="city" type="checkbox" value="372"> 菏泽 content-script-tm.js:8:5
-<input id="region-373" name="city" type="checkbox" value="373"> 济南 content-script-tm.js:8:5
-<input id="region-374" name="city" type="checkbox" value="374"> 济宁 content-script-tm.js:8:5
-<input id="region-376" name="city" type="checkbox" value="376"> 莱芜 content-script-tm.js:8:5
-<input id="region-377" name="city" type="checkbox" value="377"> 聊城 content-script-tm.js:8:5
-<input id="region-379" name="city" type="checkbox" value="379"> 临沂 content-script-tm.js:8:5
-<input id="region-380" name="city" type="checkbox" value="380"> 青岛 content-script-tm.js:8:5
-<input id="region-381" name="city" type="checkbox" value="381"> 日照 content-script-tm.js:8:5
-<input id="region-382" name="city" type="checkbox" value="382"> 泰安 content-script-tm.js:8:5
-<input id="region-384" name="city" type="checkbox" value="384"> 威海 content-script-tm.js:8:5
-<input id="region-386" name="city" type="checkbox" value="386"> 潍坊 content-script-tm.js:8:5
-<input id="region-389" name="city" type="checkbox" value="389"> 烟台 content-script-tm.js:8:5
-<input id="region-390" name="city" type="checkbox" value="390"> 枣庄 content-script-tm.js:8:5
-<input id="region-392" name="city" type="checkbox" value="392"> 淄博 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 华中地区                    content-script-tm.js:8:5
-<input id="region-145" name="province" type="checkbox" value="145"> 河南 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-146" name="city" type="checkbox" value="146"> 安阳 content-script-tm.js:8:5
-<input id="region-147" name="city" type="checkbox" value="147"> 鹤壁 content-script-tm.js:8:5
-<input id="region-148" name="city" type="checkbox" value="148"> 焦作 content-script-tm.js:8:5
-<input id="region-149" name="city" type="checkbox" value="149"> 开封 content-script-tm.js:8:5
-<input id="region-150" name="city" type="checkbox" value="150"> 洛阳 content-script-tm.js:8:5
-<input id="region-151" name="city" type="checkbox" value="151"> 南阳 content-script-tm.js:8:5
-<input id="region-152" name="city" type="checkbox" value="152"> 平顶山 content-script-tm.js:8:5
-<input id="region-153" name="city" type="checkbox" value="153"> 三门峡 content-script-tm.js:8:5
-<input id="region-155" name="city" type="checkbox" value="155"> 商丘 content-script-tm.js:8:5
-<input id="region-156" name="city" type="checkbox" value="156"> 新乡 content-script-tm.js:8:5
-<input id="region-157" name="city" type="checkbox" value="157"> 信阳 content-script-tm.js:8:5
-<input id="region-159" name="city" type="checkbox" value="159"> 许昌 content-script-tm.js:8:5
-<input id="region-160" name="city" type="checkbox" value="160"> 郑州 content-script-tm.js:8:5
-<input id="region-161" name="city" type="checkbox" value="161"> 周口 content-script-tm.js:8:5
-<input id="region-162" name="city" type="checkbox" value="162"> 驻马店 content-script-tm.js:8:5
-<input id="region-163" name="city" type="checkbox" value="163"> 漯河 content-script-tm.js:8:5
-<input id="region-164" name="city" type="checkbox" value="164"> 濮阳 content-script-tm.js:8:5
-<input id="region-621" name="city" type="checkbox" value="621"> 济源 content-script-tm.js:8:5
-<input id="region-184" name="province" type="checkbox" value="184"> 湖北 <span class="selected-count fb">(17)</span> content-script-tm.js:8:5
-<input id="region-185" name="city" type="checkbox" value="185"> 鄂州 content-script-tm.js:8:5
-<input id="region-186" name="city" type="checkbox" value="186"> 恩施 content-script-tm.js:8:5
-<input id="region-188" name="city" type="checkbox" value="188"> 黄冈 content-script-tm.js:8:5
-<input id="region-191" name="city" type="checkbox" value="191"> 黄石 content-script-tm.js:8:5
-<input id="region-192" name="city" type="checkbox" value="192"> 荆门 content-script-tm.js:8:5
-<input id="region-193" name="city" type="checkbox" value="193"> 荆州 content-script-tm.js:8:5
-<input id="region-196" name="city" type="checkbox" value="196"> 十堰 content-script-tm.js:8:5
-<input id="region-198" name="city" type="checkbox" value="198"> 随州 content-script-tm.js:8:5
-<input id="region-200" name="city" type="checkbox" value="200"> 武汉 content-script-tm.js:8:5
-<input id="region-203" name="city" type="checkbox" value="203"> 咸宁 content-script-tm.js:8:5
-<input id="region-205" name="city" type="checkbox" value="205"> 襄阳 content-script-tm.js:8:5
-<input id="region-207" name="city" type="checkbox" value="207"> 孝感 content-script-tm.js:8:5
-<input id="region-210" name="city" type="checkbox" value="210"> 宜昌 content-script-tm.js:8:5
-<input id="region-623" name="city" type="checkbox" value="623"> 潜江 content-script-tm.js:8:5
-<input id="region-624" name="city" type="checkbox" value="624"> 神农架 content-script-tm.js:8:5
-<input id="region-199" name="city" type="checkbox" value="199"> 天门 content-script-tm.js:8:5
-<input id="region-202" name="city" type="checkbox" value="202"> 仙桃 content-script-tm.js:8:5
-<input id="region-212" name="province" type="checkbox" value="212"> 湖南 <span class="selected-count fb">(14)</span> content-script-tm.js:8:5
-<input id="region-213" name="city" type="checkbox" value="213"> 常德 content-script-tm.js:8:5
-<input id="region-214" name="city" type="checkbox" value="214"> 长沙 content-script-tm.js:8:5
-<input id="region-215" name="city" type="checkbox" value="215"> 郴州 content-script-tm.js:8:5
-<input id="region-216" name="city" type="checkbox" value="216"> 衡阳 content-script-tm.js:8:5
-<input id="region-218" name="city" type="checkbox" value="218"> 怀化 content-script-tm.js:8:5
-<input id="region-220" name="city" type="checkbox" value="220"> 娄底 content-script-tm.js:8:5
-<input id="region-223" name="city" type="checkbox" value="223"> 邵阳 content-script-tm.js:8:5
-<input id="region-224" name="city" type="checkbox" value="224"> 湘潭 content-script-tm.js:8:5
-<input id="region-227" name="city" type="checkbox" value="227"> 益阳 content-script-tm.js:8:5
-<input id="region-228" name="city" type="checkbox" value="228"> 永州 content-script-tm.js:8:5
-<input id="region-230" name="city" type="checkbox" value="230"> 岳阳 content-script-tm.js:8:5
-<input id="region-232" name="city" type="checkbox" value="232"> 张家界 content-script-tm.js:8:5
-<input id="region-233" name="city" type="checkbox" value="233"> 株洲 content-script-tm.js:8:5
-<input id="region-585" name="city" type="checkbox" value="585"> 湘西 content-script-tm.js:8:5
-<input id="region-279" name="province" type="checkbox" value="279"> 江西 <span class="selected-count fb">(11)</span> content-script-tm.js:8:5
-<input id="region-280" name="city" type="checkbox" value="280"> 抚州 content-script-tm.js:8:5
-<input id="region-282" name="city" type="checkbox" value="282"> 赣州 content-script-tm.js:8:5
-<input id="region-283" name="city" type="checkbox" value="283"> 吉安 content-script-tm.js:8:5
-<input id="region-285" name="city" type="checkbox" value="285"> 景德镇 content-script-tm.js:8:5
-<input id="region-286" name="city" type="checkbox" value="286"> 九江 content-script-tm.js:8:5
-<input id="region-288" name="city" type="checkbox" value="288"> 南昌 content-script-tm.js:8:5
-<input id="region-289" name="city" type="checkbox" value="289"> 萍乡 content-script-tm.js:8:5
-<input id="region-290" name="city" type="checkbox" value="290"> 上饶 content-script-tm.js:8:5
-<input id="region-291" name="city" type="checkbox" value="291"> 新余 content-script-tm.js:8:5
-<input id="region-292" name="city" type="checkbox" value="292"> 宜春 content-script-tm.js:8:5
-<input id="region-293" name="city" type="checkbox" value="293"> 鹰潭 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 华南地区                    content-script-tm.js:8:5
-<input id="region-68" name="province" type="checkbox" value="68"> 广东 <span class="selected-count fb">(21)</span> content-script-tm.js:8:5
-<input id="region-69" name="city" type="checkbox" value="69"> 潮州 content-script-tm.js:8:5
-<input id="region-70" name="city" type="checkbox" value="70"> 东莞 content-script-tm.js:8:5
-<input id="region-71" name="city" type="checkbox" value="71"> 佛山 content-script-tm.js:8:5
-<input id="region-73" name="city" type="checkbox" value="73"> 广州 content-script-tm.js:8:5
-<input id="region-74" name="city" type="checkbox" value="74"> 河源 content-script-tm.js:8:5
-<input id="region-75" name="city" type="checkbox" value="75"> 惠州 content-script-tm.js:8:5
-<input id="region-76" name="city" type="checkbox" value="76"> 江门 content-script-tm.js:8:5
-<input id="region-77" name="city" type="checkbox" value="77"> 揭阳 content-script-tm.js:8:5
-<input id="region-78" name="city" type="checkbox" value="78"> 茂名 content-script-tm.js:8:5
-<input id="region-79" name="city" type="checkbox" value="79"> 梅州 content-script-tm.js:8:5
-<input id="region-80" name="city" type="checkbox" value="80"> 清远 content-script-tm.js:8:5
-<input id="region-81" name="city" type="checkbox" value="81"> 汕头 content-script-tm.js:8:5
-<input id="region-83" name="city" type="checkbox" value="83"> 汕尾 content-script-tm.js:8:5
-<input id="region-84" name="city" type="checkbox" value="84"> 韶关 content-script-tm.js:8:5
-<input id="region-85" name="city" type="checkbox" value="85"> 深圳 content-script-tm.js:8:5
-<input id="region-86" name="city" type="checkbox" value="86"> 阳江 content-script-tm.js:8:5
-<input id="region-87" name="city" type="checkbox" value="87"> 云浮 content-script-tm.js:8:5
-<input id="region-88" name="city" type="checkbox" value="88"> 湛江 content-script-tm.js:8:5
-<input id="region-89" name="city" type="checkbox" value="89"> 肇庆 content-script-tm.js:8:5
-<input id="region-90" name="city" type="checkbox" value="90"> 中山 content-script-tm.js:8:5
-<input id="region-91" name="city" type="checkbox" value="91"> 珠海 content-script-tm.js:8:5
-<input id="region-120" name="province" type="checkbox" value="120"> 海南 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-121" name="city" type="checkbox" value="121"> 海口 content-script-tm.js:8:5
-<input id="region-122" name="city" type="checkbox" value="122"> 三亚 content-script-tm.js:8:5
-<input id="region-609" name="city" type="checkbox" value="609"> 白沙 content-script-tm.js:8:5
-<input id="region-610" name="city" type="checkbox" value="610"> 昌江 content-script-tm.js:8:5
-<input id="region-611" name="city" type="checkbox" value="611"> 澄迈 content-script-tm.js:8:5
-<input id="region-612" name="city" type="checkbox" value="612"> 定安 content-script-tm.js:8:5
-<input id="region-613" name="city" type="checkbox" value="613"> 东方 content-script-tm.js:8:5
-<input id="region-614" name="city" type="checkbox" value="614"> 乐东 content-script-tm.js:8:5
-<input id="region-615" name="city" type="checkbox" value="615"> 琼海 content-script-tm.js:8:5
-<input id="region-616" name="city" type="checkbox" value="616"> 万宁 content-script-tm.js:8:5
-<input id="region-617" name="city" type="checkbox" value="617"> 文昌 content-script-tm.js:8:5
-<input id="region-618" name="city" type="checkbox" value="618"> 五指山 content-script-tm.js:8:5
-<input id="region-619" name="city" type="checkbox" value="619"> 保亭 content-script-tm.js:8:5
-<input id="region-620" name="city" type="checkbox" value="620"> 陵水 content-script-tm.js:8:5
-<input id="region-92" name="province" type="checkbox" value="92"> 广西 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-93" name="city" type="checkbox" value="93"> 百色 content-script-tm.js:8:5
-<input id="region-94" name="city" type="checkbox" value="94"> 北海 content-script-tm.js:8:5
-<input id="region-96" name="city" type="checkbox" value="96"> 防城港 content-script-tm.js:8:5
-<input id="region-98" name="city" type="checkbox" value="98"> 桂林 content-script-tm.js:8:5
-<input id="region-99" name="city" type="checkbox" value="99"> 贵港 content-script-tm.js:8:5
-<input id="region-100" name="city" type="checkbox" value="100"> 河池 content-script-tm.js:8:5
-<input id="region-102" name="city" type="checkbox" value="102"> 贺州 content-script-tm.js:8:5
-<input id="region-104" name="city" type="checkbox" value="104"> 柳州 content-script-tm.js:8:5
-<input id="region-105" name="city" type="checkbox" value="105"> 南宁 content-script-tm.js:8:5
-<input id="region-106" name="city" type="checkbox" value="106"> 钦州 content-script-tm.js:8:5
-<input id="region-107" name="city" type="checkbox" value="107"> 梧州 content-script-tm.js:8:5
-<input id="region-108" name="city" type="checkbox" value="108"> 玉林 content-script-tm.js:8:5
-<input id="region-581" name="city" type="checkbox" value="581"> 来宾 content-script-tm.js:8:5
-<input id="region-580" name="city" type="checkbox" value="580"> 崇左 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 西南地区                    content-script-tm.js:8:5
-<input id="region-532" name="province" type="checkbox" value="532"> 重庆 content-script-tm.js:8:5
-<input id="region-438" name="province" type="checkbox" value="438"> 四川 <span class="selected-count fb">(21)</span> content-script-tm.js:8:5
-<input id="region-440" name="city" type="checkbox" value="440"> 巴中 content-script-tm.js:8:5
-<input id="region-441" name="city" type="checkbox" value="441"> 成都 content-script-tm.js:8:5
-<input id="region-442" name="city" type="checkbox" value="442"> 达州 content-script-tm.js:8:5
-<input id="region-443" name="city" type="checkbox" value="443"> 德阳 content-script-tm.js:8:5
-<input id="region-444" name="city" type="checkbox" value="444"> 甘孜藏族自治州 content-script-tm.js:8:5
-<input id="region-445" name="city" type="checkbox" value="445"> 广安 content-script-tm.js:8:5
-<input id="region-447" name="city" type="checkbox" value="447"> 广元 content-script-tm.js:8:5
-<input id="region-448" name="city" type="checkbox" value="448"> 乐山 content-script-tm.js:8:5
-<input id="region-450" name="city" type="checkbox" value="450"> 眉山 content-script-tm.js:8:5
-<input id="region-451" name="city" type="checkbox" value="451"> 绵阳 content-script-tm.js:8:5
-<input id="region-452" name="city" type="checkbox" value="452"> 南充 content-script-tm.js:8:5
-<input id="region-453" name="city" type="checkbox" value="453"> 内江 content-script-tm.js:8:5
-<input id="region-454" name="city" type="checkbox" value="454"> 攀枝花 content-script-tm.js:8:5
-<input id="region-455" name="city" type="checkbox" value="455"> 遂宁 content-script-tm.js:8:5
-<input id="region-456" name="city" type="checkbox" value="456"> 雅安 content-script-tm.js:8:5
-<input id="region-457" name="city" type="checkbox" value="457"> 宜宾 content-script-tm.js:8:5
-<input id="region-458" name="city" type="checkbox" value="458"> 资阳 content-script-tm.js:8:5
-<input id="region-459" name="city" type="checkbox" value="459"> 自贡 content-script-tm.js:8:5
-<input id="region-460" name="city" type="checkbox" value="460"> 泸州 content-script-tm.js:8:5
-<input id="region-600" name="city" type="checkbox" value="600"> 凉山 content-script-tm.js:8:5
-<input id="region-601" name="city" type="checkbox" value="601"> 阿坝 content-script-tm.js:8:5
-<input id="region-488" name="province" type="checkbox" value="488"> 云南 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-489" name="city" type="checkbox" value="489"> 保山 content-script-tm.js:8:5
-<input id="region-490" name="city" type="checkbox" value="490"> 楚雄 content-script-tm.js:8:5
-<input id="region-491" name="city" type="checkbox" value="491"> 大理 content-script-tm.js:8:5
-<input id="region-492" name="city" type="checkbox" value="492"> 德宏 content-script-tm.js:8:5
-<input id="region-497" name="city" type="checkbox" value="497"> 昆明 content-script-tm.js:8:5
-<input id="region-499" name="city" type="checkbox" value="499"> 丽江 content-script-tm.js:8:5
-<input id="region-500" name="city" type="checkbox" value="500"> 临沧 content-script-tm.js:8:5
-<input id="region-502" name="city" type="checkbox" value="502"> 曲靖 content-script-tm.js:8:5
-<input id="region-503" name="city" type="checkbox" value="503"> 普洱 content-script-tm.js:8:5
-<input id="region-504" name="city" type="checkbox" value="504"> 文山 content-script-tm.js:8:5
-<input id="region-506" name="city" type="checkbox" value="506"> 玉溪 content-script-tm.js:8:5
-<input id="region-507" name="city" type="checkbox" value="507"> 昭通 content-script-tm.js:8:5
-<input id="region-605" name="city" type="checkbox" value="605"> 西双版纳 content-script-tm.js:8:5
-<input id="region-606" name="city" type="checkbox" value="606"> 红河 content-script-tm.js:8:5
-<input id="region-607" name="city" type="checkbox" value="607"> 怒江 content-script-tm.js:8:5
-<input id="region-608" name="city" type="checkbox" value="608"> 迪庆 content-script-tm.js:8:5
-<input id="region-109" name="province" type="checkbox" value="109"> 贵州 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-110" name="city" type="checkbox" value="110"> 安顺 content-script-tm.js:8:5
-<input id="region-111" name="city" type="checkbox" value="111"> 毕节 content-script-tm.js:8:5
-<input id="region-112" name="city" type="checkbox" value="112"> 贵阳 content-script-tm.js:8:5
-<input id="region-113" name="city" type="checkbox" value="113"> 六盘水 content-script-tm.js:8:5
-<input id="region-117" name="city" type="checkbox" value="117"> 铜仁 content-script-tm.js:8:5
-<input id="region-118" name="city" type="checkbox" value="118"> 遵义 content-script-tm.js:8:5
-<input id="region-582" name="city" type="checkbox" value="582"> 黔东南 content-script-tm.js:8:5
-<input id="region-583" name="city" type="checkbox" value="583"> 黔南 content-script-tm.js:8:5
-<input id="region-584" name="city" type="checkbox" value="584"> 黔西南 content-script-tm.js:8:5
-<input id="region-463" name="province" type="checkbox" value="463"> 西藏自治区 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-464" name="city" type="checkbox" value="464"> 阿里 content-script-tm.js:8:5
-<input id="region-465" name="city" type="checkbox" value="465"> 昌都 content-script-tm.js:8:5
-<input id="region-466" name="city" type="checkbox" value="466"> 拉萨 content-script-tm.js:8:5
-<input id="region-467" name="city" type="checkbox" value="467"> 林芝 content-script-tm.js:8:5
-<input id="region-468" name="city" type="checkbox" value="468"> 那曲 content-script-tm.js:8:5
-<input id="region-469" name="city" type="checkbox" value="469"> 日喀则 content-script-tm.js:8:5
-<input id="region-470" name="city" type="checkbox" value="470"> 山南 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 西北地区                    content-script-tm.js:8:5
-<input id="region-406" name="province" type="checkbox" value="406"> 陕西 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-407" name="city" type="checkbox" value="407"> 安康 content-script-tm.js:8:5
-<input id="region-408" name="city" type="checkbox" value="408"> 宝鸡 content-script-tm.js:8:5
-<input id="region-409" name="city" type="checkbox" value="409"> 汉中 content-script-tm.js:8:5
-<input id="region-410" name="city" type="checkbox" value="410"> 商洛 content-script-tm.js:8:5
-<input id="region-411" name="city" type="checkbox" value="411"> 铜川 content-script-tm.js:8:5
-<input id="region-412" name="city" type="checkbox" value="412"> 渭南 content-script-tm.js:8:5
-<input id="region-413" name="city" type="checkbox" value="413"> 西安 content-script-tm.js:8:5
-<input id="region-414" name="city" type="checkbox" value="414"> 咸阳 content-script-tm.js:8:5
-<input id="region-415" name="city" type="checkbox" value="415"> 延安 content-script-tm.js:8:5
-<input id="region-416" name="city" type="checkbox" value="416"> 榆林 content-script-tm.js:8:5
-<input id="region-52" name="province" type="checkbox" value="52"> 甘肃 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-53" name="city" type="checkbox" value="53"> 白银 content-script-tm.js:8:5
-<input id="region-54" name="city" type="checkbox" value="54"> 定西 content-script-tm.js:8:5
-<input id="region-55" name="city" type="checkbox" value="55"> 嘉峪关 content-script-tm.js:8:5
-<input id="region-56" name="city" type="checkbox" value="56"> 金昌 content-script-tm.js:8:5
-<input id="region-57" name="city" type="checkbox" value="57"> 酒泉 content-script-tm.js:8:5
-<input id="region-59" name="city" type="checkbox" value="59"> 兰州 content-script-tm.js:8:5
-<input id="region-60" name="city" type="checkbox" value="60"> 临夏 content-script-tm.js:8:5
-<input id="region-61" name="city" type="checkbox" value="61"> 陇南 content-script-tm.js:8:5
-<input id="region-62" name="city" type="checkbox" value="62"> 平凉 content-script-tm.js:8:5
-<input id="region-63" name="city" type="checkbox" value="63"> 庆阳 content-script-tm.js:8:5
-<input id="region-65" name="city" type="checkbox" value="65"> 天水 content-script-tm.js:8:5
-<input id="region-66" name="city" type="checkbox" value="66"> 武威 content-script-tm.js:8:5
-<input id="region-67" name="city" type="checkbox" value="67"> 张掖 content-script-tm.js:8:5
-<input id="region-579" name="city" type="checkbox" value="579"> 甘南 content-script-tm.js:8:5
-<input id="region-357" name="province" type="checkbox" value="357"> 青海 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-361" name="city" type="checkbox" value="361"> 海东 content-script-tm.js:8:5
-<input id="region-366" name="city" type="checkbox" value="366"> 西宁 content-script-tm.js:8:5
-<input id="region-367" name="city" type="checkbox" value="367"> 玉树 content-script-tm.js:8:5
-<input id="region-592" name="city" type="checkbox" value="592"> 海北 content-script-tm.js:8:5
-<input id="region-593" name="city" type="checkbox" value="593"> 海南 content-script-tm.js:8:5
-<input id="region-594" name="city" type="checkbox" value="594"> 黄南 content-script-tm.js:8:5
-<input id="region-595" name="city" type="checkbox" value="595"> 果洛 content-script-tm.js:8:5
-<input id="region-596" name="city" type="checkbox" value="596"> 海西 content-script-tm.js:8:5
-<input id="region-351" name="province" type="checkbox" value="351"> 宁夏回族自治区 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-352" name="city" type="checkbox" value="352"> 固原 content-script-tm.js:8:5
-<input id="region-353" name="city" type="checkbox" value="353"> 石嘴山 content-script-tm.js:8:5
-<input id="region-354" name="city" type="checkbox" value="354"> 吴忠 content-script-tm.js:8:5
-<input id="region-356" name="city" type="checkbox" value="356"> 银川 content-script-tm.js:8:5
-<input id="region-591" name="city" type="checkbox" value="591"> 中卫 content-script-tm.js:8:5
-<input id="region-471" name="province" type="checkbox" value="471"> 新疆维吾尔自治区 <span class="selected-count fb"></span> content-script-tm.js:8:5
-<input id="region-472" name="city" type="checkbox" value="472"> 阿克苏 content-script-tm.js:8:5
-<input id="region-473" name="city" type="checkbox" value="473"> 阿勒泰 content-script-tm.js:8:5
-<input id="region-476" name="city" type="checkbox" value="476"> 昌吉 content-script-tm.js:8:5
-<input id="region-477" name="city" type="checkbox" value="477"> 哈密 content-script-tm.js:8:5
-<input id="region-478" name="city" type="checkbox" value="478"> 和田 content-script-tm.js:8:5
-<input id="region-479" name="city" type="checkbox" value="479"> 喀什 content-script-tm.js:8:5
-<input id="region-480" name="city" type="checkbox" value="480"> 克拉玛依 content-script-tm.js:8:5
-<input id="region-483" name="city" type="checkbox" value="483"> 塔城 content-script-tm.js:8:5
-<input id="region-484" name="city" type="checkbox" value="484"> 吐鲁番 content-script-tm.js:8:5
-<input id="region-485" name="city" type="checkbox" value="485"> 乌鲁木齐 content-script-tm.js:8:5
-<input id="region-486" name="city" type="checkbox" value="486"> 伊犁 content-script-tm.js:8:5
-<input id="region-602" name="city" type="checkbox" value="602"> 克孜勒苏柯尔克孜 content-script-tm.js:8:5
-<input id="region-603" name="city" type="checkbox" value="603"> 博尔塔拉 content-script-tm.js:8:5
-<input id="region-604" name="city" type="checkbox" value="604"> 巴音郭楞 content-script-tm.js:8:5
-<input id="region-625" name="city" type="checkbox" value="625"> 五家渠 content-script-tm.js:8:5
-<input id="region-626" name="city" type="checkbox" value="626"> 阿拉尔 content-script-tm.js:8:5
-                        <input mdata="3.5.1.1.1.2" name="area" type="checkbox"> 其他地区                    content-script-tm.js:8:5
-<input id="region-578" name="province" type="checkbox" value="578"> 台湾 content-script-tm.js:8:5
-<input id="region-599" name="province" type="checkbox" value="599"> 香港 content-script-tm.js:8:5
-<input id="region-576" name="province" type="checkbox" value="576"> 澳门 content-script-tm.js:8:5
-<input id="region-574" name="province" type="checkbox" value="574"> 国外
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">华北地区
+<input id="region-19" name="province" type="checkbox" value="19">北京
+<input id="region-461" name="province" type="checkbox" value="461">天津
+<input id="region-125" name="province" type="checkbox" value="125">河北
+<input id="region-126" name="city" type="checkbox" value="126">保定
+<input id="region-129" name="city" type="checkbox" value="129">沧州
+<input id="region-132" name="city" type="checkbox" value="132">承德
+<input id="region-133" name="city" type="checkbox" value="133">邯郸
+<input id="region-134" name="city" type="checkbox" value="134">衡水
+<input id="region-135" name="city" type="checkbox" value="135">廊坊
+<input id="region-137" name="city" type="checkbox" value="137">秦皇岛
+<input id="region-138" name="city" type="checkbox" value="138">石家庄
+<input id="region-140" name="city" type="checkbox" value="140">唐山
+<input id="region-141" name="city" type="checkbox" value="141">邢台
+<input id="region-144" name="city" type="checkbox" value="144">张家口
+<input id="region-393" name="province" type="checkbox" value="393">山西
+<input id="region-394" name="city" type="checkbox" value="394">长治
+<input id="region-395" name="city" type="checkbox" value="395">大同
+<input id="region-396" name="city" type="checkbox" value="396">晋城
+<input id="region-398" name="city" type="checkbox" value="398">临汾
+<input id="region-401" name="city" type="checkbox" value="401">朔州
+<input id="region-402" name="city" type="checkbox" value="402">太原
+<input id="region-403" name="city" type="checkbox" value="403">忻州
+<input id="region-404" name="city" type="checkbox" value="404">阳泉
+<input id="region-405" name="city" type="checkbox" value="405">运城
+<input id="region-597" name="city" type="checkbox" value="597">晋中
+<input id="region-598" name="city" type="checkbox" value="598">吕梁
+<input id="region-333" name="province" type="checkbox" value="333">内蒙古
+<input id="region-321" name="city" type="checkbox" value="321">呼伦贝尔
+<input id="region-328" name="city" type="checkbox" value="328">阿拉善
+<input id="region-336" name="city" type="checkbox" value="336">包头
+<input id="region-337" name="city" type="checkbox" value="337">赤峰
+<input id="region-339" name="city" type="checkbox" value="339">呼和浩特
+<input id="region-344" name="city" type="checkbox" value="344">通辽
+<input id="region-346" name="city" type="checkbox" value="346">乌海
+<input id="region-586" name="city" type="checkbox" value="586">鄂尔多斯
+<input id="region-587" name="city" type="checkbox" value="587">乌兰察布
+<input id="region-588" name="city" type="checkbox" value="588">巴彦淖尔
+<input id="region-589" name="city" type="checkbox" value="589">兴安盟
+<input id="region-590" name="city" type="checkbox" value="590">锡林郭勒
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">东北地区
+<input id="region-294" name="province" type="checkbox" value="294">辽宁
+<input id="region-295" name="city" type="checkbox" value="295">鞍山
+<input id="region-297" name="city" type="checkbox" value="297">本溪
+<input id="region-298" name="city" type="checkbox" value="298">朝阳
+<input id="region-300" name="city" type="checkbox" value="300">大连
+<input id="region-303" name="city" type="checkbox" value="303">丹东
+<input id="region-304" name="city" type="checkbox" value="304">抚顺
+<input id="region-305" name="city" type="checkbox" value="305">阜新
+<input id="region-306" name="city" type="checkbox" value="306">葫芦岛
+<input id="region-308" name="city" type="checkbox" value="308">锦州
+<input id="region-309" name="city" type="checkbox" value="309">辽阳
+<input id="region-310" name="city" type="checkbox" value="310">盘锦
+<input id="region-311" name="city" type="checkbox" value="311">沈阳
+<input id="region-312" name="city" type="checkbox" value="312">铁岭
+<input id="region-314" name="city" type="checkbox" value="314">营口
+<input id="region-234" name="province" type="checkbox" value="234">吉林
+<input id="region-235" name="city" type="checkbox" value="235">白城
+<input id="region-237" name="city" type="checkbox" value="237">白山
+<input id="region-238" name="city" type="checkbox" value="238">长春
+<input id="region-239" name="city" type="checkbox" value="239">吉林
+<input id="region-241" name="city" type="checkbox" value="241">辽源
+<input id="region-242" name="city" type="checkbox" value="242">四平
+<input id="region-244" name="city" type="checkbox" value="244">松原
+<input id="region-246" name="city" type="checkbox" value="246">通化
+<input id="region-249" name="city" type="checkbox" value="249">延边朝鲜族自治州
+<input id="region-165" name="province" type="checkbox" value="165">黑龙江
+<input id="region-166" name="city" type="checkbox" value="166">大庆
+<input id="region-167" name="city" type="checkbox" value="167">哈尔滨
+<input id="region-169" name="city" type="checkbox" value="169">鹤岗
+<input id="region-170" name="city" type="checkbox" value="170">黑河
+<input id="region-173" name="city" type="checkbox" value="173">鸡西
+<input id="region-174" name="city" type="checkbox" value="174">佳木斯
+<input id="region-176" name="city" type="checkbox" value="176">牡丹江
+<input id="region-178" name="city" type="checkbox" value="178">七台河
+<input id="region-179" name="city" type="checkbox" value="179">齐齐哈尔
+<input id="region-180" name="city" type="checkbox" value="180">双鸭山
+<input id="region-181" name="city" type="checkbox" value="181">绥化
+<input id="region-183" name="city" type="checkbox" value="183">伊春
+<input id="region-622" name="city" type="checkbox" value="622">大兴安岭
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">华东地区
+<input id="region-417" name="province" type="checkbox" value="417">上海
+<input id="region-255" name="province" type="checkbox" value="255">江苏
+<input id="region-256" name="city" type="checkbox" value="256">常州
+<input id="region-257" name="city" type="checkbox" value="257">淮安
+<input id="region-259" name="city" type="checkbox" value="259">连云港
+<input id="region-260" name="city" type="checkbox" value="260">南京
+<input id="region-261" name="city" type="checkbox" value="261">南通
+<input id="region-262" name="city" type="checkbox" value="262">苏州
+<input id="region-265" name="city" type="checkbox" value="265">宿迁
+<input id="region-266" name="city" type="checkbox" value="266">泰州
+<input id="region-269" name="city" type="checkbox" value="269">无锡
+<input id="region-272" name="city" type="checkbox" value="272">徐州
+<input id="region-273" name="city" type="checkbox" value="273">盐城
+<input id="region-275" name="city" type="checkbox" value="275">扬州
+<input id="region-277" name="city" type="checkbox" value="277">镇江
+<input id="region-508" name="province" type="checkbox" value="508">浙江
+<input id="region-509" name="city" type="checkbox" value="509">杭州
+<input id="region-511" name="city" type="checkbox" value="511">湖州
+<input id="region-512" name="city" type="checkbox" value="512">嘉兴
+<input id="region-514" name="city" type="checkbox" value="514">金华
+<input id="region-518" name="city" type="checkbox" value="518">丽水
+<input id="region-519" name="city" type="checkbox" value="519">宁波
+<input id="region-522" name="city" type="checkbox" value="522">绍兴
+<input id="region-523" name="city" type="checkbox" value="523">台州
+<input id="region-526" name="city" type="checkbox" value="526">温州
+<input id="region-528" name="city" type="checkbox" value="528">舟山
+<input id="region-529" name="city" type="checkbox" value="529">衢州
+<input id="region-39" name="province" type="checkbox" value="39">福建
+<input id="region-40" name="city" type="checkbox" value="40">福州
+<input id="region-41" name="city" type="checkbox" value="41">龙岩
+<input id="region-42" name="city" type="checkbox" value="42">南平
+<input id="region-44" name="city" type="checkbox" value="44">宁德
+<input id="region-45" name="city" type="checkbox" value="45">莆田
+<input id="region-46" name="city" type="checkbox" value="46">泉州
+<input id="region-48" name="city" type="checkbox" value="48">三明
+<input id="region-50" name="city" type="checkbox" value="50">厦门
+<input id="region-51" name="city" type="checkbox" value="51">漳州
+<input id="region-1" name="province" type="checkbox" value="1">安徽
+<input id="region-2" name="city" type="checkbox" value="2">安庆
+<input id="region-3" name="city" type="checkbox" value="3">蚌埠
+<input id="region-4" name="city" type="checkbox" value="4">巢湖
+<input id="region-5" name="city" type="checkbox" value="5">池州
+<input id="region-6" name="city" type="checkbox" value="6">滁州
+<input id="region-7" name="city" type="checkbox" value="7">阜阳
+<input id="region-8" name="city" type="checkbox" value="8">合肥
+<input id="region-9" name="city" type="checkbox" value="9">淮北
+<input id="region-10" name="city" type="checkbox" value="10">淮南
+<input id="region-11" name="city" type="checkbox" value="11">黄山
+<input id="region-12" name="city" type="checkbox" value="12">六安
+<input id="region-13" name="city" type="checkbox" value="13">马鞍山
+<input id="region-14" name="city" type="checkbox" value="14">宿州
+<input id="region-15" name="city" type="checkbox" value="15">铜陵
+<input id="region-16" name="city" type="checkbox" value="16">芜湖
+<input id="region-17" name="city" type="checkbox" value="17">宣城
+<input id="region-18" name="city" type="checkbox" value="18">亳州
+<input id="region-368" name="province" type="checkbox" value="368">山东
+<input id="region-369" name="city" type="checkbox" value="369">滨州
+<input id="region-370" name="city" type="checkbox" value="370">德州
+<input id="region-371" name="city" type="checkbox" value="371">东营
+<input id="region-372" name="city" type="checkbox" value="372">菏泽
+<input id="region-373" name="city" type="checkbox" value="373">济南
+<input id="region-374" name="city" type="checkbox" value="374">济宁
+<input id="region-376" name="city" type="checkbox" value="376">莱芜
+<input id="region-377" name="city" type="checkbox" value="377">聊城
+<input id="region-379" name="city" type="checkbox" value="379">临沂
+<input id="region-380" name="city" type="checkbox" value="380">青岛
+<input id="region-381" name="city" type="checkbox" value="381">日照
+<input id="region-382" name="city" type="checkbox" value="382">泰安
+<input id="region-384" name="city" type="checkbox" value="384">威海
+<input id="region-386" name="city" type="checkbox" value="386">潍坊
+<input id="region-389" name="city" type="checkbox" value="389">烟台
+<input id="region-390" name="city" type="checkbox" value="390">枣庄
+<input id="region-392" name="city" type="checkbox" value="392">淄博
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">华中地区
+<input id="region-145" name="province" type="checkbox" value="145">河南
+<input id="region-146" name="city" type="checkbox" value="146">安阳
+<input id="region-147" name="city" type="checkbox" value="147">鹤壁
+<input id="region-148" name="city" type="checkbox" value="148">焦作
+<input id="region-149" name="city" type="checkbox" value="149">开封
+<input id="region-150" name="city" type="checkbox" value="150">洛阳
+<input id="region-151" name="city" type="checkbox" value="151">南阳
+<input id="region-152" name="city" type="checkbox" value="152">平顶山
+<input id="region-153" name="city" type="checkbox" value="153">三门峡
+<input id="region-155" name="city" type="checkbox" value="155">商丘
+<input id="region-156" name="city" type="checkbox" value="156">新乡
+<input id="region-157" name="city" type="checkbox" value="157">信阳
+<input id="region-159" name="city" type="checkbox" value="159">许昌
+<input id="region-160" name="city" type="checkbox" value="160">郑州
+<input id="region-161" name="city" type="checkbox" value="161">周口
+<input id="region-162" name="city" type="checkbox" value="162">驻马店
+<input id="region-163" name="city" type="checkbox" value="163">漯河
+<input id="region-164" name="city" type="checkbox" value="164">濮阳
+<input id="region-621" name="city" type="checkbox" value="621">济源
+<input id="region-184" name="province" type="checkbox" value="184">湖北
+<input id="region-185" name="city" type="checkbox" value="185">鄂州
+<input id="region-186" name="city" type="checkbox" value="186">恩施
+<input id="region-188" name="city" type="checkbox" value="188">黄冈
+<input id="region-191" name="city" type="checkbox" value="191">黄石
+<input id="region-192" name="city" type="checkbox" value="192">荆门
+<input id="region-193" name="city" type="checkbox" value="193">荆州
+<input id="region-196" name="city" type="checkbox" value="196">十堰
+<input id="region-198" name="city" type="checkbox" value="198">随州
+<input id="region-200" name="city" type="checkbox" value="200">武汉
+<input id="region-203" name="city" type="checkbox" value="203">咸宁
+<input id="region-205" name="city" type="checkbox" value="205">襄阳
+<input id="region-207" name="city" type="checkbox" value="207">孝感
+<input id="region-210" name="city" type="checkbox" value="210">宜昌
+<input id="region-623" name="city" type="checkbox" value="623">潜江
+<input id="region-624" name="city" type="checkbox" value="624">神农架
+<input id="region-199" name="city" type="checkbox" value="199">天门
+<input id="region-202" name="city" type="checkbox" value="202">仙桃
+<input id="region-212" name="province" type="checkbox" value="212">湖南
+<input id="region-213" name="city" type="checkbox" value="213">常德
+<input id="region-214" name="city" type="checkbox" value="214">长沙
+<input id="region-215" name="city" type="checkbox" value="215">郴州
+<input id="region-216" name="city" type="checkbox" value="216">衡阳
+<input id="region-218" name="city" type="checkbox" value="218">怀化
+<input id="region-220" name="city" type="checkbox" value="220">娄底
+<input id="region-223" name="city" type="checkbox" value="223">邵阳
+<input id="region-224" name="city" type="checkbox" value="224">湘潭
+<input id="region-227" name="city" type="checkbox" value="227">益阳
+<input id="region-228" name="city" type="checkbox" value="228">永州
+<input id="region-230" name="city" type="checkbox" value="230">岳阳
+<input id="region-232" name="city" type="checkbox" value="232">张家界
+<input id="region-233" name="city" type="checkbox" value="233">株洲
+<input id="region-585" name="city" type="checkbox" value="585">湘西
+<input id="region-279" name="province" type="checkbox" value="279">江西
+<input id="region-280" name="city" type="checkbox" value="280">抚州
+<input id="region-282" name="city" type="checkbox" value="282">赣州
+<input id="region-283" name="city" type="checkbox" value="283">吉安
+<input id="region-285" name="city" type="checkbox" value="285">景德镇
+<input id="region-286" name="city" type="checkbox" value="286">九江
+<input id="region-288" name="city" type="checkbox" value="288">南昌
+<input id="region-289" name="city" type="checkbox" value="289">萍乡
+<input id="region-290" name="city" type="checkbox" value="290">上饶
+<input id="region-291" name="city" type="checkbox" value="291">新余
+<input id="region-292" name="city" type="checkbox" value="292">宜春
+<input id="region-293" name="city" type="checkbox" value="293">鹰潭
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">华南地区
+<input id="region-68" name="province" type="checkbox" value="68">广东
+<input id="region-69" name="city" type="checkbox" value="69">潮州
+<input id="region-70" name="city" type="checkbox" value="70">东莞
+<input id="region-71" name="city" type="checkbox" value="71">佛山
+<input id="region-73" name="city" type="checkbox" value="73">广州
+<input id="region-74" name="city" type="checkbox" value="74">河源
+<input id="region-75" name="city" type="checkbox" value="75">惠州
+<input id="region-76" name="city" type="checkbox" value="76">江门
+<input id="region-77" name="city" type="checkbox" value="77">揭阳
+<input id="region-78" name="city" type="checkbox" value="78">茂名
+<input id="region-79" name="city" type="checkbox" value="79">梅州
+<input id="region-80" name="city" type="checkbox" value="80">清远
+<input id="region-81" name="city" type="checkbox" value="81">汕头
+<input id="region-83" name="city" type="checkbox" value="83">汕尾
+<input id="region-84" name="city" type="checkbox" value="84">韶关
+<input id="region-85" name="city" type="checkbox" value="85">深圳
+<input id="region-86" name="city" type="checkbox" value="86">阳江
+<input id="region-87" name="city" type="checkbox" value="87">云浮
+<input id="region-88" name="city" type="checkbox" value="88">湛江
+<input id="region-89" name="city" type="checkbox" value="89">肇庆
+<input id="region-90" name="city" type="checkbox" value="90">中山
+<input id="region-91" name="city" type="checkbox" value="91">珠海
+<input id="region-120" name="province" type="checkbox" value="120">海南
+<input id="region-121" name="city" type="checkbox" value="121">海口
+<input id="region-122" name="city" type="checkbox" value="122">三亚
+<input id="region-609" name="city" type="checkbox" value="609">白沙
+<input id="region-610" name="city" type="checkbox" value="610">昌江
+<input id="region-611" name="city" type="checkbox" value="611">澄迈
+<input id="region-612" name="city" type="checkbox" value="612">定安
+<input id="region-613" name="city" type="checkbox" value="613">东方
+<input id="region-614" name="city" type="checkbox" value="614">乐东
+<input id="region-615" name="city" type="checkbox" value="615">琼海
+<input id="region-616" name="city" type="checkbox" value="616">万宁
+<input id="region-617" name="city" type="checkbox" value="617">文昌
+<input id="region-618" name="city" type="checkbox" value="618">五指山
+<input id="region-619" name="city" type="checkbox" value="619">保亭
+<input id="region-620" name="city" type="checkbox" value="620">陵水
+<input id="region-92" name="province" type="checkbox" value="92">广西
+<input id="region-93" name="city" type="checkbox" value="93">百色
+<input id="region-94" name="city" type="checkbox" value="94">北海
+<input id="region-96" name="city" type="checkbox" value="96">防城港
+<input id="region-98" name="city" type="checkbox" value="98">桂林
+<input id="region-99" name="city" type="checkbox" value="99">贵港
+<input id="region-100" name="city" type="checkbox" value="100">河池
+<input id="region-102" name="city" type="checkbox" value="102">贺州
+<input id="region-104" name="city" type="checkbox" value="104">柳州
+<input id="region-105" name="city" type="checkbox" value="105">南宁
+<input id="region-106" name="city" type="checkbox" value="106">钦州
+<input id="region-107" name="city" type="checkbox" value="107">梧州
+<input id="region-108" name="city" type="checkbox" value="108">玉林
+<input id="region-581" name="city" type="checkbox" value="581">来宾
+<input id="region-580" name="city" type="checkbox" value="580">崇左
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">西南地区
+<input id="region-532" name="province" type="checkbox" value="532">重庆
+<input id="region-438" name="province" type="checkbox" value="438">四川
+<input id="region-440" name="city" type="checkbox" value="440">巴中
+<input id="region-441" name="city" type="checkbox" value="441">成都
+<input id="region-442" name="city" type="checkbox" value="442">达州
+<input id="region-443" name="city" type="checkbox" value="443">德阳
+<input id="region-444" name="city" type="checkbox" value="444">甘孜藏族自治州
+<input id="region-445" name="city" type="checkbox" value="445">广安
+<input id="region-447" name="city" type="checkbox" value="447">广元
+<input id="region-448" name="city" type="checkbox" value="448">乐山
+<input id="region-450" name="city" type="checkbox" value="450">眉山
+<input id="region-451" name="city" type="checkbox" value="451">绵阳
+<input id="region-452" name="city" type="checkbox" value="452">南充
+<input id="region-453" name="city" type="checkbox" value="453">内江
+<input id="region-454" name="city" type="checkbox" value="454">攀枝花
+<input id="region-455" name="city" type="checkbox" value="455">遂宁
+<input id="region-456" name="city" type="checkbox" value="456">雅安
+<input id="region-457" name="city" type="checkbox" value="457">宜宾
+<input id="region-458" name="city" type="checkbox" value="458">资阳
+<input id="region-459" name="city" type="checkbox" value="459">自贡
+<input id="region-460" name="city" type="checkbox" value="460">泸州
+<input id="region-600" name="city" type="checkbox" value="600">凉山
+<input id="region-601" name="city" type="checkbox" value="601">阿坝
+<input id="region-488" name="province" type="checkbox" value="488">云南
+<input id="region-489" name="city" type="checkbox" value="489">保山
+<input id="region-490" name="city" type="checkbox" value="490">楚雄
+<input id="region-491" name="city" type="checkbox" value="491">大理
+<input id="region-492" name="city" type="checkbox" value="492">德宏
+<input id="region-497" name="city" type="checkbox" value="497">昆明
+<input id="region-499" name="city" type="checkbox" value="499">丽江
+<input id="region-500" name="city" type="checkbox" value="500">临沧
+<input id="region-502" name="city" type="checkbox" value="502">曲靖
+<input id="region-503" name="city" type="checkbox" value="503">普洱
+<input id="region-504" name="city" type="checkbox" value="504">文山
+<input id="region-506" name="city" type="checkbox" value="506">玉溪
+<input id="region-507" name="city" type="checkbox" value="507">昭通
+<input id="region-605" name="city" type="checkbox" value="605">西双版纳
+<input id="region-606" name="city" type="checkbox" value="606">红河
+<input id="region-607" name="city" type="checkbox" value="607">怒江
+<input id="region-608" name="city" type="checkbox" value="608">迪庆
+<input id="region-109" name="province" type="checkbox" value="109">贵州
+<input id="region-110" name="city" type="checkbox" value="110">安顺
+<input id="region-111" name="city" type="checkbox" value="111">毕节
+<input id="region-112" name="city" type="checkbox" value="112">贵阳
+<input id="region-113" name="city" type="checkbox" value="113">六盘水
+<input id="region-117" name="city" type="checkbox" value="117">铜仁
+<input id="region-118" name="city" type="checkbox" value="118">遵义
+<input id="region-582" name="city" type="checkbox" value="582">黔东南
+<input id="region-583" name="city" type="checkbox" value="583">黔南
+<input id="region-584" name="city" type="checkbox" value="584">黔西南
+<input id="region-463" name="province" type="checkbox" value="463">西藏自治区
+<input id="region-464" name="city" type="checkbox" value="464">阿里
+<input id="region-465" name="city" type="checkbox" value="465">昌都
+<input id="region-466" name="city" type="checkbox" value="466">拉萨
+<input id="region-467" name="city" type="checkbox" value="467">林芝
+<input id="region-468" name="city" type="checkbox" value="468">那曲
+<input id="region-469" name="city" type="checkbox" value="469">日喀则
+<input id="region-470" name="city" type="checkbox" value="470">山南
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">西北地区
+<input id="region-406" name="province" type="checkbox" value="406">陕西
+<input id="region-407" name="city" type="checkbox" value="407">安康
+<input id="region-408" name="city" type="checkbox" value="408">宝鸡
+<input id="region-409" name="city" type="checkbox" value="409">汉中
+<input id="region-410" name="city" type="checkbox" value="410">商洛
+<input id="region-411" name="city" type="checkbox" value="411">铜川
+<input id="region-412" name="city" type="checkbox" value="412">渭南
+<input id="region-413" name="city" type="checkbox" value="413">西安
+<input id="region-414" name="city" type="checkbox" value="414">咸阳
+<input id="region-415" name="city" type="checkbox" value="415">延安
+<input id="region-416" name="city" type="checkbox" value="416">榆林
+<input id="region-52" name="province" type="checkbox" value="52">甘肃
+<input id="region-53" name="city" type="checkbox" value="53">白银
+<input id="region-54" name="city" type="checkbox" value="54">定西
+<input id="region-55" name="city" type="checkbox" value="55">嘉峪关
+<input id="region-56" name="city" type="checkbox" value="56">金昌
+<input id="region-57" name="city" type="checkbox" value="57">酒泉
+<input id="region-59" name="city" type="checkbox" value="59">兰州
+<input id="region-60" name="city" type="checkbox" value="60">临夏
+<input id="region-61" name="city" type="checkbox" value="61">陇南
+<input id="region-62" name="city" type="checkbox" value="62">平凉
+<input id="region-63" name="city" type="checkbox" value="63">庆阳
+<input id="region-65" name="city" type="checkbox" value="65">天水
+<input id="region-66" name="city" type="checkbox" value="66">武威
+<input id="region-67" name="city" type="checkbox" value="67">张掖
+<input id="region-579" name="city" type="checkbox" value="579">甘南
+<input id="region-357" name="province" type="checkbox" value="357">青海
+<input id="region-361" name="city" type="checkbox" value="361">海东
+<input id="region-366" name="city" type="checkbox" value="366">西宁
+<input id="region-367" name="city" type="checkbox" value="367">玉树
+<input id="region-592" name="city" type="checkbox" value="592">海北
+<input id="region-593" name="city" type="checkbox" value="593">海南
+<input id="region-594" name="city" type="checkbox" value="594">黄南
+<input id="region-595" name="city" type="checkbox" value="595">果洛
+<input id="region-596" name="city" type="checkbox" value="596">海西
+<input id="region-351" name="province" type="checkbox" value="351">宁夏回族自治区
+<input id="region-352" name="city" type="checkbox" value="352">固原
+<input id="region-353" name="city" type="checkbox" value="353">石嘴山
+<input id="region-354" name="city" type="checkbox" value="354">吴忠
+<input id="region-356" name="city" type="checkbox" value="356">银川
+<input id="region-591" name="city" type="checkbox" value="591">中卫
+<input id="region-471" name="province" type="checkbox" value="471">新疆维吾尔自治区
+<input id="region-472" name="city" type="checkbox" value="472">阿克苏
+<input id="region-473" name="city" type="checkbox" value="473">阿勒泰
+<input id="region-476" name="city" type="checkbox" value="476">昌吉
+<input id="region-477" name="city" type="checkbox" value="477">哈密
+<input id="region-478" name="city" type="checkbox" value="478">和田
+<input id="region-479" name="city" type="checkbox" value="479">喀什
+<input id="region-480" name="city" type="checkbox" value="480">克拉玛依
+<input id="region-483" name="city" type="checkbox" value="483">塔城
+<input id="region-484" name="city" type="checkbox" value="484">吐鲁番
+<input id="region-485" name="city" type="checkbox" value="485">乌鲁木齐
+<input id="region-486" name="city" type="checkbox" value="486">伊犁
+<input id="region-602" name="city" type="checkbox" value="602">克孜勒苏柯尔克孜
+<input id="region-603" name="city" type="checkbox" value="603">博尔塔拉
+<input id="region-604" name="city" type="checkbox" value="604">巴音郭楞
+<input id="region-625" name="city" type="checkbox" value="625">五家渠
+<input id="region-626" name="city" type="checkbox" value="626">阿拉尔
+<input mdata="3.5.1.1.1.2" name="area" type="checkbox">其他地区
+<input id="region-578" name="province" type="checkbox" value="578">台湾
+<input id="region-599" name="province" type="checkbox" value="599">香港
+<input id="region-576" name="province" type="checkbox" value="576">澳门
+<input id="region-574" name="province" type="checkbox" value="574">国外

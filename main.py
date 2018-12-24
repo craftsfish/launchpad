@@ -30,6 +30,7 @@ from vault.jdorder import *
 from vault.sync import *
 from vault.report import *
 from vault.synchronization.wkq import *
+from vault.synchronization.region import *
 
 @transaction.atomic
 def test():
@@ -62,6 +63,7 @@ options = (
 	["ijdwc", "导入京东钱包结算信息", Sync.import_jd_wallet_clear],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
 	["im", "导入货币", Money.Import],
+	["ir", "导入地域信息", import_region],
 	["irqwy", "导入人气无忧刷单数据", import_rqwy],
 	["itmc", "导入天猫结算信息", Sync.import_tm_clear],
 	["itmcm", "导入天猫商品映射", Tmcommoditymap.Import],

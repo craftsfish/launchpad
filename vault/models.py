@@ -72,5 +72,8 @@ class Contact(models.Model):
 		return self.customer.name + ': ' + self.phone
 
 class Address(models.Model):
-	name = models.CharField(max_length=120)
+	name = models.CharField(max_length=120, unique=True)
 	parent = models.ForeignKey('self', verbose_name="上级", null=True, blank=True, related_name="children")
+
+	def __str__(self):
+		return self.name
