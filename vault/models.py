@@ -74,33 +74,44 @@ class Contact(models.Model):
 class Address(models.Model):
 	name = models.CharField(max_length=120, unique=True)
 	parent = models.ForeignKey('self', verbose_name="上级", null=True, blank=True, related_name="children")
+	level = models.IntegerField('层级', default=0)
 
 	def __str__(self):
 		return self.name
 
 	@staticmethod
 	def add(address):
-		parent = None
+		province = None
+		city = None
 		areas = Address.objects.filter(parent=None)
 		provinces = Address.objects.filter(parent__in=areas)
 		for i in provinces:
 			#print "{}: {} {} {} {}".format(i.name, len(i.name), type(i.name.encode('utf-8')), address, type(address))
 			idx = address.find(i.name)
 			if idx == 0:
-				parent = i
-				address = address[idx+len(i.name.encode('utf-8')):]
+				province = i
+				address = address[len(i.name.encode('utf-8')):]
 				break
-		if parent == None:
+		if province == None:
 			print address
-			return
-		for i in Address.objects.filter(parent=parent):
+			return None
+		if address.find('省') == 0:
+				address = address[len('省'.encode('utf-8')):]
+		for i in Address.objects.filter(parent=province):
 			idx = address.find(i.name)
-			if idx != -1 and idx < 30:
-				parent = i
+			if idx == 0:
+				city = i
 				address = address[idx+len(i.name.encode('utf-8')):]
 				break
-		if parent == None:
+		if city == None and not len(Address.objects.filter(parent=province)):
 			print address
-			return
+			return None
+		if address.find('市') == 0:
+				address = address[len('市'.encode('utf-8')):]
+		parent = city
+		if parent == None:
+			parent = province
+		a = Address(name=address, parent=parent)
 		#print "{} {} {}".format(parent.parent, parent, address)
-		#Address(name=address, parent=parent).save()
+		a.save()
+		return a

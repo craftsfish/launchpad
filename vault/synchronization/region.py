@@ -11,21 +11,21 @@ def import_region():
 		i = line[0]
 		if re.compile("area").search(i):
 			a = i[i.find('>')+1:]
-			a, created = Address.objects.get_or_create(name=a, parent=None)
+			a, created = Address.objects.get_or_create(name=a, parent=None, level=3)
 			if created:
 				print "增加地区: {}".format(a.name)
 			a.save()
 			p.area = a
 		elif re.compile("province").search(i):
 			a = i[i.find('>')+1:]
-			a, created = Address.objects.get_or_create(name=a, parent=p.area)
+			a, created = Address.objects.get_or_create(name=a, parent=p.area, level=2)
 			if created:
 				print "增加省份: {}".format(a.name)
 			a.save()
 			p.province = a
 		elif re.compile("city").search(i):
 			a = i[i.find('>')+1:]
-			a, created = Address.objects.get_or_create(name=a, parent=p.province)
+			a, created = Address.objects.get_or_create(name=a, parent=p.province, level=1)
 			if created:
 				print "增加城市: {}".format(a.name)
 			a.save()
