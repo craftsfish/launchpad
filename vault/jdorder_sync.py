@@ -54,10 +54,11 @@ def import_jd_order():
 			o.create_or_update_invoice_shipment(org, i, v.id, commodities, v.number, delivery)
 		o.update()
 
-		if info.booktime < begin_of_day() - timedelta(1):
+		if info.booktime < begin_of_day() - timedelta(28):
 			if o.address == None and o.counterfeit == None:
-				Address.add(info.address)
-				#print "{}: {}, {}, {}".format(info.name, info.phone, info.address, info.booktime)
+				a = Address.add(info.address)
+				if a:
+					print "{}: {}, {}, {}, {}, {}, {}".format(info.name, info.phone, info.address, info.booktime, a.parent.parent, a.parent, a)
 		o.save()
 
 	def __handler_transaction_raw(info):

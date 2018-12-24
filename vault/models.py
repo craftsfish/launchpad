@@ -72,9 +72,12 @@ class Contact(models.Model):
 		return self.customer.name + ': ' + self.phone
 
 class Address(models.Model):
-	name = models.CharField(max_length=120, unique=True)
+	name = models.CharField(max_length=120)
 	parent = models.ForeignKey('self', verbose_name="上级", null=True, blank=True, related_name="children")
 	level = models.IntegerField('层级', default=0)
+
+	class Meta:
+		unique_together = ("name", "parent")
 
 	def __str__(self):
 		return self.name
@@ -83,10 +86,8 @@ class Address(models.Model):
 	def add(address):
 		province = None
 		city = None
-		areas = Address.objects.filter(parent=None)
-		provinces = Address.objects.filter(parent__in=areas)
+		provinces = Address.objects.filter(level=2)
 		for i in provinces:
-			#print "{}: {} {} {} {}".format(i.name, len(i.name), type(i.name.encode('utf-8')), address, type(address))
 			idx = address.find(i.name)
 			if idx == 0:
 				province = i
@@ -97,15 +98,16 @@ class Address(models.Model):
 			return None
 		if address.find('省') == 0:
 				address = address[len('省'.encode('utf-8')):]
-		for i in Address.objects.filter(parent=province):
-			idx = address.find(i.name)
-			if idx == 0:
-				city = i
-				address = address[idx+len(i.name.encode('utf-8')):]
-				break
-		if city == None and not len(Address.objects.filter(parent=province)):
-			print address
-			return None
+		if len(Address.objects.filter(parent=province, level=1)):
+			for i in Address.objects.filter(parent=province):
+				idx = address.find(i.name)
+				if idx == 0:
+					city = i
+					address = address[idx+len(i.name.encode('utf-8')):]
+					break
+			if city == None:
+				print address
+				return None
 		if address.find('市') == 0:
 				address = address[len('市'.encode('utf-8')):]
 		parent = city
