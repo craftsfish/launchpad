@@ -2,6 +2,9 @@
 from django.db import transaction
 from ground import *
 from tmorder import *
+from .models import Address
+from .models import Customer
+from .models import Contact
 
 def cancel_shipping_transaction(task):
 	for i in task.transactions.filter(desc__contains=".出货.").order_by("id"):
@@ -12,7 +15,7 @@ def cancel_shipping_transaction(task):
 		s.save()
 
 def import_tm_order_list():
-	def __handle_list(order_id, time, status, sale, organization, repository, remark):
+	def __handle_list(order_id, time, status, sale, organization, repository, remark, address, phone, name):
 		#preparation
 		o, created = Tmorder.objects.get_or_create(oid=order_id, desc="天猫订单")
 		o.status = Tmorder.str2status(status)
@@ -40,8 +43,32 @@ def import_tm_order_list():
 						print "[警告!!!]天猫订单{}: 备注为{}刷单，系统未标记".format(o.oid, mark_as)
 				break
 
-		#save
+		#collect customer information
+		if o.address == None:
+			a = Address.add(address)
+			if a:
+				o.address = a
+		join = time_2_seconds(time)
+		counterfeit_flag = False
+		if o.counterfeit:
+			counterfeit_flag = True
+		if Contact.objects.filter(phone=phone).exists():
+			con = Contact.objects.get(phone=phone)
+			cus = con.customer
+			if name not in cus.name.split(','):
+				cus.name += ',' + name
+			if cus.join >= join:
+				cus.join = join
+				cus.counterfeit = counterfeit_flag
+			cus.save()
+		else:
+			cus = Customer(name=name, join=join, counterfeit=counterfeit_flag)
+			cus.save()
+			con = Contact(phone=phone, customer=cus)
+			con.save()
+		o.contact = con
 		o.save()
+
 		if status == "交易关闭": #商品明细有可能不出现在详情表中
 			cancel_shipping_transaction(o.task_ptr)
 
@@ -54,12 +81,19 @@ def import_tm_order_list():
 		when = utc_2_datetime(cst_2_utc(get_column_value(title, line, "订单创建时间"), "%Y-%m-%d %H:%M:%S"))
 		sale = Decimal(get_column_value(title, line, "买家应付货款"))
 		remark = get_column_value(title, line, "订单备注")
+		address = get_column_value(title, line, "收货地址 ")
+		phone = get_column_value(title, line, "联系手机")
+		if phone == "'null":
+			phone = get_column_value(title, line, "联系电话 ")
+			print phone
+		phone = phone[1:]
+		name = get_column_value(title, line, "收货人姓名")
 		with transaction.atomic():
 			org = Organization.objects.get(name="泰福高腾复专卖店")
 			repo = Repository.objects.get(name="孤山仓")
 			if re.compile("南京仓").search(remark):
 				repo = Repository.objects.get(name="南京仓")
-			__handle_list(order_id, when, status, sale, org, repo, remark)
+			__handle_list(order_id, when, status, sale, org, repo, remark, address, phone, name)
 	csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)
 
 class Tmtransaction:

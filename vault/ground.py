@@ -52,9 +52,10 @@ def get_column_values(table, row, *columns):
 	return result
 
 def get_int_with_default(data, default):
-	if data != None:
+	try:
 		return int(data)
-	return default
+	except:
+		return default
 
 def get_decimal_with_default(data, default):
 	if data != None:
@@ -124,6 +125,9 @@ def now():
 
 def now_as_seconds():
 	return int(time.time())
+
+def time_2_seconds(t):
+	return time.mktime(t.timetuple())
 
 def begin_of_day():
 	return timezone.now().astimezone(timezone.get_current_timezone()).replace(hour=0, minute=0, second=0, microsecond = 0)

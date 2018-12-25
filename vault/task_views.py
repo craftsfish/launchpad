@@ -37,10 +37,10 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 		private.clear_url = reverse('task_clear_bill', kwargs={'pk': self.object.id})
 		private.settle_url = '#'
 		if self.request.user.has_perm('is_governor'):
-			private.governor = (
+			private.governor = [
 				("中和任务", reverse('task_revert', kwargs={'pk': self.object.id})),
 				("利润分析", reverse('task_profit', kwargs={'pk': self.object.id})),
-			)
+			]
 			private.clear_url = reverse('task_clear', kwargs={'pk': self.object.id})
 			private.settle_url = reverse('task_settle', kwargs={'pk': self.object.id})
 
@@ -78,6 +78,8 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 		if hasattr(self.object, "tmorder"):
 			order = Tmorder.objects.get(pk=self.object.id)
 		if order:
+			private.governor.append(("客户信息", reverse('customer_list', kwargs={'key': order.contact.phone})))
+			order.customer = order.contact.customer
 			context['order'] = order
 
 		return context

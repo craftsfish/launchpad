@@ -58,33 +58,29 @@ def import_jd_order():
 		o.update()
 
 		#collect customer information
-		if info.booktime < begin_of_day():
-			if o.address == None:
-				a = Address.add(info.address)
-				if a:
-					o.address = a
-			join = time.mktime(info.booktime.timetuple())
-			counterfeit_flag = False
-			if o.counterfeit:
-				counterfeit_flag = True
-			if Contact.objects.filter(phone=info.phone).exists():
-				con = Contact.objects.get(phone=info.phone)
-				cus = con.customer
-				if info.name not in cus.name.split(','):
-					cus.name += ',' + info.name
-				if cus.join > join:
-					cus.join = join
-					if cus.counterfeit != counterfeit_flag:
-						print "更新刷手标记, {}".format(cus)
-					cus.counterfeit = counterfeit_flag
-				cus.save()
-			else:
-				cus = Customer(name=info.name, join=join, counterfeit=counterfeit_flag)
-				cus.save()
-				con = Contact(phone=info.phone, customer=cus)
-				con.save()
-			o.contact = con
-
+		if o.address == None:
+			a = Address.add(info.address)
+			if a:
+				o.address = a
+		join = time.mktime(info.booktime.timetuple())
+		counterfeit_flag = False
+		if o.counterfeit:
+			counterfeit_flag = True
+		if Contact.objects.filter(phone=info.phone).exists():
+			con = Contact.objects.get(phone=info.phone)
+			cus = con.customer
+			if info.name not in cus.name.split(','):
+				cus.name += ',' + info.name
+			if cus.join >= join:
+				cus.join = join
+				cus.counterfeit = counterfeit_flag
+			cus.save()
+		else:
+			cus = Customer(name=info.name, join=join, counterfeit=counterfeit_flag)
+			cus.save()
+			con = Contact(phone=info.phone, customer=cus)
+			con.save()
+		o.contact = con
 		o.save()
 
 	def __handler_transaction_raw(info):
