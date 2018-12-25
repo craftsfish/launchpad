@@ -150,3 +150,11 @@ def is_tm_order(s):
 def is_jd_order(s):
 	criteria = r'^\d{11,11}$'
 	return re.compile(criteria).match(s)
+
+#def adt_now_utc()
+#def adt_now_local()
+#def adt_now_seconds()
+#def adt_seconds_2_utc()
+#def adt_seconds_2_local()
+#def adt_utc_2_seconds()
+#def adt_local_2_seconds()
