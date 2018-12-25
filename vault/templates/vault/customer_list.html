@@ -40,11 +40,13 @@
 			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
 			{% endif %}
 			<td>
-				<ul>
-				{% for c in object.contacts %}
-					<li>{{c.phone}}</li>
-				{% endfor %}
-				</ul>
+				<table cellpadding="4">
+					{% for c in object.contacts %}
+					<tr>
+						<td align="left">{{c.phone}}</td>
+					</tr>
+					{% endfor %}
+				</table>
 			</td>
 		</tr>
 		<tr>
@@ -56,6 +58,7 @@
 			<th>订单编号</th>
 			<th>刷单平台</th>
 			<th>订单金额</th>
+			<th>出货明细</th>
 		</tr>
 		<tr>
 				{% for o in object.orders %}
@@ -65,6 +68,16 @@
 					<td>{{o.oid}}</td>
 					<td align="right">{{o.counterfeit}}</td>
 					<td align="right">{{o.sale}}</td>
+					<td>
+						<table cellpadding="4">
+							{% for c in o.shipouts %}
+							<tr>
+								<td align="left">{{c}}</td>
+								<td align="right">{{c.n}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+					</td>
 				</tr>
 				{% endfor %}
 			</table>

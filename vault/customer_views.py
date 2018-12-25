@@ -5,6 +5,19 @@ from django.views.generic import ListView
 from django.views.generic import RedirectView
 from .security import *
 
+def task_shipout(task):
+	result = {}
+	for t in task.transactions.all():
+		for s in t.splits.all():
+			if s.account.category not in [2, 3]:
+				continue
+			if hasattr(s.account.item, 'commodity'):
+				cid = s.account.item.id
+				if result.get(cid) == None:
+					result[cid] = 0
+				result[cid] += s.change * s.account.sign()
+	return result
+
 class CustomerListView(SecurityLoginRequiredMixin, ListView):
 	model = Customer
 	paginate_by = 1
@@ -33,6 +46,12 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 			def __key(o):
 				return o.time
 			t.orders = sorted(list(t.jdorders) + list(t.tmorders), key=__key)
+			for o in t.orders:
+				o.shipouts = []
+				for cid, v in task_shipout(o).items():
+					c = Commodity.objects.get(id=cid)
+					c.n = int(v)
+					o.shipouts.append(c)
 		return context
 
 class CustomerRecruitView(RedirectView):
