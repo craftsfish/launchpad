@@ -10,6 +10,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 	def get_queryset(self):
 		#if self.kwargs['key'] == 0:
 		return Customer.objects.order_by("counterfeit", 'recruit', 'join')
+		#return Customer.objects.filter(contact__phone='19971579166').order_by("counterfeit", 'recruit', 'join')
 
 	def get_context_data(self, **kwargs):
 		context = super(CustomerListView, self).get_context_data(**kwargs)
