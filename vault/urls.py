@@ -22,6 +22,9 @@ from compound_commodity_views import *
 from customer_views import *
 
 urlpatterns = [
+	#expose to outsider
+	url(r'^$', HelpView.as_view(), name='help'),
+
 	#supplier
 	url(r'^supplier/$', SupplierListView.as_view(), name='supplier_list'),
 
@@ -136,7 +139,6 @@ urlpatterns = [
 	url(r'^misc/pay/wechat/recruit/bonus/$', PayWechatRecruitBonusView.as_view(), name='pay_wechat_recruit_bonus'),
 	url(r'^misc/operation/account/pay/$', OperationAccountPayView.as_view(), name='operation_account_pay'),
 	url(r'^misc/operation/account/receive/$', OperationAccountReceiveView.as_view(), name='operation_account_receive'),
-	url(r'^misc/help/$', HelpView.as_view(), name='help'),
 
 	#chore
 	url(r'^chore/$', ChoreListView.as_view(), name='chore_list'),
