@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 {% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
-{% block header %}客户列表{% endblock %}
+{% block header %}
+	<input type="number" id="id_key" />
+	<a href="javascript:void(0);" onclick ="lookup()">查找  (输入订单编号或者手机号)</a>
+	<br/>
+	客户列表
+{% endblock %}
+
+{% block extra_script %}
+	<script>
+		function lookup(){
+			tid = jQuery("#id_key").val();
+			if (tid != "")
+				window.location.href = `/vault/customer/${tid}/`;
+			else
+				window.location.href = `/vault/customer/0/`;
+		}
+	</script>
+{% endblock %}
 
 {% block content %}
 <div class="col-sm-auto">
@@ -44,8 +61,8 @@
 				{% for o in object.orders %}
 				<tr>
 					<td align="right">{{o.time | date:"Y-m-d H:i:s"}}</td>
-					<td align="right">{{o.desc}}</td>
-					<td><a href="{% url 'task_detail' o.id %}">{{o.oid}}</a></td>
+					<td><a href="{% url 'task_detail' o.id %}">{{o.desc}}</a></td>
+					<td>{{o.oid}}</td>
 					<td align="right">{{o.counterfeit}}</td>
 					<td align="right">{{o.sale}}</td>
 				</tr>

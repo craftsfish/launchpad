@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from .models import *
+from django.db.models import Q
 from django.views.generic import ListView
 from django.views.generic import RedirectView
 from .security import *
@@ -9,9 +10,11 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 	paginate_by = 1
 
 	def get_queryset(self):
-		#if self.kwargs['key'] == 0:
-		return Customer.objects.order_by('recruit', 'counterfeit', 'join')
-		#return Customer.objects.filter(contact__phone='19971579166').order_by("counterfeit", 'recruit', 'join')
+		k = self.kwargs['key']
+		if k == '0':
+			return Customer.objects.order_by('recruit', 'counterfeit', 'join')
+		else:
+			return Customer.objects.filter(Q(contact__phone=k) | Q(contact__jdorder__oid=k) | Q(contact__tmorder__oid=k)).order_by("counterfeit", 'recruit', 'join')
 
 	def get_context_data(self, **kwargs):
 		context = super(CustomerListView, self).get_context_data(**kwargs)
@@ -34,7 +37,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 
 class CustomerRecruitView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return reverse('customer_list')
+		return reverse('customer_list', kwargs={'key': 0})
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['uuid']
