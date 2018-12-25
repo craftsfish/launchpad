@@ -32,6 +32,10 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 				if len(o.name) > 2: #TODO, this algorithm is a quick solution
 					o.name = o.name[2:4]
 				l.insert(i, o)
+			o = NavItem()
+			o.url = reverse('customer_list', kwargs={'key': 0})
+			o.name = '客户'
+			l.insert(len(Organization.objects.filter(parent=None)), o)
 
 		#home
 		h = NavItem()
