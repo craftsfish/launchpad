@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
+{% block header %}客户列表{% endblock %}
+
+{% block content %}
+<div class="col-sm-auto">
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>名称</th>
+			<th>刷手标记</th>
+			<th>初次下单时间</th>
+			<th>招募时间</th>
+		</tr>
+	{% for object in object_list %}
+		<tr>
+			<td>{{object.name}}</td>
+			<td>{{object.flag}}</td>
+			<td>{{object.join | date:"Y-m-d H:i:s" }}</td>
+			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+</div>
+{% endblock %}

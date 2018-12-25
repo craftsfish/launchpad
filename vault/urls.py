@@ -19,6 +19,7 @@ from supplier_service_views import *
 from express_views import *
 from calibration_history_views import *
 from compound_commodity_views import *
+from customer_views import *
 
 urlpatterns = [
 	#supplier
@@ -37,6 +38,9 @@ urlpatterns = [
 	#compound commodity
 	url(r'^compoundcommodity/$', CompoundCommodityListView.as_view(), name='compound_commodity_list'),
 	url(r'^compoundcommodity/(?P<pk>[\d]+)/$', CompoundCommodityDetailView.as_view(), name='compound_commodity_detail'),
+
+	#customer
+	url(r'^customer/(?P<key>[\d]+)/$', CustomerListView.as_view(), name='customer_list'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),
