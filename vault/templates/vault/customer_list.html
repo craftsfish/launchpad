@@ -10,6 +10,7 @@
 			<th>刷手标记</th>
 			<th>初次下单时间</th>
 			<th>招募时间</th>
+			<th>联系方式</th>
 		</tr>
 	{% for object in object_list %}
 		<tr>
@@ -19,8 +20,15 @@
 			{% if object.recruited %}
 			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
 			{% else %}
-			<td>立即招募</td>
+			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
 			{% endif %}
+			<td>
+				<ul>
+				{% for c in object.contacts %}
+					<li>{{c.phone}}</li>
+				{% endfor %}
+				</ul>
+			</td>
 		</tr>
 		<tr>
 			<td colspan=4></td>
