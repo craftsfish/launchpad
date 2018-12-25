@@ -16,7 +16,33 @@
 			<td>{{object.name}}</td>
 			<td>{{object.flag}}</td>
 			<td>{{object.join | date:"Y-m-d H:i:s" }}</td>
+			{% if object.recruited %}
 			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
+			{% else %}
+			<td>立即招募</td>
+			{% endif %}
+		</tr>
+		<tr>
+			<td colspan=4></td>
+		</tr>
+		<tr>
+			<th>下单时间</th>
+			<th>订单类型</th>
+			<th>订单编号</th>
+			<th>刷单平台</th>
+			<th>订单金额</th>
+		</tr>
+		<tr>
+				{% for o in object.orders %}
+				<tr>
+					<td align="right">{{o.time | date:"Y-m-d H:i:s"}}</td>
+					<td align="right">{{o.desc}}</td>
+					<td><a href="{% url 'task_detail' o.id %}">{{o.oid}}</a></td>
+					<td align="right">{{o.counterfeit}}</td>
+					<td align="right">{{o.sale}}</td>
+				</tr>
+				{% endfor %}
+			</table>
 		</tr>
 	{% endfor %}
 	</table>
