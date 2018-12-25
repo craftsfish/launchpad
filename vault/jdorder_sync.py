@@ -3,6 +3,9 @@ from ground import *
 from jdorder import *
 from django.db import transaction
 from models import Address
+from models import Contact
+from models import Customer
+import time
 
 class Jdtransaction:
 	pass
@@ -57,8 +60,22 @@ def import_jd_order():
 		if info.booktime < begin_of_day() - timedelta(28):
 			if o.address == None and o.counterfeit == None:
 				a = Address.add(info.address)
+				join = time.mktime(info.booktime.timetuple())
 				if a:
-					print "{}: {}, {}, {}, {}, {}, {}".format(info.name, info.phone, info.address, info.booktime, a.parent.parent, a.parent, a)
+					if Contact.objects.filter(phone=info.phone).exists():
+						con = Contact.objects.get(phone=info.phone)
+						cus = con.customer
+						if info.name not in cus.name.split(','):
+							cus.name += ',' + info.name
+						cus.save()
+					else:
+						cus = Customer(name=info.name, join=join)
+						cus.save()
+						con = Contact(phone=info.phone, customer=cus)
+						con.save()
+					o.address = a 
+					o.contact = con
+					print "{}: {}, {}".format(o.oid, a, con)
 		o.save()
 
 	def __handler_transaction_raw(info):

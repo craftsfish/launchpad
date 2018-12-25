@@ -58,14 +58,15 @@ class CompoundCommodity(models.Model):
 		return s
 
 class Customer(models.Model):
-	uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+	uuid = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
 	name = models.CharField(max_length=30)
+	join = models.IntegerField("加入时间", default=0)
 
 	def __str__(self):
-		return self.name
+		return self.name + str(utc_2_datetime(self.join).astimezone(timezone.get_current_timezone()))
 
 class Contact(models.Model):
-	phone = models.IntegerField('电话', primary_key=True)
+	phone = models.CharField('电话', max_length=30, primary_key=True)
 	customer = models.ForeignKey(Customer)
 
 	def __str__(self):
