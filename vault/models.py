@@ -60,10 +60,15 @@ class CompoundCommodity(models.Model):
 class Customer(models.Model):
 	uuid = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
 	name = models.CharField(max_length=30)
-	join = models.IntegerField("加入时间", default=0)
+	join = models.IntegerField("初次下单时间", default=0)
+	counterfeit = models.BooleanField('刷手标记', default=True)
+	recruit = models.IntegerField("招募时间", default=0)
 
 	def __str__(self):
-		return self.name + str(utc_2_datetime(self.join).astimezone(timezone.get_current_timezone()))
+		if self.counterfeit:
+			return self.name + "(刷手)"
+		else:
+			return self.name + "(买家)"
 
 class Contact(models.Model):
 	phone = models.CharField('电话', max_length=30, primary_key=True)
