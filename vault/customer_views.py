@@ -69,7 +69,10 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 					greeting_commodity = c
 					greeting_commodity_n = v
 			t.remark = remark
-			t.greeting = '大概一个月前，您在我家购买了{}个{}'.format(int(greeting_commodity_n), greeting_commodity.name)
+			if greeting_commodity:
+				t.greeting = '大概一个月前，您在我家购买了{}个{}'.format(int(greeting_commodity_n), greeting_commodity.name)
+			else:
+				t.greeting = '泰福高老客户红包群'
 		return context
 
 class CustomerRecruitView(RedirectView):
