@@ -57,11 +57,19 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 					c.n = int(v)
 					o.shipouts.append(c)
 			remark = t.name + ', ' +  t.contacts[0].phone
+			max_value = 0
+			greeting_commodity = None
+			greeting_commodity_n = 0
 			for cid, v in total_shipouts.items():
 				c = Commodity.objects.get(id=cid)
 				if c.value >= 3.0:
 					remark += ', ' + c.name + ':' + str(int(v))
+				if c.value * v > max_value:
+					max_value = c.value * v
+					greeting_commodity = c
+					greeting_commodity_n = v
 			t.remark = remark
+			t.greeting = '大概一个月前，您在我家购买了{}个{}'.format(int(greeting_commodity_n), greeting_commodity.name)
 		return context
 
 class CustomerRecruitView(RedirectView):
