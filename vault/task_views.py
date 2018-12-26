@@ -78,8 +78,12 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 		if hasattr(self.object, "tmorder"):
 			order = Tmorder.objects.get(pk=self.object.id)
 		if order:
-			private.governor.append(("客户信息", reverse('customer_list', kwargs={'key': order.contact.phone})))
-			order.customer = order.contact.customer
+			if self.request.user.has_perm('is_governor'):
+				key = 0
+				if order.contact:
+					key = order.contact.phone
+					private.governor.append(("客户信息", reverse('customer_list', kwargs={'key': key})))
+			#order.customer = order.contact.customer
 			context['order'] = order
 
 		return context
