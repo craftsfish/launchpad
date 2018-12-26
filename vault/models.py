@@ -105,6 +105,8 @@ class Address(models.Model):
 			return None
 		if address.find('省') == 0:
 				address = address[len('省'.encode('utf-8')):]
+		if address.find('自治区') != -1:
+				address = address[address.find('自治区') + len('自治区'.encode('utf-8')):]
 		if len(Address.objects.filter(parent=province, level=1)):
 			for i in Address.objects.filter(parent=province):
 				idx = address.find(i.name)
