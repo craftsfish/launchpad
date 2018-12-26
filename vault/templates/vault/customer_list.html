@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-{% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
 {% block header %}
 	<input type="text" id="id_key" />
-	<a href="javascript:void(0);" onclick ="lookup()">查找  (输入订单编号或者手机号)</a>
+	<a href="javascript:void(0);" onclick ="lookup()">查找</a>
 	<br/>
 	客户列表
 {% endblock %}
@@ -22,23 +21,13 @@
 {% block content %}
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
-		<tr>
-			<th>名称</th>
-			<th>刷手标记</th>
-			<th>初次下单时间</th>
-			<th>招募时间</th>
-			<th>联系方式</th>
-		</tr>
 	{% for object in object_list %}
 		<tr>
+			<th>名称</th>
 			<td>{{object.name}}</td>
-			<td>{{object.flag}}</td>
-			<td>{{object.join | date:"Y-m-d H:i:s" }}</td>
-			{% if object.recruited %}
-			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
-			{% else %}
-			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
-			{% endif %}
+		</tr>
+		<tr>
+			<th>联系方式</th>
 			<td>
 				<table cellpadding="4">
 					{% for c in object.contacts %}
@@ -50,7 +39,24 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan=4></td>
+			<th>备注</th>
+			<td>{{object.remark }}</td>
+		</tr>
+		<tr>
+			<th>招募时间</th>
+			{% if object.recruited %}
+			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
+			{% else %}
+			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
+			{% endif %}
+		</tr>
+		<tr>
+			<th>初次下单时间</th>
+			<td>{{object.join | date:"Y-m-d H:i:s" }}</td>
+		</tr>
+		<tr>
+			<th>刷手标记</th>
+			<td>{{object.flag}}</td>
 		</tr>
 		<tr>
 			<th>下单时间</th>

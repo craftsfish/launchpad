@@ -46,12 +46,22 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 			def __key(o):
 				return o.time
 			t.orders = sorted(list(t.jdorders) + list(t.tmorders), key=__key)
+			total_shipouts = {}
 			for o in t.orders:
 				o.shipouts = []
 				for cid, v in task_shipout(o).items():
+					if total_shipouts.get(cid) == None:
+						total_shipouts[cid] = 0
+					total_shipouts[cid] += v
 					c = Commodity.objects.get(id=cid)
 					c.n = int(v)
 					o.shipouts.append(c)
+			remark = t.name + ', ' +  t.contacts[0].phone
+			for cid, v in total_shipouts.items():
+				c = Commodity.objects.get(id=cid)
+				if c.value >= 3.0:
+					remark += ', ' + c.name + ':' + str(int(v))
+			t.remark = remark
 		return context
 
 class CustomerRecruitView(RedirectView):

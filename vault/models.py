@@ -90,6 +90,7 @@ class Address(models.Model):
 
 	@staticmethod
 	def add(address):
+		address = address.replace(' ', '')
 		province = None
 		city = None
 		provinces = Address.objects.filter(level=2)
@@ -104,8 +105,6 @@ class Address(models.Model):
 			return None
 		if address.find('省') == 0:
 				address = address[len('省'.encode('utf-8')):]
-		if address.find(' ') != -1:
-				address = address[address.find(' ')+1:]
 		if len(Address.objects.filter(parent=province, level=1)):
 			for i in Address.objects.filter(parent=province):
 				idx = address.find(i.name)
