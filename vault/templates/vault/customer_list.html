@@ -14,8 +14,8 @@
 
 {% block content_left %}
 <div class="col-sm-auto">
-	<table cellpadding="4" border="1">
 	{% for object in object_list %}
+	<table cellpadding="4" border="1">
 		<tr>
 			<th>招募时间</th>
 			{% if object.recruited %}
@@ -56,6 +56,9 @@
 			<th>刷手标记</th>
 			<td>{{object.flag}}</td>
 		</tr>
+	</table>
+	<br/>
+	<table cellpadding="4" border="1">
 		<tr>
 			<th>下单时间</th>
 			<th>订单类型</th>
@@ -86,8 +89,8 @@
 				{% endfor %}
 			</table>
 		</tr>
-	{% endfor %}
 	</table>
+	{% endfor %}
 </div>
 {% endblock %}
 {% block content_right %}
