@@ -1,10 +1,4 @@
-{% extends "base.html" %}
-{% block header %}
-	<input type="text" id="id_key" />
-	<a href="javascript:void(0);" onclick ="lookup()">查找</a>
-	<br/>
-	客户列表
-{% endblock %}
+{% extends "base_left_right.html" %}
 
 {% block extra_script %}
 	<script>
@@ -18,7 +12,7 @@
 	</script>
 {% endblock %}
 
-{% block content %}
+{% block content_left %}
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
 	{% for object in object_list %}
@@ -95,4 +89,9 @@
 	{% endfor %}
 	</table>
 </div>
+{% endblock %}
+{% block content_right %}
+	<h1>查找客户</h1>
+	<input type="text" id="id_key" />
+	<a href="javascript:void(0);" onclick ="lookup()">查找</a>
 {% endblock %}
