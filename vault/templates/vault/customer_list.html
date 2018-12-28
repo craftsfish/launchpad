@@ -23,6 +23,14 @@
 	<table cellpadding="4" border="1">
 	{% for object in object_list %}
 		<tr>
+			<th>招募时间</th>
+			{% if object.recruited %}
+			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
+			{% else %}
+			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
+			{% endif %}
+		</tr>
+		<tr>
 			<th>名称</th>
 			<td>{{object.name}}</td>
 		</tr>
@@ -45,14 +53,6 @@
 		<tr>
 			<th>问候语</th>
 			<td>{{object.greeting }}</td>
-		</tr>
-		<tr>
-			<th>招募时间</th>
-			{% if object.recruited %}
-			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
-			{% else %}
-			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
-			{% endif %}
 		</tr>
 		<tr>
 			<th>初次下单时间</th>

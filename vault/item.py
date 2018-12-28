@@ -26,6 +26,7 @@ class Commodity(Item):
 	wrap = models.CharField("包装", max_length=1024, blank=True)
 	proxy = models.BooleanField("分销", default=False) #直接由厂家发货，无库存
 	package = models.IntegerField('箱规', default=1)
+	abbrev = models.CharField("简称", max_length=32, null=True, blank=True)
 
 	@staticmethod
 	def Import():

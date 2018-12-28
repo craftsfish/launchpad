@@ -56,21 +56,24 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 					c = Commodity.objects.get(id=cid)
 					c.n = int(v)
 					o.shipouts.append(c)
-			remark = t.name + ', ' +  t.contacts[0].phone
+			remark = t.contacts[0].phone + ',' + t.name
 			max_value = 0
 			greeting_commodity = None
 			greeting_commodity_n = 0
 			for cid, v in total_shipouts.items():
 				c = Commodity.objects.get(id=cid)
 				if c.value >= 3.0:
-					remark += ', ' + c.name + ':' + str(int(v))
+					remark += ',' + c.name + ':' + str(int(v))
 				if c.value * v > max_value:
 					max_value = c.value * v
 					greeting_commodity = c
 					greeting_commodity_n = v
 			t.remark = remark
 			if greeting_commodity:
-				t.greeting = '大概一个月前，您在我家购买了{}个{}'.format(int(greeting_commodity_n), greeting_commodity.name)
+				cname = greeting_commodity.abbrev
+				if not cname:
+					cname = greeting_commodity.name
+				t.greeting = '大概一个月前，您在我家购买了{}个{}'.format(int(greeting_commodity_n), cname)
 			else:
 				t.greeting = '泰福高老客户红包群'
 		return context
