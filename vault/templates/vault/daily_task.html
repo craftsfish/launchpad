@@ -54,5 +54,7 @@
 		<tr><td><a href="{% url 'return_to_supplier' %}">退货回厂家</a></td><td>残次品退款</td></tr>
 		<tr><td><a href="{% url 'change_with_supplier' %}">回厂家换货</a></td><td>残次品更换</td></tr>
 		<tr><td><a href="{% url 'chore_list' %}">运营工作室</a></td><td>京东/天猫的退货，换货，刷单, 返现都用这个链接</td></tr>
+		<tr><td><a href="{% url 'customer_list' 0 %}">京东老客户招募</a></td><td>老客户招募</td></tr>
+		<tr><td><a href="{% url 'customer_list' 1 %}">京东刷手招募</a></td><td>刷手招募</td></tr>
 	</table>
 {% endblock %}

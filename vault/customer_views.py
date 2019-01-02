@@ -26,8 +26,10 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 		k = self.kwargs['key']
 		if k == '0':
 			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', 'counterfeit', 'join')
+		elif k == '1':
+			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', '-counterfeit', 'join')
 		else:
-			return Customer.objects.filter(contact__jdorder__desc='京东订单').filter(Q(contact__phone=k) | Q(contact__jdorder__oid=get_int_with_default(k, 0)) | Q(contact__tmorder__oid=get_int_with_default(k,0))).order_by("counterfeit", 'recruit', 'join')
+			return Customer.objects.filter(Q(contact__phone=k) | Q(contact__jdorder__oid=get_int_with_default(k, 0)) | Q(contact__tmorder__oid=get_int_with_default(k,0))).order_by("counterfeit", 'recruit', 'join')
 
 	def get_context_data(self, **kwargs):
 		context = super(CustomerListView, self).get_context_data(**kwargs)
