@@ -21,7 +21,7 @@
 			{% if object.recruited %}
 			<td>{{object.recruit | date:"Y-m-d H:i:s" }}</td>
 			{% else %}
-			<td><a href="{% url 'customer_recruit' object.uuid %}">立即招募</a></td>
+			<td><a href="{{object.recruit_url}}">立即招募</a></td>
 			{% endif %}
 		</tr>
 		<tr>

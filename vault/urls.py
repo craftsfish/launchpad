@@ -44,7 +44,7 @@ urlpatterns = [
 
 	#customer
 	url(r'^customer/(?P<key>[-\w\d]+)/$', CustomerListView.as_view(), name='customer_list'),
-	url(r'^customer/(?P<uuid>[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})/recruit/$', CustomerRecruitView.as_view(), name='customer_recruit'),
+	url(r'^customer/(?P<uuid>[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12})/recruit/(?P<key>[\d]+)/$', CustomerRecruitView.as_view(), name='customer_recruit'),
 
 	#account
 	url(r'^account/$', AccountListView.as_view(), name='account_list'),

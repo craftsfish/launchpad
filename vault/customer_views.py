@@ -35,7 +35,9 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 		context = super(CustomerListView, self).get_context_data(**kwargs)
 		for t in context['object_list']:
 			t.flag = "买家"
+			t.recruit_url = reverse('customer_recruit', kwargs={'uuid': t.uuid ,'key': 0})
 			if t.counterfeit:
+				t.recruit_url = reverse('customer_recruit', kwargs={'uuid': t.uuid, 'key': 1})
 				t.flag = "刷手"
 			t.join = utc_2_datetime(t.join).astimezone(timezone.get_current_timezone())
 			t.recruited = True
@@ -82,7 +84,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 
 class CustomerRecruitView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
-		return reverse('customer_list', kwargs={'key': 0})
+		return reverse('customer_list', kwargs={'key': kwargs['key']})
 
 	def get(self, request, *args, **kwargs):
 		i = kwargs['uuid']
