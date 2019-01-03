@@ -286,11 +286,11 @@ class Sync(object):
 				b = Account.get_or_create(org, cash.item_ptr, __account_category, __account_name, None)
 				tr = Transaction.add(task, "结算."+__desc, when, a, change, b)
 				Jdorderclear(pid=pid, transaction=tr).save()
-				print "已处理交易: {}".format(csv_line_2_str(line))
+				#print "已处理交易: {}".format(csv_line_2_str(line))
 				break
 			if not handled:
 				print "发现未知结算: {}".format(csv_line_2_str(line))
-		csv_parser('/tmp/jd.clear.order.csv', None, True, __handler, Organization.objects.get(name="为绿厨具专营店"))
+		csv_parser('/tmp/jd.clear.order.csv', csv_gb18030_2_utf8, True, __handler, Organization.objects.get(name="为绿厨具专营店"))
 
 	@staticmethod
 	def import_jd_wallet_clear():

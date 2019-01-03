@@ -60,7 +60,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 					c = Commodity.objects.get(id=cid)
 					c.n = int(v)
 					o.shipouts.append(c)
-			remark = t.contacts[0].phone + ',' + t.name
+			remark = t.contacts[0].phone + ',' + t.flag + ',' + t.name
 			max_value = 0
 			greeting_commodity = None
 			greeting_commodity_n = 0
@@ -77,9 +77,9 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				cname = greeting_commodity.abbrev
 				if not cname:
 					cname = greeting_commodity.name
-				t.greeting = '大概一个月前，您在我家购买了{}个{}'.format(int(greeting_commodity_n), cname)
+				t.greeting = '大概一个月前，您在我家购买了{}个{}。能否帮忙刷一单，给你付佣金或者小礼品，还有部分清仓品可以进货价给您。后续购买也可以享受各种优惠。'.format(int(greeting_commodity_n), cname)
 			else:
-				t.greeting = '泰福高老客户红包群'
+				t.greeting = '能否帮忙刷一单，给您佣金或者小礼物，还有部分清仓品可以进货价给您。后续购买也可以享受各种优惠。'
 		return context
 
 class CustomerRecruitView(RedirectView):
