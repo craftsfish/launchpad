@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_left_right.html" %}
 {% block navbar %}{% include 'vault/content/navbar.html' %}{% endblock %}
 
 {% block header %}{{object.name}}{% endblock %}
 
-{% block content %}
-
+{% block content_left %}
 <div class="col-sm-auto">
 	<table border="1" cellpadding="4">
 		<tr>
@@ -20,6 +19,24 @@
 			{% else %}
 			<td>{{j}}</td>
 			{% endif %}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+
+</div>
+{% endblock %}
+{% block content_right %}
+<div class="col-sm-auto">
+	<table border="1" cellpadding="4">
+		<tr>
+			<td>城市</td>
+			<td>出货量</td>
+		</tr>
+		{% for i in place %}
+		<tr>
+			{% for j in i %}
+			<td>{{j}}</td>
 			{% endfor %}
 		</tr>
 		{% endfor %}
