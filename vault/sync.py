@@ -135,11 +135,14 @@ class Sync(object):
 		csv_parser('/tmp/cm.express.csv', None, True, __handler)
 
 	@staticmethod
-	def __express_clear(clear, supplier, column_eid, column_amount, append_expresses):
+	def __express_clear(clear, supplier, column_eid, column_amount, column_province, column_weight, append_expresses):
 		@transaction.atomic
 		def __handler(title, line, *args):
-			nsupplier, neid, namount = args[0][1:4]
-			serial, amount = get_column_values(title, line, neid, namount)
+			nsupplier, neid, namount, nprovince, nweight = args[0][1:6]
+			serial, amount, province, weight = get_column_values(title, line, neid, namount, nprovince, nweight)
+			expected_fee = zt_jj_fee(province, float(weight))
+			if float(amount) > expected_fee:
+				print serial, province, weight, amount, expected_fee
 			serial = int(serial)
 			amount = Decimal(amount)
 			supplier=ExpressSupplier.objects.get(name=nsupplier)
@@ -160,13 +163,13 @@ class Sync(object):
 					args[0][0] += amount
 				else:
 					print "{} 不存在".format(csv_line_2_str(line))
-		misc = [0, supplier, column_eid, column_amount]
+		misc = [0, supplier, column_eid, column_amount, column_province, column_weight]
 		csv_parser('/tmp/express.csv', None, True, __handler, misc, append_expresses)
 		print "有效订单合计: {}".format(misc[0])
 
 	@staticmethod
 	def import_zt_express():
-		Sync.__express_clear(False, '中通', "运单编号", "金额", [])
+		Sync.__express_clear(False, '中通', "运单编号", "金额", '省份', '最大重量', [])
 
 	@staticmethod
 	def import_yz_express():
