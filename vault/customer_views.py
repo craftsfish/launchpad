@@ -85,9 +85,9 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				cname = greeting_commodity.abbrev
 				if not cname:
 					cname = greeting_commodity.name
-				t.greeting = '您在我家买了{}个{}。想请您有空的时候帮忙刷单，给你红包或小礼品，还有各种老客户优惠。'.format(int(greeting_commodity_n), cname)
+				t.greeting = '[京东为绿厨具专营店]您在我家买过{}。加入老客户群，大额隐藏优惠券。做任务，领红包'.format(int(greeting_commodity_n), cname)
 			else:
-				t.greeting = '想请您有空的时候帮忙刷单，给你红包或小礼品，还有各种老客户优惠。'
+				t.greeting = '想请您做个天猫任务，送红包或者礼物，还有老客户优惠。'
 		return context
 
 class CustomerRecruitView(RedirectView):
