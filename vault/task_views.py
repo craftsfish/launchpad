@@ -81,7 +81,7 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 			if self.request.user.has_perm('is_governor'):
 				key = 0
 				if order.contact:
-					key = order.contact.phone
+					key = order.oid
 					private.governor.append(("客户信息", reverse('customer_list', kwargs={'key': key})))
 			#order.customer = order.contact.customer
 			context['order'] = order

@@ -66,6 +66,7 @@
 			<th>刷单平台</th>
 			<th>订单金额</th>
 			<th>出货明细</th>
+			<th>地址</th>
 		</tr>
 		<tr>
 				{% for o in object.orders %}
@@ -85,6 +86,7 @@
 							{% endfor %}
 						</table>
 					</td>
+					<td align="right">{{o.addr}}</td>
 				</tr>
 				{% endfor %}
 			</table>

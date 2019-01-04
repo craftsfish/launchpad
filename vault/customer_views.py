@@ -29,7 +29,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 		elif k == '1':
 			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', '-counterfeit', 'join')
 		else:
-			return Customer.objects.filter(Q(contact__phone=k) | Q(contact__jdorder__oid=get_int_with_default(k, 0)) | Q(contact__tmorder__oid=get_int_with_default(k,0))).order_by("counterfeit", 'recruit', 'join')
+			return Customer.objects.filter(Q(contact__phone__contains=k) | Q(contact__jdorder__oid=get_int_with_default(k, 0)) | Q(contact__tmorder__oid=get_int_with_default(k,0))).order_by("counterfeit", 'recruit', 'join')
 
 	def get_context_data(self, **kwargs):
 		context = super(CustomerListView, self).get_context_data(**kwargs)
@@ -60,7 +60,15 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 					c = Commodity.objects.get(id=cid)
 					c.n = int(v)
 					o.shipouts.append(c)
-			remark = t.contacts[0].phone + ',' + t.flag + ',' + t.name
+				s_addr = ''
+				a = o.address
+				while a:
+					if a.level == 2:
+						t.province = a.name
+					s_addr = a.name + s_addr
+					a = a.parent
+				o.addr = s_addr
+			remark = t.contacts[0].phone + ',' + t.province + ',' + t.flag + ',' + t.name
 			max_value = 0
 			greeting_commodity = None
 			greeting_commodity_n = 0
@@ -77,9 +85,9 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				cname = greeting_commodity.abbrev
 				if not cname:
 					cname = greeting_commodity.name
-				t.greeting = '大概一个月前，您在我家购买了{}个{}。能否帮忙刷一单，给你付佣金或者小礼品，还有部分清仓品可以进货价给您。后续购买也可以享受各种优惠。'.format(int(greeting_commodity_n), cname)
+				t.greeting = '您在我家买了{}个{}。想请您有空的时候帮忙刷单，给你红包或小礼品，还有各种老客户优惠。'.format(int(greeting_commodity_n), cname)
 			else:
-				t.greeting = '能否帮忙刷一单，给您佣金或者小礼物，还有部分清仓品可以进货价给您。后续购买也可以享受各种优惠。'
+				t.greeting = '想请您有空的时候帮忙刷单，给你红包或小礼品，还有各种老客户优惠。'
 		return context
 
 class CustomerRecruitView(RedirectView):
