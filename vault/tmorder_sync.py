@@ -62,6 +62,7 @@ def import_tm_order_list():
 				cus.counterfeit = counterfeit_flag
 			cus.save()
 		else:
+			name = name.decode('utf-8')[-30:]
 			cus = Customer(name=name, join=join, counterfeit=counterfeit_flag)
 			cus.save()
 			con = Contact(phone=phone, customer=cus)
