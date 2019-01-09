@@ -60,6 +60,7 @@ def import_tm_order_list():
 			if cus.join >= join:
 				cus.join = join
 				cus.counterfeit = counterfeit_flag
+			cus.name = cus.name.decode('utf-8')[-30:]
 			cus.save()
 		else:
 			name = name.decode('utf-8')[-30:]
