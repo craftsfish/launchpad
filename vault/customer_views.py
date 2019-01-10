@@ -64,11 +64,16 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				a = o.address
 				t.province = ''
 				while a:
+					if a.level == 3:
+						break
 					if a.level == 2:
 						t.province = a.name
 					s_addr = a.name + s_addr
 					a = a.parent
 				o.addr = s_addr
+				if s_addr == '':
+					s_addr = '0'
+				o.address_url = reverse('address_list', kwargs={'key': s_addr})
 			remark = t.contacts[0].phone + ',' + t.province + ',' + t.flag + ',' + t.name
 			max_value = 0
 			greeting_commodity = None
