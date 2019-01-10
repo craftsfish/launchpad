@@ -1,0 +1,33 @@
+{% extends "base_left_right.html" %}
+
+{% block extra_script %}
+	<script>
+		function lookup(){
+			tid = jQuery("#id_key").val();
+			if (tid != "")
+				window.location.href = `/vault/address/${tid}/`;
+			else
+				window.location.href = `/vault/address/0/`;
+		}
+	</script>
+{% endblock %}
+
+{% block content_left %}
+<div class="col-sm-auto">
+	<table cellpadding="4" border="1">
+		<tr>
+			<th>地域</th>
+		</tr>
+		{% for object in object_list %}
+		<tr>
+			<td>{{object.name }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}
+{% block content_right %}
+	<h1>查找</h1>
+	<input type="text" id="id_key" />
+	<a href="javascript:void(0);" onclick ="lookup()">查找</a>
+{% endblock %}

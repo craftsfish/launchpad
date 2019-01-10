@@ -20,6 +20,7 @@ from express_views import *
 from calibration_history_views import *
 from compound_commodity_views import *
 from customer_views import *
+from address_views import *
 
 urlpatterns = [
 	#expose to outsider
@@ -41,6 +42,9 @@ urlpatterns = [
 	#compound commodity
 	url(r'^compoundcommodity/$', CompoundCommodityListView.as_view(), name='compound_commodity_list'),
 	url(r'^compoundcommodity/(?P<pk>[\d]+)/$', CompoundCommodityDetailView.as_view(), name='compound_commodity_detail'),
+
+	#address
+	url(r'^address/(?P<key>.*)/$', AddressListView.as_view(), name='address_list'),
 
 	#customer
 	url(r'^customer/(?P<key>[-\w\d]+)/$', CustomerListView.as_view(), name='customer_list'),

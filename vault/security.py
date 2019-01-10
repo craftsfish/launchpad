@@ -13,6 +13,7 @@ class SecurityLoginRequiredMixin(LoginRequiredMixin):
 			("任务", reverse('task_list')),
 			("物资", reverse('commodity_list')),
 			("看板", reverse('compound_commodity_list')),
+			("地域", reverse('address_list', kwargs={'key': 0})),
 			("应收", reverse('receivable_commodity')),
 			("修改密码", reverse('password_change')),
 			("退出", reverse('logout')),
