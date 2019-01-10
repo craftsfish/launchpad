@@ -15,12 +15,34 @@
 {% block content_left %}
 <div class="col-sm-auto">
 	<table cellpadding="4" border="1">
-		<tr>
-			<th>地域</th>
-		</tr>
 		{% for object in object_list %}
 		<tr>
 			<td>{{object.name }}</td>
+		</tr>
+		<tr>
+			<table cellpadding="4" border="1">
+				<tr>
+					<th>下单时间</th>
+					<th>订单类型</th>
+					<th>订单编号</th>
+					<th>刷单平台</th>
+					<th>地址</th>
+					<th>电话</th>
+					<th>客户</th>
+				</tr>
+				{% for o in object.orders %}
+				<tr>
+					<td align="right">{{o.time | date:"Y-m-d H:i:s"}}</td>
+					<td><a href="{% url 'task_detail' o.id %}">{{o.desc}}</a></td>
+					<td>{{o.oid}}</td>
+					<td align="right">{{o.counterfeit}}</td>
+					<td>{{o.addr}}</td>
+					<td align="right">{{o.contact}}</td>
+					<td align="right">{{o.customer}}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			</td>
 		</tr>
 		{% endfor %}
 	</table>

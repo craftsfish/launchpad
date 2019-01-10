@@ -17,3 +17,22 @@ class AddressListView(SecurityLoginRequiredMixin, ListView):
 				return Address.objects.filter(id=parent.id)
 			else:
 				return Address.objects.filter(level=2).filter(name='北京')
+
+	def get_context_data(self, **kwargs):
+		context = super(AddressListView, self).get_context_data(**kwargs)
+		for i in context['object_list']:
+			q = Tmorder.objects.filter(address__parent=i.id)
+			end = begin_of_day()
+			span = 30
+			q = q.filter(time__gte=(end-timedelta(span))).filter(time__lt=end).order_by('address__name', '-time')
+			i.orders = []
+			for o in q:
+				if o.counterfeit == None:
+					continue
+				i.orders.append(o)
+				s_addr = ''
+				if o.address:
+					s_addr = o.address.name
+				o.addr = s_addr
+				o.customer = o.contact.customer
+		return context
