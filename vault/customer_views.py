@@ -62,6 +62,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 					o.shipouts.append(c)
 				s_addr = ''
 				a = o.address
+				t.province = ''
 				while a:
 					if a.level == 2:
 						t.province = a.name

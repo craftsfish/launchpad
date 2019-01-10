@@ -35,6 +35,8 @@ def place_info_of_commodities(commodities, end, span):
 		if s.transaction.task.tmorder.counterfeit != None:
 			continue
 		a = s.transaction.task.tmorder.address
+		if a == None:
+			continue
 		key = a.parent.id
 		if result.get(key) == None:
 			result[key] = 0
