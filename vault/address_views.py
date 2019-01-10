@@ -10,6 +10,10 @@ class AddressListView(SecurityLoginRequiredMixin, ListView):
 	def get_queryset(self):
 		k = self.kwargs['key']
 		if k == '0':
-			return Address.objects.filter(level=2)
+			return Address.objects.filter(level=2).filter(name='北京')
 		else:
-			return Address.objects.filter(level=1)
+			parent, address = Address.get_parent(k.encode('utf-8'))
+			if parent:
+				return Address.objects.filter(id=parent.id)
+			else:
+				return Address.objects.filter(level=2).filter(name='北京')

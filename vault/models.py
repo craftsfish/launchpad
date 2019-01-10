@@ -89,7 +89,7 @@ class Address(models.Model):
 		return self.name
 
 	@staticmethod
-	def add(address):
+	def get_parent(address):
 		address = address.replace(' ', '')
 		province = None
 		city = None
@@ -102,7 +102,7 @@ class Address(models.Model):
 				break
 		if province == None:
 			print address
-			return None
+			return None, None
 		if address.find('省') == 0:
 				address = address[len('省'.encode('utf-8')):]
 		if address.find('自治区') != -1:
@@ -116,12 +116,19 @@ class Address(models.Model):
 					break
 			if city == None:
 				print address
-				return None
+				return None, None
 		if address.find('市') == 0:
 				address = address[len('市'.encode('utf-8')):]
 		parent = city
 		if parent == None:
 			parent = province
+		return parent, address
+
+	@staticmethod
+	def add(address):
+		parent, address = Address.get_parent(address)
+		if parent == None:
+			return None
 		a, created = Address.objects.get_or_create(name=address, parent=parent)
 		#print "{} {} {}".format(parent.parent, parent, address)
 		a.save()
