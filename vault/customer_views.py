@@ -51,7 +51,13 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				return o.time
 			t.orders = sorted(list(t.jdorders) + list(t.tmorders), key=__key)
 			total_shipouts = {}
+			platform = ''
 			for o in t.orders:
+				if platform == '':
+					if o.desc == '京东订单':
+						platform = '京东'
+					elif o.desc == '天猫订单':
+						platform = '天猫'
 				o.shipouts = []
 				for cid, v in task_shipout(o).items():
 					if total_shipouts.get(cid) == None:
@@ -74,7 +80,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				if s_addr == '':
 					s_addr = '0'
 				o.address_url = reverse('address_list', kwargs={'key': s_addr})
-			remark = t.contacts[0].phone + ',' + t.province + ',' + t.flag + ',' + t.name
+			remark = t.contacts[0].phone + ',' + t.province + ',' + platform + t.flag + ',' + t.name
 			max_value = 0
 			greeting_commodity = None
 			greeting_commodity_n = 0
@@ -92,7 +98,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				if not cname:
 					cname = greeting_commodity.name
 				when = t.orders[0].time
-				t.greeting = '您{}月{}号在我家买了{}个{}。邀请你加入老客户福利群。红包，任务，特价品，都是货真价实的实惠。'.format(when.month, when.day, int(greeting_commodity_n), cname)
+				t.greeting = '[京东.为绿厨具]您{}月{}号在我家买了{}个{}'.format(when.month, when.day, int(greeting_commodity_n), cname)
 			else:
 				t.greeting = '想请您做个天猫任务，送红包或者礼物，还有老客户优惠。'
 		return context
