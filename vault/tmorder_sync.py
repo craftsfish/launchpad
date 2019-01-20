@@ -28,6 +28,7 @@ def import_tm_order_list():
 			#platform, filter, add(True) or verify counterfeit info
 			("人气无忧", re.compile("^'朱"), True),
 			("威客圈", re.compile("^'伟"), True),
+			("金牌试客", re.compile("^'金"), True),
 			("微信", re.compile("^'刘"), False),
 		)
 		for mark_as, criteria, add in __mapping:
