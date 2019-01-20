@@ -228,6 +228,8 @@ class Turbine:
 			#平台, 真实发货, 实物回收
 			("陆凤", False, False),
 			("微信", False, False),
+			("QQ代放", False, False),
+			("地推代放", False, False),
 			("人气无忧", False, False),
 			("买家秀", True, True),
 			("威客圈", False, False),
