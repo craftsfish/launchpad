@@ -98,7 +98,7 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 				if not cname:
 					cname = greeting_commodity.name
 				when = t.orders[0].time
-				t.greeting = '[京东.为绿厨具]您{}月{}号在我家买了{}个{}'.format(when.month, when.day, int(greeting_commodity_n), cname)
+				t.greeting = '您{}月{}号在我家买了{}个{},邀您加入老客户红包福利群'.format(when.month, when.day, int(greeting_commodity_n), cname)
 			else:
 				t.greeting = '想请您做个天猫任务，送红包或者礼物，还有老客户优惠。'
 		return context
