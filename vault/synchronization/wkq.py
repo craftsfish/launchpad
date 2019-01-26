@@ -180,6 +180,7 @@ def import_wkq_request():
 def import_wkq_detail():
 	__map = (
 		#消费ID, 类型, 备注, 记账
+		(r'^TX20190124142834005$', r'^提现$', '^商家提现$', False),
 		(r'^.*$', r'^购买发布点$', '^会员购买发布点$', False),
 		(r'^.*$', r'^充值$', '^支付宝转账充值.*$', False),
 		(r'^.*$', r'^兑换资金$', '^会员兑换资金,会员等级.*$', False),
@@ -192,6 +193,7 @@ def import_wkq_detail():
 		(r'^V9261\d{6,6}$', r'^购买评价$', '^购买好评$', True),
 		(r'^S9261\d{6,6}$', r'^发布流量任务$', '^发布流量任务$', True),
 		(r'^S9261\d{6,6}$', r'^取消流量任务$', '^取消流量任务$', True),
+		(r'^$', r'^财务增$', '^泰福高腾复专卖店，退加单费$', True),
 	)
 	def __handler(title, line, *args):
 		pid, kind, amount_1, amount_2, when, desc = get_column_values(title, line, '消费ID', '类型', '消费存款', '消费发布点', '操作时间', '备注')
