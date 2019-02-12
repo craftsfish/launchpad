@@ -145,7 +145,7 @@ class Sync(object):
 			amount = float(amount)
 			supplier=ExpressSupplier.objects.get(name=nsupplier)
 			if verifier:
-				if amount != verifier(province, weight):
+				if '{:.2f}'.format(amount) != '{:.2f}'.format(verifier(province, weight)):
 					print "{} 运费校验失败 应付: {}".format(csv_line_2_str(line), verifier(province, weight))
 					return
 			if Express.objects.filter(eid=serial).filter(supplier=supplier).exists():
