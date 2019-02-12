@@ -220,7 +220,7 @@ def zt_nj_fee(province, weight):
 	else:
 		return 4.5
 
-def express_fee_calculator_bs_nj(supplier, province, weight):
+def express_fee_calculator_bs_nj(province, weight):
 #区域	1公斤以内	1-2公斤	2-3公斤	首重1KG	续重
 	__map = (
 		('江苏',3.0,3.5,4,4.0,0.5),
@@ -255,9 +255,6 @@ def express_fee_calculator_bs_nj(supplier, province, weight):
 		('新疆',18,33,48,18,15),
 		('西藏',23,43,63,23,20),
 	)
-	if supplier != '百世':
-		print "[Error]快递服务商 {} 不是百世".format(supplier)
-		return 0
 	for p, b1, b2, b3, b4, a4 in __map:
 		if province.find(p) == 0:
 			weight = math.ceil(weight)

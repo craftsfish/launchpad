@@ -135,6 +135,42 @@ class Sync(object):
 		csv_parser('/tmp/cm.express.csv', None, True, __handler)
 
 	@staticmethod
+	def __express_clear_v1(clear, supplier, column_eid, column_amount, column_weight, column_province, verifier, append_expresses):
+		@transaction.atomic
+		def __handler(title, line, *args):
+			nsupplier, neid, namount, nweight, nprovince, verifier = args[0][1:7]
+			serial, amount, weight, province  = get_column_values(title, line, neid, namount, nweight, nprovince)
+			serial = int(serial)
+			weight = float(weight)
+			amount = float(amount)
+			supplier=ExpressSupplier.objects.get(name=nsupplier)
+			if verifier:
+				if amount != verifier(province, weight):
+					print "{} 运费校验失败 应付: {}".format(csv_line_2_str(line), verifier(province, weight))
+					return
+			if Express.objects.filter(eid=serial).filter(supplier=supplier).exists():
+				e = Express.objects.get(eid=serial, supplier=supplier)
+				if e.clear:
+					print "{} 已经结算".format(csv_line_2_str(line))
+					return
+				args[0][0] += amount
+				if clear:
+					e.clear = True
+					e.fee = amount
+					e.save()
+			else:
+				if serial in args[1]: #add forcefully
+					if clear:
+						Express(eid=serial, supplier=supplier, clear=True, fee=amount).save()
+					args[0][0] += amount
+				else:
+					print "{} 不存在".format(csv_line_2_str(line))
+		misc = [0, supplier, column_eid, column_amount, column_weight, column_province, verifier]
+		csv_parser('/tmp/express.csv', None, True, __handler, misc, append_expresses)
+		print "有效订单合计: {}".format(misc[0])
+		#print "差额合计: {}".format(misc[6])
+
+	@staticmethod
 	def __express_clear(clear, supplier, column_eid, column_amount, append_expresses):
 		@transaction.atomic
 		def __handler(title, line, *args):
@@ -177,6 +213,10 @@ class Sync(object):
 	@staticmethod
 	def import_yd_express():
 		Sync.__express_clear(False, '韵达', "运单编号", "金额", [3906286584169, 3906286648041, 3906286703767, 3906286700050, 3906286718802, 3906286795176, 3906286743534, 3906286861105, 3906286862902, 3906286873316, 3906286899151, 3906286937205, 3906286935696, 3906286935695])
+
+	@staticmethod
+	def import_bs_express():
+		Sync.__express_clear_v1(False, '百世', "运单号", "费用", '原始重量', '目的地', express_fee_calculator_bs_nj, [])
 
 	@staticmethod
 	def import_tm_clear():
