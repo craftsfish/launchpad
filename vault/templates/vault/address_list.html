@@ -9,6 +9,12 @@
 			else
 				window.location.href = `/vault/address/0/`;
 		}
+		function keyup_submit(e){
+			var evt = window.event || e;
+			if (evt.keyCode == 13){
+				lookup()
+			}
+		}
 	</script>
 {% endblock %}
 
@@ -50,6 +56,6 @@
 {% endblock %}
 {% block content_right %}
 	<h1>查找</h1>
-	<input type="text" id="id_key" />
+	<input type="text" id="id_key" onkeydown="keyup_submit(event);"/>
 	<a href="javascript:void(0);" onclick ="lookup()">查找</a>
 {% endblock %}
