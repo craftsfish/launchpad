@@ -104,7 +104,7 @@ class DeliveryStatus(enum.IntEnum):
 #express supplier mapping
 express_supplier_map = (
 	('中通', ('中通快递', '中通速递', '中通')),
-	('邮政', ('EMS经济快递', '邮政EMS', '邮政快递包裹', '邮政EMS经济快递', 'EMS')),
+	('邮政', ('EMS经济快递', '邮政EMS', '邮政快递包裹', '邮政EMS经济快递', 'EMS', 'null')),
 	('顺丰', ('顺丰速运', '顺丰快递')),
 	('百世', ('百世快递')),
 	('韵达', ('韵达快递')),
