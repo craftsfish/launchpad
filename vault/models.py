@@ -125,6 +125,15 @@ class Address(models.Model):
 		return parent, address
 
 	@staticmethod
+	def get_city(address):
+		parents = Address.objects.filter(level__in=[1,2])
+		for i in parents:
+			idx = address.find(i.name)
+			if idx == 0:
+				return i
+		return None
+
+	@staticmethod
 	def add(address):
 		parent, address = Address.get_parent(address)
 		if parent == None:

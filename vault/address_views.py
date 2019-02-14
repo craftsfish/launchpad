@@ -16,6 +16,9 @@ class AddressListView(SecurityLoginRequiredMixin, ListView):
 			if parent:
 				return Address.objects.filter(id=parent.id)
 			else:
+				city = Address.get_city(k.encode('utf-8'))
+				if city:
+					return Address.objects.filter(name=city.name)
 				return Address.objects.filter(level=2).filter(name='北京')
 
 	def get_context_data(self, **kwargs):
