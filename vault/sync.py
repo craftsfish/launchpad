@@ -725,9 +725,11 @@ def import_misc():
 	cash = Money.objects.get(name="人民币")
 	task = Task(desc="帮金金发货")
 	task.save()
+	t = timezone.now()
 	for i, j in __table:
 		try:
 			commodity = Commodity.objects.get(name=i)
-			Transaction.add_raw(task, "出库", timezone.now(), org, commodity.item_ptr, ("资产", '完好', repo), -j, ("支出", "出货", repo))
+			Transaction.add_raw(task, "出库", t, org, commodity.item_ptr, ("资产", '完好', repo), -j, ("支出", "出货", repo))
 		except Commodity.DoesNotExist as e:
 			print "Commodity {} 不存在".format(i)
+	Transaction.add_raw(task, "货款", t, org, cash.item_ptr, ("资产", '应收货款', None), 0, ("收入", "销售收入", None))
