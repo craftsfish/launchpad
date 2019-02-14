@@ -66,6 +66,7 @@ options = (
 	["ijdwc", "导入京东钱包结算信息", Sync.import_jd_wallet_clear],
 	["ijdf", "导入京东刷单信息", Jdorder.import_fake_order],
 	["im", "导入货币", Money.Import],
+	["ix", "导入其他", import_misc],
 	["ir", "导入地域信息", import_region],
 	["irqwy", "导入人气无忧刷单数据", import_rqwy],
 	["itmc", "导入天猫结算信息", Sync.import_tm_clear],
