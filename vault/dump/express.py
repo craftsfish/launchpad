@@ -7,13 +7,20 @@ from ..models import *
 @transaction.atomic
 def dump_express():
 	def __handler(title, line, *args):
+		mark_as_proxy = False
 		result = args[0]
 		eid = line[0]
 		handled = False
 		if Express.objects.filter(eid=eid).exists():
 			e = Express.objects.get(eid=eid)
 			if e.clear:
-				result.append([e.supplier, e.eid, e.fee])
+				if mark_as_proxy:
+					if not e.proxy:
+						result.append([e.supplier, e.eid, e.fee])
+						e.proxy = True
+						e.save()
+				else:
+					result.append([e.supplier, e.eid, e.fee])
 				handled = True
 		if not handled:
 			print "未结算快递费: {}".format(eid)
