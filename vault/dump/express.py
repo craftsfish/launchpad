@@ -13,7 +13,7 @@ def dump_express():
 		if Express.objects.filter(eid=eid).exists():
 			e = Express.objects.get(eid=eid)
 			if e.clear:
-				result.append([line[0], e.supplier, e.eid, e.fee])
+				result.append([e.supplier, e.eid, e.fee])
 				handled = True
 		if not handled:
 			print "未结算快递费: {}".format(eid)
@@ -22,9 +22,9 @@ def dump_express():
 
 	with open("/tmp/out.csv", "wb") as csvfile:
 		writer = csv.writer(csvfile)
-		writer.writerow(["地址", "供应商", "单号", "费用"])
+		writer.writerow(["供应商", "单号", "费用"])
 		total = 0
 		for l in result:
 			writer.writerow(l)
-			total += l[3]
+			total += l[2]
 		print total
