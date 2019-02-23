@@ -32,6 +32,7 @@ from vault.report import *
 from vault.synchronization.wkq import *
 from vault.synchronization.region import *
 from vault.dump.commodity import *
+from vault.dump.express import *
 from vault.synchronization.commodity import *
 
 @transaction.atomic
@@ -54,6 +55,7 @@ options = (
 	["cr", "仓库盘点时间校准", calibration_reset],
 	["cs", "仓库校准", Turbine.calibration_storage],
 	["dc", "导出物资清单", dump_commodity],
+	["de", "导出快递明细", dump_express],
 	["dp", "导出利润报告", dump_profit],
 	["dvf", "导出价值(现金+物资)流", dump_value_flow],
 	["ds", "导出库存", Turbine.dump_storage],
