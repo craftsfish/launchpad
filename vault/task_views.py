@@ -40,6 +40,7 @@ class TaskDetailView(SecurityLoginRequiredMixin, DetailView):
 			private.governor = [
 				("中和任务", reverse('task_revert', kwargs={'pk': self.object.id})),
 				("利润分析", reverse('task_profit', kwargs={'pk': self.object.id})),
+				("完结任务", reverse('task_close', kwargs={'pk': self.object.id})),
 			]
 			private.clear_url = reverse('task_clear', kwargs={'pk': self.object.id})
 			private.settle_url = reverse('task_settle', kwargs={'pk': self.object.id})
@@ -322,3 +323,49 @@ class TaskProfitView(SecurityLoginRequiredMixin, DetailView):
 			c.contribution = v[2]
 			context['contribution'].append(c)
 		return context
+
+#move collectable & receivable transactions to dedicated account
+class TaskCloseView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return reverse('task_detail', kwargs={'pk': self.object.id})
+
+	def get(self, request, *args, **kwargs):
+		self.object = Task.objects.get(pk=kwargs['pk'])
+
+		clear_trs = self.object.transactions.filter(desc='结算')
+		if len(clear_trs) == 1:
+			receivable = 0
+			payable = 0
+			for tr in self.object.transactions.filter(desc='货款'):
+				s = tr.splits.all()[0]
+				if s.account.category in [0, 2]:
+					receivable -= s.change
+				if s.account.category in [1, 3]:
+					payable -= s.change
+			clear_tr = clear_trs[0]
+			for s in clear_tr.splits.all():
+				if s.account.name == '应收货款':
+					if s.change != receivable:
+						a = Account.get_or_create(s.account.organization, s.account.item, '收入', '其他收入', None)
+						Split(account=a, change=receivable-s.change, transaction=clear_tr).save()
+						s.change = receivable
+						s.save()
+				elif s.account.name == '应付货款':
+					if s.change != payable:
+						a = Account.get_or_create(s.account.organization, s.account.item, '支出', '其他支出', None)
+						Split(account=a, change=payable-s.change, transaction=clear_tr).save()
+						s.change = payable
+						s.save()
+
+		#move receivable & payable to close account
+		for tr in self.object.transactions.all():
+			for s in tr.splits.all():
+				if s.account.name == '应收货款':
+					a = Account.get_or_create(s.account.organization, s.account.item, '资产', '完结应收款', None)
+					s.account = a
+					s.save()
+				if s.account.name == '应付货款':
+					a = Account.get_or_create(s.account.organization, s.account.item, '负债', '完结应付款', None)
+					s.account = a
+					s.save()
+		return super(TaskCloseView, self).get(request, *args, **kwargs)
