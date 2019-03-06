@@ -336,7 +336,7 @@ class TaskCloseView(RedirectView):
 		if len(clear_trs) == 1:
 			receivable = 0
 			payable = 0
-			for tr in self.object.transactions.filter(desc='货款'):
+			for tr in self.object.transactions.exclude(desc='结算'):
 				for s in tr.splits.all():
 					if s.account.name == '应收货款':
 						receivable -= s.change
@@ -358,7 +358,7 @@ class TaskCloseView(RedirectView):
 						s.save()
 
 			#move receivable & payable to close account
-			for tr in self.object.transactions.filter(desc__in=['货款', '结算']):
+			for tr in self.object.transactions.all():
 				for s in tr.splits.all():
 					if s.account.name == '应收货款':
 						a = Account.get_or_create(s.account.organization, s.account.item, '资产', '完结应收款', None)
