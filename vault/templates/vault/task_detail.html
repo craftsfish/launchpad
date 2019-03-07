@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 
+{% block extra_script %}
+	<script>
+		function merge(){
+			fid = jQuery("#id_task").text();
+			tid = jQuery("#id_key").val();
+			if (tid != "")
+				window.location.href = `/vault/task/${fid}/merge/to/${tid}/`;
+		}
+	</script>
+{% endblock %}
+
 {% block header %}任务详情{% endblock %}
 
 {% block content %}
@@ -25,7 +36,7 @@
 		<tr>
 			<td><a href="{% url 'task_previous' object.id %}">前一任务</a></td>
 			<td><a href="{% url 'task_next' object.id %}">后一任务</a></td>
-			<td>{{object.id}}</td>
+			<td id="id_task">{{object.id}}</td>
 			<td>{{object.desc}}</td>
 			{% if order %}
 			<td>{{order.oid}}</td>
@@ -38,6 +49,10 @@
 			{% for n, u in private.governor %}
 				<td><a href={{u}}>{{n}}</a></td>
 			{% endfor %}
+			<td>
+				<input type="text" id="id_key" />
+				<a href="javascript:void(0);" onclick ="merge()">合并到任务</a>
+			</td>
 		</tr>
 	</table>
 	<br/>

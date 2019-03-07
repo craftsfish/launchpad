@@ -92,6 +92,7 @@ urlpatterns = [
 	url(r'^task/(?P<pk>[\d]+)/invoice/$', TaskInvoiceView.as_view(), name='task_invoice'),
 	url(r'^task/(?P<pk>[\d]+)/profit/$', TaskProfitView.as_view(), name='task_profit'),
 	url(r'^task/(?P<pk>[\d]+)/close/$', TaskCloseView.as_view(), name='task_close'),
+	url(r'^task/(?P<pk>[\d]+)/merge/to/(?P<to>[\d]+)/$', TaskMergeView.as_view(), name='task_merge'),
 
 	#tmorder
 	url(r'^tmorder/change/$', TmorderChangeView.as_view(), name='tmorder_change'),

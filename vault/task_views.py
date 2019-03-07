@@ -369,3 +369,30 @@ class TaskCloseView(RedirectView):
 						s.account = a
 						s.save()
 		return super(TaskCloseView, self).get(request, *args, **kwargs)
+
+class TaskMergeView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		return reverse('task_detail', kwargs={'pk': self.object.id})
+
+	def get(self, request, *args, **kwargs):
+		self.object = Task.objects.get(pk=kwargs['pk'])
+		to = Task.objects.get(pk=kwargs['to'])
+		org_f = None
+		org_t = None
+		for i in self.object.transactions.all():
+			for j in i.splits.all():
+				org_f = j.account.organization.root().id
+				break
+			break
+		for i in to.transactions.all():
+			for j in i.splits.all():
+				org_t = j.account.organization.root().id
+				break
+			break
+		if org_f and org_t and org_f == org_t: #can be merged
+			for i in self.object.transactions.all():
+				i.task = to
+				i.save()
+			self.object.delete()
+			self.object = to
+		return super(TaskMergeView, self).get(request, *args, **kwargs)
