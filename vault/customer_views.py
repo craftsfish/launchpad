@@ -28,6 +28,10 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', 'counterfeit', 'join')
 		elif k == '1':
 			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', '-counterfeit', 'join')
+		elif k == '2':
+			return Customer.objects.filter(Q(contact__phone__endswith='0') | Q(contact__phone__endswith='1') | Q(contact__phone__endswith='2') | Q(contact__phone__endswith='3') | Q(contact__phone__endswith='4')).order_by('recruit', 'counterfeit', 'join')
+		elif k == '3':
+			return Customer.objects.exclude(Q(contact__phone__endswith='0') | Q(contact__phone__endswith='1') | Q(contact__phone__endswith='2') | Q(contact__phone__endswith='3') | Q(contact__phone__endswith='4')).order_by('recruit', 'counterfeit', 'join')
 		else:
 			return Customer.objects.filter(Q(contact__phone__contains=k) | Q(contact__jdorder__oid=get_int_with_default(k, 0)) | Q(contact__tmorder__oid=get_int_with_default(k,0))).order_by("counterfeit", 'recruit', 'join')
 
@@ -35,9 +39,8 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 		context = super(CustomerListView, self).get_context_data(**kwargs)
 		for t in context['object_list']:
 			t.flag = "买家"
-			t.recruit_url = reverse('customer_recruit', kwargs={'uuid': t.uuid ,'key': 0})
+			t.recruit_url = reverse('customer_recruit', kwargs={'uuid': t.uuid ,'key': self.kwargs['key']})
 			if t.counterfeit:
-				t.recruit_url = reverse('customer_recruit', kwargs={'uuid': t.uuid, 'key': 1})
 				t.flag = "刷手"
 			t.join = utc_2_datetime(t.join).astimezone(timezone.get_current_timezone())
 			t.recruited = True
