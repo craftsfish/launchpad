@@ -31,6 +31,7 @@ def import_jd_order():
 			#platform, filter, add(True) or verify counterfeit info
 			("陆凤", re.compile("^朱"), True),
 			("威客圈", re.compile("^伟"), True),
+			("微信", re.compile("^刘"), True),
 		)
 		for mark_as, criteria, add in __mapping:
 			if criteria.search(info.remark):
@@ -38,8 +39,14 @@ def import_jd_order():
 					if o.counterfeit and o.counterfeit.name != mark_as:
 						print "[警告!!!]京东订单{}: 备注为{}刷单，当前为{}刷单".format(o.oid, mark_as, o.counterfeit.name)
 					elif not o.counterfeit:
-						#print "京东订单{}: 备注为{}刷单".format(o.oid, mark_as)
+						print "京东订单{}: 备注为{}刷单".format(o.oid, mark_as)
 						o.counterfeit = Counterfeit.objects.get(name=mark_as)
+						if mark_as == '微信':
+							o.counterfeit_auto_clear = True
+							cash = Money.objects.get(name="人民币")
+							a = Account.get_or_create(org, cash.item_ptr, "支出", "微信刷单", None)
+							b = Account.get(org.root(), cash.item_ptr, "资产", '运营资金.微信', None)
+							Transaction.add(o.task_ptr, "返现", timezone.now(), a, 6, b)
 				else:
 					if not o.counterfeit or o.counterfeit.name != mark_as:
 						print "[警告!!!]京东订单{}: 备注为{}刷单，系统未标记".format(o.oid, mark_as)
