@@ -31,6 +31,7 @@ from vault.sync import *
 from vault.report import *
 from vault.synchronization.wkq import *
 from vault.synchronization.region import *
+from vault.synchronization.storage import *
 from vault.dump.commodity import *
 from vault.dump.express import *
 from vault.dump.storage import *
@@ -54,7 +55,6 @@ options = (
 	["aa", "增加账户", Turbine.add_account],
 	["b", "构造系统使用环境", Turbine.build],
 	["cr", "仓库盘点时间校准", calibration_reset],
-	["cs", "仓库校准", Turbine.calibration_storage],
 	["dc", "导出物资清单", dump_commodity],
 	["de", "导出快递明细", dump_express],
 	["dp", "导出利润报告", dump_profit],
@@ -85,6 +85,7 @@ options = (
 	["iyze", "导入邮政快递结算信息", Sync.import_yz_express],
 	["izte", "导入中通快递结算信息", Sync.import_zt_express],
 	["izbq", "导入zbq快递结算信息", import_zbq_express],
+	["is", "仓库校准", import_storage],
 	["q", "退出系统", __quit],
 	["r", "例行操作", import_order],
 	["t", "测试", test],

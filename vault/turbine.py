@@ -141,23 +141,6 @@ class Turbine:
 		return task
 
 	@staticmethod
-	def calibration_storage():
-		@transaction.atomic
-		def __csv_handler(orgs, l):
-			r = Repository.objects.get(name=get_column_value(title, l, "仓库"))
-			s = get_column_value(title, l, "状态")
-			c = Commodity.objects.get(name=get_column_value(title, l, "品名"))
-			q = int(get_column_value(title, l, "库存"))
-			Turbine.calibration_commodity(None, c, r, s, q, orgs)
-
-		with open('/tmp/storage.csv', 'rb') as csvfile:
-			orgs = Organization.objects.filter(parent=None).exclude(name="个人")
-			reader = csv.reader((csvfile))
-			title = reader.next()
-			for l in reader:
-				__csv_handler(orgs, l)
-
-	@staticmethod
 	def add_account():
 		info = (
 			("南京为绿电子科技有限公司", "人民币", "负债", None, "应付工资"),
