@@ -174,31 +174,6 @@ class Turbine:
 				Account.get_or_create(o, i, c, n, r)
 
 	@staticmethod
-	def dump_storage():
-		@transaction.atomic
-		def __handler(result, repository, status, commodity):
-			v = Account.objects.filter(item=commodity).filter(repository=r).filter(name=status).aggregate(Sum('balance'))['balance__sum']
-			if v: v = int(v)
-			else: v = 0
-			result.append([repository, status, commodity, v])
-
-		with transaction.atomic():
-			commodities = Commodity.objects.exclude(supplier=Supplier.objects.get(name="耗材")).order_by("supplier", "name")
-			repositories = Repository.objects.all()
-
-		result = []
-		for r in repositories:
-			for i, s in Itemstatus.choices[1:3]:
-				for c in commodities:
-					__handler(result, r, s, c)
-
-		with open("/tmp/storage.csv", "wb") as csvfile:
-			writer = csv.writer(csvfile)
-			writer.writerow(["仓库", "状态", "品名", "库存"])
-			for r in result:
-				writer.writerow(r)
-
-	@staticmethod
 	def update_calibration_window():
 		with transaction.atomic():
 			c = Commodity.objects.get(name="虚拟物品")

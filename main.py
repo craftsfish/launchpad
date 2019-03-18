@@ -33,6 +33,7 @@ from vault.synchronization.wkq import *
 from vault.synchronization.region import *
 from vault.dump.commodity import *
 from vault.dump.express import *
+from vault.dump.storage import *
 from vault.synchronization.commodity import *
 
 @transaction.atomic
@@ -58,7 +59,7 @@ options = (
 	["de", "导出快递明细", dump_express],
 	["dp", "导出利润报告", dump_profit],
 	["dvf", "导出价值(现金+物资)流", dump_value_flow],
-	["ds", "导出库存", Turbine.dump_storage],
+	["ds", "导出库存", dump_storage],
 	["ic", "导入物资", import_commodity],
 	["icme", "导入传美打印快递信息", Sync.import_cm_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
