@@ -32,6 +32,7 @@ from vault.report import *
 from vault.synchronization.wkq import *
 from vault.synchronization.region import *
 from vault.synchronization.storage import *
+from vault.synchronization.back import *
 from vault.dump.commodity import *
 from vault.dump.express import *
 from vault.dump.storage import *
@@ -60,6 +61,7 @@ options = (
 	["dp", "导出利润报告", dump_profit],
 	["dvf", "导出价值(现金+物资)流", dump_value_flow],
 	["ds", "导出库存", dump_storage],
+	["ib", "导入退货信息", import_back],
 	["ic", "导入物资", import_commodity],
 	["icme", "导入传美打印快递信息", Sync.import_cm_express],
 	["ijdcm", "导入京东商品映射", Jdcommoditymap.Import],
