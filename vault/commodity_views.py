@@ -12,6 +12,9 @@ from .security import *
 class CommodityListView(SecurityLoginRequiredMixin, ListView):
 	model = Commodity
 
+	def get_queryset(self):
+		return Commodity.objects.order_by('obsolete', 'supplier', '-inproduction', 'name')
+
 class CommodityStagnationListView(SecurityLoginRequiredMixin, TemplateView):
 	template_name = "vault/commodity_stagnation_list.html"
 	def get_context_data(self, **kwargs):
