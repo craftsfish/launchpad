@@ -13,7 +13,7 @@ class CommodityListView(SecurityLoginRequiredMixin, ListView):
 	model = Commodity
 
 	def get_queryset(self):
-		return Commodity.objects.order_by('obsolete', 'supplier', '-inproduction', 'name')
+		return Commodity.objects.order_by('obsolete', 'inproduction', 'supplier', 'name')
 
 class CommodityStagnationListView(SecurityLoginRequiredMixin, TemplateView):
 	template_name = "vault/commodity_stagnation_list.html"
