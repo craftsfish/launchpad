@@ -20,7 +20,7 @@ class BaseCommodityStatusHiddenForm(forms.Form):
 	status = forms.ChoiceField(choices=Itemstatus.choices[1:3], widget=forms.HiddenInput)
 
 class BaseRepositoryForm(forms.Form):
-	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None, label="仓库")
+	repository = forms.ModelChoiceField(queryset=Repository.objects, empty_label=None, label="仓库", initial=2)
 
 class BaseRepositoryHiddenForm(forms.Form):
 	repository = forms.ModelChoiceField(queryset=Repository.objects, widget=forms.HiddenInput)
