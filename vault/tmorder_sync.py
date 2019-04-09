@@ -101,9 +101,13 @@ def import_tm_order_list():
 		name = get_column_value(title, line, "收货人姓名")
 		with transaction.atomic():
 			org = Organization.objects.get(name="泰福高腾复专卖店")
-			repo = Repository.objects.get(name="孤山仓")
-			if re.compile("南京仓").search(remark):
+			t = now().replace(year=2019, month=4, day=10, hour=0, minute=0, second=0, microsecond = 0)
+			if when > t:
 				repo = Repository.objects.get(name="南京仓")
+			else:
+				repo = Repository.objects.get(name="孤山仓")
+				if re.compile("南京仓").search(remark):
+					repo = Repository.objects.get(name="南京仓")
 			__handle_list(order_id, when, status, sale, org, repo, remark, address, phone, name)
 	csv_parser('/tmp/tm.list.csv', csv_gb18030_2_utf8, True, __handler)
 

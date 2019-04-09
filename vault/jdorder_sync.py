@@ -95,9 +95,13 @@ def import_jd_order():
 			with transaction.atomic():
 				org = Organization.objects.get(name="为绿厨具专营店")
 				info.invoices = sorted(info.invoices, key = lambda i: (i.id * 100000 + i.number))
-				repo = Repository.objects.get(name="孤山仓")
-				if re.compile("南京仓").search(info.remark):
+				t = now().replace(year=2019, month=4, day=10, hour=0, minute=0, second=0, microsecond = 0)
+				if info.booktime > t:
 					repo = Repository.objects.get(name="南京仓")
+				else:
+					repo = Repository.objects.get(name="孤山仓")
+					if re.compile("南京仓").search(info.remark):
+						repo = Repository.objects.get(name="南京仓")
 				__handle_transaction(info, org, repo)
 
 	def __handler(title, line, *args):
