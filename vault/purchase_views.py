@@ -75,18 +75,6 @@ class TfgPurchaseView(SmartPurchaseMixin, TemplateView):
 	def get_supplier(self):
 		return Supplier.objects.get(name="泰福高")
 
-class YstPurchaseView(SmartPurchaseMixin, TemplateView):
-	def get_supplier(self):
-		return Supplier.objects.get(name="原森太")
-
-class KmlPurchaseView(SmartPurchaseMixin, TemplateView):
-	def get_supplier(self):
-		return Supplier.objects.get(name="凯曼隆")
-
-class OtherPurchaseView(SmartPurchaseMixin, TemplateView):
-	def get_supplier(self):
-		return None
-
 class PurchaseView(PurchaseMixin, TemplateView):
 	pass
 
