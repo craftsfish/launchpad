@@ -99,7 +99,7 @@ class Turbine:
 				threshold += 10
 				c.detail = []
 				need_refill = False
-				for r in Repository.objects.order_by("id"):
+				for r in Repository.objects.order_by("id").exclude(name='孤山仓'):
 					shipping = Turbine.get_shipping_out_information(c, r, 10)
 					speed = shipping[len(shipping)-1]
 					inventory, level, refill = Turbine.get_replenish_information(c, r, speed, threshold)
