@@ -7,6 +7,7 @@
 	<table border="1" cellpadding="4">
 		<tr>
 			<th>编号</th>
+			<th>明细</th>
 			<th>供应商</th>
 			<th>品名</th>
 			<th>价值</th>
@@ -17,7 +18,8 @@
 		</tr>
 		{% for commodity in object_list %}
 		<tr>
-			<td><a href="{% url 'commodity_detail' commodity.id %}">{{commodity.id}}</a></td>
+			<td>{{commodity.id}}</td>
+			<td><a href="{% url 'commodity_detail' commodity.id %}">明细</a></td>
 			<td>{{commodity.supplier}}</td>
 			<td>{{commodity.name}}</td>
 			<td>{{commodity.value }}</td>
