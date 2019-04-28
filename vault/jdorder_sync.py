@@ -30,6 +30,7 @@ def import_jd_order():
 		__mapping = (
 			#platform, filter, add(True) or verify counterfeit info
 			("陆凤", re.compile("^朱"), True),
+			("地推代放", re.compile("^'崔"), True),
 			("威客圈", re.compile("^伟"), True),
 			("微信", re.compile("^刘"), True),
 		)
