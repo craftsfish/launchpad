@@ -134,7 +134,7 @@ class Sync(object):
 			e = Sync.__express_creator(title, line, ["快递公司", "运单号"])
 			if not e:
 				return
-		csv_parser('/tmp/cm.express.csv', None, True, __handler)
+		csv_parser('/tmp/cm.express.csv', csv_gb18030_2_utf8, True, __handler)
 
 	@staticmethod
 	def __express_clear_v1(clear, supplier, column_eid, column_amount, column_weight, column_province, verifier, append_expresses):
