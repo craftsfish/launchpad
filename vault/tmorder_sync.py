@@ -32,6 +32,7 @@ def import_tm_order_list():
 			("QQ代放", re.compile("^'高"), True),
 			("地推代放", re.compile("^'崔"), True),
 			("微信", re.compile("^'刘"), True),
+			("地推代放", re.compile("^'萧"), True),
 		)
 		for mark_as, criteria, add in __mapping:
 			if criteria.search(remark):
