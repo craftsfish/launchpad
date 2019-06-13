@@ -23,15 +23,16 @@ class CustomerListView(SecurityLoginRequiredMixin, ListView):
 	paginate_by = 1
 
 	def get_queryset(self):
+		t = now_as_seconds() - 3600*24*30
 		k = self.kwargs['key']
 		if k == '0':
 			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', 'counterfeit', 'join')
 		elif k == '1':
 			return Customer.objects.filter(contact__jdorder__desc='京东订单').order_by('recruit', '-counterfeit', 'join')
 		elif k == '2':
-			return Customer.objects.filter(Q(contact__phone__endswith='0') | Q(contact__phone__endswith='1') | Q(contact__phone__endswith='2') | Q(contact__phone__endswith='3') | Q(contact__phone__endswith='4')).order_by('recruit', 'counterfeit', 'join')
+			return Customer.objects.filter(join__lt=t).filter(Q(contact__phone__endswith='0') | Q(contact__phone__endswith='1') | Q(contact__phone__endswith='2') | Q(contact__phone__endswith='3') | Q(contact__phone__endswith='4')).order_by('recruit', 'counterfeit', '-join')
 		elif k == '3':
-			return Customer.objects.exclude(Q(contact__phone__endswith='0') | Q(contact__phone__endswith='1') | Q(contact__phone__endswith='2') | Q(contact__phone__endswith='3') | Q(contact__phone__endswith='4')).order_by('recruit', 'counterfeit', 'join')
+			return Customer.objects.filter(join__lt=t).exclude(Q(contact__phone__endswith='0') | Q(contact__phone__endswith='1') | Q(contact__phone__endswith='2') | Q(contact__phone__endswith='3') | Q(contact__phone__endswith='4')).order_by('recruit', 'counterfeit', '-join')
 		else:
 			return Customer.objects.filter(Q(contact__phone__contains=k) | Q(contact__jdorder__oid=get_int_with_default(k, 0)) | Q(contact__tmorder__oid=get_int_with_default(k,0))).order_by("counterfeit", 'recruit', 'join')
 
